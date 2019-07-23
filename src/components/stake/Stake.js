@@ -138,7 +138,7 @@ class Stake extends Component{
             )
             :
             (
-              <Alert variant="info">To interact with the contract, please connect to web3</Alert>
+              <Alert variant="info">To interact with the contract, please connect to web3 <a href="https://metamask.io/" target="_blank" rel="noopener noreferrer">MetaMask</a> for laptop or <a href="https://trustwallet.com/" target="_blank" rel="noopener noreferrer">TrustWallet</a> for mobile</Alert>
             )
           }
 
