@@ -18,6 +18,7 @@ export const ExchangePortalAddress = '0x7Fd65F765932E29F041113777C47CE77ecF4E24A
 // export const NeworkID = 3
 // export const StakeAddress = '0x67bb720dfbcf6ee890ad6aa45e7c3e402bf2dc90'
 // export const COTAddress = '0xab726e4664d1c28B084d77cD9be4eF18884e858d'
+// export const ExchangePortalAddress = '0x2043a9634e2A4817118cA2fE5c6a16a9209b4085'
 
 // Local Mainnet
 // export const SmartFundRegistryADDRESS = '0x9A78c2532e4C09317fCc1adBaf95609DD48a6CeD'
@@ -26,6 +27,9 @@ export const ExchangePortalAddress = '0x7Fd65F765932E29F041113777C47CE77ecF4E24A
 // export const APIEnpoint = 'http://localhost:9000/'
 // export const BloxyLink = 'https://bloxy.info/portfolios/'
 // export const NeworkID = 1
+// export const StakeAddress = '0xf0089381815ed89b52fc9531bc2569c4f945079f'
+// export const COTAddress = '0x5c872500c00565505f3624ab435c222e558e9ff8'
+// export const ExchangePortalAddress = '0x7Fd65F765932E29F041113777C47CE77ecF4E24A'
 
 // Local Ropsten
 // export const SmartFundRegistryADDRESS = '0x9A78c2532e4C09317fCc1adBaf95609DD48a6CeD'
@@ -34,6 +38,9 @@ export const ExchangePortalAddress = '0x7Fd65F765932E29F041113777C47CE77ecF4E24A
 // export const APIEnpoint = 'http://localhost:9001/'
 // export const BloxyLink = 'https://bloxy.info/portfolios/'
 // export const NeworkID = 3
+// export const StakeAddress = '0x67bb720dfbcf6ee890ad6aa45e7c3e402bf2dc90'
+// export const COTAddress = '0xab726e4664d1c28B084d77cD9be4eF18884e858d'
+// export const ExchangePortalAddress = '0x2043a9634e2A4817118cA2fE5c6a16a9209b4085'
 
 
 export const StakeABI = [
