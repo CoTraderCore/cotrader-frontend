@@ -1,8 +1,8 @@
 import React from 'react'
 import { Pie } from 'react-chartjs-2'
-import { fromWei, toWei, hexToNumberString } from 'web3-utils'
+import { fromWei, toWei } from 'web3-utils'
 import { Badge } from "react-bootstrap"
-import { KyberInterfaceABI, KyberAddress } from '../../config.js'
+import { IExchangePortalABI, ExchangePortalAddress } from '../../config.js'
 import { inject } from 'mobx-react'
 
 class AssetsAlocationChart extends React.Component{
@@ -89,11 +89,10 @@ class AssetsAlocationChart extends React.Component{
       return amount
     }
     else{
-      const contract = new this.props.MobXStorage.web3.eth.Contract(KyberInterfaceABI, KyberAddress)
+      const contract = new this.props.MobXStorage.web3.eth.Contract(IExchangePortalABI, ExchangePortalAddress)
       const src = toWei(amount.toString(), 'ether')
-      const value = await contract.methods.getExpectedRate(from, this.state.eth_token,src).call()
-      const result = hexToNumberString(value.expectedRate._hex)
-      return fromWei(result.toString())
+      let value = await contract.methods.getValue(from, this.state.eth_token, src).call()
+      return fromWei(value.toString())
     }
   }
 
