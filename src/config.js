@@ -7,6 +7,7 @@ export const BloxyLink = 'https://bloxy.info/portfolios/'
 export const NeworkID = 1
 export const StakeAddress = '0xf0089381815ed89b52fc9531bc2569c4f945079f'
 export const COTAddress = '0x5c872500c00565505f3624ab435c222e558e9ff8'
+export const ExchangePortalAddress = '0x7Fd65F765932E29F041113777C47CE77ecF4E24A'
 
 // Ropsten
 // export const SmartFundRegistryADDRESS = '0x9A78c2532e4C09317fCc1adBaf95609DD48a6CeD'
@@ -1929,5 +1930,159 @@ export const KyberInterfaceABI = [
 		"payable": true,
 		"stateMutability": "payable",
 		"type": "function"
+	}
+]
+
+export const IExchangePortalABI = [
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_source",
+				"type": "address"
+			},
+			{
+				"name": "_sourceAmount",
+				"type": "uint256"
+			},
+			{
+				"name": "_destination",
+				"type": "address"
+			},
+			{
+				"name": "_destAddress",
+				"type": "address"
+			},
+			{
+				"name": "_additionalArgs",
+				"type": "bytes32[]"
+			}
+		],
+		"name": "tradeForDest",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_source",
+				"type": "address"
+			},
+			{
+				"name": "_sourceAmount",
+				"type": "uint256"
+			},
+			{
+				"name": "_destination",
+				"type": "address"
+			},
+			{
+				"name": "_type",
+				"type": "uint256"
+			},
+			{
+				"name": "_additionalArgs",
+				"type": "bytes32[]"
+			}
+		],
+		"name": "trade",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_from",
+				"type": "address"
+			},
+			{
+				"name": "_to",
+				"type": "address"
+			},
+			{
+				"name": "_amount",
+				"type": "uint256"
+			}
+		],
+		"name": "getValue",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_fromAddresses",
+				"type": "address[]"
+			},
+			{
+				"name": "_amounts",
+				"type": "uint256[]"
+			},
+			{
+				"name": "_to",
+				"type": "address"
+			}
+		],
+		"name": "getTotalValue",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "src",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "srcAmount",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "dest",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "destReceived",
+				"type": "uint256"
+			}
+		],
+		"name": "Trade",
+		"type": "event"
 	}
 ]
