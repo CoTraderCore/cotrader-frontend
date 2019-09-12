@@ -74,8 +74,8 @@ class ViewFundWithoutWeb3 extends Component {
         <Card.Body>
         <Alert variant="dark">
         <Row>
-         <Col>Fund profit: { fromWei(this.state.profit, 'ether')}</Col>
-         <Col>Fund value: {fromWei(this.state.value, 'ether')}</Col>
+         <Col>Fund profit in ETH: { fromWei(this.state.profit, 'ether')}</Col>
+         <Col>Fund value in ETH: {fromWei(this.state.value, 'ether')}</Col>
         </Row>
         </Alert>
         <br />
