@@ -6,7 +6,7 @@ class ChartsButton extends Component {
 
   render() {
     return (
-    <Button variant="outline-primary" className="buttonsAdditional" href={BloxyLink + this.props.address} target="_blank">Charts</Button>
+    <Button variant="outline-primary" className="buttonsAdditional" href={BloxyLink + this.props.address} target="_blank">Bloxy</Button>
     )
   }
 }

@@ -188,19 +188,19 @@ class SmartFundsList extends Component{
           }
           <Col>
           <ButtonGroup vertical>
+          <NavLink to={"/fund/"+item.address}><Button variant="outline-primary" className="buttonsAdditional">Fund page</Button></NavLink>
+          <Deposit web3={this.props.web3} address={item.address} accounts={this.props.accounts} pending={this.pending}/>
+          <Withdraw web3={this.props.web3} address={item.address} accounts={this.props.accounts} pending={this.pending}/>
+          <UserHoldings web3={this.props.web3} address={item.address} accounts={this.props.accounts}/>
           {
             NeworkID === 1 ?
             (
               <ChartsButton address={item.address}/>
             ):
             (
-              <FakeButton buttonName={"ChartsButton"} info={"This button is available only in mainnet"}/>
+              <FakeButton buttonName={"Bloxy"} info={"This button is available only in mainnet"}/>
             )
           }
-          <Deposit web3={this.props.web3} address={item.address} accounts={this.props.accounts} pending={this.pending}/>
-          <Withdraw web3={this.props.web3} address={item.address} accounts={this.props.accounts} pending={this.pending}/>
-          <UserHoldings web3={this.props.web3} address={item.address} accounts={this.props.accounts}/>
-          <NavLink to={"/fund/"+item.address}><Button variant="outline-primary" className="buttonsAdditional">More</Button></NavLink>
           </ButtonGroup>
           </Col>
          </Row>
