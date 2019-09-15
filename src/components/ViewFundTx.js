@@ -141,7 +141,7 @@ class ViewManager extends Component {
     return(
       <React.Fragment>
       <ListGroup.Item>Aditional data</ListGroup.Item>
-      <ListGroup.Item>Deposit amount: {fromWei(hexToNumberString(data.additionalData.amount._hex))} ETH</ListGroup.Item>
+      <ListGroup.Item>Deposit amount: {hexToNumberString(data.additionalData.amount._hex)} ETH in wei</ListGroup.Item>
       <ListGroup.Item>Total shares: {hexToNumberString(data.additionalData.totalShares._hex)} </ListGroup.Item>
       <ListGroup.Item>Shares received: {hexToNumberString(data.additionalData.sharesReceived._hex)} </ListGroup.Item>
       </React.Fragment>

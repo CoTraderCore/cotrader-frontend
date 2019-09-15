@@ -121,20 +121,19 @@ class SmartFundsListWithoutWeb3 extends Component{
              }
              <Col>
              <ButtonGroup vertical>
+             <NavLink to={"/web3off/fund/"+ item.address}><Button variant="outline-primary" className="buttonsAdditional">Fund Page</Button></NavLink>
+             <FakeButton buttonName={"Deposit"} info={"please connect to web3"}/>
+             <FakeButton buttonName={"Withdraw"} info={"please connect to web3"}/>
+             <FakeButton buttonName={"My Funds"} info={"please connect to web3"}/>
              {
               NeworkID === 1 ?
               (
                 <ChartsButton address={item.address}/>
               ):
               (
-                <FakeButton buttonName={"ChartsButton"} info={"This button is available only in mainnet"}/>
+                <FakeButton buttonName={"Bloxy"} info={"This button is available only in mainnet"}/>
               )
              }
-
-             <FakeButton buttonName={"Deposit"} info={"please connect to web3"}/>
-             <FakeButton buttonName={"Withdraw"} info={"please connect to web3"}/>
-             <FakeButton buttonName={"My Funds"} info={"please connect to web3"}/>
-             <NavLink to={"/web3off/fund/"+ item.address}><Button variant="outline-primary" className="buttonsAdditional">More</Button></NavLink>
              </ButtonGroup>
              </Col>
              </Row>
