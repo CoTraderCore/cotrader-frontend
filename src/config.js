@@ -1,24 +1,30 @@
 // Mainnet
-export const SmartFundRegistryADDRESS = '0x9d1a4dac9a35861abc003acfc680bf5ae1b8ed5b'
-export const EtherscanLink = 'https://etherscan.io/'
-export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
-export const APIEnpoint = 'https://api2.cotrader.com/'
-export const BloxyLink = 'https://bloxy.info/portfolios/'
-export const NeworkID = 1
-export const StakeAddress = '0xf0089381815ed89b52fc9531bc2569c4f945079f'
-export const COTAddress = '0x5c872500c00565505f3624ab435c222e558e9ff8'
-export const ExchangePortalAddress = '0x7Fd65F765932E29F041113777C47CE77ecF4E24A'
+// export const SmartFundRegistryADDRESS = '0x9d1a4dac9a35861abc003acfc680bf5ae1b8ed5b'
+// export const EtherscanLink = 'https://etherscan.io/'
+// export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
+// export const APIEnpoint = 'https://api2.cotrader.com/'
+// export const BloxyLink = 'https://bloxy.info/portfolios/'
+// export const NeworkID = 1
+// export const StakeAddress = '0xf0089381815ed89b52fc9531bc2569c4f945079f'
+// export const COTAddress = '0x5c872500c00565505f3624ab435c222e558e9ff8'
+// export const ExchangePortalAddress = '0x7Fd65F765932E29F041113777C47CE77ecF4E24A'
 
 // Ropsten
-// export const SmartFundRegistryADDRESS = '0x9A78c2532e4C09317fCc1adBaf95609DD48a6CeD'
-// export const EtherscanLink = 'https://ropsten.etherscan.io/'
-// export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
-// export const APIEnpoint = 'https://api-v2-ropsten.cotrader.com/'
-// export const BloxyLink = 'https://bloxy.info/portfolios/'
-// export const NeworkID = 3
-// export const StakeAddress = '0x67bb720dfbcf6ee890ad6aa45e7c3e402bf2dc90'
-// export const COTAddress = '0xab726e4664d1c28B084d77cD9be4eF18884e858d'
+export const EtherscanLink = 'https://ropsten.etherscan.io/'
+export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
+export const APIEnpoint = 'https://api-v2-ropsten.cotrader.com/'
+export const BloxyLink = 'https://bloxy.info/portfolios/'
+export const NeworkID = 3
+export const StakeAddress = '0x67bb720dfbcf6ee890ad6aa45e7c3e402bf2dc90'
+export const COTAddress = '0xab726e4664d1c28B084d77cD9be4eF18884e858d'
+// Bancor exchange portal
+export const ExchangePortalAddress = '0x1a47d64c0fbab9dd9d8ed42d25f5dc3dae922379'
+export const SmartFundRegistryADDRESS = '0xb791614a7361bb8c07f1e69286c441927b3769c1'
+// permittedExchanges = "0xe28d9224fe0ff0bb865d2431df69c9aa2e57cc03"
+
+// old exchange portal
 // export const ExchangePortalAddress = '0x2043a9634e2A4817118cA2fE5c6a16a9209b4085'
+// export const SmartFundRegistryADDRESS = '0x9A78c2532e4C09317fCc1adBaf95609DD48a6CeD'
 
 // Local Mainnet
 // export const SmartFundRegistryADDRESS = '0x9A78c2532e4C09317fCc1adBaf95609DD48a6CeD'

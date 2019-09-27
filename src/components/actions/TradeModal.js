@@ -3,8 +3,8 @@ import { SmartFundABI, KyberInterfaceABI, KyberAddress, APIEnpoint } from '../..
 import { Button, Modal, Form, Alert, Dropdown, InputGroup } from "react-bootstrap"
 import setPending from '../../utils/setPending'
 import axios from 'axios'
-import { tokens } from '../../tokens/'
-
+import kyberStorage from '../../tokens/kyberStorage'
+import bancorStorage from '../../tokens/bancorStorage'
 import { coinPics } from '../../tokens/tokensHelpers'
 
 
@@ -18,7 +18,20 @@ class TradeModal extends Component {
       Recive:'ETH',
       AmountSend:0,
       AmountRecive:0,
-      AlertError:false
+      AlertError:false,
+      TradeType:0
+    }
+  }
+
+  componentDidMount() {
+    const tokensArray = kyberStorage.ALLTokens
+    this.setState({ tokensArray })
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if(prevState.TradeType !== this.state.TradeType){
+      const tokensArray = this.state.TradeType === 0 ? kyberStorage.ALLTokens : bancorStorage.map(item => item.symbol)
+      this.setState({ tokensArray })
     }
   }
 
@@ -41,13 +54,13 @@ class TradeModal extends Component {
 
   change = e => {
     if(e.target.name === "AmountSend"){
-      this.setRate(tokens[this.state.Send], tokens[this.state.Recive], e.target.value, "AmountRecive", "AmountSend")
+      this.setRate(kyberStorage[this.state.Send], kyberStorage[this.state.Recive], e.target.value, "AmountRecive", "AmountSend")
       this.setState({
         [e.target.name]: e.target.value
       })
     }
     else if(e.target.name === "AmountRecive"){
-      this.setRate(tokens[this.state.Recive], tokens[this.state.Send], e.target.value, "AmountSend", "AmountRecive")
+      this.setRate(kyberStorage[this.state.Recive], kyberStorage[this.state.Send], e.target.value, "AmountSend", "AmountRecive")
       this.setState({
         [e.target.name]: e.target.value
       })
@@ -71,18 +84,14 @@ class TradeModal extends Component {
   trade = async () =>{
   const contract = new this.props.web3.eth.Contract(SmartFundABI, this.props.smartFundAddress)
   const amount = this.props.web3.utils.toWei(this.state.AmountSend.toString(), 'ether')
-
-
   this.setState({ ShowModal: false })
-
   let block = await this.props.web3.eth.getBlockNumber()
-
   contract.methods.trade(
-    tokens[this.state.Send],
+    kyberStorage[this.state.Send],
     amount,
-    tokens[this.state.Recive],
+    kyberStorage[this.state.Recive],
     0,
-    tokens.KyberParametrs).send({ from: this.props.accounts[0]})
+    kyberStorage.KyberParametrs).send({ from: this.props.accounts[0]})
     .on('transactionHash', (hash) => {
     console.log(hash)
     // pending status for spiner
@@ -132,10 +141,9 @@ class TradeModal extends Component {
      Send: 'ETH',
      Recive:'ETH',
      AmountSend:0,
-     AmountRecive:0
+     AmountRecive:0,
+     TradeType:0
    })
-
-   const tokensArray = tokens.ALLTokens
 
    return (
       <div>
@@ -157,7 +165,23 @@ class TradeModal extends Component {
           <Modal.Body>
 
           <Form>
-
+          <small>Current exchange: {this.state.TradeType === 0 ? <strong>Kyber</strong> : <strong>Bancor</strong>}</small>
+          <Dropdown>
+          <Dropdown.Toggle variant="outline-primary">
+          Select Exchange
+          </Dropdown.Toggle>
+          <Dropdown.Menu style={{"height":"80px", "overflowY":"scroll"}}>
+          <Dropdown.Item
+          key="TypeKyber"
+          onClick={() => this.setState({ TradeType:0 })}
+          ><img src={coinPics("KNC") } alt={coinPics("KNC")} width="19" height="15"/>KYBER</Dropdown.Item>
+          <Dropdown.Item
+          key="TypeBancor"
+          onClick={() => this.setState({ TradeType:1 })}
+          ><img src={coinPics("BNT") } alt={coinPics("BNT")} width="19" height="15"/>BANCOR</Dropdown.Item>
+          </Dropdown.Menu>
+          </Dropdown>
+          <hr/>
           <Form.Label>Send: {this.state.Send}</Form.Label>
           <InputGroup className="mb-3">
           <InputGroup.Prepend>
@@ -165,11 +189,18 @@ class TradeModal extends Component {
           <Dropdown.Toggle variant="outline-primary">
           Select token
           </Dropdown.Toggle>
-          <Dropdown.Menu style={{"height":"290px", "overflowY":"scroll"}}>
-          {tokensArray.map((value, index) => {
-          return <Dropdown.Item onClick={() => this.changeByClick("Send", value)} key={index}><img src={coinPics(value) } alt={coinPics(value)} width="19" height="15"/> {value}</Dropdown.Item>
-          })}
-          </Dropdown.Menu>
+          {
+            this.state.tokensArray
+            ?
+            (
+              <Dropdown.Menu style={{"height":"290px", "overflowY":"scroll"}}>
+              {this.state.tokensArray.map((value, index) => {
+              return <Dropdown.Item onClick={() => this.changeByClick("Send", value)} key={index}><img src={coinPics(value) } alt={coinPics(value)} width="19" height="15"/> {value}</Dropdown.Item>
+              })}
+              </Dropdown.Menu>
+            )
+            :(null)
+          }
           </Dropdown>
           </InputGroup.Prepend>
           <Form.Control
@@ -199,11 +230,18 @@ class TradeModal extends Component {
           <Dropdown.Toggle variant="outline-primary" id="dropdown-basic">
           Select token
           </Dropdown.Toggle>
-          <Dropdown.Menu style={{"height":"250px", "overflowY":"scroll"}}>
-          {tokensArray.map((value, index) => {
-          return <Dropdown.Item onClick={() => this.changeByClick("Recive", value)} key={index}><img src={coinPics(value) } alt={coinPics(value)} width="19" height="15"/> {value}</Dropdown.Item>
-          })}
-          </Dropdown.Menu>
+          {
+            this.state.tokensArray
+            ?
+            (
+              <Dropdown.Menu style={{"height":"250px", "overflowY":"scroll"}}>
+              {this.state.tokensArray.map((value, index) => {
+              return <Dropdown.Item onClick={() => this.changeByClick("Recive", value)} key={index}><img src={coinPics(value) } alt={coinPics(value)} width="19" height="15"/> {value}</Dropdown.Item>
+              })}
+              </Dropdown.Menu>
+            )
+            :(null)
+          }
           </Dropdown>
           </InputGroup.Prepend>
           <Form.Control

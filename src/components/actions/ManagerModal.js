@@ -25,7 +25,7 @@ class ManagerModal extends Component {
     return (
       <div>
         <Button style={{minWidth: "200px", maxWidth: "200px"}} variant="outline-primary" onClick={() => this.setState({ Show: true })}>
-          Manager: { this.props.address.slice(0, -31) }
+          Manager: { this.props.address ? this.props.address.slice(0, -31) : null }
         </Button>
 
         <Modal

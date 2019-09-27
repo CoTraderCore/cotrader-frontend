@@ -1,3 +1,5 @@
+// KYBER TOKENS
+
 import { NeworkID } from '../config.js'
 import * as mainnetTokens from './mainnet'
 import * as rosptenTokens from './ropsten'
@@ -13,4 +15,5 @@ else
 _tokens = rosptenTokens
 }
 
-export const tokens = _tokens
+const kyberStorage = _tokens
+export default kyberStorage
