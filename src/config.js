@@ -1,4 +1,6 @@
 // Mainnet
+// export const BNTToken = "0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C"
+// export const BancorETH = "0xc0829421C1d260BD3cB3E0F06cfE2D52db2cE315"
 // export const SmartFundRegistryADDRESS = '0x9d1a4dac9a35861abc003acfc680bf5ae1b8ed5b'
 // export const EtherscanLink = 'https://etherscan.io/'
 // export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
@@ -10,6 +12,8 @@
 // export const ExchangePortalAddress = '0x7Fd65F765932E29F041113777C47CE77ecF4E24A'
 
 // Ropsten
+export const BNTToken = "0x68b71E7F2b5fd0b19E61c9f2b642c9C4015D3dd3"
+export const BancorETH = "0xd43391b8fa168dcb34517877334672bcc3343ca1"
 export const EtherscanLink = 'https://ropsten.etherscan.io/'
 export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
 export const APIEnpoint = 'https://api-v2-ropsten.cotrader.com/'
@@ -25,28 +29,6 @@ export const SmartFundRegistryADDRESS = '0xb791614a7361bb8c07f1e69286c441927b376
 // old exchange portal
 // export const ExchangePortalAddress = '0x2043a9634e2A4817118cA2fE5c6a16a9209b4085'
 // export const SmartFundRegistryADDRESS = '0x9A78c2532e4C09317fCc1adBaf95609DD48a6CeD'
-
-// Local Mainnet
-// export const SmartFundRegistryADDRESS = '0x9A78c2532e4C09317fCc1adBaf95609DD48a6CeD'
-// export const EtherscanLink = 'https://etherscan.io/'
-// export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
-// export const APIEnpoint = 'http://localhost:9000/'
-// export const BloxyLink = 'https://bloxy.info/portfolios/'
-// export const NeworkID = 1
-// export const StakeAddress = '0xf0089381815ed89b52fc9531bc2569c4f945079f'
-// export const COTAddress = '0x5c872500c00565505f3624ab435c222e558e9ff8'
-// export const ExchangePortalAddress = '0x7Fd65F765932E29F041113777C47CE77ecF4E24A'
-
-// Local Ropsten
-// export const SmartFundRegistryADDRESS = '0x9A78c2532e4C09317fCc1adBaf95609DD48a6CeD'
-// export const EtherscanLink = 'https://ropsten.etherscan.io/'
-// export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
-// export const APIEnpoint = 'http://localhost:9001/'
-// export const BloxyLink = 'https://bloxy.info/portfolios/'
-// export const NeworkID = 3
-// export const StakeAddress = '0x67bb720dfbcf6ee890ad6aa45e7c3e402bf2dc90'
-// export const COTAddress = '0xab726e4664d1c28B084d77cD9be4eF18884e858d'
-// export const ExchangePortalAddress = '0x2043a9634e2A4817118cA2fE5c6a16a9209b4085'
 
 
 export const StakeABI = [

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { SmartFundABI, KyberInterfaceABI, KyberAddress, APIEnpoint } from '../../config.js'
 import { Button, Modal, Form, Alert, Dropdown, InputGroup } from "react-bootstrap"
 import setPending from '../../utils/setPending'
+import getBancorPath from '../../utils/getBancorPath'
 import axios from 'axios'
 import kyberStorage from '../../tokens/kyberStorage'
 import bancorStorage from '../../tokens/bancorStorage'
@@ -171,15 +172,18 @@ class TradeModal extends Component {
           Select Exchange
           </Dropdown.Toggle>
           <Dropdown.Menu style={{"height":"80px", "overflowY":"scroll"}}>
+
           <Dropdown.Item
           key="TypeKyber"
           onClick={() => this.setState({ TradeType:0 })}
           ><img src={coinPics("KNC") } alt={coinPics("KNC")} width="19" height="15"/>KYBER</Dropdown.Item>
+
           <Dropdown.Item
           key="TypeBancor"
           onClick={() => this.setState({ TradeType:1 })}
           ><img src={coinPics("BNT") } alt={coinPics("BNT")} width="19" height="15"/>BANCOR</Dropdown.Item>
           </Dropdown.Menu>
+
           </Dropdown>
           <hr/>
           <Form.Label>Send: {this.state.Send}</Form.Label>
