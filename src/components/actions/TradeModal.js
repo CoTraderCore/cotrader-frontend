@@ -7,7 +7,7 @@ import axios from 'axios'
 import kyberStorage from '../../tokens/kyberStorage'
 import bancorStorage from '../../tokens/bancorStorage'
 import { coinPics } from '../../tokens/tokensHelpers'
-
+import { padLeft, hexToBytes } from 'web3-utils'
 
 class TradeModal extends Component {
   constructor(props, context) {
@@ -81,18 +81,45 @@ class TradeModal extends Component {
     })
   }
 
+  // return parameters depending on type (Kyber or Bancor)
+  tradeParameters = () => {
+    const amount = this.props.web3.utils.toWei(this.state.AmountSend.toString(), 'ether')
+    let params
+    // Kyber
+    if(this.state.TradeType === 0){
+      params = [kyberStorage[this.state.Send],
+      amount,
+      kyberStorage[this.state.Recive],
+      0,
+      kyberStorage.KyberParametrs]
+    }
+    // Bancor
+    else{
+      const bancorPath = getBancorPath(this.state.Send, this.state.Recive, bancorStorage)
+      let additionBytes32 = []
+      for(let i=1; i < bancorPath.length -1; i++){
+        const item = padLeft(hexToBytes(bancorPath[i], 32))
+        additionBytes32.push(item)
+      }
+      params = [
+        bancorPath[0], // to
+        amount,
+        bancorPath[bancorPath.length-1], // from
+        1,
+        additionBytes32
+      ]
+    }
+    return params
+  }
+
 
   trade = async () =>{
   const contract = new this.props.web3.eth.Contract(SmartFundABI, this.props.smartFundAddress)
-  const amount = this.props.web3.utils.toWei(this.state.AmountSend.toString(), 'ether')
-  this.setState({ ShowModal: false })
-  let block = await this.props.web3.eth.getBlockNumber()
-  contract.methods.trade(
-    kyberStorage[this.state.Send],
-    amount,
-    kyberStorage[this.state.Recive],
-    0,
-    kyberStorage.KyberParametrs).send({ from: this.props.accounts[0]})
+  const block = await this.props.web3.eth.getBlockNumber()
+  const parameters = this.tradeParameters()
+
+  contract.methods.trade(...parameters).send({ from: this.props.accounts[0]}
+    )
     .on('transactionHash', (hash) => {
     console.log(hash)
     // pending status for spiner
@@ -100,6 +127,7 @@ class TradeModal extends Component {
     // pending status for DB
     setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
     })
+    this.setState({ ShowModal: false })
   }
 
   /**
