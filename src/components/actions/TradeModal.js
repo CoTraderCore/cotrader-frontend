@@ -164,8 +164,8 @@ class TradeModal extends Component {
     if(amount && this.state.Send !== this.state.Recive){
     // Kyber
     if(this.state.TradeType === 0){
-      const from = kyberStorage[this.state.Send]
-      const to = kyberStorage[this.state.Recive]
+      const from = type === "AmountRecive" ? kyberStorage[this.state.Send] : kyberStorage[this.state.Recive]
+      const to = type === "AmountRecive" ? kyberStorage[this.state.Recive] : kyberStorage[this.state.Send]
       const contract = new this.props.web3.eth.Contract(KyberInterfaceABI, KyberAddress)
       const src = this.props.web3.utils.toWei(amount.toString(), 'ether')
       const value = await contract.methods.getExpectedRate(from, to, src).call()
