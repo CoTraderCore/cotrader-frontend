@@ -49,7 +49,11 @@ class TradeModal extends Component {
     // change token storage if user change exchange type
     if(prevState.TradeType !== this.state.TradeType){
       const tokensArray = this.state.TradeType === 0 ? kyberStorage.ALLTokens : bancorStorage.map(item => item.symbol)
-      this.setState({ tokensArray })
+      this.setState({
+        tokensArray,
+        AmountSend:0,
+        AmountRecive:0
+       })
     }
   }
 
@@ -157,7 +161,7 @@ class TradeModal extends Component {
   * @param {mul} state "AmountRecive" or "AmountSend"
   */
   setRate = async (amount, type, mul) => {
-    if(amount){
+    if(amount && this.state.Send !== this.state.Recive){
     // Kyber
     if(this.state.TradeType === 0){
       const from = kyberStorage[this.state.Send]
@@ -270,7 +274,7 @@ class TradeModal extends Component {
             (
               <Dropdown.Menu style={{"height":"290px", "overflowY":"scroll"}}>
               {this.state.tokensArray.map((value, index) => {
-              return <Dropdown.Item onClick={() => this.changeByClick("Send", value)} key={index}><img src={coinPics(value) } alt={coinPics(value)} width="19" height="15"/> {value}</Dropdown.Item>
+              return <Dropdown.Item onClick={() => this.changeByClick("Send", value)} key={index}><img src={coinPics(value)} alt="?_" width="19" height="15"/> {value}</Dropdown.Item>
               })}
               </Dropdown.Menu>
             )
@@ -311,7 +315,7 @@ class TradeModal extends Component {
             (
               <Dropdown.Menu style={{"height":"250px", "overflowY":"scroll"}}>
               {this.state.tokensArray.map((value, index) => {
-              return <Dropdown.Item onClick={() => this.changeByClick("Recive", value)} key={index}><img src={coinPics(value) } alt={coinPics(value)} width="19" height="15"/> {value}</Dropdown.Item>
+              return <Dropdown.Item onClick={() => this.changeByClick("Recive", value)} key={index}><img src={coinPics(value)} alt="?_" width="19" height="15"/> {value}</Dropdown.Item>
               })}
               </Dropdown.Menu>
             )
