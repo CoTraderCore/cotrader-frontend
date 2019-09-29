@@ -54,25 +54,21 @@ class TradeModal extends Component {
   }
 
   change = e => {
+    this.setState({
+    [e.target.name]: e.target.value
+    })
+
     if(e.target.name === "AmountSend"){
       this.setRate(kyberStorage[this.state.Send], kyberStorage[this.state.Recive], e.target.value, "AmountRecive", "AmountSend")
-      this.setState({
-        [e.target.name]: e.target.value
-      })
+
     }
-    else if(e.target.name === "AmountRecive"){
+    if(e.target.name === "AmountRecive"){
       this.setRate(kyberStorage[this.state.Recive], kyberStorage[this.state.Send], e.target.value, "AmountSend", "AmountRecive")
-      this.setState({
-        [e.target.name]: e.target.value
-      })
-    }
-    else{
-      this.setState({
-      [e.target.name]: e.target.value
-      })
     }
   }
 
+  // Change send or recieve tokens direction
+  // Drop send and recieve amount
   changeByClick = (name, param) => {
     this.setState({
       [name]:param,
@@ -97,10 +93,12 @@ class TradeModal extends Component {
     else{
       const bancorPath = getBancorPath(this.state.Send, this.state.Recive, bancorStorage)
       let additionBytes32 = []
+
       for(let i=1; i < bancorPath.length -1; i++){
         const item = padLeft(hexToBytes(bancorPath[i], 32))
         additionBytes32.push(item)
       }
+
       params = [
         bancorPath[0], // to
         amount,
@@ -131,7 +129,7 @@ class TradeModal extends Component {
   }
 
   /**
-  * This internal function for calculate rate and setstate for send or recive
+  * This internal function for calculate rate and setstate for send or recive (dependse of input)
   * @param {from} symbol of token
   * @param {to} symbol of token
   * @param {amount} amount of token
