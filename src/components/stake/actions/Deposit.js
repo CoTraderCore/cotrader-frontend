@@ -98,7 +98,7 @@ class Deposit extends Component{
       this.state.ReturnRewards > 0
       ?
       (
-        <Alert variant="primary">You will recive: {this.state.ReturnRewards}</Alert>
+        <Alert variant="primary">You will receive: {this.state.ReturnRewards}</Alert>
       )
       :(null)
     }
