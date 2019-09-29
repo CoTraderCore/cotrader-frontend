@@ -1,29 +1,32 @@
 // Mainnet
-// export const BNTToken = "0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C"
-// export const BancorETH = "0xc0829421C1d260BD3cB3E0F06cfE2D52db2cE315"
-// export const SmartFundRegistryADDRESS = '0x9d1a4dac9a35861abc003acfc680bf5ae1b8ed5b'
-// export const EtherscanLink = 'https://etherscan.io/'
-// export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
-// export const APIEnpoint = 'https://api2.cotrader.com/'
-// export const BloxyLink = 'https://bloxy.info/portfolios/'
-// export const NeworkID = 1
-// export const StakeAddress = '0xf0089381815ed89b52fc9531bc2569c4f945079f'
-// export const COTAddress = '0x5c872500c00565505f3624ab435c222e558e9ff8'
-// export const ExchangePortalAddress = '0x7Fd65F765932E29F041113777C47CE77ecF4E24A'
+export const BancorNetwork = "0xeee90e509a639e95e3bb502b17a0eed6e014bfc0"
+export const BNTToken = "0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C"
+export const BancorETH = "0xc0829421C1d260BD3cB3E0F06cfE2D52db2cE315"
+export const SmartFundRegistryADDRESS = '0x9d1a4dac9a35861abc003acfc680bf5ae1b8ed5b'
+export const EtherscanLink = 'https://etherscan.io/'
+export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
+export const APIEnpoint = 'https://api2.cotrader.com/'
+export const BloxyLink = 'https://bloxy.info/portfolios/'
+export const NeworkID = 1
+export const StakeAddress = '0xf0089381815ed89b52fc9531bc2569c4f945079f'
+export const COTAddress = '0x5c872500c00565505f3624ab435c222e558e9ff8'
+export const ExchangePortalAddress = '0x7Fd65F765932E29F041113777C47CE77ecF4E24A'
 
 // Ropsten
-export const BNTToken = "0x68b71E7F2b5fd0b19E61c9f2b642c9C4015D3dd3"
-export const BancorETH = "0xd43391b8fa168dcb34517877334672bcc3343ca1"
-export const EtherscanLink = 'https://ropsten.etherscan.io/'
-export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
-export const APIEnpoint = 'https://api-v2-ropsten.cotrader.com/'
-export const BloxyLink = 'https://bloxy.info/portfolios/'
-export const NeworkID = 3
-export const StakeAddress = '0x67bb720dfbcf6ee890ad6aa45e7c3e402bf2dc90'
-export const COTAddress = '0xab726e4664d1c28B084d77cD9be4eF18884e858d'
-// Bancor exchange portal
-export const ExchangePortalAddress = '0x1a47d64c0fbab9dd9d8ed42d25f5dc3dae922379'
-export const SmartFundRegistryADDRESS = '0xb791614a7361bb8c07f1e69286c441927b3769c1'
+// export const BancorNetwork = "" // Need settup 
+// export const BNTToken = "0x68b71E7F2b5fd0b19E61c9f2b642c9C4015D3dd3"
+// export const BancorETH = "0xd43391b8fa168dcb34517877334672bcc3343ca1"
+// export const EtherscanLink = 'https://ropsten.etherscan.io/'
+// export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
+// export const APIEnpoint = 'https://api-v2-ropsten.cotrader.com/'
+// export const BloxyLink = 'https://bloxy.info/portfolios/'
+// export const NeworkID = 3
+// export const StakeAddress = '0x67bb720dfbcf6ee890ad6aa45e7c3e402bf2dc90'
+// export const COTAddress = '0xab726e4664d1c28B084d77cD9be4eF18884e858d'
+
+// new exchange portal with Bancor
+// export const ExchangePortalAddress = '0x1a47d64c0fbab9dd9d8ed42d25f5dc3dae922379'
+// export const SmartFundRegistryADDRESS = '0xb791614a7361bb8c07f1e69286c441927b3769c1'
 // permittedExchanges = "0xe28d9224fe0ff0bb865d2431df69c9aa2e57cc03"
 
 // old exchange portal
@@ -2079,5 +2082,789 @@ export const IExchangePortalABI = [
 		],
 		"name": "Trade",
 		"type": "event"
+	}
+]
+
+export const ABIBancorNetwork = [
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "acceptOwnership",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_path",
+				"type": "address[]"
+			},
+			{
+				"name": "_amount",
+				"type": "uint256"
+			},
+			{
+				"name": "_minReturn",
+				"type": "uint256"
+			}
+		],
+		"name": "claimAndConvert",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_path",
+				"type": "address[]"
+			},
+			{
+				"name": "_amount",
+				"type": "uint256"
+			},
+			{
+				"name": "_minReturn",
+				"type": "uint256"
+			},
+			{
+				"name": "_for",
+				"type": "address"
+			}
+		],
+		"name": "claimAndConvertFor",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_path",
+				"type": "address[]"
+			},
+			{
+				"name": "_amount",
+				"type": "uint256"
+			},
+			{
+				"name": "_minReturn",
+				"type": "uint256"
+			}
+		],
+		"name": "convert",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_path",
+				"type": "address[]"
+			},
+			{
+				"name": "_amount",
+				"type": "uint256"
+			},
+			{
+				"name": "_minReturn",
+				"type": "uint256"
+			},
+			{
+				"name": "_for",
+				"type": "address"
+			}
+		],
+		"name": "convertFor",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_path",
+				"type": "address[]"
+			},
+			{
+				"name": "_amount",
+				"type": "uint256"
+			},
+			{
+				"name": "_minReturn",
+				"type": "uint256"
+			},
+			{
+				"name": "_for",
+				"type": "address"
+			},
+			{
+				"name": "_block",
+				"type": "uint256"
+			},
+			{
+				"name": "_nonce",
+				"type": "uint256"
+			},
+			{
+				"name": "_v",
+				"type": "uint8"
+			},
+			{
+				"name": "_r",
+				"type": "bytes32"
+			},
+			{
+				"name": "_s",
+				"type": "bytes32"
+			}
+		],
+		"name": "convertForPrioritized",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_path",
+				"type": "address[]"
+			},
+			{
+				"name": "_amount",
+				"type": "uint256"
+			},
+			{
+				"name": "_minReturn",
+				"type": "uint256"
+			},
+			{
+				"name": "_for",
+				"type": "address"
+			},
+			{
+				"name": "_block",
+				"type": "uint256"
+			},
+			{
+				"name": "_v",
+				"type": "uint8"
+			},
+			{
+				"name": "_r",
+				"type": "bytes32"
+			},
+			{
+				"name": "_s",
+				"type": "bytes32"
+			}
+		],
+		"name": "convertForPrioritized2",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_path",
+				"type": "address[]"
+			},
+			{
+				"name": "_amount",
+				"type": "uint256"
+			},
+			{
+				"name": "_minReturn",
+				"type": "uint256"
+			},
+			{
+				"name": "_for",
+				"type": "address"
+			},
+			{
+				"name": "_customVal",
+				"type": "uint256"
+			},
+			{
+				"name": "_block",
+				"type": "uint256"
+			},
+			{
+				"name": "_v",
+				"type": "uint8"
+			},
+			{
+				"name": "_r",
+				"type": "bytes32"
+			},
+			{
+				"name": "_s",
+				"type": "bytes32"
+			}
+		],
+		"name": "convertForPrioritized3",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_token",
+				"type": "address"
+			},
+			{
+				"name": "_register",
+				"type": "bool"
+			}
+		],
+		"name": "registerEtherToken",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_registry",
+				"type": "address"
+			}
+		],
+		"name": "setRegistry",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_signerAddress",
+				"type": "address"
+			}
+		],
+		"name": "setSignerAddress",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_token",
+				"type": "address"
+			},
+			{
+				"name": "_to",
+				"type": "address"
+			},
+			{
+				"name": "_amount",
+				"type": "uint256"
+			}
+		],
+		"name": "withdrawTokens",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_path",
+				"type": "address[]"
+			},
+			{
+				"name": "_amount",
+				"type": "uint256"
+			},
+			{
+				"name": "_minReturn",
+				"type": "uint256"
+			},
+			{
+				"name": "_toBlockchain",
+				"type": "bytes32"
+			},
+			{
+				"name": "_to",
+				"type": "bytes32"
+			},
+			{
+				"name": "_conversionId",
+				"type": "uint256"
+			}
+		],
+		"name": "xConvert",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_path",
+				"type": "address[]"
+			},
+			{
+				"name": "_amount",
+				"type": "uint256"
+			},
+			{
+				"name": "_minReturn",
+				"type": "uint256"
+			},
+			{
+				"name": "_toBlockchain",
+				"type": "bytes32"
+			},
+			{
+				"name": "_to",
+				"type": "bytes32"
+			},
+			{
+				"name": "_conversionId",
+				"type": "uint256"
+			},
+			{
+				"name": "_block",
+				"type": "uint256"
+			},
+			{
+				"name": "_v",
+				"type": "uint8"
+			},
+			{
+				"name": "_r",
+				"type": "bytes32"
+			},
+			{
+				"name": "_s",
+				"type": "bytes32"
+			}
+		],
+		"name": "xConvertPrioritized",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"name": "_registry",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "_prevOwner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"name": "_newOwner",
+				"type": "address"
+			}
+		],
+		"name": "OwnerUpdate",
+		"type": "event"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "BANCOR_CONVERTER_FACTORY",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "BANCOR_CONVERTER_UPGRADER",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "BANCOR_FORMULA",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "BANCOR_GAS_PRICE_LIMIT",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "BANCOR_NETWORK",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "BANCOR_X",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "BANCOR_X_UPGRADER",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "BNT_CONVERTER",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "BNT_TOKEN",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "CONTRACT_FEATURES",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "CONTRACT_REGISTRY",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"name": "conversionHashes",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "CONVERTER_CONVERSION_WHITELIST",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "etherTokens",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_path",
+				"type": "address[]"
+			},
+			{
+				"name": "_amount",
+				"type": "uint256"
+			}
+		],
+		"name": "getReturnByPath",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "newOwner",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "NON_STANDARD_TOKEN_REGISTRY",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "registry",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "signerAddress",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
 	}
 ]

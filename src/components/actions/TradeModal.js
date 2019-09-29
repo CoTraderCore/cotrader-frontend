@@ -1,6 +1,22 @@
 import React, { Component } from 'react'
-import { SmartFundABI, KyberInterfaceABI, KyberAddress, APIEnpoint } from '../../config.js'
-import { Button, Modal, Form, Alert, Dropdown, InputGroup } from "react-bootstrap"
+import {
+  SmartFundABI,
+  KyberInterfaceABI,
+  KyberAddress,
+  APIEnpoint,
+  ABIBancorNetwork,
+  BancorNetwork
+} from '../../config.js'
+
+import {
+  Button,
+  Modal,
+  Form,
+  Alert,
+  Dropdown,
+  InputGroup
+} from "react-bootstrap"
+
 import setPending from '../../utils/setPending'
 import getBancorPath from '../../utils/getBancorPath'
 import axios from 'axios'
@@ -30,6 +46,7 @@ class TradeModal extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    // change token storage if user change exchange type
     if(prevState.TradeType !== this.state.TradeType){
       const tokensArray = this.state.TradeType === 0 ? kyberStorage.ALLTokens : bancorStorage.map(item => item.symbol)
       this.setState({ tokensArray })
@@ -53,20 +70,22 @@ class TradeModal extends Component {
     }
   }
 
+  // Helper
   change = e => {
     this.setState({
     [e.target.name]: e.target.value
     })
 
     if(e.target.name === "AmountSend"){
-      this.setRate(kyberStorage[this.state.Send], kyberStorage[this.state.Recive], e.target.value, "AmountRecive", "AmountSend")
+      this.setRate(e.target.value, "AmountRecive", "AmountSend")
 
     }
     if(e.target.name === "AmountRecive"){
-      this.setRate(kyberStorage[this.state.Recive], kyberStorage[this.state.Send], e.target.value, "AmountSend", "AmountRecive")
+      this.setRate(e.target.value, "AmountSend", "AmountRecive")
     }
   }
 
+  // Helper
   // Change send or recieve tokens direction
   // Drop send and recieve amount
   changeByClick = (name, param) => {
@@ -90,7 +109,7 @@ class TradeModal extends Component {
       kyberStorage.KyberParametrs]
     }
     // Bancor
-    else{
+    else if(this.state.TradeType === 1){
       const bancorPath = getBancorPath(this.state.Send, this.state.Recive, bancorStorage)
       let additionBytes32 = []
 
@@ -107,10 +126,13 @@ class TradeModal extends Component {
         additionBytes32
       ]
     }
+    else{
+      alert('Unknown exchange type')
+    }
     return params
   }
 
-
+  // Trade via smart fund
   trade = async () =>{
   const contract = new this.props.web3.eth.Contract(SmartFundABI, this.props.smartFundAddress)
   const block = await this.props.web3.eth.getBlockNumber()
@@ -130,23 +152,46 @@ class TradeModal extends Component {
 
   /**
   * This internal function for calculate rate and setstate for send or recive (dependse of input)
-  * @param {from} symbol of token
-  * @param {to} symbol of token
   * @param {amount} amount of token
   * @param {type} state "AmountRecive" or "AmountSend"
-  * @param {mul} state "AmountRecive" or "AmountSend" (we need mul Kyber result)
+  * @param {mul} state "AmountRecive" or "AmountSend"
   */
-  setRate = async (from, to, amount, type, mul) => {
+  setRate = async (amount, type, mul) => {
     if(amount){
-    const contract = new this.props.web3.eth.Contract(KyberInterfaceABI, KyberAddress)
-    const src = this.props.web3.utils.toWei(amount.toString(), 'ether')
-    const value = await contract.methods.getExpectedRate(from, to, src).call()
-    if(value){
-      const result = this.props.web3.utils.fromWei(this.props.web3.utils.hexToNumberString(value.expectedRate._hex))
-      const final = result * this.state[mul]
-      this.setState({ [type]: final })
-    }else{
-      this.setState({ [type]: 0 })
+    // Kyber
+    if(this.state.TradeType === 0){
+      const from = kyberStorage[this.state.Send]
+      const to = kyberStorage[this.state.Recive]
+      const contract = new this.props.web3.eth.Contract(KyberInterfaceABI, KyberAddress)
+      const src = this.props.web3.utils.toWei(amount.toString(), 'ether')
+      const value = await contract.methods.getExpectedRate(from, to, src).call()
+      if(value){
+        const result = this.props.web3.utils.fromWei(this.props.web3.utils.hexToNumberString(value.expectedRate._hex))
+        // mul result
+        const final = result * this.state[mul]
+        this.setState({ [type]: final })
+      }else{
+        this.setState({ [type]: 0 })
+      }
+    }
+    // Bancor
+    else if(this.state.TradeType === 1){
+      const pathRecieve = [this.state.Send, this.state.Recive]
+      const pathSend = [this.state.Recive, this.state.Send]
+      const path = type === 'AmountRecive' ? getBancorPath(...pathRecieve, bancorStorage) : getBancorPath(...pathSend, bancorStorage)
+      const contract = new this.props.web3.eth.Contract(ABIBancorNetwork, BancorNetwork)
+      amount = this.props.web3.utils.toWei(amount.toString(), 'ether')
+      const value = await contract.methods.getReturnByPath(path, amount).call()
+      if(value){
+        const result = this.props.web3.utils.fromWei(this.props.web3.utils.hexToNumberString(value[0]._hex))
+        const final = result * this.state[mul]
+        this.setState({ [type]: final })
+      }else{
+        this.setState({ [type]: 0 })
+      }
+    }
+    else{
+      alert('Unknown exchange type')
     }
    }
   }
