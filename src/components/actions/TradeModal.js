@@ -121,11 +121,13 @@ class TradeModal extends Component {
         const item = padLeft(hexToBytes(bancorPath[i], 32))
         additionBytes32.push(item)
       }
-
+      // COT smart contract recognize ETH by this address 0x00eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+      const from = this.state.Send !== "ETH" ? bancorPath[0] : "0x00eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      const to = bancorPath[bancorPath.length-1]
       params = [
-        bancorPath[0], // to
+        from,
         amount,
-        bancorPath[bancorPath.length-1], // from
+        to,
         1,
         additionBytes32
       ]
