@@ -23,7 +23,7 @@ import axios from 'axios'
 import kyberStorage from '../../tokens/kyberStorage'
 import bancorStorage from '../../tokens/bancorStorage'
 import { coinPics } from '../../tokens/tokensHelpers'
-import { padLeft, hexToBytes } from 'web3-utils'
+import { padLeft } from 'web3-utils'
 
 class TradeModal extends Component {
   constructor(props, context) {
@@ -118,11 +118,12 @@ class TradeModal extends Component {
       let additionBytes32 = []
 
       for(let i=1; i < bancorPath.length -1; i++){
-        const item = padLeft(hexToBytes(bancorPath[i], 32))
+        //convert address to bytes32
+        const item = '0x' + padLeft(bancorPath[i].replace('0x', ''), 64)
         additionBytes32.push(item)
       }
       // COT smart contract recognize ETH by this address 0x00eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-      const from = this.state.Send !== "ETH" ? bancorPath[0] : "0x00eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      const from = this.state.Send !== "ETH" ? bancorPath[0] : '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
       const to = bancorPath[bancorPath.length-1]
       params = [
         from,
@@ -143,7 +144,6 @@ class TradeModal extends Component {
   const contract = new this.props.web3.eth.Contract(SmartFundABI, this.props.smartFundAddress)
   const block = await this.props.web3.eth.getBlockNumber()
   const parameters = this.tradeParameters()
-
   contract.methods.trade(...parameters).send({ from: this.props.accounts[0]}
     )
     .on('transactionHash', (hash) => {
