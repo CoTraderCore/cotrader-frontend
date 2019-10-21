@@ -6,7 +6,7 @@ import { inject } from 'mobx-react'
 import ReactGA from 'react-ga'
 
 import Footer from './components/static/Footer'
-import Header from './components/static/Header'
+//import Header from './components/static/Header'
 import HowToStart from './components/static/HowToStart'
 
 import getWeb3 from "./utils/getWeb3"
@@ -27,6 +27,12 @@ import ViewFundWithoutWeb3 from './components/web3off/ViewFundWithoutWeb3'
 
 import Stake from './components/stake/Stake'
 
+import { Button } from "@material-ui/core";
+import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles"
+// import lightblue from "@material-ui/core/colors/lightBlue"
+import Navbar2 from './components/static/Navbar'
+import { Row, Col } from "react-bootstrap"
+
 class App extends Component {
   constructor(props, context) {
   super(props, context);
@@ -36,7 +42,21 @@ class App extends Component {
     isReactGarbagetytyweyety: false,
     network: 0,
     timeOut: false,
-    isDataLoad: false
+    isDataLoad: false,
+    themeType : 'light'
+    }
+    document.body.classList.add('light_theme')
+  }
+
+  changeTheme2(){
+    if (this.state.themeType === 'dark'){
+      this.setState({themeType:'light'});
+      document.body.classList.add('light_theme');
+      document.body.classList.remove('dark_theme');
+    } else {
+      this.setState({themeType:'dark'});
+      document.body.classList.add('dark_theme');
+      document.body.classList.remove('light_theme');
     }
   }
 
@@ -96,9 +116,41 @@ class App extends Component {
       window.location = "/#/web3off"
     }
 
+    let theme = createMuiTheme({
+      palette: {
+        primary: {
+          light: '#3f51b5',
+          main: '#3f51b5',
+          dark: '#4e69ff',
+        },
+        secondary: {
+          light: '#3f51b5',
+          main: '#00f1d1',
+          dark: '#00f1d1',
+        },
+        background: {
+          default: this.state.themeType === 'light' ? '#fff' : '#000',
+        },
+        type: this.state.themeType
+      }
+    });
+
     return (
       <HashRouter>
-      <Header web3={this.state.web3}/>
+      <MuiThemeProvider theme={theme}>
+      <Navbar2/>
+      <div className="container-fluid">
+      <Row>
+      <Col lg={1} xs={12}>
+        <Button variant="contained" color="primary" className={'mb-2 pl-2 pr-2 mt-2'} onClick={()=>{this.changeTheme2()}}><img style={{maxHeight: '24px'}} src="/themeicon.svg" alt="Change Theme" title="Change Theme" /></Button>
+      </Col>
+      <Col lg={11} xs={12}>
+          <div className="center-xs" style={{ padding: '7px 10px', backgroundColor:'transparent', lineHeight: '1.3', margin: '8px auto',textAlign:'right' }}>
+          <small>World's first non-custodial crypto investments funds marketplace - create or join the best smart funds</small>
+          </div>
+      </Col>
+      </Row>
+
       {
         // Check network ID
         NeworkID !== this.state.network && this.state.timeOut && this.state.web3 ?
@@ -114,9 +166,7 @@ class App extends Component {
           null
         )
       }
-      <br />
-      <div className="container-fluid">
-      <Switch>
+    <Switch>
       <Route path="/web3off/fund/:address" component={(props) => <ViewFundWithoutWeb3 {...props} web3={this.state.web3}/>} />
       <Route exact path="/" component={(props) => <SmartFundsList {...props} web3={this.state.web3} accounts={this.state.accounts} isDataLoad={this.state.isDataLoad}/>} />
       <Route path="/web3off" component={(props) => <SmartFundsListWithoutWeb3 {...props} web3={this.state.web3} />}/>
@@ -129,6 +179,7 @@ class App extends Component {
       </div>
       <br />
       <Footer />
+      </MuiThemeProvider>
       </HashRouter>
     )
   }

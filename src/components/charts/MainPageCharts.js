@@ -42,6 +42,7 @@ class MainPageCharts extends React.Component {
 
     axios.get(BloxyChartsLink + this.props.address).then((data) => {
     if(this._isMounted){
+    console.log(data)
     const date = data.data.map(function(v) {
       return v.date
     });

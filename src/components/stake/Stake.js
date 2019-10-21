@@ -9,6 +9,7 @@ import Approve from './actions/Approve'
 import Deposit from './actions/Deposit'
 import Withdraw from './actions/Withdraw'
 import MyInfo from './actions/MyInfo'
+import Paper from '@material-ui/core/Paper'
 
 class Stake extends Component{
   constructor(props, context) {
@@ -93,6 +94,7 @@ class Stake extends Component{
         ?
         (
           <React.Fragment>
+          <Paper style={{padding: '15px'}}>
           <div className="text-center">
           <Alert variant="primary">
           Reserve: {this.state.reserve}, Free Reserve: {this.state.freeReserve}  Debt: {this.state.debt}, Contribution: {this.state.contribution}, Payout: {this.state.payout}
@@ -144,7 +146,7 @@ class Stake extends Component{
 
 
           </div>
-
+          </Paper>
           </React.Fragment>
         )
         :
