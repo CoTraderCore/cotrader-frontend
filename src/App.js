@@ -138,7 +138,7 @@ class App extends Component {
     return (
       <HashRouter>
       <MuiThemeProvider theme={theme}>
-      <Navbar2/>
+      <Navbar2 web3={this.state.web3}/>
       <div className="container-fluid">
       <Row>
       <Col lg={1} xs={12}>
