@@ -10,7 +10,6 @@ import getFundData from '../utils/getFundData'
 import getUserData from '../utils/getUserData'
 import { EtherscanLink }  from '../config.js'
 import { Card, ListGroup, Dropdown } from "react-bootstrap"
-import { hexToNumberString, fromWei } from 'web3-utils'
 
 class ViewManager extends Component {
   constructor(props, context) {
@@ -141,9 +140,9 @@ class ViewManager extends Component {
     return(
       <React.Fragment>
       <ListGroup.Item>Aditional data</ListGroup.Item>
-      <ListGroup.Item>Deposit amount: {hexToNumberString(data.additionalData.amount._hex)} ETH in wei</ListGroup.Item>
-      <ListGroup.Item>Total shares: {hexToNumberString(data.additionalData.totalShares._hex)} </ListGroup.Item>
-      <ListGroup.Item>Shares received: {hexToNumberString(data.additionalData.sharesReceived._hex)} </ListGroup.Item>
+      <ListGroup.Item>Deposit amount: {data.additionalData.amount} ETH in wei</ListGroup.Item>
+      <ListGroup.Item>Total shares: {data.additionalData.totalShares} </ListGroup.Item>
+      <ListGroup.Item>Shares received: {data.additionalData.sharesReceived} </ListGroup.Item>
       </React.Fragment>
     )
 
@@ -152,9 +151,9 @@ class ViewManager extends Component {
       <React.Fragment>
       <ListGroup.Item>Aditional data</ListGroup.Item>
       <ListGroup.Item>src token address: {data.additionalData.src}</ListGroup.Item>
-      <ListGroup.Item>amount send: {fromWei(hexToNumberString(data.additionalData.srcAmount._hex))} </ListGroup.Item>
+      <ListGroup.Item>amount send: {data.additionalData.srcAmount} </ListGroup.Item>
       <ListGroup.Item>dest token address: {data.additionalData.dest} </ListGroup.Item>
-      <ListGroup.Item>dest recived amount: {fromWei(hexToNumberString(data.additionalData.destReceived._hex))}</ListGroup.Item>
+      <ListGroup.Item>dest recived amount: {data.additionalData.destReceived}</ListGroup.Item>
       </React.Fragment>
     )
 
@@ -162,8 +161,8 @@ class ViewManager extends Component {
     return(
       <React.Fragment>
       <ListGroup.Item>Aditional data</ListGroup.Item>
-      <ListGroup.Item>Shares removed: {hexToNumberString(data.additionalData.sharesRemoved._hex)} </ListGroup.Item>
-      <ListGroup.Item>Total shares: {hexToNumberString(data.additionalData.totalShares._hex)} </ListGroup.Item>
+      <ListGroup.Item>Shares removed: {data.additionalData.sharesRemoved} </ListGroup.Item>
+      <ListGroup.Item>Total shares: {data.additionalData.totalShares} </ListGroup.Item>
       </React.Fragment>
     )
 
