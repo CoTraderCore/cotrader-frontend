@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
 import { SmartFundRegistryABI, SmartFundRegistryADDRESS } from '../../config.js'
-import { Button, Modal, Form, InputGroup } from "react-bootstrap"
+import { Modal, Form } from "react-bootstrap"
 
 import UserInfo from '../templates/UserInfo'
+import Button from '@material-ui/core/Button'
+import TextField from '@material-ui/core/TextField'
+import InputAdornment from '@material-ui/core/InputAdornment'
 
 class CreateNewFund extends Component {
   constructor(props, context) {
@@ -39,7 +42,7 @@ class CreateNewFund extends Component {
 
     return (
       <div>
-        <Button variant="outline-primary" onClick={() => this.setState({ Show: true })}>
+        <Button variant="contained" color="primary" onClick={() => this.setState({ Show: true })}>
           Create new fund
         </Button>
 
@@ -57,34 +60,45 @@ class CreateNewFund extends Component {
           <Form>
 
           <Form.Group>
-          <Form.Label>Fund name</Form.Label>
-          <Form.Control
-          type="text"
-          placeholder="name"
-          name="FundName"
-          onChange={e => this.change(e)} />
+          <TextField
+            id="outlined-name"
+            label="Fund name"
+            value={this.state.searchByName}
+            name="FundName"
+            onChange={e => this.change(e)}
+            margin="normal"
+            variant="outlined"
+            style={{width:'100%'}}
+          />
           </Form.Group>
+
 
           <Form.Group>
           <Form.Label>Performance Fee % <UserInfo  info="This is the % the fund manager earns for the profits earned, relative to ETH. In the near future, we will add an option for realitive to USD, or DAI."/></Form.Label>
-          <InputGroup>
-          <InputGroup.Prepend>
-          <InputGroup.Text id="inputGroupPrepend">%</InputGroup.Text>
-          </InputGroup.Prepend>
-           <Form.Control
-           type="number"
-           placeholder="20"
-           aria-describedby="inputGroupPrepend"
-           min="1"
-           name="Percent"
-           onChange={e => this.change(e)} />
+          <TextField
+            id="outlined-name"
+            label="Performance Fee"
+            value={this.state.searchByName}
+            name="Percent"
+            onChange={e => this.change(e)}
+            margin="normal"
+            variant="outlined"
+            type="number"
+            placeholder="20"
+            style={{width:'100%'}}
+            InputProps={{
+              inputProps: { min: 1 },
+              startAdornment: (
+                <InputAdornment position="start">
+                  %
+                </InputAdornment>
+              ),
+            }}
+          />
+          </Form.Group>
 
-           </InputGroup>
-           </Form.Group>
-           <Button
-           variant="outline-primary"
-           type="button"
-           onClick={() => this.createNewFund(this.state.FundName, this.state.Percent)}
+
+           <Button variant="contained" color="primary" onClick={() => this.createNewFund(this.state.FundName, this.state.Percent)}
            >
            Create
            </Button>

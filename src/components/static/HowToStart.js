@@ -4,7 +4,7 @@ import { Figure } from "react-bootstrap"
 
 function HowToStart(){
     return (
-    <div style={{ marginLeft: "auto", marginRight: "auto" }}>
+    <div style={{ margin: "auto", maxWidth: "1170px" }}>
     <h4>Step 1</h4>
     <Figure>
     <Figure.Image

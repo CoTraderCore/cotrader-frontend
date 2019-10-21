@@ -120,7 +120,7 @@ class SmartFundsListWithoutWeb3 extends Component{
                )
              }
              <Col>
-             <ButtonGroup vertical>
+             <ButtonGroup horizontal> 
              <NavLink to={"/web3off/fund/"+ item.address}><Button variant="outline-primary" className="buttonsAdditional">Fund Page</Button></NavLink>
              <FakeButton buttonName={"Deposit"} info={"please connect to web3"}/>
              <FakeButton buttonName={"Withdraw"} info={"please connect to web3"}/>

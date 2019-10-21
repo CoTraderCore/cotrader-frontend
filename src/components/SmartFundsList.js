@@ -136,24 +136,25 @@ class SmartFundsList extends Component{
          }
 
          <Row className="justify-content-md-center">
-         <Col className="col-8"><CreateNewFund web3={this.props.web3} accounts={this.props.accounts} pending={this.pending}/></Col>
-         <Col>
+         <Col className="col-lg-8 col-sm-6 col"><CreateNewFund web3={this.props.web3} accounts={this.props.accounts} pending={this.pending}/></Col>
+         <Col className="col-lg-2 col-sm-6 col">
          <FundSearch />
          </Col>
-         <Col>
+         <Col className="col-lg-2 col-sm-12 col">
          <h3>
          <Badge variant="ligth">
 
          {
           !this.props.MobXStorage.FilterActive ?
           (
-            <p>Total funds: {this.props.MobXStorage.SmartFundsOriginal.length}</p>
+            <span>Total funds: {this.props.MobXStorage.SmartFundsOriginal.length}</span>
           ):
           (
             <div>
-            <p>
+            <span>
             Found {this.props.MobXStorage.SmartFunds.length} of {this.props.MobXStorage.SmartFundsOriginal.length} funds
-            </p>
+            </span>
+            <br/>
             <small>{this.props.MobXStorage.FilterInfo}</small>
             </div>
           )
@@ -168,14 +169,17 @@ class SmartFundsList extends Component{
          <ListGroup variant="flush">
          { this.props.MobXStorage.SmartFunds.length > 0 ?(
          this.props.MobXStorage.SmartFunds.map((item, key) =>
-         <Card className="text-center bg-light mb-3" key={item.address}>
+         <Card className="text-center mb-3" key={item.address}>
          <Card.Header className="cardsAdditional">
-         <Badge variant="ligth">Fund name: {item.name}</Badge>
+         <span>Fund name: {item.name}</span>
          </Card.Header>
          <Card.Body className="cardsAdditional">
-         <Row className="justify-content-md-center">
+         <Row className="justify-content-md-center mb-3">
           <Col><FundModal address={item.address}/></Col>
           <Col><ManagerModal address={item.owner}/></Col>
+         </Row>
+
+         <div className="justify-content-md-center">
           {
             NeworkID === 1 ?
             (
@@ -186,8 +190,10 @@ class SmartFundsList extends Component{
               <strong>Charts available only in mainnet</strong>
             )
           }
-          <Col>
-          <ButtonGroup vertical>
+          </div>
+          <Row className="justify-content-md-center mb-3">
+          <Col className="col-lg-12 col-sm-12">
+          <ButtonGroup horizontal>
           <NavLink to={"/fund/"+item.address}><Button variant="outline-primary" className="buttonsAdditional">Fund page</Button></NavLink>
           <Deposit web3={this.props.web3} address={item.address} accounts={this.props.accounts} pending={this.pending}/>
           <Withdraw web3={this.props.web3} address={item.address} accounts={this.props.accounts} pending={this.pending}/>

@@ -1,8 +1,14 @@
 import React, { Component } from 'react'
-import { Form, Button, Modal, InputGroup } from "react-bootstrap"
+import { Form, Modal, InputGroup } from "react-bootstrap"
 import { inject, observer } from 'mobx-react'
 import { toWei } from 'web3-utils'
 import { fromWei } from 'web3-utils'
+import Button from '@material-ui/core/Button'
+import TextField from '@material-ui/core/TextField'
+import IconButton from '@material-ui/core/IconButton'
+import InputAdornment from '@material-ui/core/InputAdornment'
+import Search from '@material-ui/icons/Search'
+
 
 class FundSearch extends Component {
   constructor(props, context) {
@@ -11,7 +17,8 @@ class FundSearch extends Component {
       searchByName: '',
       searchByManager: '',
       searchByValue: 0,
-      Show: false
+      Show: false,
+      isRed: true
     }
   }
 
@@ -48,10 +55,10 @@ class FundSearch extends Component {
 
   render(){
     let modalClose = () => this.setState({ Show: false })
-
+    const isRed = this.state.isRed
     return(
       <React.Fragment>
-      <Button style={{minWidth: "142px", maxWidth: "142px"}} variant="outline-primary" onClick={() => this.setState({ Show: true })}>
+      <Button variant="contained" color="primary" className="float-right" onClick={() => this.setState({ Show: true })}>
       Filter funds
       </Button>
 
@@ -59,6 +66,7 @@ class FundSearch extends Component {
         show={this.state.Show}
         onHide={modalClose}
         aria-labelledby="example-modal-sizes-title-sm"
+        className={isRed ? 'class1' : 'class2'}
       >
         <Modal.Header closeButton>
         <Modal.Title id="example-modal-sizes-title-sm">
@@ -70,34 +78,87 @@ class FundSearch extends Component {
 
       <Form.Group>
       <InputGroup>
-      <Form.Control placeholder="Find fund by name" value={this.state.searchByName} name="searchByName" onChange={e => this.change(e)}/>
-      <InputGroup.Prepend>
-      <Button variant="outline-primary" onClick={() => this.Filter(1)}>Find</Button>
-      </InputGroup.Prepend>
+      <TextField
+        id="outlined-name"
+        label="Find fund by name"
+        value={this.state.searchByName}
+        name="searchByName"
+        onChange={e => this.change(e)}
+        margin="normal"
+        variant="outlined"
+        style={{flex:1}}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                edge="end"
+                aria-label="Find"
+                onClick={() => this.Filter(1)}
+              >
+                <Search />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+      />
       </InputGroup>
       </Form.Group>
 
 
       <Form.Group>
       <InputGroup>
-      <Form.Control placeholder="Find fund by manager address"  value={this.state.searchByManager} name="searchByManager" onChange={e => this.change(e)}/>
-      <InputGroup.Prepend>
-      <Button variant="outline-primary" onClick={() => this.Filter(2)}>Find</Button>
-      </InputGroup.Prepend>
+      <TextField
+        id="outlined-name"
+        label="Find fund by manager address"
+        value={this.state.searchByManager}
+        name="searchByManager"
+        onChange={e => this.change(e)}
+        margin="normal"
+        variant="outlined"
+        style={{flex:1}}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                edge="end"
+                aria-label="Find"
+                onClick={() => this.Filter(2)}
+              >
+                <Search />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+      />
       </InputGroup>
       </Form.Group>
 
       <Form.Group>
       <InputGroup>
-      <Form.Control
-      placeholder="Find fund by min value"
-      type="number"
-      name="searchByValue"
-      value={this.state.searchByValue > 0 ? fromWei(this.state.searchByValue.toString()): 0}
-      onChange={e => this.change(e)}/>
-      <InputGroup.Prepend>
-      <Button variant="outline-primary" onClick={() => this.Filter(3)}>Find</Button>
-      </InputGroup.Prepend>
+      <TextField
+        id="outlined-name"
+        label="Find fund by min value"
+        value={this.state.searchByValue > 0 ? fromWei(this.state.searchByValue.toString()): 0}
+        onChange={e => this.change(e)}
+        name="searchByValue"
+        type="number"
+        margin="normal"
+        variant="outlined"
+        style={{flex:1}}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                edge="end"
+                aria-label="Find"
+                onClick={() => this.Filter(3)}
+              >
+                <Search />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+      />
       </InputGroup>
       <Form.Text className="text-muted">
       Value greater or equal to (in wei): {this.state.searchByValue}
@@ -105,7 +166,7 @@ class FundSearch extends Component {
       </Form.Group>
 
       </Form>
-      <Button variant="outline-primary" onClick={() => this.Filter(4)}>Reset filters</Button>
+      <Button variant="contained" color="primary" onClick={() => this.Filter(4)}>Reset filters</Button>
       </Modal.Body>
     </Modal>
 
