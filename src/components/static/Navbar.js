@@ -156,7 +156,7 @@ export default function PersistentDrawerLeft(props) {
         <Divider />
         <List>
 
-          <ListItem button key="About" component="a" href="https://about.cotrader.com/" target="_blank" className={classes.nested}>
+          <ListItem button key="About" component="a" href="https://docs.google.com/document/d/1-PyD1B2Z5Fb6mxi7RV9IHc_9X0BXzQFb-muXVYBjxQ8/edit" target="_blank" className={classes.nested}>
             <ListItemIcon><About /></ListItemIcon>
             <ListItemText primary="About" />
           </ListItem>
