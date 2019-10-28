@@ -89,7 +89,7 @@ class SmartFundsListWithoutWeb3 extends Component{
                <strong>
                Found </strong>
                <br/>
-               <small> {this.props.MobXStorage.SmartFunds.length} of {this.props.MobXStorage.SmartFundsOriginal.length} funds {this.props.MobXStorage.FilterInfo}</small>
+               <small> {this.props.MobXStorage.SmartFunds.length} of {this.props.MobXStorage.SmartFundsOriginal.length} funds. {this.props.MobXStorage.FilterInfo}</small>
                <br/>
                </div>
              )
@@ -118,7 +118,9 @@ class SmartFundsListWithoutWeb3 extends Component{
              {
                NeworkID === 1 ?
                (
+                 <div align="center">
                  <MainPageCharts address={item.address} />
+                 </div>
                )
                :
                (
