@@ -128,7 +128,9 @@ class ViewFundWithoutWeb3 extends Component {
         }
        </ListGroup>
        <br />
+       <div align="center">
        <ViewPageCharts address={this.state.smartFundAddress}/>
+       </div>
        <br />
         <Row>
          <Col>

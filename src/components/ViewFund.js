@@ -209,7 +209,9 @@ class ViewFund extends Component {
         }
         </ListGroup>
         <br />
+        <div align="center">
         <ViewPageCharts address={this.state.smartFundAddress} Data={this.state.balance}/>
+        </div>
         <br />
         <Row>
          <Col>
