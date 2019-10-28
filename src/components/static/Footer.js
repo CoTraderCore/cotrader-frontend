@@ -5,7 +5,7 @@ class Footer extends Component {
   render() {
     return (
       <Row className="footer">
-      <Col><h5><Badge>2018 to eternity: let freedom ring</Badge></h5></Col>
+      <Col><h5><Badge>Since 2018: world's first live EthFi investments funds marketplace</Badge></h5></Col>
       </Row>
     )
   }
