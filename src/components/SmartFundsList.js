@@ -139,15 +139,15 @@ class SmartFundsList extends Component{
          <Col className="col-lg-4 col-sm-4 col"><CreateNewFund web3={this.props.web3} accounts={this.props.accounts} pending={this.pending}/></Col>
 
          <Col className="col-lg-4 col-sm-4 col">
-         <div style={{width: "200px", position: "absolute", left: "50%", marginLeft: "-100px", padding: "18px"}}>
+         <div style={{width: "200px", position: "absolute", left: "50%", marginLeft: "-100px", padding: "28px"}}>
          {
           !this.props.MobXStorage.FilterActive ?
           (
-            <h3>
+            <h4>
             <Badge variant="ligth">
             <span>Total funds: {this.props.MobXStorage.SmartFundsOriginal.length}</span>
             </Badge>
-            </h3>
+            </h4>
           ):
           (
             <div align="center">

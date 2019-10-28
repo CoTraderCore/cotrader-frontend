@@ -74,15 +74,15 @@ class SmartFundsListWithoutWeb3 extends Component{
             <Col className="col-lg-4 col-sm-4 col"><strong><FakeMaterializeButton buttonName={"Create new fund"} info={"please connect to web3"}/></strong></Col>
 
             <Col className="col-lg-4 col-sm-4 col">
-            <div style={{width: "200px", position: "absolute", left: "50%", marginLeft: "-100px", padding: "18px"}}>
+            <div style={{width: "200px", position: "absolute", left: "50%", marginLeft: "-100px", padding: "28px"}}>
             {
              !this.props.MobXStorage.FilterActive ?
              (
-               <h3>
+               <h4>
                <Badge variant="ligth">
                <span>Total funds: {this.props.MobXStorage.SmartFundsOriginal.length}</span>
                </Badge>
-               </h3>
+               </h4>
              ):
              (
                <div align="center">
