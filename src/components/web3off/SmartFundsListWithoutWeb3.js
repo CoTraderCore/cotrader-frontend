@@ -14,6 +14,7 @@ import { NavLink } from 'react-router-dom'
 import MainPageCharts from '../charts/MainPageCharts'
 
 import FakeButton from '../templates/FakeButton'
+import FakeMaterializeButton from '../templates/FakeMaterializeButton'
 import Web3Allert from './Web3Allert'
 import ChartsButton from '../actions/ChartsButton'
 import Loading from '../templates/Spiners/Loading'
@@ -70,7 +71,7 @@ class SmartFundsListWithoutWeb3 extends Component{
           <React.Fragment>
             <Web3Allert />
             <Row className="justify-content-md-center">
-            <Col className="col-lg-4 col-sm-4 col"><strong><FakeButton buttonName={"Create new fund"} info={"please connect to web3"}/></strong></Col>
+            <Col className="col-lg-4 col-sm-4 col"><strong><FakeMaterializeButton buttonName={"Create new fund"} info={"please connect to web3"}/></strong></Col>
 
             <Col className="col-lg-4 col-sm-4 col">
             <div style={{width: "200px", position: "absolute", left: "50%", marginLeft: "-100px", padding: "18px"}}>
@@ -88,7 +89,7 @@ class SmartFundsListWithoutWeb3 extends Component{
                <strong>
                Found </strong>
                <br/>
-               <small style={{color: '#3f51b5'}}> {this.props.MobXStorage.SmartFunds.length} of {this.props.MobXStorage.SmartFundsOriginal.length} funds {this.props.MobXStorage.FilterInfo}</small>
+               <small> {this.props.MobXStorage.SmartFunds.length} of {this.props.MobXStorage.SmartFundsOriginal.length} funds {this.props.MobXStorage.FilterInfo}</small>
                <br/>
                </div>
              )
@@ -125,7 +126,7 @@ class SmartFundsListWithoutWeb3 extends Component{
                )
              }
              <Col>
-             <ButtonGroup horizontal>
+             <ButtonGroup horizontal="true">
              <NavLink to={"/web3off/fund/"+ item.address}><Button variant="outline-primary" className="buttonsAdditional">Fund Page</Button></NavLink>
              <FakeButton buttonName={"Deposit"} info={"please connect to web3"}/>
              <FakeButton buttonName={"Withdraw"} info={"please connect to web3"}/>
