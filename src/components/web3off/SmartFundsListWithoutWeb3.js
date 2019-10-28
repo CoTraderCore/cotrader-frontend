@@ -71,7 +71,7 @@ class SmartFundsListWithoutWeb3 extends Component{
           <React.Fragment>
             <Web3Allert />
             <Row className="justify-content-md-center">
-            <Col className="col-lg-4 col-sm-4 col"><strong><FakeMaterializeButton buttonName={"Create new fund"} info={"please connect to web3"}/></strong></Col>
+            <Col className="col-lg-4 col-sm-4 col"><strong><FakeMaterializeButton buttonName={"Create fund"} info={"please connect to web3"}/></strong></Col>
 
             <Col className="col-lg-4 col-sm-4 col">
             <div style={{width: "200px", position: "absolute", left: "50%", marginLeft: "-100px", padding: "28px"}}>
