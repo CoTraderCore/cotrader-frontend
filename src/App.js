@@ -145,8 +145,8 @@ class App extends Component {
         <Button variant="contained" color="primary" className={'mb-2 pl-2 pr-2 mt-2'} onClick={()=>{this.changeTheme2()}}><img style={{maxHeight: '24px'}} src="/themeicon.svg" alt="Change Theme" title="Change Theme" /></Button>
       </Col>
       <Col lg={11} xs={12}>
-          <div className="center-xs" style={{ padding: '7px 10px', backgroundColor:'transparent', lineHeight: '1.3', margin: '8px auto',textAlign:'right' }}>
-          <small>World's first non-custodial crypto investments funds marketplace - create or join the best smart funds</small>
+          <div className="center-xs" style={{ padding: '7px 10px', backgroundColor:'transparent', lineHeight: '1.3', margin: '8px auto',textAlign:'center' }}>
+          <strong>DeFi investment funds - create or join the best smart funds on the blockchain</strong>
           </div>
       </Col>
       </Row>
