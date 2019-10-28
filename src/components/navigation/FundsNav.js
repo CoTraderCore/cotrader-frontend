@@ -19,8 +19,8 @@ class FundsNav extends Component {
       <Paper className="mb-2">
       <Tabs
         value={activeTab} onChange={this.handleChange}
-        indicatorColor="secondary"
-        textColor="secondary"
+        indicatorColor="primary"
+        textColor="primary"
         centered
       >
       <Tab label="All funds" onClick={() => this.props.MobXStorage.AllFunds()}/>

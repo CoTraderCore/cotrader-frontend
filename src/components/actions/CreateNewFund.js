@@ -43,7 +43,7 @@ class CreateNewFund extends Component {
     return (
       <div>
         <Button variant="contained" color="primary" onClick={() => this.setState({ Show: true })}>
-          Create new fund
+          Create fund
         </Button>
 
         <Modal
