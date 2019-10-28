@@ -136,33 +136,37 @@ class SmartFundsList extends Component{
          }
 
          <Row className="justify-content-md-center">
-         <Col className="col-lg-8 col-sm-6 col"><CreateNewFund web3={this.props.web3} accounts={this.props.accounts} pending={this.pending}/></Col>
-         <Col className="col-lg-2 col-sm-6 col">
-         <FundSearch />
-         </Col>
-         <Col className="col-lg-2 col-sm-12 col">
-         <h3>
-         <Badge variant="ligth">
+         <Col className="col-lg-4 col-sm-4 col"><CreateNewFund web3={this.props.web3} accounts={this.props.accounts} pending={this.pending}/></Col>
 
+         <Col className="col-lg-4 col-sm-4 col">
+         <div style={{width: "200px", position: "absolute", left: "50%", marginLeft: "-100px", padding: "18px"}}>
          {
           !this.props.MobXStorage.FilterActive ?
           (
+            <h3>
+            <Badge variant="ligth">
             <span>Total funds: {this.props.MobXStorage.SmartFundsOriginal.length}</span>
+            </Badge>
+            </h3>
           ):
           (
-            <div>
-            <span>
-            Found {this.props.MobXStorage.SmartFunds.length} of {this.props.MobXStorage.SmartFundsOriginal.length} funds
-            </span>
+            <div align="center">
+            <strong>
+            Found </strong>
             <br/>
-            <small>{this.props.MobXStorage.FilterInfo}</small>
+            <small style={{color: '#3f51b5'}}> {this.props.MobXStorage.SmartFunds.length} of {this.props.MobXStorage.SmartFundsOriginal.length} funds {this.props.MobXStorage.FilterInfo}</small>
+            <br/>
             </div>
           )
          }
-         </Badge>
-         </h3>
+         </div>
+         </Col>
+
+         <Col className="col-lg-4 col-sm-4 col">
+         <FundSearch />
          </Col>
          </Row>
+          <br />
           <br />
          <FundsNav/>
 
@@ -193,7 +197,7 @@ class SmartFundsList extends Component{
           </div>
           <Row className="justify-content-md-center mb-3">
           <Col className="col-lg-12 col-sm-12">
-          <ButtonGroup horizontal>
+          <ButtonGroup horizontal="true">
           <NavLink to={"/fund/"+item.address}><Button variant="outline-primary" className="buttonsAdditional">Fund page</Button></NavLink>
           <Deposit web3={this.props.web3} address={item.address} accounts={this.props.accounts} pending={this.pending}/>
           <Withdraw web3={this.props.web3} address={item.address} accounts={this.props.accounts} pending={this.pending}/>
