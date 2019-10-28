@@ -154,7 +154,7 @@ class SmartFundsList extends Component{
             <strong>
             Found </strong>
             <br/>
-            <small style={{color: '#3f51b5'}}> {this.props.MobXStorage.SmartFunds.length} of {this.props.MobXStorage.SmartFundsOriginal.length} funds {this.props.MobXStorage.FilterInfo}</small>
+            <small> {this.props.MobXStorage.SmartFunds.length} of {this.props.MobXStorage.SmartFundsOriginal.length} funds {this.props.MobXStorage.FilterInfo}</small>
             <br/>
             </div>
           )
