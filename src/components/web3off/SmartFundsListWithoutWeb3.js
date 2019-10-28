@@ -69,33 +69,38 @@ class SmartFundsListWithoutWeb3 extends Component{
         this.state.isDataLoad ? (
           <React.Fragment>
             <Web3Allert />
-             <Row className="justify-content-md-center">
-             <Col className="col-8"><strong><FakeButton buttonName={"Create new fund"} info={"please connect to web3"}/></strong></Col>
-             <Col>
-             <FundSearch />
-             </Col>
-             <Col>
-             <h3>
-             <Badge variant="ligth">
+            <Row className="justify-content-md-center">
+            <Col className="col-lg-4 col-sm-4 col"><strong><FakeButton buttonName={"Create new fund"} info={"please connect to web3"}/></strong></Col>
 
-             {
-              !this.props.MobXStorage.FilterActive ?
-              (
-                <p>Total funds: {this.props.MobXStorage.SmartFundsOriginal.length}</p>
-              ):
-              (
-                <div>
-                <p>
-                Found {this.props.MobXStorage.SmartFunds.length} of {this.props.MobXStorage.SmartFundsOriginal.length} funds
-                </p>
-                <small>{this.props.MobXStorage.FilterInfo}</small>
-                </div>
-              )
-             }
-             </Badge>
-             </h3>
-             </Col>
-             </Row>
+            <Col className="col-lg-4 col-sm-4 col">
+            <div style={{width: "200px", position: "absolute", left: "50%", marginLeft: "-100px", padding: "18px"}}>
+            {
+             !this.props.MobXStorage.FilterActive ?
+             (
+               <h3>
+               <Badge variant="ligth">
+               <span>Total funds: {this.props.MobXStorage.SmartFundsOriginal.length}</span>
+               </Badge>
+               </h3>
+             ):
+             (
+               <div align="center">
+               <strong>
+               Found </strong>
+               <br/>
+               <small style={{color: '#3f51b5'}}> {this.props.MobXStorage.SmartFunds.length} of {this.props.MobXStorage.SmartFundsOriginal.length} funds {this.props.MobXStorage.FilterInfo}</small>
+               <br/>
+               </div>
+             )
+            }
+            </div>
+            </Col>
+
+            <Col className="col-lg-4 col-sm-4 col">
+            <FundSearch />
+            </Col>
+            </Row>
+
              <br />
              <FundsNav />
              <ListGroup variant="flush">
@@ -120,7 +125,7 @@ class SmartFundsListWithoutWeb3 extends Component{
                )
              }
              <Col>
-             <ButtonGroup horizontal> 
+             <ButtonGroup horizontal>
              <NavLink to={"/web3off/fund/"+ item.address}><Button variant="outline-primary" className="buttonsAdditional">Fund Page</Button></NavLink>
              <FakeButton buttonName={"Deposit"} info={"please connect to web3"}/>
              <FakeButton buttonName={"Withdraw"} info={"please connect to web3"}/>

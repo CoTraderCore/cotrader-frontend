@@ -31,7 +31,7 @@ import { Button } from "@material-ui/core";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles"
 // import lightblue from "@material-ui/core/colors/lightBlue"
 import Navbar2 from './components/static/Navbar'
-import { Row, Col } from "react-bootstrap"
+// import { Row, Col } from "react-bootstrap"
 
 class App extends Component {
   constructor(props, context) {
@@ -140,16 +140,11 @@ class App extends Component {
       <MuiThemeProvider theme={theme}>
       <Navbar2 web3={this.state.web3}/>
       <div className="container-fluid">
-      <Row>
-      <Col lg={1} xs={12}>
-        <Button variant="contained" color="primary" className={'mb-2 pl-2 pr-2 mt-2'} onClick={()=>{this.changeTheme2()}}><img style={{maxHeight: '24px'}} src="/themeicon.svg" alt="Change Theme" title="Change Theme" /></Button>
-      </Col>
-      <Col lg={11} xs={12}>
-          <div className="center-xs" style={{ padding: '7px 10px', backgroundColor:'transparent', lineHeight: '1.3', margin: '8px auto',textAlign:'center' }}>
-          <strong>DeFi investment funds - create or join the best smart funds on the blockchain</strong>
-          </div>
-      </Col>
-      </Row>
+
+      <div className="center-xs" style={{ padding: '7px 10px', backgroundColor:'transparent', lineHeight: '1.3', margin: '8px auto',textAlign:'center' }}>
+      <strong>DeFi investment funds - create or join the best smart funds on the blockchain</strong>
+      </div>
+      <Button variant="contained" color="primary" className={'mb-2 pl-2 pr-2 mt-2'} onClick={()=>{this.changeTheme2()}}><img style={{maxHeight: '24px'}} src="/themeicon.svg" alt="Change Theme" title="Change Theme" /></Button>
 
       {
         // Check network ID
@@ -166,6 +161,7 @@ class App extends Component {
           null
         )
       }
+      
     <Switch>
       <Route path="/web3off/fund/:address" component={(props) => <ViewFundWithoutWeb3 {...props} web3={this.state.web3}/>} />
       <Route exact path="/" component={(props) => <SmartFundsList {...props} web3={this.state.web3} accounts={this.state.accounts} isDataLoad={this.state.isDataLoad}/>} />
