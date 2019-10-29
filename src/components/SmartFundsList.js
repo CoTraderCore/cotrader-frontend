@@ -166,8 +166,9 @@ class SmartFundsList extends Component{
          <FundSearch />
          </Col>
          </Row>
-          <br />
-          <br />
+         <br />
+         <br />
+         <br />
          <FundsNav/>
 
          <ListGroup variant="flush">

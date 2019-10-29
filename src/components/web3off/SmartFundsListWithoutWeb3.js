@@ -103,6 +103,8 @@ class SmartFundsListWithoutWeb3 extends Component{
             </Row>
 
              <br />
+             <br />
+             <br />
              <FundsNav />
              <ListGroup variant="flush">
              {
