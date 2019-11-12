@@ -13,6 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import SwapHoriz from '@material-ui/icons/SwapHoriz';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -24,11 +25,13 @@ import ArrowRight from '@material-ui/icons/ArrowRight';
 import Stake from '@material-ui/icons/Share';
 import Twitter from '@material-ui/icons/Twitter';
 import Telegram from '@material-ui/icons/Telegram';
-
 import { Link } from 'react-router-dom';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
+
+/*Temporary*/
+import KyberExplainModal from './KyberExplainModal'
 
 const drawerWidth = 240;
 
@@ -95,14 +98,14 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function PersistentDrawerLeft(props) {
-  const classes = useStyles();
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
-  const [submenu, setsubmenu] = React.useState(false);
+  const classes = useStyles()
+  const theme = useTheme()
+  const [open, setOpen] = React.useState(false)
+  const [submenu, setsubmenu] = React.useState(false)
+  const [submenuDex, setsubmenuDex] = React.useState(false)
 
-  const handleClick = () => {
-    setsubmenu(!submenu);
-  };
+  /*Temporary*/
+  const [showKyberModal, setKyberModal] = React.useState(false)
 
   function handleDrawerOpen() {
     setOpen(true);
@@ -116,6 +119,10 @@ export default function PersistentDrawerLeft(props) {
     <React.Fragment>
     <div className={classes.root}>
       <CssBaseline />
+
+      {/*Temporary*/}
+      <KyberExplainModal show={showKyberModal} setKyberModal={setKyberModal}/>
+
       <AppBar
         position="fixed"
         className={clsx(classes.appBar, {
@@ -180,7 +187,7 @@ export default function PersistentDrawerLeft(props) {
           </ListItem>
           </Link>
 
-          <ListItem button onClick={handleClick}>
+          <ListItem button onClick={() => setsubmenu(!submenu)}>
             <ListItemIcon>
               <Shop />
             </ListItemIcon>
@@ -204,12 +211,35 @@ export default function PersistentDrawerLeft(props) {
               <ListItemIcon><ArrowRight /></ListItemIcon>
               <ListItemText primary="Idex" />
             </ListItem>
-
-
             </List>
           </Collapse>
 
 
+          <ListItem button onClick={() => setsubmenuDex(!submenuDex)}>
+            <ListItemIcon>
+              <SwapHoriz />
+            </ListItemIcon>
+            <ListItemText primary="DEX" />
+            {submenuDex ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+          <Collapse in={submenuDex} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+
+
+            <ListItem className={classes.nested}>
+              <ListItemIcon><ArrowRight /></ListItemIcon>
+              <ListItemText primary="Kyber" onClick={() => setKyberModal(true)}/>
+            </ListItem>
+
+
+            <ListItem button component="a" key="Bancor" href="https://bancor.cotrader.com/" target="_blank" className={classes.nested}>
+              <ListItemIcon><ArrowRight /></ListItemIcon>
+              <ListItemText primary="Bancor" />
+            </ListItem>
+
+
+            </List>
+          </Collapse>
           <Divider />
 
           <ListItem button component="a" key="Telegram" href="https://t.me/cotrader" target="_blank" className={classes.nested}>
