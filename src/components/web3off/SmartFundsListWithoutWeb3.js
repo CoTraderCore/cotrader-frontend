@@ -63,7 +63,6 @@ class SmartFundsListWithoutWeb3 extends Component{
   }
 
   render() {
-    console.log(this.props.MobXStorage.FilterInfo)
    return(
      <React.Fragment>
       {

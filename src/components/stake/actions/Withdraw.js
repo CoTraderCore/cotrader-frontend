@@ -9,7 +9,7 @@ class Withdraw extends Component{
   render(){
     return(
     <Button variant="outline-primary" className="buttonsAdditional" onClick={() => this.Withdarw()}>
-      Withdarw
+      Withdraw
     </Button>
   )
 }
