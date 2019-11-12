@@ -234,7 +234,7 @@ export default function PersistentDrawerLeft(props) {
 
             <ListItem button component="a" key="Bancor" href="https://bancor.cotrader.com/" target="_blank" className={classes.nested}>
               <ListItemIcon><ArrowRight /></ListItemIcon>
-              <ListItemText primary="Bancor" />
+              <ListItemText primary="Bancor portal" />
             </ListItem>
 
 
