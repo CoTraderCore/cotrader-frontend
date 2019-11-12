@@ -225,18 +225,15 @@ export default function PersistentDrawerLeft(props) {
           <Collapse in={submenuDex} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
 
+            <ListItem button component="a" key="Bancor" href="https://bancor.cotrader.com/" target="_blank" className={classes.nested}>
+              <ListItemIcon><ArrowRight /></ListItemIcon>
+              <ListItemText primary="Bancor Portal" />
+            </ListItem>
 
             <ListItem className={classes.nested}>
               <ListItemIcon><ArrowRight /></ListItemIcon>
               <ListItemText primary="Kyber" onClick={() => setKyberModal(true)}/>
             </ListItem>
-
-
-            <ListItem button component="a" key="Bancor" href="https://bancor.cotrader.com/" target="_blank" className={classes.nested}>
-              <ListItemIcon><ArrowRight /></ListItemIcon>
-              <ListItemText primary="Bancor portal" />
-            </ListItem>
-
 
             </List>
           </Collapse>
