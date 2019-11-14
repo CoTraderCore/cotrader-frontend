@@ -104,6 +104,10 @@ class App extends Component {
     this.props.MobXStorage.initSFList(smartFunds)
 
     this.setState({ isDataLoad: true })
+    
+    // relaod app if accout was changed
+    if(window.ethereum)
+    window.ethereum.on('accountsChanged', () => window.location.reload())
   }
 
   render() {
