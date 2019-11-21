@@ -58,7 +58,7 @@ class FundSearch extends Component {
     const isRed = this.state.isRed
     return(
       <React.Fragment>
-      <Button variant="contained" color="primary" className="float-right" onClick={() => this.setState({ Show: true })}>
+      <Button variant="contained" color="primary" onClick={() => this.setState({ Show: true })}>
       Filter funds
       </Button>
 
