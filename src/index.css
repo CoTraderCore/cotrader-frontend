@@ -22,25 +22,41 @@ code {
     min-width: 140px;
     max-width: 140px;
 }
-body.dark_theme .modal-content{background-color: #000;border: 1px solid rgba(255,255,255,0.1);}
+.theme_switch{position: absolute;top: 12px;z-index: 9999;right: 20px;}
+body.dark_theme{background: #000;color: #fff;}
+body.dark_theme *:not(span){color: #fff;}
+body.dark_theme .MuiAppBar-colorPrimary{background-color: #039be5;}
+body.dark_theme .MuiPaper-root, body.dark_theme .MuiListItemIcon-root, body.dark_theme .MuiDrawer-paper .MuiIconButton-root {color: #fff;}
+body.dark_theme .modal-content{background-color: #333;border: 1px solid rgba(255,255,255,0.1);}
 body.dark_theme .modal-footer, body.dark_theme .modal-header{border-color:rgba(255,255,255,0.1)}
 body.dark_theme .list-group-item{background-color: rgba(255,255,255,0.1);}
 body.dark_theme .close{color: #fff;text-shadow: 0 1px 0 #000;}
 body.dark_theme .card{background-color: rgba(255, 255, 255, 0.05);}
 body.dark_theme .card-header{background-color: transparent; border-bottom: 1px solid rgba(255, 255, 255, 0.08);}
 body.dark_theme .card-footer{background-color: transparent; border-top: 1px solid rgba(255, 255, 255, 0.08);}
-body.dark_theme .btn-outline-primary {color: #00f1d1;border-color: #00f1d1; margin: 1px;border-radius:0}
-body.dark_theme .btn-outline-primary:hover {background-color: #00f1d1;border-color: #00f1d1; color:#fff}
-body.dark_theme .container-fluid a {color: #00f1d1;}
-body.dark_theme .container-fluid .MuiPaper-root{background-color:rgba(255,255,255,0.05);}
+body.dark_theme .btn-outline-primary {color: #039be5;border-color: #039be5; margin: 1px;border-radius:0}
+body.dark_theme .btn-outline-primary:hover {background-color: #039be5;border-color: #039be5; color:#fff}
+body.dark_theme .container-fluid a{color: #039be5;}
+body.dark_theme .MuiTab-textColorPrimary.Mui-selected {color: #039be5;}
+body.dark_theme .MuiButton-containedPrimary{background-color: #039be5;}
+body.dark_theme .MuiContainer-root .MuiPaper-root{background-color:rgba(255,255,255,0.05);}
 body.dark_theme .MuiDrawer-root .MuiPaper-root{background-color: #000;}
-body.dark_theme .pagination .page-item .page-link{background-color: transparent;border-color: #00f1d1;}
-body.dark_theme .pagination .page-item.active .page-link{background-color: #00f1d1;border-color: #00f1d1;}
+body.dark_theme .pagination .page-item .page-link{background-color: transparent;border-color: #039be5;}
+body.dark_theme .pagination .page-item.active .page-link{background-color: #039be5;border-color: #039be5;}
+body.dark_theme .MuiOutlinedInput-notchedOutline {border-color: rgba(255, 255, 255, 0.51);}
+body.dark_theme span[class^="PrivateTabIndicator-colorPrimary-"],body.dark_theme span[class*="PrivateTabIndicator-colorPrimary-"]{background-color: #039be5;}
+body.dark_theme .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {border-color: #039be5;}
+body.dark_theme .MuiFormLabel-root.Mui-focused {color: #039be5;}
+body.dark_theme .alert-primary, body.dark_theme .alert-dark{background-color:#039be5;border-color:#039be5;}
+
+.total-found{padding: 0 15px; text-align: center;}
 .container-fluid a {color: #3f51b5;}
+.MuiFormLabel-root.Mui-focused {color: #3f51b5;}
 .modal-header{background-color: transparent; border-bottom: 1px solid rgba(0, 0, 0, 0.08);}
 .btn-outline-primary {color: #3f51b5;border-color: #3f51b5; margin: 1px;border-radius:0}
 .btn-outline-primary:hover {background-color: #3f51b5;border-color: #3f51b5}
 .card-header{border-bottom: 1px solid rgba(255,255,255,0.2);}
+.top-notice{padding: 7px 10px; background-color: transparent; line-height: 1.3; margin: 8px auto; text-align: center;border: 1px solid rgba(187, 187, 187, 0.44);}
 .footer {
   left: 0;
   bottom: 0;
@@ -49,13 +65,19 @@ body.dark_theme .pagination .page-item.active .page-link{background-color: #00f1
   padding:20px;
   text-align: center;
   opacity: 0.7;
-  border-top: 1px solid rgba(255,255,255,0.2);
+  border-top: 1px solid rgba(151, 147, 147, 0.3);
   flex: 0 0 auto;
 }
-
+.filter-fund{text-align: right;}
+body.fullWidth_container .MuiContainer-maxWidthMd {max-width: 1920px!important;}
+.MuiToolbar-gutters{padding-left: 0px!important;padding-right: 0px!important;}
+@media only screen and (min-width: 1350px) {
+/*.MuiContainer-maxWidthMd {max-width: 1920px!important;}*/
+}
 @media only screen and (max-width: 780px) {
-  .btn-group {
-    display: block;
-  }
+  .btn-group {display: block;}
   .center-xs{text-align: center !important;border: 1px solid currentColor;}
+  .total-found{padding: 15px;}
+  .createfund-btn, .filter-fund{text-align: center;float: none!important}
+  .createfund-btn button, .filter-fund button{display: inline-block;}
 }

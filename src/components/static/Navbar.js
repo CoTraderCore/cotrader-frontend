@@ -25,10 +25,12 @@ import ArrowRight from '@material-ui/icons/ArrowRight';
 import Stake from '@material-ui/icons/Share';
 import Twitter from '@material-ui/icons/Twitter';
 import Telegram from '@material-ui/icons/Telegram';
+import Fullscreen from '@material-ui/icons/CropFree';
 import { Link } from 'react-router-dom';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
+import Container from '@material-ui/core/Container';
 
 /*Temporary*/
 import KyberExplainModal from './KyberExplainModal'
@@ -38,6 +40,10 @@ const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
+  },
+  themeSwitch:{
+    flex:1,
+    textAlign:'right',
   },
   nested: {
     color:'inherit',
@@ -115,6 +121,24 @@ export default function PersistentDrawerLeft(props) {
     setOpen(false);
   }
 
+  function changeTheme(){
+    if (document.body.classList.contains('dark_theme')){
+      document.body.classList.add('light_theme');
+      document.body.classList.remove('dark_theme');
+    } else {
+      document.body.classList.add('dark_theme');
+      document.body.classList.remove('light_theme');
+    }
+  }
+
+  function fullWidth(){
+    if (document.body.classList.contains('fullWidth_container')){
+      document.body.classList.remove('fullWidth_container');
+    } else {
+      document.body.classList.add('fullWidth_container');
+    }
+  }
+
   return (
     <React.Fragment>
     <div className={classes.root}>
@@ -129,6 +153,7 @@ export default function PersistentDrawerLeft(props) {
           [classes.appBarShift]: open,
         })}
       >
+      <Container maxWidth="md">
         <Toolbar>
           <IconButton
             color="inherit"
@@ -139,12 +164,18 @@ export default function PersistentDrawerLeft(props) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
-            <Link to={props.web3 ? "/" : "/web3off"} onClick={handleDrawerClose} style={{ textDecoration: 'none' }} className={classes.nested}>
+          <Typography variant="inherit" className={classes.logo} noWrap>
+            <Link to={props.web3 ? "/" : "/web3off"} style={{ textDecoration: 'none' }} className={classes.nested}>
             <img style={{width: 'auto', height: '24px'}} src="/logo.png" alt="CoTrader"/>
             </Link>
           </Typography>
+
+          <Typography variant="inherit" className={classes.themeSwitch} noWrap>
+            <img onClick={changeTheme} style={{maxHeight: '24px', cursor: 'pointer'}} src="/themeicon.svg" alt="Change Theme" title="Change Theme" />
+            <Fullscreen onClick={fullWidth} style={{fontSize: '25px', cursor: 'pointer', float: 'right', marginLeft: '10px'}}/>
+          </Typography>
         </Toolbar>
+        </Container>
       </AppBar>
       <Drawer
         className={classes.drawer}
