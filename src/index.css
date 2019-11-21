@@ -49,7 +49,7 @@ body.dark_theme .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutl
 body.dark_theme .MuiFormLabel-root.Mui-focused {color: #039be5;}
 body.dark_theme .alert-primary, body.dark_theme .alert-dark{background-color:#039be5;border-color:#039be5;}
 
-.total-found{padding: 0 15px; text-align: center;}
+.total-found{padding: 0px; text-align: center;}
 .container-fluid a {color: #3f51b5;}
 .MuiFormLabel-root.Mui-focused {color: #3f51b5;}
 .modal-header{background-color: transparent; border-bottom: 1px solid rgba(0, 0, 0, 0.08);}
@@ -71,13 +71,18 @@ body.dark_theme .alert-primary, body.dark_theme .alert-dark{background-color:#03
 .filter-fund{text-align: right;}
 body.fullWidth_container .MuiContainer-maxWidthMd {max-width: 1920px!important;}
 .MuiToolbar-gutters{padding-left: 0px!important;padding-right: 0px!important;}
-@media only screen and (min-width: 1350px) {
-/*.MuiContainer-maxWidthMd {max-width: 1920px!important;}*/
-}
 @media only screen and (max-width: 780px) {
-  .btn-group {display: block;}
+  .btn-group {display: block!important;}
   .center-xs{text-align: center !important;border: 1px solid currentColor;}
-  .total-found{padding: 15px;}
+  .total-found{padding: 15px 0;}
   .createfund-btn, .filter-fund{text-align: center;float: none!important}
   .createfund-btn button, .filter-fund button{display: inline-block;}
+  .fullscreen-toggle{display: none !important;}
+  header[class*="makeStyles-appBarShift-"] span[class*="makeStyles-logo-"]{width:27px;}
+}
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+  .btn-group {display: block!important;}
+}
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+  .btn-group {display: block!important;}
 }
