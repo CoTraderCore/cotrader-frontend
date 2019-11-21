@@ -32,6 +32,7 @@ import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles"
 // import lightblue from "@material-ui/core/colors/lightBlue"
 import Navbar2 from './components/static/Navbar'
 // import { Row, Col } from "react-bootstrap"
+import Container from '@material-ui/core/Container'
 
 class App extends Component {
   constructor(props, context) {
@@ -104,7 +105,7 @@ class App extends Component {
     this.props.MobXStorage.initSFList(smartFunds)
 
     this.setState({ isDataLoad: true })
-    
+
     // relaod app if accout was changed
     if(window.ethereum)
     window.ethereum.on('accountsChanged', () => window.location.reload())
@@ -143,12 +144,12 @@ class App extends Component {
       <HashRouter>
       <MuiThemeProvider theme={theme}>
       <Navbar2 web3={this.state.web3}/>
-      <div className="container-fluid">
+      <Container maxWidth="md">
 
-      <div style={{ padding: '7px 10px', backgroundColor:'transparent', lineHeight: '1.3', margin: '8px auto',textAlign:'center' }}>
+      <div className={'top-notice'} style={{ padding: '7px 10px', backgroundColor:'transparent', lineHeight: '1.3', margin: '8px auto',textAlign:'center' }}>
       <strong>DeFi investment funds - create or join the best smart funds on the blockchain</strong>
       </div>
-      <Button variant="contained" color="primary" className={'mb-2 pl-2 pr-2 mt-2'} onClick={()=>{this.changeTheme2()}}><img style={{maxHeight: '24px'}} src="/themeicon.svg" alt="Change Theme" title="Change Theme" /></Button>
+      <Button variant="contained" color="primary" className={'d-none'} onClick={()=>{this.changeTheme2()}}><img style={{maxHeight: '24px'}} src="/themeicon.svg" alt="Change Theme" title="Change Theme" /></Button>
 
       {
         // Check network ID
@@ -176,7 +177,7 @@ class App extends Component {
       <Route path="/how-to-start" component={(props) => <HowToStart {...props} />} />
       <Route path="/stake" component={(props) => <Stake {...props} />} />
       </Switch>
-      </div>
+      </Container>
       <br />
       <Footer />
       </MuiThemeProvider>
