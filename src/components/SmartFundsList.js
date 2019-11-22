@@ -136,9 +136,16 @@ class SmartFundsList extends Component{
          }
 
          <Row className="justify-content-md-center">
-         <div className="col-lg-4 col-sm-4 createfund-btn"><CreateNewFund web3={this.props.web3} accounts={this.props.accounts} pending={this.pending}/></div>
+         <div className="col-lg-6 col-sm-6 col createfund-btn"><CreateNewFund web3={this.props.web3} accounts={this.props.accounts} pending={this.pending}/></div>
 
-         <div className="col-lg-4 col-sm-4">
+
+
+         <div className="col-lg-6 col-sm-6 col filter-fund">
+         <FundSearch />
+         </div>
+
+
+         <div className="col-lg-12 col-sm-12">
          <div className="total-found">
          {
           !this.props.MobXStorage.FilterActive ?
@@ -162,9 +169,6 @@ class SmartFundsList extends Component{
          </div>
          </div>
 
-         <div className="col-lg-4 col-sm-4 filter-fund">
-         <FundSearch />
-         </div>
          </Row>
          <br />
 
