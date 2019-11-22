@@ -19,7 +19,7 @@ code {
 }
 .modal-dialog{margin-top: 5rem;}
 .buttonsAdditional {
-    min-width: 140px;
+    min-width: 128px;
     max-width: 140px;
 }
 .theme_switch{position: absolute;top: 12px;z-index: 9999;right: 20px;}
@@ -29,7 +29,7 @@ body.dark_theme .MuiAppBar-colorPrimary{background-color: #039be5;}
 body.dark_theme .MuiPaper-root, body.dark_theme .MuiListItemIcon-root, body.dark_theme .MuiDrawer-paper .MuiIconButton-root {color: #fff;}
 body.dark_theme .modal-content{background-color: #333;border: 1px solid rgba(255,255,255,0.1);}
 body.dark_theme .modal-footer, body.dark_theme .modal-header{border-color:rgba(255,255,255,0.1)}
-body.dark_theme .list-group-item{background-color: rgba(255,255,255,0.1);}
+body.dark_theme .list-group-item{background-color:rgba(255, 255, 255, 0);border: 1px solid rgba(255, 255, 255, 0.05);}
 body.dark_theme .close{color: #fff;text-shadow: 0 1px 0 #000;}
 body.dark_theme .card{background-color: rgba(255, 255, 255, 0.05);}
 body.dark_theme .card-header{background-color: transparent; border-bottom: 1px solid rgba(255, 255, 255, 0.08);}
@@ -68,21 +68,37 @@ body.dark_theme .alert-primary, body.dark_theme .alert-dark{background-color:#03
   border-top: 1px solid rgba(151, 147, 147, 0.3);
   flex: 0 0 auto;
 }
+.badge{font-size: 85%;font-weight: 600;text-transform: uppercase;letter-spacing: 1px}
 .filter-fund{text-align: right;}
 body.fullWidth_container .MuiContainer-maxWidthMd {max-width: 1920px!important;}
 .MuiToolbar-gutters{padding-left: 0px!important;padding-right: 0px!important;}
+.fund-page-btns, .fund-page-charts{text-align: center;}
+.fund-page-btns ul, .fund-page-charts > div{list-style: none;padding: 0; margin: 0;display: inline-block;}
+.fund-page-btns ul li{padding: 0; margin: 0;display: inline-block;}
+.fund-page-charts > div > div{display: inline-block;border: 1px solid rgba(132, 132, 132, 0.15);padding:10px 0px 0px 0px;margin:5px;}
+.createfund-btn{text-align: right;}
+.filter-fund{text-align: left;}
+@media only screen and (min-width: 960px) {
+.MuiContainer-maxWidthMd {max-width: 770px!important;}
+}
 @media only screen and (max-width: 780px) {
   .btn-group {display: block!important;}
   .center-xs{text-align: center !important;border: 1px solid currentColor;}
   .total-found{padding: 15px 0;}
-  .createfund-btn, .filter-fund{text-align: center;float: none!important}
+  .createfund-btn, .filter-fund{float: none!important}
+  .createfund-btn{text-align: left;}
+  .filter-fund{text-align: right;}
   .createfund-btn button, .filter-fund button{display: inline-block;}
   .fullscreen-toggle{display: none !important;}
   header[class*="makeStyles-appBarShift-"] span[class*="makeStyles-logo-"]{width:27px;}
+  .fund-page-charts > div > div{margin:5px 0;width: 300px!important;height: 250px!important;}
 }
 @media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
   .btn-group {display: block!important;}
 }
 @media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
   .btn-group {display: block!important;}
+}
+@media only screen and (min-width: 1830px) {
+body.fullWidth_container .fund-page-charts > div > div{width:420px!important; height:240px!important}
 }

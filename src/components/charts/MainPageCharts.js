@@ -225,20 +225,17 @@ class MainPageCharts extends React.Component {
         this.state.DWdata.labels.length > 0
         ?
         (
-          <Row>
-          <Col>
+          <div className="fund-page-charts">
+          <div>
           <LineChart data={this.state.DWdata} />
-          </Col>
-          <Col>
+          
           <LineChart data={this.state.ROIdata}/>
-          </Col>
-          <Col>
+
           <LineChart data={this.state.PROFITdata} />
-          </Col>
-          <Col>
+
           <LineChart data={this.state.DAILYVALUEdata} />
-          </Col>
-          </Row>
+          </div>
+          </div>
         )
         :
         (

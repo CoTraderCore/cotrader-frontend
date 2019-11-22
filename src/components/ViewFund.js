@@ -174,27 +174,35 @@ class ViewFund extends Component {
         </Row>
         </Alert>
         <br />
-        <Row>
-        <Col><ChartsButton address={this.state.smartFundAddress}/></Col>
-        <Col><Deposit web3={this.props.web3} address={this.state.smartFundAddress} accounts={this.props.accounts} pending={this.pending}/></Col>
-        <Col><Withdraw web3={this.props.web3} address={this.state.smartFundAddress} accounts={this.props.accounts} pending={this.pending}/></Col>
-        <Col><UserHoldings web3={this.props.web3} address={this.state.smartFundAddress} accounts={this.props.accounts} pending={this.pending}/></Col>
-       </Row>
+        <div className="fund-page-btns">
+          <ul>
+            <li><ChartsButton address={this.state.smartFundAddress}/></li>
+            <li><Deposit web3={this.props.web3} address={this.state.smartFundAddress} accounts={this.props.accounts} pending={this.pending}/></li>
+            <li><Withdraw web3={this.props.web3} address={this.state.smartFundAddress} accounts={this.props.accounts} pending={this.pending}/></li>
+            <li><UserHoldings web3={this.props.web3} address={this.state.smartFundAddress} accounts={this.props.accounts} pending={this.pending}/></li>
+          </ul>
+       </div>
         <br />
         <Badge variant="ligth">Manager info</Badge>
-        <ListGroup>
+        <div style={{ textAlign: 'center'}}>
+        <ListGroup style={{ display: 'inline-block', margin: '10px 0'}}>
          <ListGroup.Item>Total Cut: {this.props.web3.utils.fromWei(this.state.managerTotalCut)}</ListGroup.Item>
          <ListGroup.Item>Remaining cut: {this.props.web3.utils.fromWei(this.state.managerRemainingCut)}</ListGroup.Item>
         </ListGroup>
+        </div>
         <br />
-        <Row>
-        <Col><InvestorsAlocationChart Data={this.state.shares}/></Col>
-        <Col><AssetsAlocationChart AssetsData={this.state.balance}/></Col>
-        </Row>
+        <div className="fund-page-charts">
+          <div>
+            <InvestorsAlocationChart Data={this.state.shares}/>
+            <AssetsAlocationChart AssetsData={this.state.balance}/>
+          </div>
+        </div>
+
         <br />
         <Badge variant="ligth">Fund balance</Badge>
         <br />
-        <ListGroup>
+        <div style={{ textAlign: 'center'}}>
+        <ListGroup style={{ display: 'inline-block', margin: '10px 0'}}>
         {
         this.state.balance.length > 0 ?
         (
@@ -208,13 +216,18 @@ class ViewFund extends Component {
 
         }
         </ListGroup>
+        </div>
         <br />
         <div align="center">
         <ViewPageCharts address={this.state.smartFundAddress} Data={this.state.balance}/>
         </div>
         <br />
-        <Row>
-         <Col>
+
+
+        <div className="fund-page-btns">
+          <ul>
+
+        <li>
          {
            this.props.accounts[0] === this.state.owner ?
            (
@@ -225,8 +238,8 @@ class ViewFund extends Component {
              <FakeButton buttonName={"Exchange"} info={"You can't use this button cause You are not owner of this smart fund"}/>
            )
          }
-         </Col>
-         <Col>
+         </li>
+         <li>
          {
            this.props.accounts[0] === this.state.owner ?
            (
@@ -237,8 +250,8 @@ class ViewFund extends Component {
              <FakeButton buttonName={"Take cut"} info={"You can't use this button cause You are not owner of this smart fund"}/>
            )
          }
-         </Col>
-         <Col>
+         </li>
+         <li>
          {
            this.props.accounts[0] === this.state.owner ?
            (
@@ -249,8 +262,10 @@ class ViewFund extends Component {
              <FakeButton buttonName={"White list"} info={"You can't use this button cause You are not owner of this smart fund"}/>
            )
          }
-         </Col>
-        </Row>
+         </li>
+         </ul>
+         </div>
+
         </Card.Body>
         <Card.Footer className="text-muted cardsAdditional">
         <Row>
