@@ -47,6 +47,7 @@ class App extends Component {
     themeType : 'light'
     }
     document.body.classList.add('light_theme')
+    document.body.classList.add('laptop_container')
   }
 
   changeTheme2(){
