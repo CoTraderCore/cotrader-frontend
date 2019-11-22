@@ -26,6 +26,9 @@ import Stake from '@material-ui/icons/Share';
 import Twitter from '@material-ui/icons/Twitter';
 import Telegram from '@material-ui/icons/Telegram';
 import Fullscreen from '@material-ui/icons/CropFree';
+import Desktop from '@material-ui/icons/DesktopMac';
+import Laptop from '@material-ui/icons/LaptopMac';
+import Tablet from '@material-ui/icons/Tablet';
 import { Link } from 'react-router-dom';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
@@ -61,8 +64,8 @@ const useStyles = makeStyles(theme => ({
     }),
   },
   appBarShift: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
+    //width: `calc(100% - ${drawerWidth}px)`,
+    //marginLeft: drawerWidth,
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
@@ -135,12 +138,30 @@ export default function PersistentDrawerLeft(props) {
   }
 
   function fullWidth(){
-    if (document.body.classList.contains('fullWidth_container')){
-      document.body.classList.remove('fullWidth_container');
-    } else {
+    if (!document.body.classList.contains('fullWidth_container')){
+      document.body.classList.remove('tablet_container');
+      document.body.classList.remove('laptop_container');
       document.body.classList.add('fullWidth_container');
     }
   }
+
+  function laptopWidth(){
+    if (!document.body.classList.contains('laptop_container')){
+      document.body.classList.remove('fullWidth_container');
+      document.body.classList.remove('tablet_container');
+      document.body.classList.add('laptop_container');
+    }
+  }
+
+  function tabletWidth(){
+    if (!document.body.classList.contains('tablet_container')){
+      document.body.classList.remove('fullWidth_container');
+      document.body.classList.remove('laptop_container');
+      document.body.classList.add('tablet_container');
+    }
+  }
+
+
 
   return (
     <React.Fragment>
@@ -175,10 +196,14 @@ export default function PersistentDrawerLeft(props) {
 
           <Typography variant="inherit" className={classes.themeSwitch} noWrap>
             <img onClick={changeTheme} style={{maxHeight: '24px', cursor: 'pointer'}} src="/themeicon.svg" alt="Change Theme" title="Change Theme" />
-            <Fullscreen className={'fullscreen-toggle'} onClick={fullWidth} title="Full Screen" style={{fontSize: '25px', cursor: 'pointer', float: 'right', marginLeft: '10px'}}/>
           </Typography>
         </Toolbar>
         </Container>
+        <div className="screen-toggle-bar">
+        <Desktop className={'fullscreen-toggle'} onClick={fullWidth} title="Full Screen" style={{fontSize: '25px', cursor: 'pointer', float: 'right', marginLeft: '10px'}}/>
+        <Laptop className={'fullscreen-toggle'} onClick={laptopWidth} title="Medium Screen" style={{fontSize: '25px', cursor: 'pointer', float: 'right', marginLeft: '10px'}}/>
+        <Tablet className={'fullscreen-toggle'} onClick={tabletWidth} title="Small Screen" style={{fontSize: '25px', cursor: 'pointer', float: 'right', marginLeft: '10px'}}/>
+        </div>
       </AppBar>
       <Drawer
         className={classes.drawer}

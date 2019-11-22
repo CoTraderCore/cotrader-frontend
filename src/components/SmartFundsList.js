@@ -168,9 +168,7 @@ class SmartFundsList extends Component{
          }
          </div>
          </div>
-
          </Row>
-         <br />
 
          <FundsNav/>
 

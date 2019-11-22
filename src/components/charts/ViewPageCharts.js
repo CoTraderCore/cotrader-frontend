@@ -381,40 +381,18 @@ class ViewPageCharts extends React.Component {
         ?
         (
           <React.Fragment>
-          <Row>
-          <Col>
-          <Row>
-          <Col>
-          <LineChart data={this.state.totalGainsData} />
-          </Col>
-          <Col>
-          <LineChart data={this.state.unrealizedGainsData} />
-          </Col>
-          <Col>
-          <LineChart data={this.state.realizedGainsData} />
-          </Col>
-          <Col>
-          <LineChart data={this.state.ROIDAILYdata} />
-          </Col>
-          </Row>
-          </Col>
-          <Col>
-          <Row>
-          <Col>
-          <LineChart data={this.state.DWdata} />
-          </Col>
-          <Col>
-          <LineChart data={this.state.ROIdata}/>
-          </Col>
-          <Col>
-          <LineChart data={this.state.PROFITdata} />
-          </Col>
-          <Col>
-          <LineChart data={this.state.DAILYVALUEdata} />
-          </Col>
-          </Row>
-          </Col>
-          </Row>
+          <div className="fund-page-charts">
+            <div>
+              <LineChart data={this.state.totalGainsData} />
+              <LineChart data={this.state.unrealizedGainsData} />
+              <LineChart data={this.state.realizedGainsData} />
+              <LineChart data={this.state.ROIDAILYdata} />
+              <LineChart data={this.state.DWdata} />
+              <LineChart data={this.state.ROIdata}/>
+              <LineChart data={this.state.PROFITdata} />
+              <LineChart data={this.state.DAILYVALUEdata} />
+            </div>
+          </div>
           </React.Fragment>
         )
         :
