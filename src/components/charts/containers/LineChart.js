@@ -15,7 +15,7 @@ function LineChart(props){
       )
       :
       (
-        <div style={{ width: 320, height: 180, marginLeft: "auto", marginRight: "auto" }}>
+        <div style={{ width: 320, height: 180 }}>
         <Line data={props.data} />
         </div>
       )
