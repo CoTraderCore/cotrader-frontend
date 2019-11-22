@@ -45,6 +45,9 @@ const useStyles = makeStyles(theme => ({
     flex:1,
     textAlign:'right',
   },
+  logo:{
+
+  },
   nested: {
     color:'inherit',
     "&:hover": {
@@ -172,7 +175,7 @@ export default function PersistentDrawerLeft(props) {
 
           <Typography variant="inherit" className={classes.themeSwitch} noWrap>
             <img onClick={changeTheme} style={{maxHeight: '24px', cursor: 'pointer'}} src="/themeicon.svg" alt="Change Theme" title="Change Theme" />
-            <Fullscreen onClick={fullWidth} style={{fontSize: '25px', cursor: 'pointer', float: 'right', marginLeft: '10px'}}/>
+            <Fullscreen className={'fullscreen-toggle'} onClick={fullWidth} title="Full Screen" style={{fontSize: '25px', cursor: 'pointer', float: 'right', marginLeft: '10px'}}/>
           </Typography>
         </Toolbar>
         </Container>
