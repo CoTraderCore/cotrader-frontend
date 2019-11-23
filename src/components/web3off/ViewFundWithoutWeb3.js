@@ -79,41 +79,44 @@ class ViewFundWithoutWeb3 extends Component {
         </Row>
         </Alert>
         <br />
-        <Row>
-        <Col>
-        {
-          NeworkID === 1 ?
-          (
-            <ChartsButton address={this.state.smartFundAddress}/>
-          ):
-          (
-            <FakeButton buttonName={"ChartsButton"} info={"This button is available only in mainnet"}/>
-          )
-        }
-        </Col>
-        <Col>
-        <FakeButton buttonName={"Deposit"} info={"please connect to web3"}/>
-        </Col>
-        <Col>
-        <FakeButton buttonName={"Withdraw"} info={"please connect to web3"}/>
-        </Col>
-        <Col>
-        <FakeButton buttonName={"My profile"} info={"please connect to web3"}/>
-        </Col>
-        </Row>
-        <br />
+        <div className="fund-page-btns">
+          <ul>
+            <li>{
+              NeworkID === 1 ?
+              (
+                <ChartsButton address={this.state.smartFundAddress}/>
+              ):
+              (
+                <FakeButton buttonName={"ChartsButton"} info={"This button is available only in mainnet"}/>
+              )
+            }</li>
+            <li><FakeButton buttonName={"Deposit"} info={"please connect to web3"}/></li>
+            <li><FakeButton buttonName={"Withdraw"} info={"please connect to web3"}/></li>
+            <li><FakeButton buttonName={"My profile"} info={"please connect to web3"}/></li>
+          </ul>
+       </div>
+       <br />
 
         <Badge variant="ligth">Manager info</Badge>
-        <ListGroup>
+        <div style={{ textAlign: 'center'}}>
+        <ListGroup style={{ display: 'inline-block', margin: '10px 0'}}>
          <ListGroup.Item>Total Cut: {fromWei(this.state.managerTotalCut, 'ether')}</ListGroup.Item>
          <ListGroup.Item>Remaining cut: {fromWei(this.state.managerRemainingCut, 'ether')}</ListGroup.Item>
         </ListGroup>
+        </div>
         <br />
-        <InvestorsAlocationChart Data={this.state.shares}/>
-        <br />
+
+        <div className="fund-page-charts">
+          <div>
+            <InvestorsAlocationChart Data={this.state.shares}/>
+          </div>
+        </div>
+
+
         <Badge variant="ligth">Fund balance</Badge>
         <br />
-        <ListGroup>
+        <div style={{ textAlign: 'center'}}>
+        <ListGroup style={{ display: 'inline-block', margin: '10px 0'}}>
         {
           this.state.balance.length > 0 ?
           (
@@ -127,22 +130,20 @@ class ViewFundWithoutWeb3 extends Component {
 
         }
        </ListGroup>
+       </div>
        <br />
        <div align="center">
        <ViewPageCharts address={this.state.smartFundAddress}/>
        </div>
        <br />
-        <Row>
-         <Col>
-         <FakeButton className="buttonsAdditional" buttonName={"Exchange"} info={"please connect to web3"}/>
-         </Col>
-         <Col>
-         <FakeButton className="buttonsAdditional" buttonName={"Take cut"} info={"please connect to web3"}/>
-         </Col>
-         <Col>
-         <FakeButton className="buttonsAdditional"  buttonName={"White list"} info={"please connect to web3"}/>
-         </Col>
-        </Row>
+
+       <div className="fund-page-btns">
+         <ul>
+         <li><FakeButton className="buttonsAdditional" buttonName={"Exchange"} info={"please connect to web3"}/></li>
+         <li><FakeButton className="buttonsAdditional" buttonName={"Take cut"} info={"please connect to web3"}/></li>
+         <li><FakeButton className="buttonsAdditional"  buttonName={"White list"} info={"please connect to web3"}/></li>
+         </ul>
+        </div>
         </Card.Body>
         <Card.Footer className="text-muted cardsAdditional">
         <Row>
