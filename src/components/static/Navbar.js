@@ -25,7 +25,7 @@ import ArrowRight from '@material-ui/icons/ArrowRight';
 import Stake from '@material-ui/icons/Share';
 import Twitter from '@material-ui/icons/Twitter';
 import Telegram from '@material-ui/icons/Telegram';
-import Fullscreen from '@material-ui/icons/CropFree';
+//import Fullscreen from '@material-ui/icons/CropFree';
 import Desktop from '@material-ui/icons/DesktopMac';
 import Laptop from '@material-ui/icons/LaptopMac';
 import Tablet from '@material-ui/icons/Tablet';
