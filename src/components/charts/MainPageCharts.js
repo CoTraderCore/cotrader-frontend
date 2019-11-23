@@ -87,7 +87,7 @@ class MainPageCharts extends React.Component {
       pointHoverBorderWidth: 2,
       pointRadius: 1,
       pointHitRadius: 10,
-      data: deposit_value
+      data: deposit_value.map(item => item.toFixed(4))
     },
     {
       label: 'Withdraw',
@@ -108,7 +108,7 @@ class MainPageCharts extends React.Component {
       pointHoverBorderWidth: 2,
       pointRadius: 1,
       pointHitRadius: 10,
-      data: withdraw_value
+      data: withdraw_value.map(item => item.toFixed(4))
     }
       ]
     }
@@ -136,7 +136,7 @@ class MainPageCharts extends React.Component {
           pointHoverBorderWidth: 2,
           pointRadius: 1,
           pointHitRadius: 10,
-          data: roi
+          data: roi.map(item => item.toFixed(4))
         }
       ]
     }
@@ -163,7 +163,7 @@ class MainPageCharts extends React.Component {
           pointHoverBorderWidth: 2,
           pointRadius: 1,
           pointHitRadius: 10,
-          data: profit
+          data: profit.map(item => item.toFixed(4))
         }
       ]
     }
@@ -190,7 +190,7 @@ class MainPageCharts extends React.Component {
           pointHoverBorderWidth: 2,
           pointRadius: 1,
           pointHitRadius: 10,
-          data: daylyValue
+          data: daylyValue.map(item => item.toFixed(4))
         }
       ]
     }
@@ -228,7 +228,7 @@ class MainPageCharts extends React.Component {
           <div className="fund-page-charts">
           <div>
           <LineChart data={this.state.DWdata} />
-          
+
           <LineChart data={this.state.ROIdata}/>
 
           <LineChart data={this.state.PROFITdata} />
