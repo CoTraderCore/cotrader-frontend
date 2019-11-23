@@ -74,7 +74,7 @@ class SmartFundsListWithoutWeb3 extends Component{
             <div className="col-lg-6 col-sm-6 col createfund-btn">
                <FakeMaterializeButton buttonName={"Create fund"} info={"please connect to web3"}/>
             </div>
-            
+
             <div className="col-lg-6 col-sm-6 col filter-fund">
                <FundSearch />
             </div>
@@ -116,6 +116,7 @@ class SmartFundsListWithoutWeb3 extends Component{
              <Row className="justify-content-md-center">
              <Col><FundModal address={item.address}/></Col>
              <Col><ManagerModal address={item.owner}/></Col>
+             </Row>
              {
                NeworkID === 1 ?
                (
@@ -128,7 +129,7 @@ class SmartFundsListWithoutWeb3 extends Component{
                  <strong>Charts available only in mainnet</strong>
                )
              }
-             <Col>
+             <div>
              <ButtonGroup horizontal="true">
              <NavLink to={"/web3off/fund/"+ item.address}><Button variant="outline-primary" className="buttonsAdditional">Fund Page</Button></NavLink>
              <FakeButton buttonName={"Deposit"} info={"please connect to web3"}/>
@@ -144,8 +145,7 @@ class SmartFundsListWithoutWeb3 extends Component{
               )
              }
              </ButtonGroup>
-             </Col>
-             </Row>
+             </div>
              </Card.Body>
              <Card.Footer className="text-muted cardsAdditional">
                <Row>
