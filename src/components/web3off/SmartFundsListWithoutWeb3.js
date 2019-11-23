@@ -70,9 +70,16 @@ class SmartFundsListWithoutWeb3 extends Component{
           <React.Fragment>
             <Web3Allert />
             <Row className="justify-content-md-center">
-            <div className="col-lg-4 col-sm-4 createfund-btn"><strong><FakeMaterializeButton buttonName={"Create fund"} info={"please connect to web3"}/></strong></div>
 
-            <div className="col-lg-4 col-sm-4">
+            <div className="col-lg-6 col-sm-6 col createfund-btn">
+               <FakeMaterializeButton buttonName={"Create fund"} info={"please connect to web3"}/>
+            </div>
+            
+            <div className="col-lg-6 col-sm-6 col filter-fund">
+               <FundSearch />
+            </div>
+
+            <div className="col-lg-12 col-sm-12">
             <div className="total-found">
             {
              !this.props.MobXStorage.FilterActive ?
@@ -94,10 +101,6 @@ class SmartFundsListWithoutWeb3 extends Component{
              )
             }
             </div>
-            </div>
-
-            <div className="col-lg-4 col-sm-4 filter-fund">
-            <FundSearch />
             </div>
             </Row>
 
