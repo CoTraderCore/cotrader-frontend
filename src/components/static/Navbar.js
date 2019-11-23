@@ -194,7 +194,7 @@ export default function PersistentDrawerLeft(props) {
             </Link>
           </Typography>
 
-          <Typography variant="inherit" className={classes.themeSwitch} noWrap>
+          <Typography variant="inherit" className={'theme-toggle-btn ' + classes.themeSwitch} noWrap>
             <img onClick={changeTheme} style={{maxHeight: '24px', cursor: 'pointer'}} src="/themeicon.svg" alt="Change Theme" title="Change Theme" />
           </Typography>
         </Toolbar>
