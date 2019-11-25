@@ -77,14 +77,14 @@ body.fullWidth_container .MuiContainer-maxWidthMd {max-width: 1920px!important;}
 .MuiTabs-fixed{width: auto!important;display: inline-block!important;}
 .btn-group .btn{margin: 1px !important;}
 @media only screen and (min-width: 960px) {
-  body.fullWidth_container span[class*="makeStyles-themeSwitch-"], body.fullWidth_container span.jss807, body.fullWidth_container span.jss197{margin-right:90px}
+  body.fullWidth_container span.theme-toggle-btn{margin-right:90px}
   body.tablet_container .MuiContainer-maxWidthMd {max-width: 770px!important;}
   body.laptop_container .MuiContainer-maxWidthMd {max-width: 960px!important;}
   /*body.laptop_container .fund-page-charts > div > div{width: 400px!important;height: 240px!important;}*/
 }
 @media only screen and (max-width: 1130px) {
   .screen-toggle-bar{display: none;}
-  body.fullWidth_container span[class*="makeStyles-themeSwitch-"], body.fullWidth_container span.jss807, body.fullWidth_container span.jss197{margin-right:0px}
+  body.fullWidth_container span.theme-toggle-btn{margin-right:0px}
 }
 @media only screen and (max-width: 780px) {
   .btn-group {display: block!important;}
@@ -95,7 +95,6 @@ body.fullWidth_container .MuiContainer-maxWidthMd {max-width: 1920px!important;}
   .filter-fund{text-align: right;}
   .createfund-btn button, .filter-fund button{display: inline-block;}
   .fullscreen-toggle{display: none !important;}
-  header[class*="makeStyles-appBarShift-"] span[class*="makeStyles-logo-"]{width:27px;}
   /*.fund-page-charts > div > div{margin:5px 0;width: 300px!important;height: 250px!important;}*/
 }
 @media only screen and (max-width: 730px) {
