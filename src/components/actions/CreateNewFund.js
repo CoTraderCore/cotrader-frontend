@@ -74,7 +74,7 @@ class CreateNewFund extends Component {
 
 
           <Form.Group>
-          <Form.Label>Performance Fee % <UserInfo  info="This is the % the fund manager earns for the profits earned, relative to ETH. In the near future, we will add an option for realitive to USD, or DAI."/></Form.Label>
+          <Form.Label>Performance Fee % <UserInfo  info="This is the % the fund manager earns for the profits earned, relative to ETH. In the near future, we will add an option for relative to USD, or DAI."/></Form.Label>
           <TextField
             id="outlined-name"
             label="Performance Fee"
