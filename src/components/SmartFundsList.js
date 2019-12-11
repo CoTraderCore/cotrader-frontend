@@ -175,7 +175,9 @@ class SmartFundsList extends Component{
          this.props.MobXStorage.SmartFunds.map((item, key) =>
          <Card className="text-center mb-3" key={item.address}>
          <Card.Header className="cardsAdditional">
-         <span>Fund name: {item.name}</span>
+         <Badge variant="ligth">Fund name: {item.name}</Badge>
+         <br/>
+         <small>Version: {String(item.version)}</small>
          </Card.Header>
          <Card.Body className="cardsAdditional">
          <Row className="justify-content-md-center mb-3">
