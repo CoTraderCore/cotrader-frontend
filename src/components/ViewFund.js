@@ -6,7 +6,8 @@ import { Card, Row, Col, ListGroup, Badge, Alert } from "react-bootstrap"
 import { EtherscanLink, APIEnpoint }  from '../config.js'
 import io from "socket.io-client"
 
-import TradeModal from './actions/TradeModal'
+import TradeModalV1 from './actions/TradeModalV1'
+import TradeModalV2 from './actions/TradeModalV2'
 import WithdrawManager from './actions/WithdrawManager'
 import WhiteList from './actions/WhiteList'
 import FakeButton from './templates/FakeButton'
@@ -45,7 +46,8 @@ class ViewFund extends Component {
      txName: '',
      txHash:'',
      lastHash: '',
-     shares: []
+     shares: [],
+     version:0
     }
 }
 
@@ -111,7 +113,8 @@ class ViewFund extends Component {
       managerRemainingCut: fund.data.result.managerRemainingCut,
       //smartBankAddress: fund.data.result.bank,
       shares: fund.data.result.shares,
-      isDataLoad:true
+      isDataLoad:true,
+      version:Number(fund.data.result.version)
      });
     }
  }
@@ -231,7 +234,19 @@ class ViewFund extends Component {
          {
            this.props.accounts[0] === this.state.owner ?
            (
-             <TradeModal web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} pending={this.pending}/>
+             <React.Fragment>
+             {
+               this.state.version === 1
+               ?
+               (
+                 <TradeModalV1 web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} pending={this.pending}/>
+               )
+               :
+               (
+                 <TradeModalV2 web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} pending={this.pending}/>
+               )
+             }
+             </React.Fragment>
            )
            :
            (

@@ -1,3 +1,4 @@
+// Modal for trade via Kyber
 import React, { Component } from 'react'
 import { SmartFundABI, KyberInterfaceABI, KyberAddress, APIEnpoint } from '../../config.js'
 import { Button, Modal, Form, Alert, Dropdown, InputGroup } from "react-bootstrap"
@@ -8,7 +9,7 @@ import { tokens } from '../../tokens/'
 import { coinPics } from '../../tokens/tokensHelpers'
 
 
-class TradeModal extends Component {
+class TradeModalV1 extends Component {
   constructor(props, context) {
     super(props, context);
 
@@ -137,6 +138,7 @@ class TradeModal extends Component {
 
    const tokensArray = tokens.ALLTokens
 
+   console.log(tokens)
    return (
       <div>
         <Button variant="outline-primary" onClick={() => this.setState({ ShowModal: true })}>
@@ -225,4 +227,4 @@ class TradeModal extends Component {
   }
 }
 
-export default TradeModal
+export default TradeModalV1

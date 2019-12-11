@@ -1,3 +1,5 @@
+export const ParaswapApi = 'https://paraswap.io/api'
+
 // Mainnet
 // export const SmartFundRegistryADDRESS = '0x9d1a4dac9a35861abc003acfc680bf5ae1b8ed5b'
 // export const EtherscanLink = 'https://etherscan.io/'
