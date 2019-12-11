@@ -1,7 +1,23 @@
 // Modal for trade via Paraswap (Kyber, Bancor, Uniswap)
 import React, { Component } from 'react'
-import { SmartFundABI, APIEnpoint, ParaswapApi, NeworkID } from '../../config.js'
-import { Button, Modal, Form, Alert, Dropdown, InputGroup } from "react-bootstrap"
+import {
+  SmartFundABI,
+  APIEnpoint,
+  ParaswapApi,
+  NeworkID,
+  IParaswapPriceFeedABI,
+  ParaswapPriceFeedAddress
+} from '../../config.js'
+
+import {
+  Button,
+  Modal,
+  Form,
+  Alert,
+  Dropdown,
+  InputGroup
+} from "react-bootstrap"
+
 import setPending from '../../utils/setPending'
 import axios from 'axios'
 
@@ -19,19 +35,20 @@ class TradeModalV2 extends Component {
       AmountSend:0,
       AmountRecive:0,
       AlertError:false,
-      tokens: null
+      tokens: null,
+      symbols: null
     }
   }
 
-  mounted = true
-  componentDidMount = async () => {
-    this.mounted = true
-    if(this.mounted)
-       this.initData()
+  _isMounted = false;
+  componentDidMount(){
+    this._isMounted = true
+    this.initData()
+
   }
 
   componentWillUnmount(){
-    this.mounted = false
+    this._isMounted = false
   }
 
   // get tokens addresses and symbols from paraswap api
@@ -43,6 +60,7 @@ class TradeModalV2 extends Component {
       for(let i = 0; i< tokens.length; i++){
         symbols.push(tokens[i].symbol)
       }
+      // if(this.mounted) not worked
       this.setState({ tokens, symbols })
     }catch(e){
       alert("Can not get data from api, please try again latter")
@@ -125,7 +143,20 @@ class TradeModalV2 extends Component {
 
 
   setRate = async (from, to, amount, type, mul) => {
-    alert('Should check rate from paraswap')
+    if(amount){
+    const contract = new this.props.web3.eth.Contract(IParaswapPriceFeedABI, ParaswapPriceFeedAddress)
+    const src = this.props.web3.utils.toWei(amount.toString(), 'ether')
+    let value = await contract.methods.getBestPrice(from, to, src).call()
+    value = value.rate
+    console.log(value)
+    if(value){
+      const result = this.props.web3.utils.fromWei(this.props.web3.utils.hexToNumberString(value._hex))
+      const final = result * this.state[mul]
+      this.setState({ [type]: final })
+    }else{
+      this.setState({ [type]: 0 })
+    }
+   }
   }
 
   validation = async () => {

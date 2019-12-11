@@ -21,6 +21,8 @@ export const NeworkID = 42
 export const StakeAddress = '0x67bb720dfbcf6ee890ad6aa45e7c3e402bf2dc90'
 export const COTAddress = '0xab726e4664d1c28B084d77cD9be4eF18884e858d'
 export const ExchangePortalAddress = '0x4bf671323c83a34901ae6c21f111044d9499fa8a'
+// new
+export const ParaswapPriceFeedAddress = '0xe7B08b5ce1594653d7Bc8457c42FaE1385160823'
 
 
 // Ropsten
@@ -2105,5 +2107,82 @@ export const IExchangePortalABI = [
 		],
 		"name": "Trade",
 		"type": "event"
+	}
+]
+
+export const IParaswapPriceFeedABI = [
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "fromToken",
+				"type": "address"
+			},
+			{
+				"name": "toToken",
+				"type": "address"
+			},
+			{
+				"name": "srcAmount",
+				"type": "uint256"
+			}
+		],
+		"name": "getBestPrice",
+		"outputs": [
+			{
+				"components": [
+					{
+						"name": "rate",
+						"type": "uint256"
+					},
+					{
+						"components": [
+							{
+								"name": "Uniswap",
+								"type": "uint256"
+							},
+							{
+								"name": "Bancor",
+								"type": "uint256"
+							},
+							{
+								"name": "Kyber",
+								"type": "uint256"
+							},
+							{
+								"name": "Oasis",
+								"type": "uint256"
+							}
+						],
+						"name": "distribution",
+						"type": "tuple"
+					}
+				],
+				"name": "optimalRate",
+				"type": "tuple"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "token",
+				"type": "address"
+			}
+		],
+		"name": "getBancorRelayer",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
 	}
 ]
