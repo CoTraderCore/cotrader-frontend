@@ -23,8 +23,19 @@ class TradeModalV2 extends Component {
     }
   }
 
+  mounted = true
   componentDidMount = async () => {
-    // https://paraswap.io/api/tokens
+    this.mounted = true
+    if(this.mounted)
+       this.initData()
+  }
+
+  componentWillUnmount(){
+    this.mounted = false
+  }
+
+  // get tokens addresses and symbols from paraswap api
+  initData = async () => {
     try{
       let tokens = await axios.get(ParaswapApi + '/tokens')
       tokens = tokens.data.tokens
@@ -56,6 +67,7 @@ class TradeModalV2 extends Component {
     }
   }
 
+  // helper for update state by onchange
   change = e => {
     // Update rate and set state
     if(e.target.name === "AmountSend"){
@@ -83,6 +95,7 @@ class TradeModalV2 extends Component {
     }
   }
 
+  // helper for update state by click
   changeByClick = (name, param) => {
     this.setState({
       [name]:param,
@@ -100,6 +113,10 @@ class TradeModalV2 extends Component {
     sendTo = sendTo[0].addresses[NeworkID]
 
     return { sendFrom, sendTo }
+  }
+
+  packDataToBytes32Array = async () => {
+
   }
 
   trade = async () =>{
