@@ -64,8 +64,12 @@ class TradeModalV2 extends Component {
       for(let i = 0; i< tokens.length; i++){
         symbols.push(tokens[i].symbol)
       }
-      if(this._isMounted)
-      this.setState({ tokens, symbols })
+      if(this._isMounted){
+        this.setState({ tokens, symbols })
+        if(NeworkID !== 1 && NeworkID !== 42){
+          alert("WARNING v2 avilable only for Mainnet and Kovan")
+        }
+      }
     }catch(e){
       alert("Can not get data from api, please try again latter")
       console.log(e)
@@ -154,15 +158,27 @@ class TradeModalV2 extends Component {
     console.log("transactionsData", transactionsData)
 
     // get best exchange from tx data
-    const headers = {
-    'Content-Type': 'application/json'
-    }
-    const body = transactionsData.data
-    const aggregatedData = await axios.post(
-      `${ParaswapApi}/transactions/${NeworkID}?getParams=true`, {
-        headers,
-        body
+    const data = {
+      headers:{
+      'Content-Type': 'application/json'
+      },
+      body:{
+      'priceRoute': {
+      'bestRoute': transactionsData.data.priceRoute.bestRoute
+      },
+      'srcToken': this.state.sendFrom,
+      'destToken': this.state.sendTo,
+      'srcAmount': this.state.sendInWei,
+      'destAmount': transactionsData.data.priceRoute.amount,
+      'userAddress': this.props.accounts[0],
+      'payTo': ''
       }
+    }
+
+    console.log(data)
+
+    const aggregatedData = await axios.post(
+      `${ParaswapApi}/transactions/${NeworkID}?getParams=true`, data
     )
     console.log("aggregatedData", aggregatedData)
   }
