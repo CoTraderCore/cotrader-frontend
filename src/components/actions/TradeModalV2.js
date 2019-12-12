@@ -6,7 +6,9 @@ import {
   ParaswapApi,
   NeworkID,
   IParaswapPriceFeedABI,
-  ParaswapPriceFeedAddress
+  ParaswapPriceFeedAddress,
+  ParaswapParamsABI,
+  ParaswapParamsAddress
 } from '../../config.js'
 
 import {
@@ -145,24 +147,35 @@ class TradeModalV2 extends Component {
     return { sendFrom, sendTo, decimalsFrom, decimalsTo }
   }
 
-  packDataToBytes32Array = async () => {
+  packDataToBytes32Array = async (
+    minDestinationAmount,
+    callees,
+    startIndexes,
+    values,
+    mintPrice
+  ) => {
+    const paramsContract = new this.props.web3.eth.Contract(ParaswapParamsABI, ParaswapParamsAddress)
+    const bytes32 = await paramsContract.methods.getParaswapParamsFromBytes32Array(
+      minDestinationAmount,
+      callees,
+      startIndexes,
+      values,
+      mintPrice
+    ).call()
 
+    return bytes32
   }
 
   // Get data from paraswap api and convert some data for bytes32 array
   prepareTradeData = async () => {
-    // get tx data
+    // STEP 1 get tx data
     const transactionsData = await axios.get(
       `${ParaswapApi}/v1/transactions/${NeworkID}/${this.state.sendFrom}/${this.state.sendTo}/${this.state.sendInWei}`
     )
     console.log("transactionsData", transactionsData)
 
-    // get best exchange from tx data
-    const data = {
-      headers:{
-      'Content-Type': 'application/json'
-      },
-      body:{
+    // STEP 2 get best exchange from tx data
+    const txConfig  = {
       'priceRoute': {
       'bestRoute': transactionsData.data.priceRoute.bestRoute
       },
@@ -172,20 +185,31 @@ class TradeModalV2 extends Component {
       'destAmount': transactionsData.data.priceRoute.amount,
       'userAddress': this.props.accounts[0],
       'payTo': ''
-      }
     }
 
-    console.log(data)
-
     const aggregatedData = await axios.post(
-      `${ParaswapApi}/transactions/${NeworkID}?getParams=true`, data
+      `${ParaswapApi}/transactions/${NeworkID}?getParams=true`, txConfig
     )
     console.log("aggregatedData", aggregatedData)
+
+    // STEP 3 convert addition data to bytes32
+    const bytes32Data = await this.packDataToBytes32Array(
+      aggregatedData.data.minDestinationAmount,
+      aggregatedData.data.callees,
+      aggregatedData.data.startIndexes,
+      aggregatedData.data.values,
+      aggregatedData.data.mintPrice
+    )
+
+    console.log("bytes32Data", bytes32Data)
+
+    // STEP 4 return data
   }
 
   trade = async () =>{
     this.prepareTradeData()
   }
+
 
   /** dev get rate (can calculate by input to or from)
   * params

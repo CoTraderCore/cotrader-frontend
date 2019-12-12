@@ -23,6 +23,7 @@ export const COTAddress = '0xab726e4664d1c28B084d77cD9be4eF18884e858d'
 export const ExchangePortalAddress = '0x4bf671323c83a34901ae6c21f111044d9499fa8a'
 // new
 export const ParaswapPriceFeedAddress = '0xe7B08b5ce1594653d7Bc8457c42FaE1385160823'
+export const ParaswapParamsAddress = '0x128f2abe35a46e78e433d6facc300fa6a8e2e731'
 
 
 // Ropsten
@@ -3210,6 +3211,44 @@ export const IParaswapPriceFeedABI = [
 		],
 		"payable": false,
 		"stateMutability": "view",
+		"type": "function"
+	}
+]
+
+export const ParaswapParamsABI = [
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_additionalArgs",
+				"type": "bytes32[]"
+			}
+		],
+		"name": "getParaswapParamsFromBytes32Array",
+		"outputs": [
+			{
+				"name": "minDestinationAmount",
+				"type": "uint256"
+			},
+			{
+				"name": "callees",
+				"type": "address[]"
+			},
+			{
+				"name": "startIndexes",
+				"type": "uint256[]"
+			},
+			{
+				"name": "values",
+				"type": "uint256[]"
+			},
+			{
+				"name": "mintPrice",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "pure",
 		"type": "function"
 	}
 ]
