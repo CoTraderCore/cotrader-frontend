@@ -1,7 +1,7 @@
 // Modal for trade via Paraswap (Kyber, Bancor, Uniswap)
 import React, { Component } from 'react'
 import {
-  SmartFundABI,
+  SmartFundABIV2,
   APIEnpoint,
   ParaswapApi,
   NeworkID,
