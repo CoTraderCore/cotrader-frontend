@@ -20,6 +20,7 @@ import {
 
 import setPending from '../../utils/setPending'
 import axios from 'axios'
+import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../utils/weiByDecimals'
 
 import { coinPics } from '../../tokens/tokensHelpers'
 
@@ -60,7 +61,7 @@ class TradeModalV2 extends Component {
       for(let i = 0; i< tokens.length; i++){
         symbols.push(tokens[i].symbol)
       }
-      // if(this.mounted) not worked
+      if(this._isMounted)
       this.setState({ tokens, symbols })
     }catch(e){
       alert("Can not get data from api, please try again latter")
@@ -87,25 +88,23 @@ class TradeModalV2 extends Component {
 
   // helper for update state by onchange
   change = e => {
-    // Update rate and set state
+    // Update rate in correct direction order and set state
     if(e.target.name === "AmountSend"){
-      const { sendFrom, sendTo } = this.getDirectionAddresses()
-      // set rate in correct direction order
-      this.setRate(sendFrom, sendTo, e.target.value, "AmountRecive", "AmountSend")
+      const { sendFrom, sendTo, decimalsFrom, decimalsTo } = this.getDirectionInfo()
+      this.setRate(sendFrom, sendTo, e.target.value, "AmountRecive", decimalsFrom, decimalsTo)
       this.setState({
         [e.target.name]: e.target.value
       })
     }
+    // Update rate in reverse order direction and set state
     else if(e.target.name === "AmountRecive"){
-      const { sendFrom, sendTo } = this.getDirectionAddresses()
-      console.log(sendFrom, sendTo)
-      // set rate in reverse order direction
-      this.setRate(sendTo, sendFrom, e.target.value, "AmountSend", "AmountRecive")
+      const { sendFrom, sendTo, decimalsFrom, decimalsTo } = this.getDirectionInfo()
+      this.setRate(sendTo, sendFrom, e.target.value, "AmountSend", decimalsTo, decimalsFrom)
       this.setState({
         [e.target.name]: e.target.value
       })
     }
-    // Just set state
+    // Just set state by input
     else{
       this.setState({
       [e.target.name]: e.target.value
@@ -122,15 +121,17 @@ class TradeModalV2 extends Component {
     })
   }
 
-  // found addresses by direction symbols
-  getDirectionAddresses = () => {
-    let sendFrom = this.state.tokens.filter(item => item.symbol.includes(this.state.Send))
-    sendFrom = sendFrom[0].addresses[NeworkID]
+  // found addresses and decimals by direction symbols
+  getDirectionInfo = () => {
+    const From = this.state.tokens.filter(item => item.symbol === this.state.Send)
+    const decimalsFrom = From[0].decimals
+    const sendFrom = From[0].addresses[NeworkID]
 
-    let sendTo = this.state.tokens.filter(item => item.symbol.includes(this.state.Recive))
-    sendTo = sendTo[0].addresses[NeworkID]
+    const To = this.state.tokens.filter(item => item.symbol === this.state.Recive)
+    const decimalsTo = To[0].decimals
+    const sendTo = To[0].addresses[NeworkID]
 
-    return { sendFrom, sendTo }
+    return { sendFrom, sendTo, decimalsFrom, decimalsTo }
   }
 
   packDataToBytes32Array = async () => {
@@ -141,16 +142,24 @@ class TradeModalV2 extends Component {
     alert('Should trade from paraswap')
   }
 
-
-  setRate = async (from, to, amount, type, mul) => {
+  /** dev get rate (can calculate by input to or from)
+  * params
+  * address from and to,
+  * input tokens amount
+  * type (direction Send or Recieve),
+  * decimals token decimals
+  */
+  setRate = async (from, to, amount, type, decimalsFrom, decimalsTo) => {
     if(amount){
+    const mul = type === "AmountRecive" ? "AmountSend" : "AmountRecive"
     const contract = new this.props.web3.eth.Contract(IParaswapPriceFeedABI, ParaswapPriceFeedAddress)
-    const src = this.props.web3.utils.toWei(amount.toString(), 'ether')
+    const src = toWeiByDecimalsInput(decimalsFrom, amount.toString())
+
     let value = await contract.methods.getBestPrice(from, to, src).call()
     value = value.rate
-    console.log(value)
+    console.log(mul)
     if(value){
-      const result = this.props.web3.utils.fromWei(this.props.web3.utils.hexToNumberString(value._hex))
+      const result = fromWeiByDecimalsInput(decimalsTo, this.props.web3.utils.hexToNumberString(value._hex))
       const final = result * this.state[mul]
       this.setState({ [type]: final })
     }else{

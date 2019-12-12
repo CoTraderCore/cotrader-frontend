@@ -71,6 +71,7 @@ class TradeModalV1 extends Component {
 
   trade = async () =>{
   const contract = new this.props.web3.eth.Contract(SmartFundABI, this.props.smartFundAddress)
+  // TODO CALCULATE BY DECIMALS NOT ONLY BY 18
   const amount = this.props.web3.utils.toWei(this.state.AmountSend.toString(), 'ether')
 
 
@@ -104,9 +105,11 @@ class TradeModalV1 extends Component {
   setRate = async (from, to, amount, type, mul) => {
     if(amount){
     const contract = new this.props.web3.eth.Contract(KyberInterfaceABI, KyberAddress)
+    // TODO CALCULATE BY DECIMALS NOT ONLY BY 18
     const src = this.props.web3.utils.toWei(amount.toString(), 'ether')
     const value = await contract.methods.getExpectedRate(from, to, src).call()
     if(value){
+      // TODO CALCULATE BY DECIMALS NOT ONLY BY 18
       const result = this.props.web3.utils.fromWei(this.props.web3.utils.hexToNumberString(value.expectedRate._hex))
       const final = result * this.state[mul]
       this.setState({ [type]: final })
