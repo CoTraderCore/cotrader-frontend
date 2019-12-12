@@ -37,7 +37,10 @@ class TradeModalV2 extends Component {
       AmountRecive:0,
       AlertError:false,
       tokens: null,
-      symbols: null
+      symbols: null,
+      sendFrom: '',
+      sendTo:'',
+      sendInWei:0
     }
   }
 
@@ -93,7 +96,9 @@ class TradeModalV2 extends Component {
       const { sendFrom, sendTo, decimalsFrom, decimalsTo } = this.getDirectionInfo()
       this.setRate(sendFrom, sendTo, e.target.value, "AmountRecive", decimalsFrom, decimalsTo)
       this.setState({
-        [e.target.name]: e.target.value
+        [e.target.name]: e.target.value,
+        sendFrom,
+        sendTo
       })
     }
     // Update rate in reverse order direction and set state
@@ -101,7 +106,9 @@ class TradeModalV2 extends Component {
       const { sendFrom, sendTo, decimalsFrom, decimalsTo } = this.getDirectionInfo()
       this.setRate(sendTo, sendFrom, e.target.value, "AmountSend", decimalsTo, decimalsFrom)
       this.setState({
-        [e.target.name]: e.target.value
+        [e.target.name]: e.target.value,
+        sendFrom,
+        sendTo
       })
     }
     // Just set state by input
@@ -138,8 +145,30 @@ class TradeModalV2 extends Component {
 
   }
 
+  // Get data from paraswap api and convert some data for bytes32 array
+  prepareTradeData = async () => {
+    // get tx data
+    const transactionsData = await axios.get(
+      `${ParaswapApi}/v1/transactions/${NeworkID}/${this.state.sendFrom}/${this.state.sendTo}/${this.state.sendInWei}`
+    )
+    console.log("transactionsData", transactionsData)
+
+    // get best exchange from tx data
+    const headers = {
+    'Content-Type': 'application/json'
+    }
+    const body = transactionsData.data
+    const aggregatedData = await axios.post(
+      `${ParaswapApi}/transactions/${NeworkID}?getParams=true`, {
+        headers,
+        body
+      }
+    )
+    console.log("aggregatedData", aggregatedData)
+  }
+
   trade = async () =>{
-    alert('Should trade from paraswap')
+    this.prepareTradeData()
   }
 
   /** dev get rate (can calculate by input to or from)
@@ -161,9 +190,9 @@ class TradeModalV2 extends Component {
     if(value){
       const result = fromWeiByDecimalsInput(decimalsTo, this.props.web3.utils.hexToNumberString(value._hex))
       const final = result * this.state[mul]
-      this.setState({ [type]: final })
+      this.setState({ [type]: final, sendInWei:src })
     }else{
-      this.setState({ [type]: 0 })
+      this.setState({ [type]: 0, sendInWei:0 })
     }
    }
   }
