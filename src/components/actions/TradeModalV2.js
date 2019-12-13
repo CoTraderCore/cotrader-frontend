@@ -1,4 +1,4 @@
-// Modal for trade via Paraswap (Kyber, Bancor, Uniswap)
+// Modal for trade via Paraswap (Paraswap get best rate from Kyber, Bancor, Uniswap ect)
 import React, { Component } from 'react'
 import {
   SmartFundABIV2,
@@ -215,7 +215,7 @@ class TradeModalV2 extends Component {
       aggregatedData.data.values,
       aggregatedData.data.mintPrice
     )
-
+    console.log("aggregatedData.data",aggregatedData.data)
     // STEP 4 return data
     return {
       _sourceToken: aggregatedData.data.sourceToken,
@@ -240,6 +240,15 @@ class TradeModalV2 extends Component {
 
     const smartFund = new this.props.web3.eth.Contract(SmartFundABIV2, this.props.smartFundAddress)
     const block = await this.props.web3.eth.getBlockNumber()
+
+    console.log(
+      _sourceToken,
+      _sourceAmount,
+      _destinationToken,
+      _type,
+      _additionalArgs,
+      _additionalData
+    )
 
     smartFund.methods.trade(
       _sourceToken,
@@ -287,6 +296,7 @@ class TradeModalV2 extends Component {
    }
   }
 
+  // Validation input and smart fund balance
   validation = async () => {
     if(this.state.AmountSend > 0){
       const status = await this.checkFundBalance()
@@ -299,6 +309,7 @@ class TradeModalV2 extends Component {
       alert('Please input amount')
     }
   }
+
 
   render() {
    let CloseModal = () => this.setState({
