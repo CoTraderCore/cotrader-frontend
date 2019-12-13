@@ -1,29 +1,31 @@
 export const ParaswapApi = 'https://paraswap.io/api'
 
 // Mainnet
-// export const SmartFundRegistryADDRESS = '0x9d1a4dac9a35861abc003acfc680bf5ae1b8ed5b'
-// export const EtherscanLink = 'https://etherscan.io/'
-// export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
-// export const APIEnpoint = 'https://api2.cotrader.com/'
-// export const BloxyLink = 'https://bloxy.info/portfolios/'
-// export const NeworkID = 1
-// export const StakeAddress = '0xf0089381815ed89b52fc9531bc2569c4f945079f'
-// export const COTAddress = '0x5c872500c00565505f3624ab435c222e558e9ff8'
-// export const ExchangePortalAddress = '0x7Fd65F765932E29F041113777C47CE77ecF4E24A'
+// OLD export const SmartFundRegistryADDRESS = '0x9d1a4dac9a35861abc003acfc680bf5ae1b8ed5b'
+export const SmartFundRegistryADDRESS = '0xe47d8ef5c19bf64c2bc82a4074e57d642dd32f88'
+export const EtherscanLink = 'https://etherscan.io/'
+export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
+export const APIEnpoint = 'https://api2.cotrader.com/'
+export const BloxyLink = 'https://bloxy.info/portfolios/'
+export const NeworkID = 1
+export const StakeAddress = '0xf0089381815ed89b52fc9531bc2569c4f945079f'
+export const COTAddress = '0x5c872500c00565505f3624ab435c222e558e9ff8'
+export const ExchangePortalAddress = '0x7Fd65F765932E29F041113777C47CE77ecF4E24A'
+export const ParaswapPriceFeedAddress = '0xaDDc7EC7dF4C87CA1f781a419A646b4416Da0D22'
+export const ParaswapParamsAddress = '0x0595aaa68ad0fbeacdeeaa7b7d78f22717ade957'
 
 // Kovan local
-export const SmartFundRegistryADDRESS = '0x090ba16ae386ca797c529620689203b27567f1a3'
-export const EtherscanLink = 'https://kovan.etherscan.io/'
-export const KyberAddress = '0x692f391bCc85cefCe8C237C01e1f636BbD70EA4D'
-export const APIEnpoint = 'http://localhost:9000/'
-export const BloxyLink = 'https://bloxy.info/portfolios/'
-export const NeworkID = 42
-export const StakeAddress = '0x67bb720dfbcf6ee890ad6aa45e7c3e402bf2dc90'
-export const COTAddress = '0xab726e4664d1c28B084d77cD9be4eF18884e858d'
-export const ExchangePortalAddress = '0x4bf671323c83a34901ae6c21f111044d9499fa8a'
-// new
-export const ParaswapPriceFeedAddress = '0xe7B08b5ce1594653d7Bc8457c42FaE1385160823'
-export const ParaswapParamsAddress = '0x128f2abe35a46e78e433d6facc300fa6a8e2e731'
+// export const SmartFundRegistryADDRESS = '0x090ba16ae386ca797c529620689203b27567f1a3'
+// export const EtherscanLink = 'https://kovan.etherscan.io/'
+// export const KyberAddress = '0x692f391bCc85cefCe8C237C01e1f636BbD70EA4D'
+// export const APIEnpoint = 'http://localhost:9000/'
+// export const BloxyLink = 'https://bloxy.info/portfolios/'
+// export const NeworkID = 42
+// export const StakeAddress = '0x67bb720dfbcf6ee890ad6aa45e7c3e402bf2dc90'
+// export const COTAddress = '0xab726e4664d1c28B084d77cD9be4eF18884e858d'
+// export const ExchangePortalAddress = '0x4bf671323c83a34901ae6c21f111044d9499fa8a'
+// export const ParaswapPriceFeedAddress = '0xe7B08b5ce1594653d7Bc8457c42FaE1385160823'
+// export const ParaswapParamsAddress = '0x128f2abe35a46e78e433d6facc300fa6a8e2e731'
 
 
 // Ropsten
