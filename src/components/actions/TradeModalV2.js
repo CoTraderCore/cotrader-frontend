@@ -2,13 +2,13 @@
 import React, { Component } from 'react'
 import {
   SmartFundABIV2,
-  APIEnpoint,
   ParaswapApi,
   NeworkID,
   IParaswapPriceFeedABI,
   ParaswapPriceFeedAddress,
   ParaswapParamsABI,
-  ParaswapParamsAddress
+  ParaswapParamsAddress,
+  ERC20ABI
 } from '../../config.js'
 
 import {
@@ -42,7 +42,8 @@ class TradeModalV2 extends Component {
       symbols: null,
       sendFrom: '',
       sendTo:'',
-      sendInWei:0
+      sendInWei:0,
+      decimalsFrom:18
     }
   }
 
@@ -82,18 +83,29 @@ class TradeModalV2 extends Component {
     this.setState({ AlertError:bool })
   }
 
-  checkBalance = async () => {
-    const result = await axios.get(APIEnpoint + 'api/smartfund/' +this.props.smartFundAddress)
-    const tokenInfo = JSON.parse(result.data.result.balance)
-    const info = tokenInfo.find(el => el.symbol === this.state.Send)
 
-    if(info){
-      return info.balance
+  // Check if fund has assets for certain token
+  // return true if fund has enougth balance
+  checkFundBalance = async () => {
+    let fundBalance
+    let result = false
+
+    if(this.state.sendFrom === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'){
+      fundBalance = await this.props.web3.eth.getBalance(this.props.smartFundAddress)
+      fundBalance = this.props.web3.utils.fromWei(fundBalance)
     }
     else{
-      return null
+      const ERC20 = new this.props.web3.eth.Contract(ERC20ABI, this.state.sendFrom)
+      fundBalance = await ERC20.methods.balanceOf(this.props.smartFundAddress).call()
+      fundBalance = fromWeiByDecimalsInput(this.state.decimalsFrom, this.props.web3.utils.hexToNumberString(fundBalance._hex))
     }
+
+    if(fundBalance >= this.state.AmountSend)
+      result = true
+
+    return result
   }
+
 
   // helper for update state by onchange
   change = e => {
@@ -104,7 +116,8 @@ class TradeModalV2 extends Component {
       this.setState({
         [e.target.name]: e.target.value,
         sendFrom,
-        sendTo
+        sendTo,
+        decimalsFrom
       })
     }
     // Update rate in reverse order direction and set state
@@ -114,7 +127,8 @@ class TradeModalV2 extends Component {
       this.setState({
         [e.target.name]: e.target.value,
         sendFrom,
-        sendTo
+        sendTo,
+        decimalsFrom
       })
     }
     // Just set state by input
@@ -125,6 +139,7 @@ class TradeModalV2 extends Component {
     }
   }
 
+
   // helper for update state by click
   changeByClick = (name, param) => {
     this.setState({
@@ -133,6 +148,7 @@ class TradeModalV2 extends Component {
       AmountRecive:0
     })
   }
+
 
   // found addresses and decimals by direction symbols
   getDirectionInfo = () => {
@@ -147,6 +163,7 @@ class TradeModalV2 extends Component {
     return { sendFrom, sendTo, decimalsFrom, decimalsTo }
   }
 
+  // helper for convert additional data in bytes32
   packDataToBytes32Array = async (
     minDestinationAmount,
     callees,
@@ -222,6 +239,7 @@ class TradeModalV2 extends Component {
   } = await this.getTradeData()
 
     const smartFund = new this.props.web3.eth.Contract(SmartFundABIV2, this.props.smartFundAddress)
+    const block = await this.props.web3.eth.getBlockNumber()
 
     smartFund.methods.trade(
       _sourceToken,
@@ -230,7 +248,15 @@ class TradeModalV2 extends Component {
       _type,
       _additionalArgs,
       _additionalData
-    ).send({ from: this.props.accounts[0] })
+    )
+    .send({ from: this.props.accounts[0] })
+    .on('transactionHash', (hash) => {
+    console.log(hash)
+    // pending status for spiner
+    this.props.pending(true)
+    // pending status for DB
+    setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+    })
   }
 
 
@@ -262,15 +288,16 @@ class TradeModalV2 extends Component {
   }
 
   validation = async () => {
-    // const currentBalance = await this.checkBalance()
-    // const requiredBalance = this.props.web3.utils.toWei(this.state.AmountSend.toString(), 'ether')
-    //
-    // if(currentBalance && currentBalance >= requiredBalance && requiredBalance > 0){
-    //   this.trade()
-    // }else{
-    //   this.errorShow(true)
-    // }
-    this.trade()
+    if(this.state.AmountSend > 0){
+      const status = await this.checkFundBalance()
+      if(status){
+        this.trade()
+      }else{
+        this.errorShow(true)
+      }
+    }else{
+      alert('Please input amount')
+    }
   }
 
   render() {
@@ -333,7 +360,7 @@ class TradeModalV2 extends Component {
             this.state.AlertError ?(
             <Alert variant="danger">
             {
-              "ERROR: Not enought funds in this SmartFund or input amount 0"
+              `ERROR: Not enought ${this.state.Send} in this SmartFund`
             }
             </Alert>)
             :(null)
