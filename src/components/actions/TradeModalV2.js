@@ -167,12 +167,11 @@ class TradeModalV2 extends Component {
   }
 
   // Get data from paraswap api and convert some data for bytes32 array
-  prepareTradeData = async () => {
+  getTradeData = async () => {
     // STEP 1 get tx data
     const transactionsData = await axios.get(
       `${ParaswapApi}/v1/transactions/${NeworkID}/${this.state.sendFrom}/${this.state.sendTo}/${this.state.sendInWei}`
     )
-    console.log("transactionsData", transactionsData)
 
     // STEP 2 get best exchange from tx data
     const txConfig  = {
@@ -190,10 +189,9 @@ class TradeModalV2 extends Component {
     const aggregatedData = await axios.post(
       `${ParaswapApi}/transactions/${NeworkID}?getParams=true`, txConfig
     )
-    console.log("aggregatedData", aggregatedData)
 
     // STEP 3 convert addition data to bytes32
-    const bytes32Data = await this.packDataToBytes32Array(
+    const bytes32Array = await this.packDataToBytes32Array(
       aggregatedData.data.minDestinationAmount,
       aggregatedData.data.callees,
       aggregatedData.data.startIndexes,
@@ -201,14 +199,40 @@ class TradeModalV2 extends Component {
       aggregatedData.data.mintPrice
     )
 
-    console.log("bytes32Data", bytes32Data)
-
     // STEP 4 return data
+    return {
+      _sourceToken: aggregatedData.data.sourceToken,
+      _sourceAmount: aggregatedData.data.sourceAmount,
+      _destinationToken: aggregatedData.data.destinationToken,
+      _type: 0,
+      _additionalArgs: bytes32Array,
+      _additionalData: aggregatedData.data.exchangeData
+     }
   }
 
-  trade = async () =>{
-    this.prepareTradeData()
+  // trade from smart fund
+  trade = async () => {
+    const {
+    _sourceToken,
+    _sourceAmount,
+    _destinationToken,
+    _type,
+    _additionalArgs,
+    _additionalData
+  } = await this.getTradeData()
+
+    const smartFund = new this.props.web3.eth.Contract(SmartFundABIV2, this.props.smartFundAddress)
+
+    smartFund.methods.trade(
+      _sourceToken,
+      _sourceAmount,
+      _destinationToken,
+      _type,
+      _additionalArgs,
+      _additionalData
+    ).send({ from: this.props.accounts[0] })
   }
+
 
 
   /** dev get rate (can calculate by input to or from)
