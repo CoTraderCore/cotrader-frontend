@@ -3250,5 +3250,40 @@ export const ParaswapParamsABI = [
 		"payable": false,
 		"stateMutability": "pure",
 		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "minDestinationAmount",
+				"type": "uint256"
+			},
+			{
+				"name": "callees",
+				"type": "address[]"
+			},
+			{
+				"name": "startIndexes",
+				"type": "uint256[]"
+			},
+			{
+				"name": "values",
+				"type": "uint256[]"
+			},
+			{
+				"name": "mintPrice",
+				"type": "uint256"
+			}
+		],
+		"name": "convertParaswapParamsToBytes32Array",
+		"outputs": [
+			{
+				"name": "_output",
+				"type": "bytes32[]"
+			}
+		],
+		"payable": false,
+		"stateMutability": "pure",
+		"type": "function"
 	}
 ]

@@ -155,7 +155,7 @@ class TradeModalV2 extends Component {
     mintPrice
   ) => {
     const paramsContract = new this.props.web3.eth.Contract(ParaswapParamsABI, ParaswapParamsAddress)
-    const bytes32 = await paramsContract.methods.getParaswapParamsFromBytes32Array(
+    const bytes32 = await paramsContract.methods.convertParaswapParamsToBytes32Array(
       minDestinationAmount,
       callees,
       startIndexes,
