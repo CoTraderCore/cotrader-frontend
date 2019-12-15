@@ -42,7 +42,6 @@ class TradeModalV2 extends Component {
       symbols: null,
       sendFrom: '',
       sendTo:'',
-      sendInWei:0,
       decimalsFrom:18
     }
   }
@@ -185,9 +184,10 @@ class TradeModalV2 extends Component {
 
   // Get data from paraswap api and convert some data for bytes32 array
   getTradeData = async () => {
+    const sendInWei = toWeiByDecimalsInput(this.state.decimalsFrom, this.state.AmountSend)
     // STEP 1 get tx data
     const transactionsData = await axios.get(
-      `${ParaswapApi}/v1/transactions/${NeworkID}/${this.state.sendFrom}/${this.state.sendTo}/${this.state.sendInWei}`
+      `${ParaswapApi}/v1/transactions/${NeworkID}/${this.state.sendFrom}/${this.state.sendTo}/${sendInWei}`
     )
 
     // STEP 2 get best exchange from tx data
@@ -197,7 +197,7 @@ class TradeModalV2 extends Component {
       },
       'srcToken': this.state.sendFrom,
       'destToken': this.state.sendTo,
-      'srcAmount': this.state.sendInWei,
+      'srcAmount': sendInWei,
       'destAmount': transactionsData.data.priceRoute.amount,
       'userAddress': this.props.accounts[0],
       'payTo': ''
@@ -238,17 +238,11 @@ class TradeModalV2 extends Component {
     _additionalData
   } = await this.getTradeData()
 
-    const smartFund = new this.props.web3.eth.Contract(SmartFundABIV2, this.props.smartFundAddress)
-    const block = await this.props.web3.eth.getBlockNumber()
 
-    console.log(
-      _sourceToken,
-      _sourceAmount,
-      _destinationToken,
-      _type,
-      _additionalArgs,
-      _additionalData
-    )
+   const smartFund = new this.props.web3.eth.Contract(SmartFundABIV2, this.props.smartFundAddress)
+   const block = await this.props.web3.eth.getBlockNumber()
+
+   this.setState({ ShowModal: false })
 
     smartFund.methods.trade(
       _sourceToken,
@@ -278,20 +272,17 @@ class TradeModalV2 extends Component {
   * decimals token decimals
   */
   setRate = async (from, to, amount, type, decimalsFrom, decimalsTo) => {
-    if(amount){
-    const mul = type === "AmountRecive" ? "AmountSend" : "AmountRecive"
+    if(amount > 0 && from !== to){
     const contract = new this.props.web3.eth.Contract(IParaswapPriceFeedABI, ParaswapPriceFeedAddress)
     const src = toWeiByDecimalsInput(decimalsFrom, amount.toString())
 
     let value = await contract.methods.getBestPrice(from, to, src).call()
     value = value.rate
-    console.log(mul)
     if(value){
       const result = fromWeiByDecimalsInput(decimalsTo, this.props.web3.utils.hexToNumberString(value._hex))
-      const final = result * this.state[mul]
-      this.setState({ [type]: final, sendInWei:src })
+      this.setState({ [type]: result})
     }else{
-      this.setState({ [type]: 0, sendInWei:0 })
+      this.setState({ [type]: 0})
     }
    }
   }

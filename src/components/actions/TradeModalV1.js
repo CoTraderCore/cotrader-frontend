@@ -111,7 +111,7 @@ class TradeModalV1 extends Component {
     if(value){
       // TODO CALCULATE BY DECIMALS NOT ONLY BY 18
       const result = this.props.web3.utils.fromWei(this.props.web3.utils.hexToNumberString(value.expectedRate._hex))
-      const final = result * this.state[mul]
+      const final = result * this.state[mul] // mul need only for Kyber
       this.setState({ [type]: final })
     }else{
       this.setState({ [type]: 0 })
