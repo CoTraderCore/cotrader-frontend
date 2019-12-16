@@ -193,7 +193,8 @@ class TradeModalV2 extends Component {
     // STEP 2 get best exchange from tx data
     const txConfig  = {
       'priceRoute': {
-      'bestRoute': transactionsData.data.priceRoute.bestRoute
+      'bestRoute': transactionsData.data.priceRoute.bestRoute,
+      'amount':transactionsData.data.priceRoute.amount
       },
       'srcToken': this.state.sendFrom,
       'destToken': this.state.sendTo,
