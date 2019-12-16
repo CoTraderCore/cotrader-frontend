@@ -238,6 +238,14 @@ class TradeModalV2 extends Component {
     _additionalData
   } = await this.getTradeData()
 
+   console.log(
+     _sourceToken,
+     _sourceAmount,
+     _destinationToken,
+     _type,
+     _additionalArgs,
+     _additionalData
+   )
 
    const smartFund = new this.props.web3.eth.Contract(SmartFundABIV2, this.props.smartFundAddress)
    const block = await this.props.web3.eth.getBlockNumber()
