@@ -2,10 +2,11 @@ export const ParaswapApi = 'https://paraswap.io/api'
 
 // Mainnet
 // OLD export const SmartFundRegistryADDRESS = '0x9d1a4dac9a35861abc003acfc680bf5ae1b8ed5b'
-export const SmartFundRegistryADDRESS = '0x967ecb0c7c0dffa2ac1cc61014eb01b1baed0371'
+// export const SmartFundRegistryADDRESS = '0x967ecb0c7c0dffa2ac1cc61014eb01b1baed0371'
+export const SmartFundRegistryADDRESS = '0xbd3b541db584e9d276d9e7817891b37235d1292b'
 export const EtherscanLink = 'https://etherscan.io/'
 export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
-export const APIEnpoint = 'https://api2.cotrader.com/'  // 'http://localhost:9000/' 
+export const APIEnpoint =  'https://api2.cotrader.com/' // 'http://localhost:9000/'
 export const BloxyLink = 'https://bloxy.info/portfolios/'
 export const NeworkID = 1
 export const StakeAddress = '0xf0089381815ed89b52fc9531bc2569c4f945079f'

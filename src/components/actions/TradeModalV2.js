@@ -216,7 +216,7 @@ class TradeModalV2 extends Component {
       aggregatedData.data.values,
       aggregatedData.data.mintPrice
     )
-    console.log("aggregatedData.data",aggregatedData.data)
+
     // STEP 4 return data
     return {
       _sourceToken: aggregatedData.data.sourceToken,
