@@ -286,10 +286,12 @@ class TradeModalV2 extends Component {
     const src = toWeiByDecimalsInput(decimalsFrom, amount.toString())
 
     let value = await contract.methods.getBestPrice(from, to, src).call()
-    value = value.rate
-    if(value){
+
+      value = value.rate.mul(99).div(100)//1% slippage
+      if(value){
       const result = fromWeiByDecimalsInput(decimalsTo, this.props.web3.utils.hexToNumberString(value._hex))
-      this.setState({ [type]: result})
+
+        this.setState({ [type]: result})
     }else{
       this.setState({ [type]: 0})
     }
