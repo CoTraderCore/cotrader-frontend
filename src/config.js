@@ -10,7 +10,7 @@ export const NeworkID = 1
 export const StakeAddress = '0xf0089381815ed89b52fc9531bc2569c4f945079f'
 export const COTAddress = '0x5c872500c00565505f3624ab435c222e558e9ff8'
 export const ExchangePortalAddress = '0xed81fb581e535bcc817eae1b6bf454cfc3c5ca11'
-export const ParaswapPriceFeedAddress = '0xaDDc7EC7dF4C87CA1f781a419A646b4416Da0D22'
+export const ParaswapPriceFeedAddress = '0xC6A3eC2E62A932B94Bac51B6B9511A4cB623e2E5'
 export const ParaswapParamsAddress = '0x0595aaa68ad0fbeacdeeaa7b7d78f22717ade957'
 
 // Kovan local
@@ -3144,70 +3144,23 @@ export const IParaswapPriceFeedABI = [
 		"constant": true,
 		"inputs": [
 			{
-				"name": "fromToken",
+				"name": "_from",
 				"type": "address"
 			},
 			{
-				"name": "toToken",
+				"name": "_to",
 				"type": "address"
 			},
 			{
-				"name": "srcAmount",
+				"name": "_amount",
 				"type": "uint256"
 			}
 		],
-		"name": "getBestPrice",
+		"name": "getBestPriceSimple",
 		"outputs": [
 			{
-				"components": [
-					{
-						"name": "rate",
-						"type": "uint256"
-					},
-					{
-						"components": [
-							{
-								"name": "Uniswap",
-								"type": "uint256"
-							},
-							{
-								"name": "Bancor",
-								"type": "uint256"
-							},
-							{
-								"name": "Kyber",
-								"type": "uint256"
-							},
-							{
-								"name": "Oasis",
-								"type": "uint256"
-							}
-						],
-						"name": "distribution",
-						"type": "tuple"
-					}
-				],
-				"name": "optimalRate",
-				"type": "tuple"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "token",
-				"type": "address"
-			}
-		],
-		"name": "getBancorRelayer",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
+				"name": "result",
+				"type": "uint256"
 			}
 		],
 		"payable": false,

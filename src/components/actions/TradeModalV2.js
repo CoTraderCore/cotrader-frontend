@@ -285,9 +285,9 @@ class TradeModalV2 extends Component {
     const contract = new this.props.web3.eth.Contract(IParaswapPriceFeedABI, ParaswapPriceFeedAddress)
     const src = toWeiByDecimalsInput(decimalsFrom, amount.toString())
 
-    let value = await contract.methods.getBestPrice(from, to, src).call()
+    let value = await contract.methods.getBestPriceSimple(from, to, src).call()
 
-      value = value.rate.mul(99).div(100)//1% slippage
+      value = value.mul(99).div(100)//1% slippage
       if(value){
       const result = fromWeiByDecimalsInput(decimalsTo, this.props.web3.utils.hexToNumberString(value._hex))
 
