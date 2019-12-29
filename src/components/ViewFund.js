@@ -5,6 +5,7 @@ import { Card, Row, Col, ListGroup, Badge, Alert } from "react-bootstrap"
 
 import { EtherscanLink, APIEnpoint }  from '../config.js'
 import io from "socket.io-client"
+import _ from 'lodash'
 
 import TradeModalV1 from './actions/TradeModalV1'
 import TradeModalV2 from './actions/TradeModalV2'
@@ -19,8 +20,6 @@ import UserHoldings from './actions/UserHoldings'
 import Loading from './templates/Spiners/Loading'
 import Pending from './templates/Spiners/Pending'
 import PopupMsg from './templates/PopupMsg'
-
-
 import ViewPageCharts from './charts/ViewPageCharts'
 import InvestorsAlocationChart from './charts/InvestorsAlocationChart'
 
@@ -34,7 +33,7 @@ class ViewFund extends Component {
      this.state = {
      smartFundAddress: '',
      name: '',
-     balance: [],
+     balance: null,
      owner: '',
      profit: '0',
      value: '0',
@@ -197,7 +196,14 @@ class ViewFund extends Component {
         <div className="fund-page-charts">
           <div>
             <InvestorsAlocationChart Data={this.state.shares}/>
-            <AssetsAlocationChart AssetsData={this.state.balance}/>
+            {
+              !_.isEmpty(this.state.balance)
+              ?
+              (
+                <AssetsAlocationChart AssetsData={this.state.balance}/>
+              )
+              :null
+            }
           </div>
         </div>
 
