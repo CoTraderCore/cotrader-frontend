@@ -113,6 +113,7 @@ class App extends Component {
   }
 
   render() {
+    console.log("Paraswap support")
     // redirect to web3off version if client has no web3
     if(this.state.timeOut && !this.state.web3){
     // temporary solution

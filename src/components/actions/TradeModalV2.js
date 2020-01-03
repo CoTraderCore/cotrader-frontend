@@ -23,7 +23,7 @@ import {
 import setPending from '../../utils/setPending'
 import axios from 'axios'
 import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../utils/weiByDecimals'
-
+import BigNumber from 'bignumber.js'
 import { coinPics } from '../../tokens/tokensHelpers'
 
 
@@ -209,8 +209,13 @@ class TradeModalV2 extends Component {
     )
 
     // STEP 3 convert addition data to bytes32
+    // take 1% slippage from minDestinationAmount
+    const minDestBN = new BigNumber(aggregatedData.data.minDestinationAmount)
+    const minDestinationAmountWilthSlippage = minDestBN.multipliedBy(99).dividedBy(100)
+    const minDestinationAmount = String(Math.floor(minDestinationAmountWilthSlippage.toFixed()))
+  
     const bytes32Array = await this.packDataToBytes32Array(
-      aggregatedData.data.minDestinationAmount,
+      minDestinationAmount,
       aggregatedData.data.callees,
       aggregatedData.data.startIndexes,
       aggregatedData.data.values,
@@ -239,21 +244,12 @@ class TradeModalV2 extends Component {
     _additionalData
   } = await this.getTradeData()
 
-   console.log(
-     _sourceToken,
-     _sourceAmount,
-     _destinationToken,
-     _type,
-     _additionalArgs,
-     _additionalData
-   )
+  const smartFund = new this.props.web3.eth.Contract(SmartFundABIV2, this.props.smartFundAddress)
+  const block = await this.props.web3.eth.getBlockNumber()
 
-   const smartFund = new this.props.web3.eth.Contract(SmartFundABIV2, this.props.smartFundAddress)
-   const block = await this.props.web3.eth.getBlockNumber()
+  this.setState({ ShowModal: false })
 
-   this.setState({ ShowModal: false })
-
-    smartFund.methods.trade(
+  smartFund.methods.trade(
       _sourceToken,
       _sourceAmount,
       _destinationToken,
@@ -285,13 +281,10 @@ class TradeModalV2 extends Component {
     const contract = new this.props.web3.eth.Contract(IParaswapPriceFeedABI, ParaswapPriceFeedAddress)
     const src = toWeiByDecimalsInput(decimalsFrom, amount.toString())
 
-    let value = await contract.methods.getBestPriceSimple(from, to, src).call()
-
-      value = value.mul(99).div(100)//1% slippage
-      if(value){
+    const value = await contract.methods.getBestPriceSimple(from, to, src).call()
+    if(value){
       const result = fromWeiByDecimalsInput(decimalsTo, this.props.web3.utils.hexToNumberString(value._hex))
-
-        this.setState({ [type]: result})
+      this.setState({ [type]: result})
     }else{
       this.setState({ [type]: 0})
     }
