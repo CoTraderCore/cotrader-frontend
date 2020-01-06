@@ -9,7 +9,10 @@ function KyberExplainModal(props) {
     <Modal show={props.show} onHide={handleClose}>
       <Modal.Header closeButton >
       </Modal.Header>
-      <Modal.Body>CoTrader smart funds currently use Kyber. We are about to add support for any and all dapps</Modal.Body>
+      <Modal.Body>For v1 smart funds we use only  Kyber
+      <hr/>
+      For v2 smart funds we use ParaSwap DEX aggregator to split trades to get the better prices from Uniswap, Kyber, Bancor, and Oasis
+      </Modal.Body>
     </Modal>
     </>
   );

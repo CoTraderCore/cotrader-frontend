@@ -291,7 +291,7 @@ export default function PersistentDrawerLeft(props) {
 
             <ListItem className={classes.nested}>
               <ListItemIcon><ArrowRight /></ListItemIcon>
-              <ListItemText primary="Kyber" onClick={() => setKyberModal(true)}/>
+              <ListItemText primary="Kyber/Paraswap" onClick={() => setKyberModal(true)}/>
             </ListItem>
 
             </List>
