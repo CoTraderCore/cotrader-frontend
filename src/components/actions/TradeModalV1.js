@@ -1,3 +1,4 @@
+// Modal for trade via Kyber
 import React, { Component } from 'react'
 import { SmartFundABI, KyberInterfaceABI, KyberAddress, APIEnpoint } from '../../config.js'
 import { Button, Modal, Form, Alert, Dropdown, InputGroup } from "react-bootstrap"
@@ -8,7 +9,7 @@ import { tokens } from '../../tokens/'
 import { coinPics } from '../../tokens/tokensHelpers'
 
 
-class TradeModal extends Component {
+class TradeModalV1 extends Component {
   constructor(props, context) {
     super(props, context);
 
@@ -70,6 +71,7 @@ class TradeModal extends Component {
 
   trade = async () =>{
   const contract = new this.props.web3.eth.Contract(SmartFundABI, this.props.smartFundAddress)
+  // TODO CALCULATE BY DECIMALS NOT ONLY BY 18
   const amount = this.props.web3.utils.toWei(this.state.AmountSend.toString(), 'ether')
 
 
@@ -103,11 +105,13 @@ class TradeModal extends Component {
   setRate = async (from, to, amount, type, mul) => {
     if(amount){
     const contract = new this.props.web3.eth.Contract(KyberInterfaceABI, KyberAddress)
+    // TODO CALCULATE BY DECIMALS NOT ONLY BY 18
     const src = this.props.web3.utils.toWei(amount.toString(), 'ether')
     const value = await contract.methods.getExpectedRate(from, to, src).call()
     if(value){
+      // TODO CALCULATE BY DECIMALS NOT ONLY BY 18
       const result = this.props.web3.utils.fromWei(this.props.web3.utils.hexToNumberString(value.expectedRate._hex))
-      const final = result * this.state[mul]
+      const final = result * this.state[mul] // mul need only for Kyber
       this.setState({ [type]: final })
     }else{
       this.setState({ [type]: 0 })
@@ -137,6 +141,7 @@ class TradeModal extends Component {
 
    const tokensArray = tokens.ALLTokens
 
+   console.log(tokens)
    return (
       <div>
         <Button variant="outline-primary" onClick={() => this.setState({ ShowModal: true })}>
@@ -225,4 +230,4 @@ class TradeModal extends Component {
   }
 }
 
-export default TradeModal
+export default TradeModalV1

@@ -53,7 +53,7 @@ class CreateNewFund extends Component {
         >
           <Modal.Header closeButton>
           <Modal.Title id="example-modal-sizes-title-sm">
-          Create new fund
+          Create new fund <small>(with multi DEX support)</small>
           </Modal.Title>
           </Modal.Header>
           <Modal.Body>

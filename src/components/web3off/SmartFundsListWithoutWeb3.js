@@ -111,6 +111,8 @@ class SmartFundsListWithoutWeb3 extends Component{
              <Card className="text-center mb-3" bg="ligth" key={item.address}>
              <Card.Header className="cardsAdditional">
              <Badge variant="ligth">{item.name}</Badge>
+             <br/>
+             <small>Version: {String(item.version)}</small>
              </Card.Header>
              <Card.Body className="cardsAdditional">
              <Row className="justify-content-md-center">

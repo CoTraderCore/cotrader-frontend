@@ -5,8 +5,10 @@ import { Card, Row, Col, ListGroup, Badge, Alert } from "react-bootstrap"
 
 import { EtherscanLink, APIEnpoint }  from '../config.js'
 import io from "socket.io-client"
+import _ from 'lodash'
 
-import TradeModal from './actions/TradeModal'
+import TradeModalV1 from './actions/TradeModalV1'
+import TradeModalV2 from './actions/TradeModalV2'
 import WithdrawManager from './actions/WithdrawManager'
 import WhiteList from './actions/WhiteList'
 import FakeButton from './templates/FakeButton'
@@ -18,8 +20,6 @@ import UserHoldings from './actions/UserHoldings'
 import Loading from './templates/Spiners/Loading'
 import Pending from './templates/Spiners/Pending'
 import PopupMsg from './templates/PopupMsg'
-
-
 import ViewPageCharts from './charts/ViewPageCharts'
 import InvestorsAlocationChart from './charts/InvestorsAlocationChart'
 
@@ -33,7 +33,7 @@ class ViewFund extends Component {
      this.state = {
      smartFundAddress: '',
      name: '',
-     balance: [],
+     balance: null,
      owner: '',
      profit: '0',
      value: '0',
@@ -45,7 +45,8 @@ class ViewFund extends Component {
      txName: '',
      txHash:'',
      lastHash: '',
-     shares: []
+     shares: [],
+     version:0
     }
 }
 
@@ -111,7 +112,8 @@ class ViewFund extends Component {
       managerRemainingCut: fund.data.result.managerRemainingCut,
       //smartBankAddress: fund.data.result.bank,
       shares: fund.data.result.shares,
-      isDataLoad:true
+      isDataLoad:true,
+      version:Number(fund.data.result.version)
      });
     }
  }
@@ -194,7 +196,14 @@ class ViewFund extends Component {
         <div className="fund-page-charts">
           <div>
             <InvestorsAlocationChart Data={this.state.shares}/>
-            <AssetsAlocationChart AssetsData={this.state.balance}/>
+            {
+              !_.isEmpty(this.state.balance)
+              ?
+              (
+                <AssetsAlocationChart AssetsData={this.state.balance}/>
+              )
+              :null
+            }
           </div>
         </div>
 
@@ -231,7 +240,19 @@ class ViewFund extends Component {
          {
            this.props.accounts[0] === this.state.owner ?
            (
-             <TradeModal web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} pending={this.pending}/>
+             <React.Fragment>
+             {
+               this.state.version === 1
+               ?
+               (
+                 <TradeModalV1 web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} pending={this.pending}/>
+               )
+               :
+               (
+                 <TradeModalV2 web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} pending={this.pending}/>
+               )
+             }
+             </React.Fragment>
            )
            :
            (
