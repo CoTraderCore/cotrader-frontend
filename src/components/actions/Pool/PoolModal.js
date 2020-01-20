@@ -121,11 +121,12 @@ class PoolModal extends Component {
                   placeholder="Choose a symbol for send"
                  />
                  <br/>
-               <CurrentAction
-               fromAddress={this.state.fromAddress}
-               web3={this.props.web3}
-               accounts={this.props.accounts}
-               />
+                <CurrentAction
+                fromAddress={this.state.fromAddress}
+                web3={this.props.web3}
+                accounts={this.props.accounts}
+                smartFundAddress={this.props.smartFundAddress}
+                />
                </React.Fragment>
               )
               :
@@ -136,6 +137,7 @@ class PoolModal extends Component {
                 findAddressBySymbol={this.findAddressBySymbol}
                 web3={this.props.web3}
                 accounts={this.props.accounts}
+                smartFundAddress={this.props.smartFundAddress}
                 />
               )
             }

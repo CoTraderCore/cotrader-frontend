@@ -376,11 +376,11 @@ export const ERC20ABI = [
 		"constant": false,
 		"inputs": [
 			{
-				"name": "_spender",
+				"name": "spender",
 				"type": "address"
 			},
 			{
-				"name": "_value",
+				"name": "value",
 				"type": "uint256"
 			}
 		],
@@ -413,15 +413,15 @@ export const ERC20ABI = [
 		"constant": false,
 		"inputs": [
 			{
-				"name": "_from",
+				"name": "from",
 				"type": "address"
 			},
 			{
-				"name": "_to",
+				"name": "to",
 				"type": "address"
 			},
 			{
-				"name": "_value",
+				"name": "value",
 				"type": "uint256"
 			}
 		],
@@ -438,9 +438,23 @@ export const ERC20ABI = [
 	},
 	{
 		"constant": true,
+		"inputs": [],
+		"name": "decimals",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint8"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
 		"inputs": [
 			{
-				"name": "_who",
+				"name": "who",
 				"type": "address"
 			}
 		],
@@ -459,11 +473,11 @@ export const ERC20ABI = [
 		"constant": false,
 		"inputs": [
 			{
-				"name": "_to",
+				"name": "to",
 				"type": "address"
 			},
 			{
-				"name": "_value",
+				"name": "value",
 				"type": "uint256"
 			}
 		],
@@ -482,11 +496,11 @@ export const ERC20ABI = [
 		"constant": true,
 		"inputs": [
 			{
-				"name": "_owner",
+				"name": "owner",
 				"type": "address"
 			},
 			{
-				"name": "_spender",
+				"name": "spender",
 				"type": "address"
 			}
 		],
