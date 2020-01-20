@@ -48,13 +48,13 @@ class PoolModal extends Component {
   render() {
     let modalClose = () => this.setState({ Show: false })
 
-    // Change component (Buy/Sell/Swap) dynamicly 
+    // Change component (Buy/Sell/Swap) dynamicly
     let CurrentAction
-    if(this.state.action in ComponentList){
-      CurrentAction  = componentList[this.state.action]
+    if(this.state.action in componentList){
+      CurrentAction = componentList[this.state.action]
     }else{
-      alert('Wrong name for component action')
-      componentList['Buy']
+      // alert('Wrong name for component action')
+      CurrentAction = componentList['Buy']
     }
 
 
@@ -81,7 +81,7 @@ class PoolModal extends Component {
             as="select"
             size="sm"
             name="selectAction"
-            onChange={(e) => setState({ action:e.target.value })}>
+            onChange={(e) => this.setState({ action:e.target.value })}>
             {/* NOTE: render of actions components dependse of this actions*/}
             <option>Buy</option>
             <option>Sell</option>
@@ -89,10 +89,11 @@ class PoolModal extends Component {
             </Form.Control>
             </Form.Group>
            </Form>
+
+           <CurrentAction/>
         </Modal.Body>
       </Modal>
 
-      <CurrentAction/>
       </React.Fragment>
     )
   }
