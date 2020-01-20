@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { Button, Form } from "react-bootstrap"
 import { Typeahead } from 'react-bootstrap-typeahead'
+import { SmartFundABIV3 } from '../../../config.js'
+
 
 class SwapPool extends Component {
   constructor(props, context) {
@@ -10,7 +12,7 @@ class SwapPool extends Component {
       fromAddress:'',
       isToERC20:false,
       isFromERC20:false,
-      amount:'0'
+      amount:0
     }
   }
 
@@ -58,6 +60,7 @@ class SwapPool extends Component {
       <Form.Control
       placeholder="Enter amount for send"
       name="amount"
+      onChange={(e) => this.setState({ amount: e.target.value })}
       type="number" min="1"/>
       <br/>
       <Button variant="outline-primary">Swap</Button>

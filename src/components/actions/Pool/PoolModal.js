@@ -39,7 +39,7 @@ class PoolModal extends Component {
     this._isMounted = false
   }
 
-  // Find ERC20 or Relay address by symbol 
+  // Find ERC20 or Relay address by symbol
   findAddressBySymbol = (symbol, isFromERC20=false) =>{
     const column = isFromERC20 ? 'symbol' : 'smartTokenSymbol'
     const property = isFromERC20 ? 'tokenAddress' : 'smartTokenAddress'
@@ -123,6 +123,8 @@ class PoolModal extends Component {
                  <br/>
                <CurrentAction
                fromAddress={this.state.fromAddress}
+               web3={this.props.web3}
+               accounts={this.props.accounts}
                />
                </React.Fragment>
               )
@@ -132,6 +134,8 @@ class PoolModal extends Component {
                 smartTokenSymbols={this.state.smartTokenSymbols}
                 symbols={this.state.symbols}
                 findAddressBySymbol={this.findAddressBySymbol}
+                web3={this.props.web3}
+                accounts={this.props.accounts}
                 />
               )
             }

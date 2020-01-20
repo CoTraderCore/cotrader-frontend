@@ -261,7 +261,7 @@ class ViewFund extends Component {
                ?
                (
                  <li>
-                 <PoolModal/>
+                 <PoolModal web3={this.props.web3} accounts={this.props.accounts}/>
                  </li>
                )
                :

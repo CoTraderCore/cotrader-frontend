@@ -69,7 +69,7 @@ class TradeModalV2 extends Component {
       if(this._isMounted){
         this.setState({ tokens, symbols })
         if(NeworkID !== 1 && NeworkID !== 42){
-          alert("WARNING v2 avilable only for Mainnet and Kovan")
+          console.log("WARNING v2 Paraswap trade avilable only for Mainnet and Kovan")
         }
       }
     }catch(e){
@@ -213,7 +213,7 @@ class TradeModalV2 extends Component {
     const minDestBN = new BigNumber(aggregatedData.data.minDestinationAmount)
     const minDestinationAmountWilthSlippage = minDestBN.multipliedBy(99).dividedBy(100)
     const minDestinationAmount = String(Math.floor(minDestinationAmountWilthSlippage.toFixed()))
-  
+
     const bytes32Array = await this.packDataToBytes32Array(
       minDestinationAmount,
       aggregatedData.data.callees,
