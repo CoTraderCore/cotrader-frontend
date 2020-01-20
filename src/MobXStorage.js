@@ -38,7 +38,7 @@ class MOBXStorage {
 
   searchFund(name){
     if(name !== ''){
-      this.SmartFunds = this.SmartFundsOriginal.filter(fund => fund.name.includes(name))
+      this.SmartFunds = this.SmartFundsOriginal.filter(fund => fund.name.toLowerCase().includes(name.toLowerCase()))
       this.FilterActive = true
       this.FilterInfo = "Filter funds by name: " + name
     }else{
@@ -50,7 +50,7 @@ class MOBXStorage {
 
   searchFundByManager(address){
     if(address !== ''){
-      this.SmartFunds = this.SmartFundsOriginal.filter(fund => fund.owner.includes(address))
+      this.SmartFunds = this.SmartFundsOriginal.filter(fund => fund.owner.toLowerCase().includes(address.toLowerCase()))
       this.FilterActive = true
       this.FilterInfo = "Filter funds by manager: " + address.slice(0,-35) + "..."
     }else{
@@ -73,7 +73,7 @@ class MOBXStorage {
   }
 
   myFunds(owner){
-    this.SmartFunds = this.SmartFundsOriginal.filter(fund => fund.owner.includes(owner))
+    this.SmartFunds = this.SmartFundsOriginal.filter(fund => fund.owner.toLowerCase().includes(owner.toLowerCase()))
     this.FilterActive = true
     this.FilterInfo = "Filter funds by owner: " + owner.slice(0,-35) + "..."
   }

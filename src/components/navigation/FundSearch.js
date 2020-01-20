@@ -69,7 +69,7 @@ class FundSearch extends Component {
         className={isRed ? 'class1' : 'class2'}
       >
         <Modal.Header closeButton>
-        <Modal.Title id="example-modal-sizes-title-sm">
+        <Modal.Title>
         Filter smart funds
         </Modal.Title>
         </Modal.Header>
@@ -79,7 +79,6 @@ class FundSearch extends Component {
       <Form.Group>
       <InputGroup>
       <TextField
-        id="outlined-name"
         label="Find fund by name"
         value={this.state.searchByName}
         name="searchByName"
@@ -108,7 +107,6 @@ class FundSearch extends Component {
       <Form.Group>
       <InputGroup>
       <TextField
-        id="outlined-name"
         label="Find fund by manager address"
         value={this.state.searchByManager}
         name="searchByManager"
@@ -136,7 +134,6 @@ class FundSearch extends Component {
       <Form.Group>
       <InputGroup>
       <TextField
-        id="outlined-name"
         label="Find fund by min value"
         value={this.state.searchByValue > 0 ? fromWei(this.state.searchByValue.toString()): 0}
         onChange={e => this.change(e)}
