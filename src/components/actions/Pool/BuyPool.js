@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
+import { Button } from "react-bootstrap"
+
 
 class BuyPool extends Component {
 
   render() {
     return (
       <div>
-      <p>BuyPool</p>
+      <Button variant="outline-primary">Buy</Button>
       </div>
     )
   }

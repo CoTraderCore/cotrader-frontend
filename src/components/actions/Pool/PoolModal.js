@@ -3,6 +3,8 @@ import { Button, Modal, Form } from "react-bootstrap"
 import { CoTraderBancorEndPoint } from '../../../config.js'
 import axios from 'axios'
 
+import { Typeahead } from 'react-bootstrap-typeahead'
+
 import BuyPool from './BuyPool'
 import SellPool from './SellPool'
 import SwapPool from './SwapPool'
@@ -21,7 +23,8 @@ class PoolModal extends Component {
       symbols: null,
       smartTokenSymbols: null,
       tokensObject: null,
-      action: 'Buy'
+      action: 'Buy',
+      from:''
     }
   }
 
@@ -89,8 +92,33 @@ class PoolModal extends Component {
             </Form.Control>
             </Form.Group>
            </Form>
+            {
+              this.state.action !== 'Swap'
+              ?
+              (
+                <React.Fragment>
+                <Typeahead
+                  labelKey="smartTokenSymbols"
+                  multiple={false}
+                  id="smartTokenSymbols"
+                  options={this.state.smartTokenSymbols}
+                  onChange={(s) => this.setState({from: s[0]})}
+                  placeholder="Choose a symbol for send"
+                 />
+                 <br/>
+                <CurrentAction from={this.state.from} />
+                </React.Fragment>
+              )
+              :
+              (
+                <CurrentAction
+                smartTokenSymbols={this.state.smartTokenSymbols}
+                tokensObject={this.state.tokensObject}
+                symbols={this.state.symbols}
+                />
+              )
+            }
 
-           <CurrentAction/>
         </Modal.Body>
       </Modal>
 
