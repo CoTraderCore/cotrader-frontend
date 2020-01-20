@@ -7,7 +7,7 @@ import { EtherscanLink, APIEnpoint }  from '../config.js'
 import io from "socket.io-client"
 import _ from 'lodash'
 
-import PoolModal from './actions/PoolModal'
+import PoolModal from './actions/Pool/PoolModal'
 import TradeModalV1 from './actions/TradeModalV1'
 import TradeModalV2 from './actions/TradeModalV2'
 import WithdrawManager from './actions/WithdrawManager'
