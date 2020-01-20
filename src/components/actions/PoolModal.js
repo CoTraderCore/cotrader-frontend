@@ -25,7 +25,7 @@ class PoolModal extends Component {
   }
 
   initData = async () => {
-    const data = await axios.get(CoTraderBancorEndPoint + '/official')
+    const data = await axios.get(CoTraderBancorEndPoint + 'official')
     console.log(data)
   }
 

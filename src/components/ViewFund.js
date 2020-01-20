@@ -7,6 +7,7 @@ import { EtherscanLink, APIEnpoint }  from '../config.js'
 import io from "socket.io-client"
 import _ from 'lodash'
 
+import PoolModal from './actions/PoolModal'
 import TradeModalV1 from './actions/TradeModalV1'
 import TradeModalV2 from './actions/TradeModalV2'
 import WithdrawManager from './actions/WithdrawManager'
@@ -235,9 +236,7 @@ class ViewFund extends Component {
 
         <div className="fund-page-btns">
           <ul>
-
-        <li>
-         {
+          {
            this.props.accounts[0] === this.state.owner ?
            (
              <React.Fragment>
@@ -245,45 +244,62 @@ class ViewFund extends Component {
                this.state.version === 1
                ?
                (
+                 <li>
                  <TradeModalV1 web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} pending={this.pending}/>
+                 </li>
                )
                :
                (
+                 <li>
                  <TradeModalV2 web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} pending={this.pending}/>
+                 </li>
                )
              }
+
+             {
+               this.state.version >= 3
+               ?
+               (
+                 <li>
+                 <PoolModal/>
+                 </li>
+               )
+               :
+               (
+                 <li>
+                 <FakeButton buttonName={"Pool"} info={"This version of smart fund does not support this feature"}/>
+                 </li>
+               )
+             }
+
+             <li>
+             <WithdrawManager web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} owner={this.state.owner} pending={this.pending}/>
+             </li>
+
+             <li>
+             <WhiteList web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} owner={this.state.owner}/>
+             </li>
+
              </React.Fragment>
            )
            :
            (
+             <React.Fragment>
+             <li>
              <FakeButton buttonName={"Exchange"} info={"You can't use this button cause You are not owner of this smart fund"}/>
-           )
-         }
-         </li>
-         <li>
-         {
-           this.props.accounts[0] === this.state.owner ?
-           (
-             <WithdrawManager web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} owner={this.state.owner} pending={this.pending}/>
-           )
-           :
-           (
+             </li>
+             <li>
+             <FakeButton buttonName={"Pool"} info={"You can't use this button cause You are not owner of this smart fund"}/>
+             </li>
+             <li>
              <FakeButton buttonName={"Take cut"} info={"You can't use this button cause You are not owner of this smart fund"}/>
-           )
-         }
-         </li>
-         <li>
-         {
-           this.props.accounts[0] === this.state.owner ?
-           (
-             <WhiteList web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} owner={this.state.owner}/>
-           )
-           :
-           (
+             </li>
+             <li>
              <FakeButton buttonName={"White list"} info={"You can't use this button cause You are not owner of this smart fund"}/>
+             </li>
+             </React.Fragment>
            )
          }
-         </li>
          </ul>
          </div>
 
