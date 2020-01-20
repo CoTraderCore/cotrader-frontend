@@ -1,10 +1,13 @@
+// switch this to false in production
+const isLocal = true
+
 export const ParaswapApi = 'https://paraswap.io/api'
 
 // Mainnet
 export const SmartFundRegistryADDRESS = '0x0f1f46239e6ea6b8922bc4ad343100d47e417a4c'
 export const EtherscanLink = 'https://etherscan.io/'
 export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
-export const APIEnpoint = 'https://api2.cotrader.com/' //'http://localhost:9000/' 
+export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'
 export const BloxyLink = 'https://bloxy.info/portfolios/'
 export const NeworkID = 1
 export const StakeAddress = '0xf0089381815ed89b52fc9531bc2569c4f945079f'
@@ -12,12 +15,13 @@ export const COTAddress = '0x5c872500c00565505f3624ab435c222e558e9ff8'
 export const ExchangePortalAddress = '0x6ede2be2a807fb38046cced29cbd2947b479cfab'
 export const ParaswapPriceFeedAddress = '0xC6A3eC2E62A932B94Bac51B6B9511A4cB623e2E5'
 export const ParaswapParamsAddress = '0x0595aaa68ad0fbeacdeeaa7b7d78f22717ade957'
+export const CoTraderBancorEndPoint = !isLocal ? 'https://api-bancor.cotrader.com/' : 'http://localhost:9003/'
 
-// Kovan local
+// Kovan
 // export const SmartFundRegistryADDRESS = '0x090ba16ae386ca797c529620689203b27567f1a3'
 // export const EtherscanLink = 'https://kovan.etherscan.io/'
 // export const KyberAddress = '0x692f391bCc85cefCe8C237C01e1f636BbD70EA4D'
-// export const APIEnpoint = 'http://localhost:9000/'
+// export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'
 // export const BloxyLink = 'https://bloxy.info/portfolios/'
 // export const NeworkID = 42
 // export const StakeAddress = '0x67bb720dfbcf6ee890ad6aa45e7c3e402bf2dc90'
@@ -31,34 +35,13 @@ export const ParaswapParamsAddress = '0x0595aaa68ad0fbeacdeeaa7b7d78f22717ade957
 // export const SmartFundRegistryADDRESS = '0x9A78c2532e4C09317fCc1adBaf95609DD48a6CeD'
 // export const EtherscanLink = 'https://ropsten.etherscan.io/'
 // export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
-// export const APIEnpoint = 'https://api-v2-ropsten.cotrader.com/'
+// export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'
 // export const BloxyLink = 'https://bloxy.info/portfolios/'
 // export const NeworkID = 3
 // export const StakeAddress = '0x67bb720dfbcf6ee890ad6aa45e7c3e402bf2dc90'
 // export const COTAddress = '0xab726e4664d1c28B084d77cD9be4eF18884e858d'
 // export const ExchangePortalAddress = '0x2043a9634e2A4817118cA2fE5c6a16a9209b4085'
 
-// Local Mainnet
-// export const SmartFundRegistryADDRESS = '0x9A78c2532e4C09317fCc1adBaf95609DD48a6CeD'
-// export const EtherscanLink = 'https://etherscan.io/'
-// export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
-// export const APIEnpoint = 'http://localhost:9000/'
-// export const BloxyLink = 'https://bloxy.info/portfolios/'
-// export const NeworkID = 1
-// export const StakeAddress = '0xf0089381815ed89b52fc9531bc2569c4f945079f'
-// export const COTAddress = '0x5c872500c00565505f3624ab435c222e558e9ff8'
-// export const ExchangePortalAddress = '0x7Fd65F765932E29F041113777C47CE77ecF4E24A'
-
-// Local Ropsten
-// export const SmartFundRegistryADDRESS = '0x9A78c2532e4C09317fCc1adBaf95609DD48a6CeD'
-// export const EtherscanLink = 'https://ropsten.etherscan.io/'
-// export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
-// export const APIEnpoint = 'http://localhost:9000/'
-// export const BloxyLink = 'https://bloxy.info/portfolios/'
-// export const NeworkID = 3
-// export const StakeAddress = '0x67bb720dfbcf6ee890ad6aa45e7c3e402bf2dc90'
-// export const COTAddress = '0xab726e4664d1c28B084d77cD9be4eF18884e858d'
-// export const ExchangePortalAddress = '0x2043a9634e2A4817118cA2fE5c6a16a9209b4085'
 
 
 export const StakeABI = [
