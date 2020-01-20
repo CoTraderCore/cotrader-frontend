@@ -16,6 +16,8 @@ export const ParaswapApi = 'https://paraswap.io/api'
 // export const ParaswapPriceFeedAddress = '0xC6A3eC2E62A932B94Bac51B6B9511A4cB623e2E5'
 // export const ParaswapParamsAddress = '0x0595aaa68ad0fbeacdeeaa7b7d78f22717ade957'
 // export const CoTraderBancorEndPoint = !isLocal ? 'https://api-bancor.cotrader.com/' : 'http://localhost:9003/'
+// export const PoolPortal = ''
+// export const ExchangePortal = ''
 
 // Kovan
 // export const SmartFundRegistryADDRESS = '0x090ba16ae386ca797c529620689203b27567f1a3'
@@ -29,6 +31,8 @@ export const ParaswapApi = 'https://paraswap.io/api'
 // export const ExchangePortalAddress = '0x4bf671323c83a34901ae6c21f111044d9499fa8a'
 // export const ParaswapPriceFeedAddress = '0xe7B08b5ce1594653d7Bc8457c42FaE1385160823'
 // export const ParaswapParamsAddress = '0x128f2abe35a46e78e433d6facc300fa6a8e2e731'
+// export const PoolPortal = ''
+// export const ExchangePortal = ''
 
 
 // Ropsten
@@ -44,6 +48,8 @@ export const ExchangePortalAddress = '0x2043a9634e2A4817118cA2fE5c6a16a9209b4085
 export const ParaswapPriceFeedAddress = '0x5ca10df04e94ac4a68b1e86facc271a34082293c'
 export const ParaswapParamsAddress = '0x6fa269bba578d3d12e262a85feb15641a7f17ed5'
 export const CoTraderBancorEndPoint = !isLocal ? 'https://api-bancor.cotrader.com/' : 'http://localhost:9003/'
+export const PoolPortal = '0x19ef873a7f2d7f38434c3f98223a74adae323c36'
+export const ExchangePortal = '0x431e7d5b31050a7b7dacf0d59a0d33fa33e5a899'
 
 
 export const StakeABI = [
@@ -4367,6 +4373,184 @@ export const ParaswapParamsABI = [
 		],
 		"payable": false,
 		"stateMutability": "pure",
+		"type": "function"
+	}
+]
+
+export const PoolPortalABI = [
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_from",
+				"type": "address"
+			},
+			{
+				"name": "_to",
+				"type": "address"
+			},
+			{
+				"name": "_amount",
+				"type": "uint256"
+			}
+		],
+		"name": "getRatio",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "relay",
+				"type": "address"
+			}
+		],
+		"name": "getBancorConnectorsByRelay",
+		"outputs": [
+			{
+				"name": "BNTConnector",
+				"type": "address"
+			},
+			{
+				"name": "ERCConnector",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_amount",
+				"type": "uint256"
+			},
+			{
+				"name": "_relay",
+				"type": "address"
+			}
+		],
+		"name": "getBancorConnectorsAmountByRelayAmount",
+		"outputs": [
+			{
+				"name": "bancorAmount",
+				"type": "uint256"
+			},
+			{
+				"name": "connectorAmount",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_amount",
+				"type": "uint256"
+			},
+			{
+				"name": "_type",
+				"type": "uint256"
+			},
+			{
+				"name": "_poolToken",
+				"type": "address"
+			},
+			{
+				"name": "_additionalArgs",
+				"type": "bytes32[]"
+			}
+		],
+		"name": "buyPool",
+		"outputs": [],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_amount",
+				"type": "uint256"
+			},
+			{
+				"name": "_type",
+				"type": "uint256"
+			},
+			{
+				"name": "_poolToken",
+				"type": "address"
+			},
+			{
+				"name": "_additionalArgs",
+				"type": "bytes32[]"
+			}
+		],
+		"name": "sellPool",
+		"outputs": [],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_fromAddresses",
+				"type": "address[]"
+			},
+			{
+				"name": "_amounts",
+				"type": "uint256[]"
+			},
+			{
+				"name": "_to",
+				"type": "address"
+			}
+		],
+		"name": "getTotalValue",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "relay",
+				"type": "address"
+			}
+		],
+		"name": "getBacorConverterAddressByRelay",
+		"outputs": [
+			{
+				"name": "converter",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
 		"type": "function"
 	}
 ]
