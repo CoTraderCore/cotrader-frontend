@@ -1,14 +1,19 @@
 import React, { Component } from 'react'
-import { Button } from "react-bootstrap"
+import { Form, Button } from "react-bootstrap"
 
 
 class SellPool extends Component {
 
   render() {
     return (
-      <div>
+      <React.Fragment>
+      <Form.Control
+      placeholder="Enter amount for send"
+      name="amount"
+      type="number" min="1"/>
+      <br/>
       <Button variant="outline-primary">Sell</Button>
-      </div>
+      </React.Fragment>
     )
   }
 

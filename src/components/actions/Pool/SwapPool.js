@@ -6,8 +6,8 @@ class SwapPool extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      to:'',
-      from:'',
+      toAddress:'',
+      fromAddress:'',
       isToERC20:false,
       isFromERC20:false,
       amount:'0'
@@ -22,15 +22,17 @@ class SwapPool extends Component {
       <Form.Check
       type="checkbox"
       label="hide relays, show tokens"
-      onChange={() => this.setState({ isToERC20 : !this.state.isToERC20 })}/>
+      onChange={() => this.setState({ isFromERC20 : !this.state.isFromERC20 })}/>
       </Form.Group>
 
       <Typeahead
         labelKey="smartTokenSymbols"
         multiple={false}
         id="smartTokenSymbols"
-        options={this.props.smartTokenSymbols}
-        onChange={(s) => this.setState({from: s[0]})}
+        options={ this.state.isFromERC20 ? this.props.symbols : this.props.smartTokenSymbols }
+        onChange={(s) => this.setState(
+          {fromAddress: this.props.findAddressBySymbol(s[0], this.state.isFromERC20)}
+        )}
         placeholder="Choose a symbol for send"
       />
       <br/>
@@ -39,16 +41,18 @@ class SwapPool extends Component {
       <Form.Check
       type="checkbox"
       label="hide relays, show tokens"
-      onChange={() => this.setState({ isFromERC20 : !this.state.isFromERC20 })} />
+      onChange={() => this.setState({ isToERC20 : !this.state.isToERC20 })} />
       </Form.Group>
 
       <Typeahead
         labelKey="smartTokenSymbols"
         multiple={false}
         id="smartTokenSymbols"
-        options={this.props.smartTokenSymbols}
-        onChange={(s) => this.setState({from: s[0]})}
-        placeholder="Choose a symbol for send"
+        options={ this.state.isToERC20 ? this.props.symbols : this.props.smartTokenSymbols}
+        onChange={(s) => this.setState(
+          {toAddress: this.props.findAddressBySymbol(s[0], this.state.isToERC20)}
+        )}
+        placeholder="Choose a symbol for recieve"
       />
       <br/>
       <Form.Control

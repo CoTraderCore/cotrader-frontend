@@ -20,11 +20,11 @@ class PoolModal extends Component {
     super(props, context);
     this.state = {
       Show: false,
-      symbols: null,
-      smartTokenSymbols: null,
+      symbols: [],
+      smartTokenSymbols: [],
       tokensObject: null,
       action: 'Buy',
-      from:''
+      fromAddress:''
     }
   }
 
@@ -39,11 +39,26 @@ class PoolModal extends Component {
     this._isMounted = false
   }
 
+  // Find ERC20 or Relay address by symbol 
+  findAddressBySymbol = (symbol, isFromERC20=false) =>{
+    const column = isFromERC20 ? 'symbol' : 'smartTokenSymbol'
+    const property = isFromERC20 ? 'tokenAddress' : 'smartTokenAddress'
+    const res = this.state.tokensObject.filter(item => item[column] === symbol)
+    let result
+    if(res && res.length > 0 && res[0].hasOwnProperty(property)){
+      result = res[0][property]
+    }else{
+      result = null
+    }
+    return result
+  }
+
   initData = async () => {
     const res = await axios.get(CoTraderBancorEndPoint + 'official')
     const tokensObject = res.data.result
     const symbols = res.data.result.map(item => item.symbol)
     const smartTokenSymbols = res.data.result.map(item => item.smartTokenSymbol)
+    if(this._isMounted)
     this.setState({ tokensObject, symbols, smartTokenSymbols })
   }
 
@@ -102,19 +117,21 @@ class PoolModal extends Component {
                   multiple={false}
                   id="smartTokenSymbols"
                   options={this.state.smartTokenSymbols}
-                  onChange={(s) => this.setState({from: s[0]})}
+                  onChange={(s) => this.setState({fromAddress: this.findAddressBySymbol(s[0])})}
                   placeholder="Choose a symbol for send"
                  />
                  <br/>
-                <CurrentAction from={this.state.from} />
-                </React.Fragment>
+               <CurrentAction
+               fromAddress={this.state.fromAddress}
+               />
+               </React.Fragment>
               )
               :
               (
                 <CurrentAction
                 smartTokenSymbols={this.state.smartTokenSymbols}
-                tokensObject={this.state.tokensObject}
                 symbols={this.state.symbols}
+                findAddressBySymbol={this.findAddressBySymbol}
                 />
               )
             }
