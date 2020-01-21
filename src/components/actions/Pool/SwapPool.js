@@ -67,12 +67,13 @@ class SwapPool extends Component {
     this.setState({ amountInWei, recive, reciveFromWei, symbolTo })
   }
 
+  // check smart fund balance 
   checkFundBalance = async () => {
     const web3 = this.props.web3
     const token = new web3.eth.Contract(ERC20ABI, this.state.fromAddress)
     const decimals = await token.methods.decimals().call()
+    const balance = await token.methods.balanceOf(this.props.smartFundAddress).call()
     const balanceFromWei = fromWeiByDecimalsInput(decimals, balance)
-
     const status = balanceFromWei >= this.state.amount ? true : false
     return status
   }
