@@ -114,13 +114,18 @@ class BuyPool extends Component {
     if(this.state.isBNTEnough && this.state.isERCEnough){
       const web3 = this.props.web3
       const fund = new web3.eth.Contract(SmartFundABIV3, this.props.smartFundAddress)
+      // buy pool
       fund.methods.buyPool(
         toWei(String(this.state.amount)),
         0,
         this.props.fromAddress,
         [])
-        .send({ from:this.props.accounts[0] })
-    }else{
+      .send({ from:this.props.accounts[0] })
+
+      // close pool modal
+      this.props.modalClose()
+    }
+    else{
       alert('Your smart fund do not have enough reserve')
     }
   }
@@ -187,11 +192,11 @@ class BuyPool extends Component {
           <hr/>
           <a href={EtherscanLink + "address/" + this.state.BNTConnector} target="_blank" rel="noopener noreferrer">{this.state.BNTConnectorSymbol}</a>
           &#8194;:&#8194;
-          {Number(this.state.bancorAmountFromWei).toFixed()}
+          {Number(this.state.bancorAmountFromWei)}
           <hr/>
           <a href={EtherscanLink + "address/" + this.state.ERCConnector} target="_blank" rel="noopener noreferrer">{this.state.ERCConnectorSymbol}</a>
           &#8194;:&#8194;
-          {Number(this.state.connectorAmountFromWei).toFixed()}
+          {Number(this.state.connectorAmountFromWei)}
           <hr/>
           You will recieve
           <hr/>
@@ -209,9 +214,9 @@ class BuyPool extends Component {
               <small>
               Your balance is
               <hr/>
-              {this.state.BNTConnectorSymbol}:&#8194;{Number(this.state.curentBalanceBNT).toFixed()}
+              {this.state.BNTConnectorSymbol}:&#8194;{Number(this.state.curentBalanceBNT)}
               <hr/>
-              {this.state.ERCConnectorSymbol}:&#8194;{Number(this.state.currentBalanceERC).toFixed()}
+              {this.state.ERCConnectorSymbol}:&#8194;{Number(this.state.currentBalanceERC)}
               <hr/>
               Note: please use exchange or pool swap methods for buy necessary tokens, don't send directly to contract</small>
               </Alert>

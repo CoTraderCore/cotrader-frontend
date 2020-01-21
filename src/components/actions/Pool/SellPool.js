@@ -22,7 +22,10 @@ class SellPool extends Component {
 
       // Sell
       const fund = new web3.eth.Contract(SmartFundABIV3, this.props.smartFundAddress)
-      fund.methods.sellPool(amountInWei, 1, this.props.fromAddress, []).send({ from:this.props.accounts[0] })
+      fund.methods.sellPool(amountInWei, 0, this.props.fromAddress, []).send({ from:this.props.accounts[0] })
+
+      // close pool modal
+      this.props.modalClose()
     }else{
       alert('Please fill in all fields')
     }
