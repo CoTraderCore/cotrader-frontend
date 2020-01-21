@@ -19,6 +19,7 @@ class SwapPool extends Component {
       isToERC20:false,
       isFromERC20:false,
       amount:0,
+      amountInWei:0,
       recieve:0,
       reciveFromWei:0,
       symbolTo: ''
@@ -63,16 +64,37 @@ class SwapPool extends Component {
 
     const symbolTo = toTokenInfo.symbol
 
-    this.setState({ recive, reciveFromWei, symbolTo })
+    this.setState({ amountInWei, recive, reciveFromWei, symbolTo })
   }
 
   checkFundBalance = async () => {
-    
+    const web3 = this.props.web3
+    const token = new web3.eth.Contract(ERC20ABI, this.state.fromAddress)
+    const decimals = await token.methods.decimals().call()
+    const balanceFromWei = fromWeiByDecimalsInput(decimals, balance)
+
+    const status = balanceFromWei >= this.state.amount ? true : false
+    return status
   }
 
   // execude swap
-  swap = () => {
-
+  swap = async () => {
+    const isEnoughBalance = await this.checkFundBalance()
+    if(isEnoughBalance){
+      const web3 = this.props.web3
+      const fund = new web3.eth.Contract(SmartFundABIV3, this.props.smartFundAddress)
+      // trade via Bancor portal
+      fund.methods.trade(
+        this.state.fromAddress,
+        this.state.amountInWei,
+        this.state.toAddress,
+        1,
+        [],
+        "0x"
+      ).send({ from: this.props.accounts[0]})
+    }else{
+      alert('Smart fund do not have enough balance')
+    }
   }
 
   // get decimal and symbol by token address
