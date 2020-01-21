@@ -5,10 +5,14 @@ import {
   SmartFundABIV3,
   PoolPortalABI,
   PoolPortal,
-  ERC20ABI
+  ERC20ABI,
+  BNTEther
 } from '../../../config.js'
 import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../../utils/weiByDecimals'
 import { isAddress } from 'web3-utils'
+
+// Fund recognize ETH by this address
+export const ETH = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 
 class SwapPool extends Component {
   constructor(props, context) {
@@ -67,13 +71,20 @@ class SwapPool extends Component {
     this.setState({ amountInWei, recive, reciveFromWei, symbolTo })
   }
 
-  // check smart fund balance 
+  // check smart fund balance
+  // return true if enough balance
   checkFundBalance = async () => {
     const web3 = this.props.web3
     const token = new web3.eth.Contract(ERC20ABI, this.state.fromAddress)
-    const decimals = await token.methods.decimals().call()
-    const balance = await token.methods.balanceOf(this.props.smartFundAddress).call()
-    const balanceFromWei = fromWeiByDecimalsInput(decimals, balance)
+    let balanceFromWei
+    if(this.state.fromAddress === BNTEther){
+      const balance = web3.eth.getBalance(this.props.smartFundAddress)
+      balanceFromWei = fromWeiByDecimalsInput(18, balance)
+    }else{
+      const decimals = await token.methods.decimals().call()
+      const balance = await token.methods.balanceOf(this.props.smartFundAddress).call()
+      balanceFromWei = fromWeiByDecimalsInput(decimals, balance)
+    }
     const status = balanceFromWei >= this.state.amount ? true : false
     return status
   }
@@ -84,31 +95,48 @@ class SwapPool extends Component {
     if(isEnoughBalance){
       const web3 = this.props.web3
       const fund = new web3.eth.Contract(SmartFundABIV3, this.props.smartFundAddress)
-      // trade via Bancor portal
+
+      // wrap ETH case
+      const from = this.state.fromAddress === BNTEther ? ETH : this.state.fromAddress
+      const to = this.state.toAddress === BNTEther ? ETH : this.state.toAddress
+      console.log("from", from, "amount", this.state.amountInWei, "to", to)
+
+      // trade
       fund.methods.trade(
-        this.state.fromAddress,
+        from,
         this.state.amountInWei,
-        this.state.toAddress,
-        1,
+        to,
+        1, // via Bancor portal
         [],
-        "0x"
+        "0x0000000000000000000000000000000000000000000000000000000000000000"
       ).send({ from: this.props.accounts[0]})
-    }else{
+
+      // close pool modal
+      this.props.modalClose()
+    }
+    else{
       alert('Smart fund do not have enough balance')
     }
   }
 
   // get decimal and symbol by token address
   getTokenInfo = async (tokenAddress) => {
-    const web3 = this.props.web3
-    const token = new web3.eth.Contract(ERC20ABI, tokenAddress)
-    const decimals = await token.methods.decimals().call()
-
+    let decimals
     let symbol
-    try{
-      symbol = await token.methods.symbol().call()
-    }catch(e){
-      symbol = "Token"
+
+    if(tokenAddress === BNTEther){
+      decimals = 18
+      symbol = 'ETH'
+    }
+    else{
+      const web3 = this.props.web3
+      const token = new web3.eth.Contract(ERC20ABI, tokenAddress)
+      decimals = await token.methods.decimals().call()
+      try{
+        symbol = await token.methods.symbol().call()
+      }catch(e){
+        symbol = "Token"
+      }
     }
 
     return { decimals, symbol }

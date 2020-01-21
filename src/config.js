@@ -18,6 +18,9 @@ export const ParaswapApi = 'https://paraswap.io/api'
 // export const CoTraderBancorEndPoint = !isLocal ? 'https://api-bancor.cotrader.com/' : 'http://localhost:9003/'
 // export const PoolPortal = ''
 // export const ExchangePortal = ''
+// export const BNTToken = ''
+// export const BNTEther = ''
+
 
 // Kovan
 // export const SmartFundRegistryADDRESS = '0x090ba16ae386ca797c529620689203b27567f1a3'
@@ -33,6 +36,8 @@ export const ParaswapApi = 'https://paraswap.io/api'
 // export const ParaswapParamsAddress = '0x128f2abe35a46e78e433d6facc300fa6a8e2e731'
 // export const PoolPortal = ''
 // export const ExchangePortal = ''
+// export const BNTToken = ''
+// export const BNTEther = ''
 
 
 // Ropsten
@@ -50,6 +55,8 @@ export const ParaswapParamsAddress = '0x6fa269bba578d3d12e262a85feb15641a7f17ed5
 export const CoTraderBancorEndPoint = !isLocal ? 'https://api-bancor.cotrader.com/' : 'http://localhost:9003/'
 export const PoolPortal = '0x19ef873a7f2d7f38434c3f98223a74adae323c36'
 export const ExchangePortal = '0x431e7d5b31050a7b7dacf0d59a0d33fa33e5a899'
+export const BNTToken = '0x62bd9D98d4E188e281D7B78e29334969bbE1053c'
+export const BNTEther = '0xD368b98d03855835E2923Dc000b3f9c2EBF1b27b'
 
 
 export const StakeABI = [

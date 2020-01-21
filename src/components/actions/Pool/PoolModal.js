@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Button, Modal, Form } from "react-bootstrap"
-import { CoTraderBancorEndPoint } from '../../../config.js'
+import { CoTraderBancorEndPoint, BNTToken, BNTEther } from '../../../config.js'
 import axios from 'axios'
 
 import { Typeahead } from 'react-bootstrap-typeahead'
@@ -41,15 +41,24 @@ class PoolModal extends Component {
 
   // Find ERC20 or Relay address by symbol
   findAddressBySymbol = (symbol, isFromERC20=false) =>{
-    const column = isFromERC20 ? 'symbol' : 'smartTokenSymbol'
-    const property = isFromERC20 ? 'tokenAddress' : 'smartTokenAddress'
-    const res = this.state.tokensObject.filter(item => item[column] === symbol)
     let result
-    if(res && res.length > 0 && res[0].hasOwnProperty(property)){
-      result = res[0][property]
+    if(symbol === "ETH"){
+      result = BNTEther// "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+    }else if(symbol === "BNT"){
+      result = BNTToken
     }else{
-      result = null
+      // Parse tokens object
+      const column = isFromERC20 ? 'symbol' : 'smartTokenSymbol'
+      const property = isFromERC20 ? 'tokenAddress' : 'smartTokenAddress'
+      const res = this.state.tokensObject.filter(item => item[column] === symbol)
+
+      if(res && res.length > 0 && res[0].hasOwnProperty(property)){
+        result = res[0][property]
+      }else{
+        result = null
+      }
     }
+
     return result
   }
 
@@ -57,15 +66,16 @@ class PoolModal extends Component {
     const res = await axios.get(CoTraderBancorEndPoint + 'official')
     const tokensObject = res.data.result
     const symbols = res.data.result.map(item => item.symbol)
+    symbols.push('ETH')
+    symbols.push('BNT')
+
     const smartTokenSymbols = res.data.result.map(item => item.smartTokenSymbol)
     if(this._isMounted)
     this.setState({ tokensObject, symbols, smartTokenSymbols })
   }
 
-
+  modalClose = () => this.setState({ Show: false })
   render() {
-    let modalClose = () => this.setState({ Show: false })
-
     // Change component (Buy/Sell/Swap) dynamicly
     let CurrentAction
     if(this.state.action in componentList){
@@ -84,7 +94,7 @@ class PoolModal extends Component {
 
       <Modal
         show={this.state.Show}
-        onHide={modalClose}
+        onHide={() => this.modalClose()}
       >
         <Modal.Header closeButton>
         <Modal.Title>
@@ -126,6 +136,7 @@ class PoolModal extends Component {
                 web3={this.props.web3}
                 accounts={this.props.accounts}
                 smartFundAddress={this.props.smartFundAddress}
+                modalClose={this.modalClose}
                 />
                </React.Fragment>
               )
@@ -138,6 +149,7 @@ class PoolModal extends Component {
                 web3={this.props.web3}
                 accounts={this.props.accounts}
                 smartFundAddress={this.props.smartFundAddress}
+                modalClose={this.modalClose}
                 />
               )
             }
