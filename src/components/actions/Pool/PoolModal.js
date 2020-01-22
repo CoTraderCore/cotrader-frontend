@@ -74,7 +74,7 @@ class PoolModal extends Component {
     this.setState({ tokensObject, symbols, smartTokenSymbols })
   }
 
-  modalClose = () => this.setState({ Show: false })
+  modalClose = () => this.setState({ Show: false, action: 'Buy' })
   render() {
     // Change component (Buy/Sell/Swap) dynamicly
     let CurrentAction
