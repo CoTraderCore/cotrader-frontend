@@ -1,25 +1,25 @@
 // switch this to false in production
-const isLocal = true
+const isLocal = false
 
 export const ParaswapApi = 'https://paraswap.io/api'
 
 // Mainnet
-// export const SmartFundRegistryADDRESS = '0x0f1f46239e6ea6b8922bc4ad343100d47e417a4c'
-// export const EtherscanLink = 'https://etherscan.io/'
-// export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
-// export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'
-// export const BloxyLink = 'https://bloxy.info/portfolios/'
-// export const NeworkID = 1
-// export const StakeAddress = '0xf0089381815ed89b52fc9531bc2569c4f945079f'
-// export const COTAddress = '0x5c872500c00565505f3624ab435c222e558e9ff8'
-// export const ParaswapPriceFeedAddress = '0xC6A3eC2E62A932B94Bac51B6B9511A4cB623e2E5'
-// export const ParaswapParamsAddress = '0x0595aaa68ad0fbeacdeeaa7b7d78f22717ade957'
-// export const CoTraderBancorEndPoint = !isLocal ? 'https://api-bancor.cotrader.com/' : 'http://localhost:9003/'
+export const SmartFundRegistryADDRESS = '0x0f1f46239e6ea6b8922bc4ad343100d47e417a4c'
+export const EtherscanLink = 'https://etherscan.io/'
+export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
+export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'
+export const BloxyLink = 'https://bloxy.info/portfolios/'
+export const NeworkID = 1
+export const StakeAddress = '0xf0089381815ed89b52fc9531bc2569c4f945079f'
+export const COTAddress = '0x5c872500c00565505f3624ab435c222e558e9ff8'
+export const ParaswapPriceFeedAddress = '0xC6A3eC2E62A932B94Bac51B6B9511A4cB623e2E5'
+export const ParaswapParamsAddress = '0x0595aaa68ad0fbeacdeeaa7b7d78f22717ade957'
+export const CoTraderBancorEndPoint = !isLocal ? 'https://api-bancor.cotrader.com/' : 'http://localhost:9003/'
 
-// export const ExchangePortalAddress = ''
-// export const ExchangePortal = ''
-// export const BNTToken = ''
-// export const BNTEther = ''
+export const ExchangePortalAddress = '0x3a4ee3589b57bf9372ca60031e8a4a89a8b2b670'
+export const PoolPortal = '0x7442501292726a9c314b2d9e0981b939c6bd91f0'
+export const BNTToken = '0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C'
+export const BNTEther = '0xc0829421C1d260BD3cB3E0F06cfE2D52db2cE315'
 
 
 // Kovan
@@ -42,21 +42,21 @@ export const ParaswapApi = 'https://paraswap.io/api'
 
 
 // Ropsten
-export const SmartFundRegistryADDRESS = '0x9A78c2532e4C09317fCc1adBaf95609DD48a6CeD'
-export const EtherscanLink = 'https://ropsten.etherscan.io/'
-export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
-export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'
-export const BloxyLink = 'https://bloxy.info/portfolios/'
-export const NeworkID = 3
-export const StakeAddress = '0x67bb720dfbcf6ee890ad6aa45e7c3e402bf2dc90'
-export const COTAddress = '0xab726e4664d1c28B084d77cD9be4eF18884e858d'
-export const ParaswapPriceFeedAddress = '0x5ca10df04e94ac4a68b1e86facc271a34082293c'
-export const ParaswapParamsAddress = '0x6fa269bba578d3d12e262a85feb15641a7f17ed5'
-export const CoTraderBancorEndPoint = !isLocal ? 'https://api-bancor.cotrader.com/' : 'http://localhost:9003/'
-export const PoolPortal = '0x19ef873a7f2d7f38434c3f98223a74adae323c36'
-export const ExchangePortalAddress = '0x431e7d5b31050a7b7dacf0d59a0d33fa33e5a899'
-export const BNTToken = '0x62bd9D98d4E188e281D7B78e29334969bbE1053c'
-export const BNTEther = '0xD368b98d03855835E2923Dc000b3f9c2EBF1b27b'
+// export const SmartFundRegistryADDRESS = '0x9A78c2532e4C09317fCc1adBaf95609DD48a6CeD'
+// export const EtherscanLink = 'https://ropsten.etherscan.io/'
+// export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
+// export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'
+// export const BloxyLink = 'https://bloxy.info/portfolios/'
+// export const NeworkID = 3
+// export const StakeAddress = '0x67bb720dfbcf6ee890ad6aa45e7c3e402bf2dc90'
+// export const COTAddress = '0xab726e4664d1c28B084d77cD9be4eF18884e858d'
+// export const ParaswapPriceFeedAddress = '0x5ca10df04e94ac4a68b1e86facc271a34082293c'
+// export const ParaswapParamsAddress = '0x6fa269bba578d3d12e262a85feb15641a7f17ed5'
+// export const CoTraderBancorEndPoint = !isLocal ? 'https://api-bancor.cotrader.com/' : 'http://localhost:9003/'
+// export const PoolPortal = '0x19ef873a7f2d7f38434c3f98223a74adae323c36'
+// export const ExchangePortalAddress = '0x431e7d5b31050a7b7dacf0d59a0d33fa33e5a899'
+// export const BNTToken = '0x62bd9D98d4E188e281D7B78e29334969bbE1053c'
+// export const BNTEther = '0xD368b98d03855835E2923Dc000b3f9c2EBF1b27b'
 
 
 export const StakeABI = [
