@@ -10,6 +10,8 @@ import {
 } from '../../../config.js'
 import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../../utils/weiByDecimals'
 import { isAddress } from 'web3-utils'
+import setPending from '../../../utils/setPending'
+
 
 // Fund recognize ETH by this address
 export const ETH = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
@@ -95,11 +97,11 @@ class SwapPool extends Component {
     if(isEnoughBalance){
       const web3 = this.props.web3
       const fund = new web3.eth.Contract(SmartFundABIV3, this.props.smartFundAddress)
+      const block = await web3.eth.getBlockNumber()
 
       // wrap ETH case
       const from = this.state.fromAddress === BNTEther ? ETH : this.state.fromAddress
       const to = this.state.toAddress === BNTEther ? ETH : this.state.toAddress
-      console.log("from", from, "amount", this.state.amountInWei, "to", to)
 
       // trade
       fund.methods.trade(
@@ -110,6 +112,12 @@ class SwapPool extends Component {
         [],
         "0x0000000000000000000000000000000000000000000000000000000000000000"
       ).send({ from: this.props.accounts[0]})
+      .on('transactionHash', (hash) => {
+      // pending status for spiner
+      this.props.pending(true)
+      // pending status for DB
+      setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+      })
 
       // close pool modal
       this.props.modalClose()

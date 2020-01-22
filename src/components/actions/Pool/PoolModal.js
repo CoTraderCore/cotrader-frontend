@@ -137,6 +137,7 @@ class PoolModal extends Component {
                 accounts={this.props.accounts}
                 smartFundAddress={this.props.smartFundAddress}
                 modalClose={this.modalClose}
+                pending={this.props.pending}
                 />
                </React.Fragment>
               )
@@ -150,6 +151,7 @@ class PoolModal extends Component {
                 accounts={this.props.accounts}
                 smartFundAddress={this.props.smartFundAddress}
                 modalClose={this.modalClose}
+                pending={this.props.pending}
                 />
               )
             }

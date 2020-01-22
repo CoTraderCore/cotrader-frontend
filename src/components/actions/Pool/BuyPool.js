@@ -10,7 +10,7 @@ import {
 import { fromWeiByDecimalsInput } from '../../../utils/weiByDecimals'
 import { toWei } from 'web3-utils'
 import Pending from '../../templates/Spiners/Pending'
-
+import setPending from '../../../utils/setPending'
 
 class BuyPool extends Component {
   constructor(props, context) {
@@ -110,10 +110,12 @@ class BuyPool extends Component {
     }
   }
 
-  buy = () => {
+  buy = async () => {
     if(this.state.isBNTEnough && this.state.isERCEnough){
       const web3 = this.props.web3
       const fund = new web3.eth.Contract(SmartFundABIV3, this.props.smartFundAddress)
+      const block = await web3.eth.getBlockNumber()
+
       // buy pool
       fund.methods.buyPool(
         toWei(String(this.state.amount)),
@@ -121,6 +123,12 @@ class BuyPool extends Component {
         this.props.fromAddress,
         [])
       .send({ from:this.props.accounts[0] })
+      .on('transactionHash', (hash) => {
+      // pending status for spiner
+      this.props.pending(true)
+      // pending status for DB
+      setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+      })
 
       // close pool modal
       this.props.modalClose()
