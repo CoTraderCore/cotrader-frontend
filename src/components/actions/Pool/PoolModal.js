@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Button, Modal, Form } from "react-bootstrap"
-import { CoTraderBancorEndPoint, BNTToken, BNTEther } from '../../../config.js'
+import { CoTraderBancorEndPoint, BNTToken, BNTEther, BNTUSDBToken, NeworkID } from '../../../config.js'
 import axios from 'axios'
 
 import { Typeahead } from 'react-bootstrap-typeahead'
@@ -43,10 +43,15 @@ class PoolModal extends Component {
   findAddressBySymbol = (symbol, isFromERC20=false) =>{
     let result
     if(symbol === "ETH"){
-      result = BNTEther// "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-    }else if(symbol === "BNT"){
+      result = BNTEther
+    }
+    else if(symbol === "BNT"){
       result = BNTToken
-    }else{
+    }
+    else if(symbol === "USDB"){
+      result = BNTUSDBToken
+    }
+    else{
       // Parse tokens object
       const column = isFromERC20 ? 'symbol' : 'smartTokenSymbol'
       const property = isFromERC20 ? 'tokenAddress' : 'smartTokenAddress'
@@ -66,8 +71,14 @@ class PoolModal extends Component {
     const res = await axios.get(CoTraderBancorEndPoint + 'official')
     const tokensObject = res.data.result
     const symbols = res.data.result.map(item => item.symbol)
-    symbols.push('ETH')
-    symbols.push('BNT')
+
+    // PUSH ETH and BNT for Ropsten case, because Ropsten API don't have
+    if(NeworkID === 3){
+      symbols.push('ETH')
+      symbols.push('BNT')
+    }else{
+      symbols.push('USDB')
+    }
 
     const smartTokenSymbols = res.data.result.map(item => item.smartTokenSymbol)
     if(this._isMounted)

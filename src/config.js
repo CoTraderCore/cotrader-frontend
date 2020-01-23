@@ -4,7 +4,12 @@ const isLocal = false
 export const ParaswapApi = 'https://paraswap.io/api'
 
 // Mainnet
+// V2
 export const SmartFundRegistryADDRESS = '0x0f1f46239e6ea6b8922bc4ad343100d47e417a4c'
+
+// V3
+// export const SmartFundRegistryADDRESS = '0x16875b1b717b3748b18fbb27b036aa4fbca88ec5'
+
 export const EtherscanLink = 'https://etherscan.io/'
 export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
 export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'
@@ -20,7 +25,7 @@ export const ExchangePortalAddress = '0x3a4ee3589b57bf9372ca60031e8a4a89a8b2b670
 export const PoolPortal = '0x7442501292726a9c314b2d9e0981b939c6bd91f0'
 export const BNTToken = '0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C'
 export const BNTEther = '0xc0829421C1d260BD3cB3E0F06cfE2D52db2cE315'
-
+export const BNTUSDBToken = '0xd1146B08e8104EeDBa44a73B7bda1d102c6ceDC9'
 
 // Kovan
 // export const SmartFundRegistryADDRESS = '0x090ba16ae386ca797c529620689203b27567f1a3'
@@ -39,7 +44,7 @@ export const BNTEther = '0xc0829421C1d260BD3cB3E0F06cfE2D52db2cE315'
 // export const ExchangePortal = ''
 // export const BNTToken = ''
 // export const BNTEther = ''
-
+// export const BNTUSDBToken = ''
 
 // Ropsten
 // export const SmartFundRegistryADDRESS = '0x9A78c2532e4C09317fCc1adBaf95609DD48a6CeD'
@@ -57,7 +62,7 @@ export const BNTEther = '0xc0829421C1d260BD3cB3E0F06cfE2D52db2cE315'
 // export const ExchangePortalAddress = '0x431e7d5b31050a7b7dacf0d59a0d33fa33e5a899'
 // export const BNTToken = '0x62bd9D98d4E188e281D7B78e29334969bbE1053c'
 // export const BNTEther = '0xD368b98d03855835E2923Dc000b3f9c2EBF1b27b'
-
+// export const BNTUSDBToken = ''
 
 export const StakeABI = [
 	{

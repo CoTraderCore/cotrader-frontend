@@ -13,7 +13,7 @@ import getWeb3 from "./utils/getWeb3"
 import getFundsList from "./utils/getFundsList"
 
 import { HashRouter, Route, Switch } from 'react-router-dom'
-import { NeworkID }  from './config.js'
+import { NeworkID, SmartFundRegistryADDRESS }  from './config.js'
 
 import { Alert } from "react-bootstrap"
 
@@ -113,6 +113,7 @@ class App extends Component {
   }
 
   render() {
+    console.log("SmartFundRegistryADDRESS: ", SmartFundRegistryADDRESS)
     // redirect to web3off version if client has no web3
     if(this.state.timeOut && !this.state.web3){
     // temporary solution
