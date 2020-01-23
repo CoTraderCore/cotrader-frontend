@@ -2,7 +2,7 @@ import React from 'react'
 import { Pie } from 'react-chartjs-2'
 import { fromWei, toWei } from 'web3-utils'
 import { Badge } from "react-bootstrap"
-import { IExchangePortalABI, ExchangePortalAddress } from '../../config.js'
+import { IExchangePortalABI, ExchangePortalAddress, ExchangePortalAddressV3 } from '../../config.js'
 import { inject } from 'mobx-react'
 
 class AssetsAlocationChart extends React.Component{
@@ -43,7 +43,7 @@ class AssetsAlocationChart extends React.Component{
     })
 
     let balance = await Promise.all(AssetsData.map(item => {
-      return item["balance"] > 0 && this.kyberRateToETH(item["address"], fromWei(item["balance"].toString()))
+      return item["balance"] > 0 && this.RateToETH(item["address"], fromWei(item["balance"].toString()))
     }))
 
     labels = labels.filter(function (el) {
@@ -69,7 +69,21 @@ class AssetsAlocationChart extends React.Component{
           "#50119e",
           "#10cdeb",
           "#00c0aa",
-          "#8b25d2"
+          "#8b25d2",
+          "#8b25d3",
+          "#10creb",
+          "#30creb",
+          '#37U3EB',
+          '#02d5e1',
+          "#441180",
+          "#00411e",
+          "#135d4b",
+          '#36A2EB',
+          '#00f5d1',
+          "#4251b0",
+          "#50119e",
+          "#10cdeb",
+          "#00c0aa"
 	    	],
 	    	hoverBackgroundColor: [
           '#36A2EB',
@@ -78,7 +92,21 @@ class AssetsAlocationChart extends React.Component{
           "#50119e",
           "#10cdeb",
           "#00c0aa",
-          "#8b25d2"
+          "#8b25d2",
+          "#8b25d3",
+          "#10creb",
+          "#30creb",
+          '#37U3EB',
+          '#02d5e1',
+          "#441180",
+          "#00411e",
+          "#135d4b",
+          '#36A2EB',
+          '#00f5d1',
+          "#4251b0",
+          "#50119e",
+          "#10cdeb",
+          "#00c0aa"
 	    	]
 	    }]
       }
@@ -86,14 +114,24 @@ class AssetsAlocationChart extends React.Component{
   }
   }
 
-  kyberRateToETH = async (from, amount) => {
+  RateToETH = async (from, amount) => {
     if(from === this.state.eth_token){
       return amount
     }
     else{
-      const contract = new this.props.MobXStorage.web3.eth.Contract(IExchangePortalABI, ExchangePortalAddress)
-      const src = toWei(amount.toString(), 'ether')
-      let value = await contract.methods.getValue(from, this.state.eth_token, src).call()
+      let value
+      try{
+        // try get best price from paraswap (v3)
+        const contract = new this.props.MobXStorage.web3.eth.Contract(IExchangePortalABI, ExchangePortalAddressV3)
+        const src = toWei(amount.toString(), 'ether')
+        value = await contract.methods.getValue(from, this.state.eth_token, src).call()
+      }catch(e){
+        // if can't get price, use v1 kyber 
+        const contract = new this.props.MobXStorage.web3.eth.Contract(IExchangePortalABI, ExchangePortalAddress)
+        const src = toWei(amount.toString(), 'ether')
+        value = await contract.methods.getValue(from, this.state.eth_token, src).call()
+      }
+
       return fromWei(value.toString())
     }
   }
