@@ -22,7 +22,7 @@ export const ParaswapParamsAddress = '0x0595aaa68ad0fbeacdeeaa7b7d78f22717ade957
 export const CoTraderBancorEndPoint = !isLocal ? 'https://api-bancor.cotrader.com/' : 'http://localhost:9003/'
 
 export const ExchangePortalAddress = '0x7Fd65F765932E29F041113777C47CE77ecF4E24A'
-export const ExchangePortalAddressV3 = '0x3a4ee3589b57bf9372ca60031e8a4a89a8b2b670'
+export const ExchangePortalAddressV3 = '0x69dab7803eb222e1a0bee42fbf87906d7623b695'
 export const PoolPortal = '0x7442501292726a9c314b2d9e0981b939c6bd91f0'
 export const BNTToken = '0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C'
 export const BNTEther = '0xc0829421C1d260BD3cB3E0F06cfE2D52db2cE315'
