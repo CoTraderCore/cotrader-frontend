@@ -71,45 +71,48 @@ class ViewPageCharts extends React.Component {
   updateChartsData = async () => {
     axios.get(BloxyChartsLink + this.props.address).then((data) => {
     if(this._isMounted){
-    const date = data.data.map(function(v) {
+    // remove wrong day
+    data = data.data.map((v) => v.date !== "2020-01-27" && v)
+
+    const date = data.map(function(v) {
       return v.date
     });
 
-    const deposit_value = data.data.map(function(v) {
+    const deposit_value = data.map(function(v) {
       return v.deposit_value
     });
 
-    const withdraw_value = data.data.map(function(v) {
+    const withdraw_value = data.map(function(v) {
       return -v.withdraw_value
     });
 
-    const profit = data.data.map(function(v) {
+    const profit = data.map(function(v) {
       return v.profit
     });
 
-    const roi = data.data.map(function(v) {
+    const roi = data.map(function(v) {
       return v.profit / v.deposited
     });
 
-    const roiDaily = data.data.map(function(v) {
+    const roiDaily = data.map(function(v) {
       return v.roi_daily
     });
 
-    const daylyValue = data.data.map(function(v) {
+    const daylyValue = data.map(function(v) {
       return v.daily_value
     });
 
-    const realizedGains = data.data.map(function(v) {
+    const realizedGains = data.map(function(v) {
       const withdraw_value = v.deposit_value + v.daily_value
       return v.withdraw_value - withdraw_value
     });
 
-    const unrealizedGains = data.data.map(function(v) {
+    const unrealizedGains = data.map(function(v) {
       const depositSubWithdraw = v.deposit_value - v.withdraw_value
       return v.daily_value - depositSubWithdraw
     });
 
-    const totalGains = data.data.map(function(v) {
+    const totalGains = data.map(function(v) {
       const depositSubWithdraw = v.deposit_value - v.withdraw_value
       const UnrealizedGains = v.daily_value - depositSubWithdraw
       const withdraw_value = v.deposit_value + v.daily_value
@@ -117,49 +120,42 @@ class ViewPageCharts extends React.Component {
       return RealizedGains + UnrealizedGains
     });
 
+    const commonData = {
+      fill: false,
+      lineTension: 0.1,
+      borderCapStyle: 'butt',
+      borderDash: [],
+      borderDashOffset: 0.0,
+      borderJoinStyle: 'miter',
+      pointBackgroundColor: '#fff',
+      pointBorderWidth: 1,
+      pointHoverRadius: 5,
+      pointHoverBorderWidth: 2,
+      pointRadius: 1,
+      pointHitRadius: 10
+    }
+
     const parsedDWdata = {
       labels:date,
       datasets: [{
       label: 'Deposit',
       backgroundColor: 'rgba(75,192,192,0.4)',
-      fill: false,
-      lineTension: 0.1,
       borderColor: 'rgba(75,192,192,1)',
-      borderCapStyle: 'butt',
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: 'miter',
       pointBorderColor: 'rgba(75,192,192,1)',
-      pointBackgroundColor: '#fff',
-      pointBorderWidth: 1,
-      pointHoverRadius: 5,
       pointHoverBackgroundColor: 'rgba(75,192,192,1)',
       pointHoverBorderColor: 'rgba(220,220,220,1)',
-      pointHoverBorderWidth: 2,
-      pointRadius: 1,
-      pointHitRadius: 10,
-      data: deposit_value
+      ...commonData,
+      data: deposit_value.map(item => Number(item).toFixed(4))
     },
     {
       label: 'Withdraw',
-      fill: true,
-      lineTension: 0.1,
       backgroundColor: 'rgba(219,112,147, 0.4)',
       borderColor: 'rgba(219,112,147)',
-      borderCapStyle: 'butt',
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: 'miter',
       pointBorderColor: 'rgba(219,112,147)',
-      pointBackgroundColor: '#fff',
-      pointBorderWidth: 1,
-      pointHoverRadius: 5,
       pointHoverBackgroundColor: 'rgba(219,112,147)',
       pointHoverBorderColor: 'rgba(220,220,220,1)',
-      pointHoverBorderWidth: 2,
-      pointRadius: 1,
-      pointHitRadius: 10,
-      data: withdraw_value
+      ...commonData,
+      data: withdraw_value.map(item => Number(item).toFixed(4))
     }
       ]
     }
@@ -169,23 +165,12 @@ class ViewPageCharts extends React.Component {
         {
           label: 'Realized gains',
           backgroundColor: 'rgba(18,237,20, 0.4)',
-          fill: false,
-          lineTension: 0.1,
           borderColor: 'rgba(18,237,20)',
-          borderCapStyle: 'butt',
-          borderDash: [],
-          borderDashOffset: 0.0,
-          borderJoinStyle: 'miter',
           pointBorderColor: 'rgba(18,237,20)',
-          pointBackgroundColor: '#fff',
-          pointBorderWidth: 1,
-          pointHoverRadius: 5,
           pointHoverBackgroundColor: 'rgba(18,237,20)',
           pointHoverBorderColor: 'rgba(18,237,20)',
-          pointHoverBorderWidth: 2,
-          pointRadius: 1,
-          pointHitRadius: 10,
-          data: realizedGains
+          ...commonData,
+          data: realizedGains.map(item => Number(item).toFixed(4))
         }
       ]
     }
@@ -196,23 +181,12 @@ class ViewPageCharts extends React.Component {
         {
           label: 'Unrealized gains',
           backgroundColor: 'rgba(229,222,19, 0.4)',
-          fill: false,
-          lineTension: 0.1,
           borderColor: 'rgba(229,222,19)',
-          borderCapStyle: 'butt',
-          borderDash: [],
-          borderDashOffset: 0.0,
-          borderJoinStyle: 'miter',
           pointBorderColor: 'rgba(229,222,19)',
-          pointBackgroundColor: '#fff',
-          pointBorderWidth: 1,
-          pointHoverRadius: 5,
           pointHoverBackgroundColor: 'rgba(229,222,19)',
           pointHoverBorderColor: 'rgba(229,222,19)',
-          pointHoverBorderWidth: 2,
-          pointRadius: 1,
-          pointHitRadius: 10,
-          data: unrealizedGains
+          ...commonData,
+          data: unrealizedGains.map(item => Number(item).toFixed(4))
         }
       ]
     }
@@ -223,23 +197,12 @@ class ViewPageCharts extends React.Component {
         {
           label: 'ROI',
           backgroundColor: 'rgba(135,206,250, 0.4)',
-          fill: false,
-          lineTension: 0.1,
           borderColor: 'rgba(135,206,250)',
-          borderCapStyle: 'butt',
-          borderDash: [],
-          borderDashOffset: 0.0,
-          borderJoinStyle: 'miter',
           pointBorderColor: 'rgba(135,206,250)',
-          pointBackgroundColor: '#fff',
-          pointBorderWidth: 1,
-          pointHoverRadius: 5,
           pointHoverBackgroundColor: 'rgba(135,206,250)',
           pointHoverBorderColor: 'rgba(135,206,250)',
-          pointHoverBorderWidth: 2,
-          pointRadius: 1,
-          pointHitRadius: 10,
-          data: roi
+          ...commonData,
+          data: roi.map(item => Number(item).toFixed(4))
         }
       ]
     }
@@ -250,23 +213,12 @@ class ViewPageCharts extends React.Component {
         {
           label: 'Profit',
           backgroundColor: 'rgba(95,158,160, 0.4)',
-          fill: false,
-          lineTension: 0.1,
           borderColor: 'rgba(95,158,160)',
-          borderCapStyle: 'butt',
-          borderDash: [],
-          borderDashOffset: 0.0,
-          borderJoinStyle: 'miter',
           pointBorderColor: 'rgba(95,158,160)',
-          pointBackgroundColor: '#fff',
-          pointBorderWidth: 1,
-          pointHoverRadius: 5,
           pointHoverBackgroundColor: 'rgba(95,158,160)',
           pointHoverBorderColor: 'rgba(95,158,160)',
-          pointHoverBorderWidth: 2,
-          pointRadius: 1,
-          pointHitRadius: 10,
-          data: profit
+          ...commonData,
+          data: profit.map(item => Number(item).toFixed(4))
         }
       ]
     }
@@ -277,23 +229,12 @@ class ViewPageCharts extends React.Component {
         {
           label: 'Daily Value',
           backgroundColor: 'rgba(138,43,226, 0.4)',
-          fill: false,
-          lineTension: 0.1,
           borderColor: 'rgba(138,43,226)',
-          borderCapStyle: 'butt',
-          borderDash: [],
-          borderDashOffset: 0.0,
-          borderJoinStyle: 'miter',
           pointBorderColor: 'rgba(138,43,226)',
-          pointBackgroundColor: '#fff',
-          pointBorderWidth: 1,
-          pointHoverRadius: 5,
           pointHoverBackgroundColor: 'rgba(138,43,226)',
           pointHoverBorderColor: 'rgba(138,43,226)',
-          pointHoverBorderWidth: 2,
-          pointRadius: 1,
-          pointHitRadius: 10,
-          data: daylyValue
+          ...commonData,
+          data: daylyValue.map(item => Number(item).toFixed(4))
         }
       ]
     }
@@ -304,23 +245,12 @@ class ViewPageCharts extends React.Component {
         {
           label: 'Total gains',
           backgroundColor: 'rgba(237, 104, 9, 0.4)',
-          fill: false,
-          lineTension: 0.1,
           borderColor: 'rgba(237, 104, 9)',
-          borderCapStyle: 'butt',
-          borderDash: [],
-          borderDashOffset: 0.0,
-          borderJoinStyle: 'miter',
           pointBorderColor: 'rgba(237, 104, 9)',
-          pointBackgroundColor: '#fff',
-          pointBorderWidth: 1,
-          pointHoverRadius: 5,
           pointHoverBackgroundColor: 'rgba(237, 104, 9)',
           pointHoverBorderColor: 'rgba(237, 104, 9)',
-          pointHoverBorderWidth: 2,
-          pointRadius: 1,
-          pointHitRadius: 10,
-          data: totalGains
+          ...commonData,
+          data: totalGains.map(item => Number(item).toFixed(4))
         }
       ]
     }
@@ -331,23 +261,12 @@ class ViewPageCharts extends React.Component {
         {
           label: 'ROI Daily',
           backgroundColor: 'rgba(240, 26, 144, 0.4)',
-          fill: false,
-          lineTension: 0.1,
           borderColor: 'rgba(240, 26, 144)',
-          borderCapStyle: 'butt',
-          borderDash: [],
-          borderDashOffset: 0.0,
-          borderJoinStyle: 'miter',
           pointBorderColor: 'rgba(240, 26, 144)',
-          pointBackgroundColor: '#fff',
-          pointBorderWidth: 1,
-          pointHoverRadius: 5,
           pointHoverBackgroundColor: 'rgba(240, 26, 144)',
           pointHoverBorderColor: 'rgba(240, 26, 144)',
-          pointHoverBorderWidth: 2,
-          pointRadius: 1,
-          pointHitRadius: 10,
-          data: roiDaily
+          ...commonData,
+          data: roiDaily.map(item => Number(item).toFixed(4))
         }
       ]
     }
