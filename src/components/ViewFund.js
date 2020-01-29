@@ -201,7 +201,7 @@ class ViewFund extends Component {
               !_.isEmpty(this.state.balance)
               ?
               (
-                <AssetsAlocationChart AssetsData={this.state.balance}/>
+                <AssetsAlocationChart AssetsData={this.state.balance} version={this.state.version}/>
               )
               :null
             }

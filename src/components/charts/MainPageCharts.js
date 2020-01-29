@@ -38,8 +38,10 @@ class MainPageCharts extends React.Component {
 
     axios.get(BloxyChartsLink + this.props.address).then((data) => {
     if(this._isMounted){
+    data = data.data.map((v) => v)
     // remove wrong day
-    data = data.data.map((v) => v.date !== "2020-01-27" && v)
+    const wrongDay = data.length > 0 ? data[data.length - 2].date : null
+    data = data.map((v) => v.date !== wrongDay && v)
 
     const date = data.map(function(v) {
       return v.date

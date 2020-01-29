@@ -5,6 +5,7 @@ import { Badge } from "react-bootstrap"
 import { IExchangePortalABI, ExchangePortalAddress, ExchangePortalAddressV3 } from '../../config.js'
 import { inject } from 'mobx-react'
 
+
 class AssetsAlocationChart extends React.Component{
   constructor(props, context) {
     super(props, context)
@@ -43,7 +44,7 @@ class AssetsAlocationChart extends React.Component{
     })
 
     let balance = await Promise.all(AssetsData.map(item => {
-      return item["balance"] > 0 && this.RateToETH(item["address"], fromWei(item["balance"].toString()))
+      return item["balance"] > 0 && this.RateToETH(item["address"], fromWei(String(item["balance"])))
     }))
 
     labels = labels.filter(function (el) {
@@ -114,25 +115,28 @@ class AssetsAlocationChart extends React.Component{
   }
   }
 
+  getTokenWeiByDecimals = async () => {
+
+  }
+
   RateToETH = async (from, amount) => {
     if(from === this.state.eth_token){
       return amount
     }
     else{
       let value
-      try{
-        // try get best price from paraswap (v3)
-        const contract = new this.props.MobXStorage.web3.eth.Contract(IExchangePortalABI, ExchangePortalAddressV3)
-        const src = toWei(amount.toString(), 'ether')
-        value = await contract.methods.getValue(from, this.state.eth_token, src).call()
-      }catch(e){
-        // if can't get price, use v1 kyber 
+      if(this.props.version === 1){
         const contract = new this.props.MobXStorage.web3.eth.Contract(IExchangePortalABI, ExchangePortalAddress)
-        const src = toWei(amount.toString(), 'ether')
+        const src = toWei(String(amount), 'ether')
+        value = await contract.methods.getValue(from, this.state.eth_token, src).call()
+      }
+      else{
+        const contract = new this.props.MobXStorage.web3.eth.Contract(IExchangePortalABI, ExchangePortalAddressV3)
+        const src = toWei(String(amount), 'ether')
         value = await contract.methods.getValue(from, this.state.eth_token, src).call()
       }
 
-      return fromWei(value.toString())
+      return fromWei(String(value))
     }
   }
 
