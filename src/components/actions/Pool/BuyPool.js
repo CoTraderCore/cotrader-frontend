@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form, Button, Alert } from "react-bootstrap"
 import {
-  SmartFundABIV3,
+  SmartFundABIV4,
   PoolPortalABI,
   PoolPortal,
   ERC20ABI,
@@ -113,7 +113,7 @@ class BuyPool extends Component {
   buy = async () => {
     if(this.state.isBNTEnough && this.state.isERCEnough){
       const web3 = this.props.web3
-      const fund = new web3.eth.Contract(SmartFundABIV3, this.props.smartFundAddress)
+      const fund = new web3.eth.Contract(SmartFundABIV4, this.props.smartFundAddress)
       const block = await web3.eth.getBlockNumber()
 
       // buy pool

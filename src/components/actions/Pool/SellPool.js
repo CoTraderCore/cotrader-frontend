@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Button } from "react-bootstrap"
-import { SmartFundABIV3, ERC20ABI } from '../../../config.js'
+import { SmartFundABIV4, ERC20ABI } from '../../../config.js'
 import { toWeiByDecimalsInput } from '../../../utils/weiByDecimals'
 import setPending from '../../../utils/setPending'
 
@@ -24,7 +24,7 @@ class SellPool extends Component {
       const amountInWei = toWeiByDecimalsInput(decimals, this.state.amount)
 
       // Sell
-      const fund = new web3.eth.Contract(SmartFundABIV3, this.props.smartFundAddress)
+      const fund = new web3.eth.Contract(SmartFundABIV4, this.props.smartFundAddress)
       fund.methods.sellPool(amountInWei, 0, this.props.fromAddress, []).send({ from:this.props.accounts[0] })
       .on('transactionHash', (hash) => {
       // pending status for spiner

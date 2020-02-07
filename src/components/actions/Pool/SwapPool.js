@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Button, Form, Alert } from "react-bootstrap"
 import { Typeahead } from 'react-bootstrap-typeahead'
 import {
-  SmartFundABIV3,
+  SmartFundABIV4,
   PoolPortalABI,
   PoolPortal,
   ERC20ABI,
@@ -96,7 +96,7 @@ class SwapPool extends Component {
     const isEnoughBalance = await this.checkFundBalance()
     if(isEnoughBalance){
       const web3 = this.props.web3
-      const fund = new web3.eth.Contract(SmartFundABIV3, this.props.smartFundAddress)
+      const fund = new web3.eth.Contract(SmartFundABIV4, this.props.smartFundAddress)
       const block = await web3.eth.getBlockNumber()
 
       // wrap ETH case

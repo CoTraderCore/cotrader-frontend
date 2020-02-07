@@ -219,7 +219,7 @@ class SmartFundsList extends Component{
           </Col>
          </Row>
          </Card.Body>
-         <UpgradableCard ref={item.address} profit={item.profit} value={item.value} />
+         <UpgradableCard ref={item.address} profit={item.profit} value={item.value} mainAsset={item.mainAsset}/>
          </Card>
          )
          )

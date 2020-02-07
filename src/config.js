@@ -1,5 +1,5 @@
 // switch this to false in production
-const isLocal = false
+const isLocal = true
 
 export const ParaswapApi = 'https://paraswap.io/api'
 
@@ -20,7 +20,6 @@ export const COTAddress = '0x5c872500c00565505f3624ab435c222e558e9ff8'
 export const ParaswapPriceFeedAddress = '0xC6A3eC2E62A932B94Bac51B6B9511A4cB623e2E5'
 export const ParaswapParamsAddress = '0x0595aaa68ad0fbeacdeeaa7b7d78f22717ade957'
 export const CoTraderBancorEndPoint = !isLocal ? 'https://api-bancor.cotrader.com/' : 'http://localhost:9003/'
-
 export const ExchangePortalAddress = '0x7Fd65F765932E29F041113777C47CE77ecF4E24A'
 export const ExchangePortalAddressV3 = '0x69dab7803eb222e1a0bee42fbf87906d7623b695'
 export const PoolPortal = '0x7442501292726a9c314b2d9e0981b939c6bd91f0'
@@ -61,9 +60,12 @@ export const BNTUSDBToken = '0xd1146B08e8104EeDBa44a73B7bda1d102c6ceDC9'
 // export const CoTraderBancorEndPoint = !isLocal ? 'https://api-bancor.cotrader.com/' : 'http://localhost:9003/'
 // export const PoolPortal = '0x19ef873a7f2d7f38434c3f98223a74adae323c36'
 // export const ExchangePortalAddress = '0x431e7d5b31050a7b7dacf0d59a0d33fa33e5a899'
+// export const ExchangePortalAddressV3 = '0xc96aa920cb46a6885fa56f2071d665f408efbaaf'
 // export const BNTToken = '0x62bd9D98d4E188e281D7B78e29334969bbE1053c'
 // export const BNTEther = '0xD368b98d03855835E2923Dc000b3f9c2EBF1b27b'
 // export const BNTUSDBToken = ''
+
+
 
 export const StakeABI = [
 	{
@@ -2630,7 +2632,7 @@ export const SmartFundABIV2 = [
 	}
 ]
 
-export const SmartFundABIV3 = [
+export const SmartFundABIV4 = [
 	{
 		"constant": true,
 		"inputs": [
@@ -2728,20 +2730,6 @@ export const SmartFundABIV3 = [
 		"constant": true,
 		"inputs": [],
 		"name": "totalSupply",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "totalEtherWithdrawn",
 		"outputs": [
 			{
 				"name": "",
@@ -3037,20 +3025,6 @@ export const SmartFundABIV3 = [
 		"type": "function"
 	},
 	{
-		"constant": true,
-		"inputs": [],
-		"name": "totalEtherDeposited",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"constant": false,
 		"inputs": [
 			{
@@ -3274,6 +3248,34 @@ export const SmartFundABIV3 = [
 	},
 	{
 		"constant": true,
+		"inputs": [],
+		"name": "stableCoinAddress",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_stableCoinAddress",
+				"type": "address"
+			}
+		],
+		"name": "changeStableCoinAddress",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
 		"inputs": [
 			{
 				"name": "",
@@ -3303,6 +3305,20 @@ export const SmartFundABIV3 = [
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "totalWeiWithdrawn",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -3405,7 +3421,12 @@ export const SmartFundABIV3 = [
 	},
 	{
 		"constant": false,
-		"inputs": [],
+		"inputs": [
+			{
+				"name": "depositAmount",
+				"type": "uint256"
+			}
+		],
 		"name": "deposit",
 		"outputs": [
 			{
@@ -3413,8 +3434,22 @@ export const SmartFundABIV3 = [
 				"type": "uint256"
 			}
 		],
-		"payable": true,
-		"stateMutability": "payable",
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "totalWeiDeposited",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -3475,6 +3510,20 @@ export const SmartFundABIV3 = [
 	},
 	{
 		"constant": true,
+		"inputs": [],
+		"name": "permittedPools",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
 		"inputs": [
 			{
 				"name": "",
@@ -3504,6 +3553,20 @@ export const SmartFundABIV3 = [
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "permittedStabels",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -3584,7 +3647,19 @@ export const SmartFundABIV3 = [
 				"type": "address"
 			},
 			{
-				"name": "_poolPortal",
+				"name": "_permittedPoolsAddress",
+				"type": "address"
+			},
+			{
+				"name": "_permittedStabels",
+				"type": "address"
+			},
+			{
+				"name": "_poolPortalAddress",
+				"type": "address"
+			},
+			{
+				"name": "_stableCoinAddress",
 				"type": "address"
 			}
 		],
@@ -3596,6 +3671,40 @@ export const SmartFundABIV3 = [
 		"payable": true,
 		"stateMutability": "payable",
 		"type": "fallback"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "poolToken",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "BuyPool",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "poolToken",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "SellPool",
+		"type": "event"
 	},
 	{
 		"anonymous": false,

@@ -19,8 +19,8 @@ class UpgradableCard extends Component {
   	return (
       <Card.Footer className="text-muted cardsAdditional">
         <Row>
-        <Col>Fund profit in ETH: { fromWei(this.state.profit) }</Col>
-        <Col>Fund value in ETH: { fromWei(this.state.value) }</Col>
+        <Col>Fund profit in {this.props.mainAsset}: { fromWei(this.state.profit) }</Col>
+        <Col>Fund value in {this.props.mainAsset}: { fromWei(this.state.value) }</Col>
         </Row>
       </Card.Footer>
     )
