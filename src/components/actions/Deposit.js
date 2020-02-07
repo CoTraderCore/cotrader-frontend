@@ -68,7 +68,9 @@ class Deposit extends Component {
     "from": this.props.accounts[0],
     "to": ercAssetAddress,
     "value": "0x0",
-    "data": approveData
+    "data": approveData,
+    "gasPrice": this.props.web3.eth.utils.toHex(5000000000),
+    "gas": this.props.web3.eth.utils.toHex(85000),
   }
 
   // Deposit
@@ -79,7 +81,9 @@ class Deposit extends Component {
     "from": this.props.accounts[0],
     "to": address,
     "value": "0x0",
-    "data": depositData
+    "data": depositData,
+    "gasPrice": this.props.web3.eth.utils.toHex(5000000000),
+    "gas": this.props.web3.eth.utils.toHex(285000),
   }
 
   // Craete Batch request
