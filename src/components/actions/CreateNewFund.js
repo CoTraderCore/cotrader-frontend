@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
-import { SmartFundRegistryABI, SmartFundRegistryADDRESS } from '../../config.js'
+import {
+  SmartFundRegistryABIV4,
+  SmartFundRegistryADDRESS
+} from '../../config.js'
 import { Modal, Form } from "react-bootstrap"
 
 import UserInfo from '../templates/UserInfo'
@@ -14,32 +17,48 @@ class CreateNewFund extends Component {
     this.state = {
       Show: false,
       Percent: 20,
+      FundAsset: 'ETH',
       FundName: ''
     }
   }
 
-  createNewFund = async (name, percent) =>{
-  if(percent > 0 && percent <= 100){
-  const contract = new this.props.web3.eth.Contract(SmartFundRegistryABI, SmartFundRegistryADDRESS)
-  try {
-    this.setState({ Show:false })
-    this.props.pending(true)
-    await contract.methods.createSmartFund(name, percent).send({ from: this.props.accounts[0] })
-  } catch (e) {
-    this.props.pending(false)
-  }
+  createNewFund = async () =>{
+  if(this.state.Percent > 0 && this.state.Percent <= 100){
+  const contract = new this.props.web3.eth.Contract(SmartFundRegistryABIV4, SmartFundRegistryADDRESS)
+    if(this.state.FundName !== ''){
+      try{
+        this.props.pending(true)
+        const isUSDFund = this.state.FundAsset === "USD" ? true : false
+        const name = this.state.FundName
+        const percent = this.state.Percent
+        this.modalClose()
+        console.log(name, percent, isUSDFund)
+        await contract.methods.createSmartFund(name, percent, isUSDFund)
+        .send({ from: this.props.accounts[0] })
+      }catch(e){
+        // for case if user reject transaction
+        this.props.pending(false)
+      }
+    }else{
+      alert('Please input fund name')
+    }
+  }else{
+    alert('Please select correct percent')
   }
   }
 
+  // helper for set state
   change = e => {
     this.setState({
       [e.target.name]: e.target.value
     })
   }
 
-  render() {
-    let modalClose = () => this.setState({ Show: false });
+  modalClose = () => {
+    this.setState({ Show: false, Percent: 20, FundAsset: 'ETH', FundName: '' })
+  }
 
+  render() {
     return (
       <div>
         <Button variant="contained" color="primary" onClick={() => this.setState({ Show: true })}>
@@ -48,7 +67,7 @@ class CreateNewFund extends Component {
 
         <Modal
           show={this.state.Show}
-          onHide={modalClose}
+          onHide={() => this.modalClose()}
           aria-labelledby="example-modal-sizes-title-sm"
         >
           <Modal.Header closeButton>
@@ -97,8 +116,18 @@ class CreateNewFund extends Component {
           />
           </Form.Group>
 
+          <Form.Group controlId="exampleForm.ControlSelect1">
+          <Form.Label>Main fund asset % <UserInfo  info="With the help of this asset, investors will invest, calculate fund value ect"/></Form.Label>
+          <Form.Control as="select" name="FundAsset" onChange={e => this.change(e)}>
+            <option>ETH</option>
+            <option>USD</option>
+          </Form.Control>
+          </Form.Group>
 
-           <Button variant="contained" color="primary" onClick={() => this.createNewFund(this.state.FundName, this.state.Percent)}
+           <Button
+           variant="contained"
+           color="primary"
+           onClick={() => this.createNewFund()}
            >
            Create
            </Button>
