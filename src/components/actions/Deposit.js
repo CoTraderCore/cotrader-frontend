@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { SmartFundABI } from '../../config.js'
+import { SmartFundABI, SmartFundABIV4, ERC20ABI } from '../../config.js'
 import { Button, Modal, Form, Alert } from "react-bootstrap"
 import setPending from '../../utils/setPending'
+import { toWeiByDecimalsInput } from '../../utils/weiByDecimals'
 
 class Deposit extends Component {
   constructor(props, context) {
@@ -18,15 +19,18 @@ class Deposit extends Component {
   validation(address, _value){
     if( _value <= 0){
     this.setState({ ValueError:true })
-    }else{
-    if(this.state.ValueError){
-    this.setState({ ValueError:false })
     }
-    this.deposit(address, _value)
-  }
+    else{
+      if(this.props.mainAsset === 'ETH'){
+        this.depositETH(address, _value)
+      }else{
+        this.depositUSD(address, _value)
+      }
+    }
   }
 
-  deposit = async (address, _value) => {
+
+  depositETH = async (address, _value) => {
   const contract = new this.props.web3.eth.Contract(SmartFundABI, address)
   const amount = this.props.web3.utils.toWei(_value, 'ether');
 
@@ -43,11 +47,56 @@ class Deposit extends Component {
   })
   }
 
-  change = e => {
-    this.setState({
-      [e.target.name]: e.target.value
-    })
+
+  depositUSD = async (address, _value) => {
+  const contract = new this.props.web3.eth.Contract(SmartFundABIV4, address)
+  const ercAssetAddress = await contract.methods.stableCoinAddress().call()
+  const ercAssetContract = new this.props.web3.eth.Contract(ERC20ABI, ercAssetAddress)
+  const ercAssetDecimals = await ercAssetContract.methods.decimals().call()
+  const amount = toWeiByDecimalsInput(ercAssetDecimals, _value)
+
+
+  let block = await this.props.web3.eth.getBlockNumber()
+
+  // Approve ERC to smart fund
+  const approveData = ercAssetContract.methods.approve(
+    address,
+    amount
+  ).encodeABI({from: this.props.accounts[0]})
+
+  const approveTx = {
+    "from": this.props.accounts[0],
+    "to": ercAssetAddress,
+    "value": "0x0",
+    "data": approveData
   }
+
+  // Deposit
+  const depositData = contract.methods.deposit(amount)
+  .encodeABI({from: this.props.accounts[0]})
+
+  const depositTx = {
+    "from": this.props.accounts[0],
+    "to": address,
+    "value": "0x0",
+    "data": depositData
+  }
+
+  // Craete Batch request
+  let batch = new this.props.web3.BatchRequest()
+  batch.add(this.props.web3.eth.sendTransaction.request(approveTx, () => console.log("Approve")))
+  batch.add(this.props.web3.eth.sendTransaction.request(depositTx, (status, hash) => {
+    // pending status for spiner
+    this.props.pending(true)
+    // pending status for DB
+    setPending(address, 1, this.props.accounts[0], block, hash, "Deposit")
+  }))
+
+  batch.execute()
+
+  this.modalClose()
+  }
+
   modalClose = () => this.setState({ Show: false, Agree: false });
 
   render() {
@@ -82,13 +131,13 @@ class Deposit extends Component {
               <br/>
               <Form>
               <Form.Group>
-              <Form.Label>Amount of ETH</Form.Label>
+              <Form.Label>Amount of {this.props.mainAsset}</Form.Label>
               <Form.Control
               type="number"
               min="0"
               placeholder="Amount"
               name="DepositValue"
-              onChange={e => this.change(e)}
+              onChange={e => this.setState({ DepositValue:e.target.value })}
               />
               {
                 this.state.ValueError ? (

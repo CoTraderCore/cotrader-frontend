@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import getFundData from '../utils/getFundData'
 import { Card, Row, Col, ListGroup, Badge, Alert } from "react-bootstrap"
 
-import { EtherscanLink, APIEnpoint }  from '../config.js'
+import { EtherscanLink, APIEnpoint, NeworkID }  from '../config.js'
 import io from "socket.io-client"
 import _ from 'lodash'
 
@@ -114,7 +114,8 @@ class ViewFund extends Component {
       //smartBankAddress: fund.data.result.bank,
       shares: fund.data.result.shares,
       isDataLoad:true,
-      version:Number(fund.data.result.version)
+      version:Number(fund.data.result.version),
+      mainAsset: fund.data.result.mainAsset
      });
     }
  }
@@ -172,15 +173,15 @@ class ViewFund extends Component {
         <Card.Body>
         <Alert variant="dark">
         <Row>
-         <Col>Fund profit: { this.props.web3.utils.fromWei(this.state.profit)}</Col>
-         <Col>Fund value: {this.props.web3.utils.fromWei(this.state.value)}</Col>
+         <Col>Fund profit: { this.props.web3.utils.fromWei(this.state.profit)} in {this.state.mainAsset}</Col>
+         <Col>Fund value: {this.props.web3.utils.fromWei(this.state.value)} in {this.state.mainAsset}</Col>
         </Row>
         </Alert>
         <br />
         <div className="fund-page-btns">
           <ul>
             <li><ChartsButton address={this.state.smartFundAddress}/></li>
-            <li><Deposit web3={this.props.web3} address={this.state.smartFundAddress} accounts={this.props.accounts} pending={this.pending}/></li>
+            <li><Deposit web3={this.props.web3} address={this.state.smartFundAddress} accounts={this.props.accounts} mainAsset={this.state.mainAsset} pending={this.pending}/></li>
             <li><Withdraw web3={this.props.web3} address={this.state.smartFundAddress} accounts={this.props.accounts} pending={this.pending}/></li>
             <li><UserHoldings web3={this.props.web3} address={this.state.smartFundAddress} accounts={this.props.accounts} pending={this.pending}/></li>
           </ul>
@@ -198,7 +199,7 @@ class ViewFund extends Component {
           <div>
             <InvestorsAlocationChart Data={this.state.shares}/>
             {
-              !_.isEmpty(this.state.balance)
+              NeworkID === 1 && !_.isEmpty(this.state.balance)
               ?
               (
                 <AssetsAlocationChart AssetsData={this.state.balance} version={this.state.version}/>
