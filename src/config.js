@@ -5,11 +5,11 @@ export const ParaswapApi = 'https://paraswap.io/api'
 
 // Mainnet
 // V2
-export const SmartFundRegistryADDRESS = '0x0f1f46239e6ea6b8922bc4ad343100d47e417a4c'
+// export const SmartFundRegistryADDRESS = '0x0f1f46239e6ea6b8922bc4ad343100d47e417a4c'
 // V3
 // export const SmartFundRegistryADDRESS = '0x16875b1b717b3748b18fbb27b036aa4fbca88ec5'
 // V4
-// export const SmartFundRegistryADDRESS = '0x97dc743077611db9a3019023985e180004ce2ace'
+export const SmartFundRegistryADDRESS = '0x97dc743077611db9a3019023985e180004ce2ace'
 
 export const EtherscanLink = 'https://etherscan.io/'
 export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
