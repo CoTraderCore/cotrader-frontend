@@ -1,5 +1,5 @@
 // switch this to false in production
-const isLocal = false
+const isLocal = true
 
 export const ParaswapApi = 'https://paraswap.io/api'
 

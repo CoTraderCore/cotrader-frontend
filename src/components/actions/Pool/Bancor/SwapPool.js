@@ -7,10 +7,10 @@ import {
   PoolPortal,
   ERC20ABI,
   BNTEther
-} from '../../../config.js'
-import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../../utils/weiByDecimals'
+} from '../../../../config.js'
+import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
 import { isAddress } from 'web3-utils'
-import setPending from '../../../utils/setPending'
+import setPending from '../../../../utils/setPending'
 
 
 // Fund recognize ETH by this address
@@ -189,11 +189,11 @@ class SwapPool extends Component {
         onChange={(s) => this.setState(
           {toAddress: this.props.findAddressBySymbol(s[0], this.state.isToERC20)}
         )}
-        placeholder="Choose a symbol for recieve"
+        placeholder="Choose a symbol for recive"
       />
       <br/>
       <Form.Control
-      placeholder="Enter amount for send"
+      placeholder="Enter amount"
       name="amount"
       onChange={(e) => this.setState({ amount: e.target.value })}
       type="number" min="1"/>

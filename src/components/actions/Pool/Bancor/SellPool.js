@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Form, Button } from "react-bootstrap"
-import { SmartFundABIV4, ERC20ABI } from '../../../config.js'
-import { toWeiByDecimalsInput } from '../../../utils/weiByDecimals'
-import setPending from '../../../utils/setPending'
+import { SmartFundABIV4, ERC20ABI } from '../../../../config.js'
+import { toWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
+import setPending from '../../../../utils/setPending'
 
 
 class SellPool extends Component {
@@ -44,7 +44,7 @@ class SellPool extends Component {
     return (
       <React.Fragment>
       <Form.Control
-      placeholder="Enter amount for send"
+      placeholder="Enter amount"
       name="amount"
       onChange={(e) => this.setState({ amount: e.target.value })}
       type="number" min="1"/>

@@ -6,11 +6,11 @@ import {
   PoolPortal,
   ERC20ABI,
   EtherscanLink
-} from '../../../config.js'
-import { fromWeiByDecimalsInput } from '../../../utils/weiByDecimals'
+} from '../../../../config.js'
+import { fromWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
 import { toWei } from 'web3-utils'
-import Pending from '../../templates/Spiners/Pending'
-import setPending from '../../../utils/setPending'
+import Pending from '../../../templates/Spiners/Pending'
+import setPending from '../../../../utils/setPending'
 
 class BuyPool extends Component {
   constructor(props, context) {
@@ -173,8 +173,9 @@ class BuyPool extends Component {
   render() {
     return (
       <React.Fragment>
+      <Form.Label><small>Note: for Bancor we calculate amount by Bancor pool token</small></Form.Label>
       <Form.Control
-      placeholder="Enter amount for send"
+      placeholder="Enter amount"
       name="amount"
       onChange={(e) => this.setState({ amount: e.target.value })}
       type="number" min="1"/>

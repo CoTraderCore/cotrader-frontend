@@ -17,6 +17,7 @@ import ChartsButton from './actions/ChartsButton'
 import Withdraw from './actions/Withdraw'
 import Deposit from './actions/Deposit'
 import UserHoldings from './actions/UserHoldings'
+import Loan from './actions/Loan'
 
 import Loading from './templates/Spiners/Loading'
 import Pending from './templates/Spiners/Pending'
@@ -269,6 +270,22 @@ class ViewFund extends Component {
                (
                  <li>
                  <FakeButton buttonName={"Pool"} info={"This version of smart fund does not support this feature"}/>
+                 </li>
+               )
+             }
+
+             {
+               this.state.version >= 5
+               ?
+               (
+                 <li>
+                 <Loan/>
+                 </li>
+               )
+               :
+               (
+                 <li>
+                 <FakeButton buttonName={"Loan"} info={"This version of smart fund does not support this feature"}/>
                  </li>
                )
              }
