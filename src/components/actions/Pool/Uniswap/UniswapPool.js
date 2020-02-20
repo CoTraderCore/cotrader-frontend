@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import BuyPool from './BuyPool'
 import SellPool from './SellPool'
 import { Form } from "react-bootstrap"
-
+import { Typeahead } from 'react-bootstrap-typeahead'
+import { NeworkID } from '../../../../config.js'
 
 const componentList = {
   Buy: BuyPool,
@@ -13,8 +14,29 @@ class UniswapPool extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      action: 'Buy'
+      action: 'Buy',
+      symbols: [],
+      tokens: [],
+      tokenAddress: ''
     }
+  }
+
+  componentDidMount(){
+    this.setData()
+  }
+
+  setData = () => {
+    // For test Uniswap in Ropsten
+    if(NeworkID === 3){
+      const symbols = ['MST']
+      const tokens = [{'MST':'0xab726e4664d1c28B084d77cD9be4eF18884e858d'}]
+      this.setState({ symbols, tokens })
+    }
+  }
+
+  findAddressBySymbol = (symbol) =>{
+    const address = this.state.tokens.map(item => item[symbol])
+    return address[0]
   }
 
   render() {
@@ -47,9 +69,19 @@ class UniswapPool extends Component {
               </Form.Control>
               </Form.Group>
              </Form>
-            {/* Render current action */}
+
+             <Typeahead
+               labelKey="uniswapSymbols"
+               multiple={false}
+               id="uniswapSymbols"
+               options={this.state.symbols}
+               onChange={(s) => this.setState({tokenAddress: this.findAddressBySymbol(s[0])})}
+               placeholder="Choose a symbol"
+             />
+             <br/>
+             {/* Render current action */}
              <CurrentAction
-               fromAddress={this.state.fromAddress}
+               tokenAddress={this.state.tokenAddress}
                web3={this.props.web3}
                accounts={this.props.accounts}
                smartFundAddress={this.props.smartFundAddress}

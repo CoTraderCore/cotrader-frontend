@@ -174,6 +174,7 @@ class BuyPool extends Component {
     return (
       <React.Fragment>
       <Form.Label><small>Note: for Bancor we calculate amount by Bancor pool token</small></Form.Label>
+      <Form.Label><small>Enter amount of Bancor pool for buy</small></Form.Label>
       <Form.Control
       placeholder="Enter amount"
       name="amount"
