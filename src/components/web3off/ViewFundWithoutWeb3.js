@@ -141,6 +141,7 @@ class ViewFundWithoutWeb3 extends Component {
          <ul>
          <li><FakeButton className="buttonsAdditional" buttonName={"Exchange"} info={"please connect to web3"}/></li>
          <li><FakeButton className="buttonsAdditional" buttonName={"Pool"} info={"please connect to web3"}/></li>
+         <li><FakeButton className="buttonsAdditional" buttonName={"Loan"} info={"please connect to web3"}/></li>
          <li><FakeButton className="buttonsAdditional" buttonName={"Take cut"} info={"please connect to web3"}/></li>
          <li><FakeButton className="buttonsAdditional"  buttonName={"White list"} info={"please connect to web3"}/></li>
          </ul>

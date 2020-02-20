@@ -33,16 +33,23 @@ class PoolModal extends Component {
         <Tab eventKey="bancor" title="Bancor">
         <br/>
            <BancorPool
-           web3={this.props.web3}
-           accounts={this.props.accounts}
-           smartFundAddress={this.props.smartFundAddress}
-           modalClose={this.props.modalClose}
-           pending={this.props.pending}
+             web3={this.props.web3}
+             accounts={this.props.accounts}
+             smartFundAddress={this.props.smartFundAddress}
+             Show={this.state.Show}
+             pending={this.props.pending}
            />
         </Tab>
         <Tab eventKey="uniswap" title="Uniswap">
         <br/>
-          <Uniswap />
+           <Uniswap
+             version={this.props.version}
+             web3={this.props.web3}
+             accounts={this.props.accounts}
+             smartFundAddress={this.props.smartFundAddress}
+             Show={this.state.Show}
+             pending={this.props.pending}
+           />
         </Tab>
         </Tabs>
       </Modal.Body>

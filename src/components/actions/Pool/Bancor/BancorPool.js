@@ -25,7 +25,6 @@ class BancorPool extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      Show: false,
       symbols: [],
       smartTokenSymbols: [],
       tokensObject: null,
@@ -125,38 +124,36 @@ class BancorPool extends Component {
               (
                 <React.Fragment>
                 <Typeahead
-                  labelKey="smartTokenSymbols"
-                  multiple={false}
-                  id="smartTokenSymbols"
-                  options={this.state.smartTokenSymbols}
-                  onChange={(s) => this.setState({fromAddress: this.findAddressBySymbol(s[0])})}
-                  placeholder="Choose a symbol"
+                   labelKey="smartTokenSymbols"
+                   multiple={false}
+                   id="smartTokenSymbols"
+                   options={this.state.smartTokenSymbols}
+                   onChange={(s) => this.setState({fromAddress: this.findAddressBySymbol(s[0])})}
+                   placeholder="Choose a symbol"
                  />
                  <br/>
-                <CurrentAction
-                fromAddress={this.state.fromAddress}
-                web3={this.props.web3}
-                accounts={this.props.accounts}
-                smartFundAddress={this.props.smartFundAddress}
-                modalClose={this.props.modalClose}
-                pending={this.props.pending}
-                />
+                 <CurrentAction
+                   fromAddress={this.state.fromAddress}
+                   web3={this.props.web3}
+                   accounts={this.props.accounts}
+                   smartFundAddress={this.props.smartFundAddress}
+                   pending={this.props.pending}
+                 />
                </React.Fragment>
               )
               :
               (
                 <CurrentAction
-                smartTokenSymbols={this.state.smartTokenSymbols}
-                symbols={this.state.symbols}
-                findAddressBySymbol={this.findAddressBySymbol}
-                web3={this.props.web3}
-                accounts={this.props.accounts}
-                smartFundAddress={this.props.smartFundAddress}
-                modalClose={this.props.modalClose}
-                pending={this.props.pending}
+                  smartTokenSymbols={this.state.smartTokenSymbols}
+                  symbols={this.state.symbols}
+                  findAddressBySymbol={this.findAddressBySymbol}
+                  web3={this.props.web3}
+                  accounts={this.props.accounts}
+                  smartFundAddress={this.props.smartFundAddress}
+                  pending={this.props.pending}
                 />
               )
-          }
+           }
       </React.Fragment>
     )
   }
