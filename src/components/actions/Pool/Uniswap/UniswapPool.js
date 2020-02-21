@@ -31,6 +31,8 @@ class UniswapPool extends Component {
       const symbols = ['MST']
       const tokens = [{'MST':'0xab726e4664d1c28B084d77cD9be4eF18884e858d'}]
       this.setState({ symbols, tokens })
+    }else{
+      alert('TODO: load data from Paraswap')
     }
   }
 
