@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { SmartFundABIV5, UniswapFactoryABI } from '../../../../config.js'
+// import { SmartFundABIV5, UniswapFactoryABI } from '../../../../config.js'
 
 class SellPool extends Component {
 

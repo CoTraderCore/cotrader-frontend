@@ -138,6 +138,7 @@ class BancorPool extends Component {
                    accounts={this.props.accounts}
                    smartFundAddress={this.props.smartFundAddress}
                    pending={this.props.pending}
+                   modalClose={this.props.modalClose}
                  />
                </React.Fragment>
               )
@@ -151,6 +152,7 @@ class BancorPool extends Component {
                   accounts={this.props.accounts}
                   smartFundAddress={this.props.smartFundAddress}
                   pending={this.props.pending}
+                  modalClose={this.props.modalClose}
                 />
               )
            }

@@ -38,6 +38,7 @@ class PoolModal extends Component {
              smartFundAddress={this.props.smartFundAddress}
              Show={this.state.Show}
              pending={this.props.pending}
+             modalClose={this.modalClose}
            />
         </Tab>
         <Tab eventKey="uniswap" title="Uniswap">
@@ -49,6 +50,7 @@ class PoolModal extends Component {
              smartFundAddress={this.props.smartFundAddress}
              Show={this.state.Show}
              pending={this.props.pending}
+             modalClose={this.modalClose}
            />
         </Tab>
         </Tabs>

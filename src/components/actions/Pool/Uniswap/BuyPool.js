@@ -1,21 +1,28 @@
 import React, { Component } from 'react'
+
 import {
   SmartFundABIV5,
   UniswapFactoryABI,
   UniswapFactory,
   PoolPortalABI,
-  PoolPortal
+  PoolPortal,
+  ERC20ABI
 } from '../../../../config.js'
-import { Form, Button } from "react-bootstrap"
-import { toWei, fromWei, hexToNumberString } from 'web3-utils'
+
+import { Form, Button, Alert } from "react-bootstrap"
+import { toWei,hexToNumberString } from 'web3-utils'
+import { fromWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
+import setPending from '../../../../utils/setPending'
+
 
 class BuyPool extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
       ETHAmount:0,
+      ERCAmountInWEI:'0',
       ERCAmount:0,
-      ERCAmountFromWei:0
+      ERCSymbol: ''
     }
   }
 
@@ -25,19 +32,52 @@ class BuyPool extends Component {
       const ERCAmount = await poolPortal.methods.getUniswapTokenAmountByETH(
         this.props.tokenAddress, toWei(this.state.ETHAmount)
       ).call()
+
+      const token = new this.props.web3.eth.Contract(ERC20ABI, this.props.tokenAddress)
+      const decimals = await token.methods.decimals().call()
+
+      let ERCSymbol
+
+      try{
+        ERCSymbol = await token.methods.symbol().call()
+      }catch(e){
+        ERCSymbol = 'ERC'
+      }
+
       this.setState({
-        ERCAmount: hexToNumberString(ERCAmount._hex),
-        ERCAmountFromWei: fromWei(hexToNumberString(ERCAmount._hex))
+        ERCAmountInWEI: hexToNumberString(ERCAmount._hex),
+        ERCAmount: fromWeiByDecimalsInput(decimals, hexToNumberString(ERCAmount._hex)),
+        ERCSymbol
       })
-      console.log(this.state.ERCAmount, this.state.ERCAmountFromWei)
+
+      console.log(this.state.ERCAmount, this.state.ERCAmountInWEI)
     }else{
       alert('Please fill all fields')
     }
   }
 
   buyPool = async () => {
-    console.log("Amount:", this.state.ETHAmount)
-    console.log("TokenAddress:", this.props.tokenAddress, typeof this.props.tokenAddress)
+    if(this.state.ETHAmount > 0 && this.props.tokenAddress){
+      // get contracts and data
+      const factory = new this.props.web3.eth.Contract(UniswapFactoryABI, UniswapFactory)
+      const poolExchangeAddress = await factory.methods.getExchange(this.props.tokenAddress).call()
+      const fund = new this.props.web3.eth.Contract(SmartFundABIV5, this.props.smartFundAddress)
+      const block = await this.props.web3.eth.getBlockNumber()
+
+      // buy pool
+      fund.methods.buyPool(toWei(String(this.state.ETHAmount)), 1, poolExchangeAddress)
+      .send({ from: this.props.accounts[0] })
+      .on('transactionHash', (hash) => {
+      // pending status for spiner
+      this.props.pending(true)
+      // pending status for DB
+      setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+      })
+      // close pool modal
+      this.props.modalClose()
+    }else{
+      alert('Please fill all fields')
+    }
   }
 
   render() {
@@ -49,7 +89,7 @@ class BuyPool extends Component {
       <Form.Control
       type="number"
       min="0"
-      placeholder="ETHAmount"
+      placeholder="ETH amount"
       name="ETHAmount"
       onChange={e => this.setState({ ETHAmount:e.target.value })}
       />
@@ -70,6 +110,21 @@ class BuyPool extends Component {
       >
       Buy
       </Button>
+      <br/>
+      <br/>
+      {
+        parseFloat(this.state.ERCAmount) > 0
+        ?
+        (
+          <React.Fragment>
+          <Alert variant="warning">
+          You will pay {this.state.ETHAmount} ETH
+          and {this.state.ERCAmount} {this.state.ERCSymbol}
+          </Alert>
+          </React.Fragment>
+        )
+        :null
+      }
       </Form>
     )
   }

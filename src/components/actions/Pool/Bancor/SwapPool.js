@@ -57,7 +57,7 @@ class SwapPool extends Component {
     const amountInWei = toWeiByDecimalsInput(decimalsFrom, this.state.amount)
 
     // get rate
-    const recive = await poolPortal.methods.getRatio(
+    const recive = await poolPortal.methods.getBancorRatio(
     this.state.fromAddress,
     this.state.toAddress,
     amountInWei
