@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Button, Modal, Form } from "react-bootstrap"
-//import { NeworkID } from '../../config.js'
+import { NeworkID } from '../../config.js'
 //import axios from 'axios'
-//import { Typeahead } from 'react-bootstrap-typeahead'
+import { Typeahead } from 'react-bootstrap-typeahead'
 
 
 class PoolModal extends Component {
@@ -10,7 +10,9 @@ class PoolModal extends Component {
     super(props, context);
     this.state = {
       Show: false,
-      symbols: []
+      symbols: [],
+      tokens:[],
+      action:'Loan'
     }
   }
 
@@ -26,19 +28,39 @@ class PoolModal extends Component {
   }
 
   initData = async () => {
-    console.log("Init data")
+    if(NeworkID === 3){
+      const symbols = ['cDAI', 'cETH']
+      const tokens =  [
+        {'cDAI':'0x6ce27497a64fffb5517aa4aee908b1e7eb63b9ff'},
+        {'cETH':'0x1d70b01a2c3e3b2e56fcdcefe50d5c5d70109a5d'}]
+
+      this.setState({ symbols, tokens })
+    }else{
+      alert('TODO: load data from compound api')
+    }
+  }
+
+  findAddressBySymbol = (symbol) => {
+    const address = this.state.tokens.map(item => item[symbol])
+    return address[0]
   }
 
   compoundMint = () => {
-
+    console.log("Mint")
   }
 
   compoundRedeem = async () => {
-
+    console.log("Redeem")
   }
 
   compoundRedeemUnderlying = async () => {
+    console.log("RedeemUnderlying")
+  }
 
+  componentDidUpdate(prevProps, prevState) {
+    if(prevState.action !== this.state.action){
+      console.log(this.state.action)
+    }
   }
 
   modalClose = () => this.setState({ Show: false })
@@ -60,12 +82,34 @@ class PoolModal extends Component {
         </Modal.Header>
         <Modal.Body>
         <Form>
+        <Form.Group controlId="exampleForm.ControlSelect1">
+        <Form.Label>Select Compound action</Form.Label>
+        <Form.Control
+         as="select"
+         size="sm"
+         onChange={(e) => this.setState({ action:e.target.value })}
+         >
+          <option>Loan</option>
+          <option>Redeem</option>
+          <option>Redeem underlying</option>
+        </Form.Control>
+        </Form.Group>
+
+        <Typeahead
+          labelKey="compoundSymbols"
+          multiple={false}
+          id="compoundSymbols"
+          options={this.state.symbols}
+          onChange={(s) => this.setState({tokenAddress: this.findAddressBySymbol(s[0])})}
+          placeholder="Choose a symbol"
+        />
+        <br/>
+
         <Form.Group>
-        <Form.Label>Amount of {this.props.mainAsset}</Form.Label>
         <Form.Control
         type="number"
         min="0"
-        placeholder="Amount"
+        placeholder="Enter amount"
         name="DepositValue"
         />
 
