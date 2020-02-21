@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import { Button, Modal, Form } from "react-bootstrap"
-import { NeworkID } from '../../config.js'
+import { NeworkID, ERC20ABI, SmartFundABIV5 } from '../../config.js'
 //import axios from 'axios'
 import { Typeahead } from 'react-bootstrap-typeahead'
-
+import setPending from '../../utils/setPending'
+import { toWeiByDecimalsInput } from '../../utils/weiByDecimals'
+import { toWei } from 'web3-utils'
 
 class PoolModal extends Component {
   constructor(props, context) {
@@ -12,7 +14,9 @@ class PoolModal extends Component {
       Show: false,
       symbols: [],
       tokens:[],
-      action:'Loan'
+      cTokenAddress:'',
+      action:'Loan',
+      amount:0
     }
   }
 
@@ -31,8 +35,8 @@ class PoolModal extends Component {
     if(NeworkID === 3){
       const symbols = ['cDAI', 'cETH']
       const tokens =  [
-        {'cDAI':'0x6ce27497a64fffb5517aa4aee908b1e7eb63b9ff'},
-        {'cETH':'0x1d70b01a2c3e3b2e56fcdcefe50d5c5d70109a5d'}]
+        {symbol:'cDAI', address:'0x6ce27497a64fffb5517aa4aee908b1e7eb63b9ff'},
+        {symbol:'cETH', address:'0x1d70b01a2c3e3b2e56fcdcefe50d5c5d70109a5d'}]
 
       this.setState({ symbols, tokens })
     }else{
@@ -41,25 +45,105 @@ class PoolModal extends Component {
   }
 
   findAddressBySymbol = (symbol) => {
-    const address = this.state.tokens.map(item => item[symbol])
-    return address[0]
+    const tokenObj = this.state.tokens.find((item) => item.symbol && item.symbol === symbol)
+    if(tokenObj){
+      return tokenObj.address
+    }else{
+      return null
+    }
   }
 
-  compoundMint = () => {
-    console.log("Mint")
+  compoundMint = async () => {
+    if(this.state.amount > 0 && this.state.cTokenAddress){
+      const fund = new this.props.web3.eth.Contract(SmartFundABIV5, this.props.smartFundAddress)
+      const block = await this.props.web3.eth.getBlockNumber()
+      // Mint
+      fund.methods.compoundMint(toWei(String(this.state.amount)), this.state.cTokenAddress)
+      .send({ from:this.props.accounts[0] })
+      .on('transactionHash', (hash) => {
+      // pending status for spiner
+      this.props.pending(true)
+      // pending status for DB
+      setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+      })
+      // close pool modal
+      this.modalClose()
+    }else{
+      alert('Please fill all fields')
+    }
   }
 
   compoundRedeem = async () => {
-    console.log("Redeem")
+    // need corect 8 decimals convert 
   }
 
   compoundRedeemUnderlying = async () => {
-    console.log("RedeemUnderlying")
+    if(this.state.amount > 0 && this.state.cTokenAddress){
+      const fund = new this.props.web3.eth.Contract(SmartFundABIV5, this.props.smartFundAddress)
+      const block = await this.props.web3.eth.getBlockNumber()
+      // Redeem ETH or ERC
+      fund.methods.compoundRedeemUnderlying(toWei(String(this.state.amount)), this.state.cTokenAddress)
+      .send({ from:this.props.accounts[0] })
+      .on('transactionHash', (hash) => {
+      // pending status for spiner
+      this.props.pending(true)
+      // pending status for DB
+      setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+      })
+      // close pool modal
+      this.modalClose()
+    }else{
+      alert('Please fill all fields')
+    }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if(prevState.action !== this.state.action){
-      console.log(this.state.action)
+  renderButton(){
+    if(this.state.action === "Loan"){
+      return(
+        <Button
+        variant="outline-primary"
+        type="button"
+        onClick={() => this.compoundMint()}
+        >
+        Loan
+        </Button>
+      )
+    }
+    else if (this.state.action === "Redeem") {
+      return(
+        <React.Fragment>
+        <Form.Text className="text-muted">
+         Enter amount of compound token you need to send back to Compound
+        </Form.Text>
+
+        <Button
+        variant="outline-primary"
+        type="button"
+        onClick={() => this.compoundRedeem()}
+        >
+        Redeem
+        </Button>
+        </React.Fragment>
+      )
+    }
+    else if (this.state.action === "Redeem underlying") {
+      return(
+        <React.Fragment>
+        <Form.Text className="text-muted">
+         Enter amount of ETH or token you need get back
+        </Form.Text>
+        <Button
+        variant="outline-primary"
+        type="button"
+        onClick={() => this.compoundRedeemUnderlying()}
+        >
+        Redeem underlying
+        </Button>
+        </React.Fragment>
+      )
+    }
+    else{
+      return null
     }
   }
 
@@ -100,7 +184,7 @@ class PoolModal extends Component {
           multiple={false}
           id="compoundSymbols"
           options={this.state.symbols}
-          onChange={(s) => this.setState({tokenAddress: this.findAddressBySymbol(s[0])})}
+          onChange={(s) => this.setState({cTokenAddress: this.findAddressBySymbol(s[0])})}
           placeholder="Choose a symbol"
         />
         <br/>
@@ -110,16 +194,14 @@ class PoolModal extends Component {
         type="number"
         min="0"
         placeholder="Enter amount"
-        name="DepositValue"
+        name="amount"
+        onChange={(e) => this.setState({ amount:e.target.value })}
         />
 
         </Form.Group>
-        <Button
-        variant="outline-primary"
-        type="button"
-        >
-        Deposit
-        </Button>
+        {
+          this.renderButton()
+        }
         </Form>
         </Modal.Body>
       </Modal>

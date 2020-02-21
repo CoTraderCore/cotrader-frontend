@@ -29,16 +29,20 @@ class UniswapPool extends Component {
     // For test Uniswap in Ropsten
     if(NeworkID === 3){
       const symbols = ['MST']
-      const tokens = [{'MST':'0xab726e4664d1c28B084d77cD9be4eF18884e858d'}]
+      const tokens = [{symbol:'MST', address:'0xab726e4664d1c28B084d77cD9be4eF18884e858d'}]
       this.setState({ symbols, tokens })
     }else{
       alert('TODO: load data from Paraswap')
     }
   }
 
-  findAddressBySymbol = (symbol) =>{
-    const address = this.state.tokens.map(item => item[symbol])
-    return address[0]
+  findAddressBySymbol = (symbol) => {
+    const tokenObj = this.state.tokens.find((item) => item.symbol && item.symbol === symbol)
+    if(tokenObj){
+      return tokenObj.address
+    }else{
+      return null
+    }
   }
 
   render() {

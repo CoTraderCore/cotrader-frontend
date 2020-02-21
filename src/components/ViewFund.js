@@ -279,7 +279,7 @@ class ViewFund extends Component {
                ?
                (
                  <li>
-                 <Loan/>
+                 <Loan web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} pending={this.pending} version={this.state.version}/>
                  </li>
                )
                :
