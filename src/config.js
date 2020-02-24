@@ -4354,6 +4354,29 @@ export const SmartFundABIV5 = [
 		"type": "function"
 	},
 	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_percent",
+				"type": "uint256"
+			},
+			{
+				"name": "_cToken",
+				"type": "address"
+			}
+		],
+		"name": "getPercentFromCTokenBalance",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"constant": false,
 		"inputs": [
 			{
@@ -4893,6 +4916,24 @@ export const SmartFundABIV5 = [
 			}
 		],
 		"name": "setWhitelistOnly",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_percent",
+				"type": "uint256"
+			},
+			{
+				"name": "_cToken",
+				"type": "address"
+			}
+		],
+		"name": "compoundRedeemByPercent",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",

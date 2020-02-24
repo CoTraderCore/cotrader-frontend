@@ -16,7 +16,8 @@ class PoolModal extends Component {
       tokens:[],
       cTokenAddress:'',
       action:'Loan',
-      amount:0
+      amount:0,
+      percent:0
     }
   }
 
@@ -53,12 +54,24 @@ class PoolModal extends Component {
     }
   }
 
+  getTokenWeiByDecimals = async () => {
+    if(this.state.cTokenAddress === this.findAddressBySymbol('cETH')){
+      return toWei(String(this.state.amount))
+    }else{
+      const token = new this.props.web3.eth.Contract(ERC20ABI, this.state.cTokenAddress)
+      const decimals = await token.methods.decimals.call()
+      return toWeiByDecimalsInput(decimals, String(this.state.amount))
+    }
+  }
+
   compoundMint = async () => {
     if(this.state.amount > 0 && this.state.cTokenAddress){
       const fund = new this.props.web3.eth.Contract(SmartFundABIV5, this.props.smartFundAddress)
       const block = await this.props.web3.eth.getBlockNumber()
+      const weiInput = await this.getTokenWeiByDecimals()
+      console.log("weiInput",weiInput)
       // Mint
-      fund.methods.compoundMint(toWei(String(this.state.amount)), this.state.cTokenAddress)
+      fund.methods.compoundMint(weiInput, this.state.cTokenAddress)
       .send({ from:this.props.accounts[0] })
       .on('transactionHash', (hash) => {
       // pending status for spiner
@@ -74,15 +87,11 @@ class PoolModal extends Component {
   }
 
   compoundRedeem = async () => {
-    // need corect 8 decimals convert 
-  }
-
-  compoundRedeemUnderlying = async () => {
-    if(this.state.amount > 0 && this.state.cTokenAddress){
+    if(this.state.percent > 0 && this.state.percent <= 100 && this.state.cTokenAddress){
       const fund = new this.props.web3.eth.Contract(SmartFundABIV5, this.props.smartFundAddress)
       const block = await this.props.web3.eth.getBlockNumber()
-      // Redeem ETH or ERC
-      fund.methods.compoundRedeemUnderlying(toWei(String(this.state.amount)), this.state.cTokenAddress)
+      // Mint
+      fund.methods.compoundRedeemByPercent(this.state.percent, this.state.cTokenAddress)
       .send({ from:this.props.accounts[0] })
       .on('transactionHash', (hash) => {
       // pending status for spiner
@@ -93,13 +102,23 @@ class PoolModal extends Component {
       // close pool modal
       this.modalClose()
     }else{
-      alert('Please fill all fields')
+      alert('Please fill all fields correct')
     }
   }
 
-  renderButton(){
+
+  renderAction(){
     if(this.state.action === "Loan"){
       return(
+        <React.Fragment>
+        <Form.Control
+        type="number"
+        min="0"
+        placeholder="Enter amount to lend"
+        name="amount"
+        onChange={(e) => this.setState({ amount:e.target.value })}
+        />
+        <br/>
         <Button
         variant="outline-primary"
         type="button"
@@ -107,37 +126,26 @@ class PoolModal extends Component {
         >
         Loan
         </Button>
+        </React.Fragment>
       )
     }
     else if (this.state.action === "Redeem") {
       return(
         <React.Fragment>
-        <Form.Text className="text-muted">
-         Enter amount of compound token you need to send back to Compound
-        </Form.Text>
-
+        <Form.Control
+        type="number"
+        min="0"
+        placeholder="Enter percent for withdraw"
+        name="amount"
+        onChange={(e) => this.setState({ percent:e.target.value })}
+        />
+        <br/>
         <Button
         variant="outline-primary"
         type="button"
         onClick={() => this.compoundRedeem()}
         >
         Redeem
-        </Button>
-        </React.Fragment>
-      )
-    }
-    else if (this.state.action === "Redeem underlying") {
-      return(
-        <React.Fragment>
-        <Form.Text className="text-muted">
-         Enter amount of ETH or token you need get back
-        </Form.Text>
-        <Button
-        variant="outline-primary"
-        type="button"
-        onClick={() => this.compoundRedeemUnderlying()}
-        >
-        Redeem underlying
         </Button>
         </React.Fragment>
       )
@@ -175,7 +183,6 @@ class PoolModal extends Component {
          >
           <option>Loan</option>
           <option>Redeem</option>
-          <option>Redeem underlying</option>
         </Form.Control>
         </Form.Group>
 
@@ -190,18 +197,10 @@ class PoolModal extends Component {
         <br/>
 
         <Form.Group>
-        <Form.Control
-        type="number"
-        min="0"
-        placeholder="Enter amount"
-        name="amount"
-        onChange={(e) => this.setState({ amount:e.target.value })}
-        />
-
-        </Form.Group>
         {
-          this.renderButton()
+          this.renderAction()
         }
+        </Form.Group>
         </Form>
         </Modal.Body>
       </Modal>
