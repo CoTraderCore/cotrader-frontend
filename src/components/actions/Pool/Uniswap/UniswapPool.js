@@ -3,7 +3,8 @@ import BuyPool from './BuyPool'
 import SellPool from './SellPool'
 import { Form } from "react-bootstrap"
 import { Typeahead } from 'react-bootstrap-typeahead'
-import { NeworkID } from '../../../../config.js'
+import { NeworkID, ParaswapApi } from '../../../../config.js'
+import axios from 'axios'
 
 const componentList = {
   Buy: BuyPool,
@@ -22,18 +23,35 @@ class UniswapPool extends Component {
   }
 
   componentDidMount(){
-    this.setData()
+    this.initData()
   }
 
-  setData = () => {
-    // For test Uniswap in Ropsten
-    if(NeworkID === 3){
-      const symbols = ['MST']
-      const tokens = [{symbol:'MST', address:'0xab726e4664d1c28B084d77cD9be4eF18884e858d'}]
-      this.setState({ symbols, tokens })
+
+  // get tokens addresses and symbols from paraswap api
+  initData = async () => {
+    let tokens
+    let symbols
+    if(NeworkID === 1 || NeworkID === 42){
+      // get data from Paraswap api
+      try{
+         tokens = await axios.get(ParaswapApi + '/tokens')
+         tokens = tokens.data.tokens
+         symbols = []
+         for(let i = 0; i< tokens.length; i++){
+           symbols.push(tokens[i].symbol)
+         }
+       }catch(e){
+         alert("Can not get data from api, please try again latter")
+         console.log(e)
+      }
+      console.log("get data")
     }else{
-      alert('TODO: load data from Paraswap')
+       // test data for Ropsten
+       symbols = ['MST']
+       tokens = [{symbol:'MST', address:'0xab726e4664d1c28B084d77cD9be4eF18884e858d'}]
     }
+
+    this.setState({ tokens, symbols })
   }
 
   findAddressBySymbol = (symbol) => {
