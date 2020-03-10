@@ -33,16 +33,31 @@ class PoolModal extends Component {
   }
 
   initData = async () => {
+    let symbols
+    let tokens
     if(NeworkID === 3){
-      const symbols = ['cDAI', 'cETH']
-      const tokens =  [
-        {symbol:'cDAI', address:'0x6ce27497a64fffb5517aa4aee908b1e7eb63b9ff'},
-        {symbol:'cETH', address:'0x1d70b01a2c3e3b2e56fcdcefe50d5c5d70109a5d'}]
-
-      this.setState({ symbols, tokens })
-    }else{
-      alert('TODO: load data from compound api')
+      symbols = ['cDAI', 'cETH', 'cBAT', 'cREP', 'cSAI', 'cUSDC', 'cWBTC', 'cZRX']
+      tokens =  [
+        {symbol:'cDAI', address:'0x5d3a536e4d6dbd6114cc1ead35777bab948e3643'},
+        {symbol:'cETH', address:'0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5'},
+        {symbol:'cBAT', address:'0x6c8c6b02e7b2be14d4fa6022dfd6d75921d90e4e'},
+        {symbol:'cREP', address:'0x158079ee67fce2f58472a96584a73c7ab9ac95c1'},
+        {symbol:'cSAI', address:'0xf5dce57282a584d2746faf1593d3121fcac444dc'},
+        {symbol:'cUSDC', address:'0x39aa39c021dfbae8fac545936693ac917d5e7563'},
+        {symbol:'cWBTC', address:'0xc11b1268c1a384e55c48c2391d8d480264a3a7f4'},
+        {symbol:'cZRX', address:'0xb3319f5d18bc0d84dd1b4825dcde5d5f7266d407'}
+      ]
     }
+    else if(NeworkID === 1){
+       symbols = ['cDAI', 'cETH']
+       tokens =  [
+         {symbol:'cDAI', address:'0x6ce27497a64fffb5517aa4aee908b1e7eb63b9ff'},
+         {symbol:'cETH', address:'0x1d70b01a2c3e3b2e56fcdcefe50d5c5d70109a5d'}]
+    }else{
+      alert('There are no data for Your network')
+    }
+
+    this.setState({ symbols, tokens })
   }
 
   findAddressBySymbol = (symbol) => {
