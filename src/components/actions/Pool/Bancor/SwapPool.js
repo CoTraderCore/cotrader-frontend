@@ -88,7 +88,7 @@ class SwapPool extends Component {
       balanceFromWei = fromWeiByDecimalsInput(decimals, balance)
     }
 
-    const status = balanceFromWei >= this.state.amount ? true : false
+    const status = parseFloat(balanceFromWei) >= parseFloat(this.state.amount) ? true : false
     return status
   }
 

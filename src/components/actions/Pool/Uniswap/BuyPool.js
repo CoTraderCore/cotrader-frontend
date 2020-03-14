@@ -40,7 +40,9 @@ class BuyPool extends Component {
     const tokenFromWei = fromWeiByDecimalsInput(tokenDecimals, tokenBalance)
     const ethBalance = await this.props.web3.eth.getBalance(this.props.smartFundAddress)
     const ethFromWei = fromWei(ethBalance)
-    if(this.state.ETHAmount > ethBalance || this.state.ERCAmount > ethFromWei){
+    console.log(parseFloat(this.state.ETHAmount), parseFloat(ethFromWei), parseFloat(this.state.ERCAmount), parseFloat(ethFromWei))
+    if(parseFloat(this.state.ETHAmount) > parseFloat(ethFromWei)
+    || parseFloat(this.state.ERCAmount) > parseFloat(tokenFromWei)){
       this.setState({
         ErrorText:`Your smart fund does not have enough assets for these operations
         your balance: ETH ${ethFromWei}, ERC connector ${tokenFromWei}`
