@@ -40,7 +40,7 @@ class MainPageCharts extends React.Component {
     if(this._isMounted){
     data = data.data.map((v) => v)
     // remove wrong day
-    const wrongDay = data.length > 0 ? data[data.length - 2].date : null
+    const wrongDay = data.length > 1 ? data[data.length - 2].date : null
     data = data.map((v) => v.date !== wrongDay && v)
 
     const date = data.map(function(v) {

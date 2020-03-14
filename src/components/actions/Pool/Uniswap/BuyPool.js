@@ -10,7 +10,7 @@ import {
 } from '../../../../config.js'
 
 import { Form, Button, Alert } from "react-bootstrap"
-import { toWei,hexToNumberString } from 'web3-utils'
+import { toWei, fromWei, hexToNumberString } from 'web3-utils'
 import { fromWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
 import setPending from '../../../../utils/setPending'
 
@@ -22,7 +22,29 @@ class BuyPool extends Component {
       ETHAmount:0,
       ERCAmountInWEI:'0',
       ERCAmount:0,
-      ERCSymbol: ''
+      ERCSymbol: '',
+      ErrorText:''
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    if(prevProps.tokenAddress !== this.props.tokenAddress || prevState.ETHAmount !== this.state.ETHAmount){
+      this.setState({ ERCAmount:0, ErrorText: '' })
+    }
+  }
+
+  checkBalance = async () => {
+    const token = new this.props.web3.eth.Contract(ERC20ABI, this.props.tokenAddress)
+    const tokenDecimals = await token.methods.decimals().call()
+    const tokenBalance = await token.methods.balanceOf(this.props.smartFundAddress).call()
+    const tokenFromWei = fromWeiByDecimalsInput(tokenDecimals, tokenBalance)
+    const ethBalance = await this.props.web3.eth.getBalance(this.props.smartFundAddress)
+    const ethFromWei = fromWei(ethBalance)
+    if(this.state.ETHAmount > ethBalance || this.state.ERCAmount > ethFromWei){
+      this.setState({
+        ErrorText:`Your smart fund does not have enough assets for these operations
+        your balance: ETH ${ethFromWei}, ERC connector ${tokenFromWei}`
+      })
     }
   }
 
@@ -44,11 +66,20 @@ class BuyPool extends Component {
         ERCSymbol = 'ERC'
       }
 
-      this.setState({
-        ERCAmountInWEI: hexToNumberString(ERCAmount._hex),
-        ERCAmount: fromWeiByDecimalsInput(decimals, hexToNumberString(ERCAmount._hex)),
-        ERCSymbol
-      })
+      try{
+        this.checkBalance()
+
+        this.setState({
+          ERCAmountInWEI: hexToNumberString(ERCAmount._hex),
+          ERCAmount: fromWeiByDecimalsInput(decimals, hexToNumberString(ERCAmount._hex)),
+          ERCSymbol
+        })
+      }catch(e){
+        this.setState({
+          ErrorText:"Sorry, but this token is not available, for Uniswap pool. Please try another token."
+        })
+      }
+
 
       console.log(this.state.ERCAmount, this.state.ERCAmountInWEI)
     }else{
@@ -80,6 +111,14 @@ class BuyPool extends Component {
     }
   }
 
+  ERROR(errText){
+    return (
+      <Alert variant="danger">
+      {errText}
+      </Alert>
+    )
+  }
+
   render() {
     return (
       <Form>
@@ -102,14 +141,6 @@ class BuyPool extends Component {
       >
       Calculate
       </Button>
-
-      <Button
-      variant="outline-primary"
-      type="button"
-      onClick={() => this.buyPool()}
-      >
-      Buy
-      </Button>
       <br/>
       <br/>
       {
@@ -118,11 +149,34 @@ class BuyPool extends Component {
         (
           <React.Fragment>
           <Alert variant="warning">
-          You will pay {this.state.ETHAmount} ETH
+          You will stake {this.state.ETHAmount} ETH
           and {this.state.ERCAmount} {this.state.ERCSymbol}
           </Alert>
+
+          {
+            this.state.ErrorText.length === 0
+            ?
+            (
+              <Button
+              variant="outline-primary"
+              type="button"
+              onClick={() => this.buyPool()}
+              >
+              Buy
+              </Button>
+            )
+            :null
+          }
           </React.Fragment>
         )
+        :null
+      }
+      {
+        this.state.ErrorText.length > 0
+        ?
+        <>
+        {this.ERROR(this.state.ErrorText)}
+        </>
         :null
       }
       </Form>

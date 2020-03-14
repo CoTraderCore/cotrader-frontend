@@ -2,6 +2,9 @@ import BigNumber from 'bignumber.js'
 import { toWei, fromWei } from 'web3-utils'
 
 export const toWeiByDecimalsInput = (decimals, amount) => {
+  if(Number(amount) === 0)
+    return 0
+
     try{
       const factor = 10 ** decimals
       amount = new BigNumber(amount)
@@ -13,6 +16,9 @@ export const toWeiByDecimalsInput = (decimals, amount) => {
 }
 
  export const fromWeiByDecimalsInput = (decimals, amount) => {
+   if(Number(amount) === 0)
+     return 0
+     
     try{
       const factor = 10 ** decimals
       amount = new BigNumber(amount)

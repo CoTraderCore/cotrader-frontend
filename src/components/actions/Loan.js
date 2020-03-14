@@ -35,7 +35,7 @@ class PoolModal extends Component {
   initData = async () => {
     let symbols
     let tokens
-    if(NeworkID === 3){
+    if(NeworkID === 1){
       symbols = ['cDAI', 'cETH', 'cBAT', 'cREP', 'cSAI', 'cUSDC', 'cWBTC', 'cZRX']
       tokens =  [
         {symbol:'cDAI', address:'0x5d3a536e4d6dbd6114cc1ead35777bab948e3643'},
@@ -48,7 +48,7 @@ class PoolModal extends Component {
         {symbol:'cZRX', address:'0xb3319f5d18bc0d84dd1b4825dcde5d5f7266d407'}
       ]
     }
-    else if(NeworkID === 1){
+    else if(NeworkID === 3){
        symbols = ['cDAI', 'cETH']
        tokens =  [
          {symbol:'cDAI', address:'0x6ce27497a64fffb5517aa4aee908b1e7eb63b9ff'},
@@ -84,7 +84,7 @@ class PoolModal extends Component {
       const fund = new this.props.web3.eth.Contract(SmartFundABIV5, this.props.smartFundAddress)
       const block = await this.props.web3.eth.getBlockNumber()
       const weiInput = await this.getTokenWeiByDecimals()
-      console.log("weiInput",weiInput)
+      
       // Mint
       fund.methods.compoundMint(weiInput, this.state.cTokenAddress)
       .send({ from:this.props.accounts[0] })
