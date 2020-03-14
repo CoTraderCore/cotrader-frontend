@@ -78,6 +78,7 @@ class BuyPool extends Component {
         this.setState({
           ErrorText:"Sorry, but this token is not available, for Uniswap pool. Please try another token."
         })
+        console.log(e)
       }
 
 

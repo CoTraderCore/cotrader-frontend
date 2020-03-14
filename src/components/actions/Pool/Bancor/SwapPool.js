@@ -87,6 +87,7 @@ class SwapPool extends Component {
       const balance = await token.methods.balanceOf(this.props.smartFundAddress).call()
       balanceFromWei = fromWeiByDecimalsInput(decimals, balance)
     }
+
     const status = balanceFromWei >= this.state.amount ? true : false
     return status
   }

@@ -1,5 +1,5 @@
 // switch this to false in production
-const isLocal = true
+const isLocal = false
 
 export const ParaswapApi = 'https://paraswap.io/api'
 
@@ -59,10 +59,8 @@ export const UniswapFactory = '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95'
 
 // Ropsten
 
-// // V5
-// export const SmartFundRegistryADDRESS = '0x4237aeA308F877466b4b914f2f406daA88c45717'
 // // V4
-// // export const SmartFundRegistryADDRESS = '0x1a629611cfa27a3eaa22c34eba98255144764e57'
+// export const SmartFundRegistryADDRESS = '0x1a629611cfa27a3eaa22c34eba98255144764e57'
 // export const EtherscanLink = 'https://ropsten.etherscan.io/'
 // export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
 // export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'
