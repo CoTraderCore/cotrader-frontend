@@ -67,13 +67,12 @@ class BuyPool extends Component {
       }
 
       try{
-        this.checkBalance()
-
         this.setState({
           ERCAmountInWEI: hexToNumberString(ERCAmount._hex),
           ERCAmount: fromWeiByDecimalsInput(decimals, hexToNumberString(ERCAmount._hex)),
           ERCSymbol
         })
+        this.checkBalance()
       }catch(e){
         this.setState({
           ErrorText:"Sorry, but this token is not available, for Uniswap pool. Please try another token."
