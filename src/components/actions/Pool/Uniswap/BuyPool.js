@@ -40,7 +40,7 @@ class BuyPool extends Component {
     const tokenFromWei = fromWeiByDecimalsInput(tokenDecimals, tokenBalance)
     const ethBalance = await this.props.web3.eth.getBalance(this.props.smartFundAddress)
     const ethFromWei = fromWei(ethBalance)
-    console.log(parseFloat(this.state.ETHAmount), parseFloat(ethFromWei), parseFloat(this.state.ERCAmount), parseFloat(ethFromWei))
+
     if(parseFloat(this.state.ETHAmount) > parseFloat(ethFromWei)
     || parseFloat(this.state.ERCAmount) > parseFloat(tokenFromWei)){
       this.setState({
