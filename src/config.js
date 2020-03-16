@@ -1,24 +1,21 @@
 // switch this to false in production
-const isLocal = false
+const isLocal = true
 
 export const ParaswapApi = 'https://paraswap.io/api'
 
 // Mainnet
 
-// // V2
+// V2
 // export const SmartFundRegistryADDRESS = '0x0f1f46239e6ea6b8922bc4ad343100d47e417a4c'
-// // V3
+// V3
 // export const SmartFundRegistryADDRESS = '0x16875b1b717b3748b18fbb27b036aa4fbca88ec5'
-// // V4
+// V4
 // export const SmartFundRegistryADDRESS = '0x97dc743077611db9a3019023985e180004ce2ace'
 
 // V5
 export const SmartFundRegistryADDRESS = '0xc8A6346133289ef7a7C104c1Dc70E1dA43A62Cc6'
-
-// UPDATE THIS with v5
 export const PoolPortal = '0xE8546d4De7927D0E6D314136b8980248aa095Ea6'
 export const ExchangePortalAddressV3 = '0x9D82221F8C715De15103B5E5EF55644d29D84563'
-
 export const EtherscanLink = 'https://etherscan.io/'
 export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
 export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'
@@ -59,7 +56,7 @@ export const UniswapFactory = '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95'
 
 // Ropsten
 
-// // V4
+// V4
 // export const SmartFundRegistryADDRESS = '0x1a629611cfa27a3eaa22c34eba98255144764e57'
 // export const EtherscanLink = 'https://ropsten.etherscan.io/'
 // export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
