@@ -37,7 +37,6 @@ class MainPageCharts extends React.Component {
     this._isMounted = true
 
     axios.get(BloxyChartsLink + this.props.address).then((data) => {
-    if(this._isMounted){
     data = data.data.map((v) => v)
     // remove wrong day
     const wrongDay = data.length > 1 ? data[data.length - 2].date : null
@@ -157,6 +156,7 @@ class MainPageCharts extends React.Component {
       ]
     }
 
+    if(this._isMounted)
     this.setState({
       DWdata: parsedDWdata,
       ROIdata: parsedROIdata,
@@ -164,16 +164,12 @@ class MainPageCharts extends React.Component {
       DAILYVALUEdata: parsedDAILYVALUEdata,
       isDataLoad: true
     })
-  }
   })
-
   }
 
   componentWillUnmount(){
     this._isMounted = false
   }
-
-
 
   render(){
   return(
