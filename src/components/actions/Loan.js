@@ -84,7 +84,7 @@ class PoolModal extends Component {
       const fund = new this.props.web3.eth.Contract(SmartFundABIV5, this.props.smartFundAddress)
       const block = await this.props.web3.eth.getBlockNumber()
       const weiInput = await this.getTokenWeiByDecimals()
-      
+
       // Mint
       fund.methods.compoundMint(weiInput, this.state.cTokenAddress)
       .send({ from:this.props.accounts[0] })
