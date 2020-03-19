@@ -1,13 +1,12 @@
-// Modal for trade via Kyber
+// Modal for trade only via Kyber
 import React, { Component } from 'react'
-import { SmartFundABI, KyberInterfaceABI, KyberAddress, APIEnpoint } from '../../config.js'
-import { Button, Modal, Form, Alert, Dropdown, InputGroup } from "react-bootstrap"
+import { SmartFundABI, KyberInterfaceABI, KyberAddress, ERC20ABI } from '../../config.js'
+import { Button, Modal, Form, Alert, InputGroup } from "react-bootstrap"
 import setPending from '../../utils/setPending'
-import axios from 'axios'
+
 import { tokens } from '../../tokens/'
-
-import { coinPics } from '../../tokens/tokensHelpers'
-
+import { Typeahead } from 'react-bootstrap-typeahead'
+import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../utils/weiByDecimals'
 
 class TradeModalV1 extends Component {
   constructor(props, context) {
@@ -16,28 +15,54 @@ class TradeModalV1 extends Component {
     this.state = {
       ShowModal: false,
       Send: 'ETH',
-      Recive:'ETH',
+      Recive:'KNC',
       AmountSend:0,
       AmountRecive:0,
-      AlertError:false
+      ERRORText:'',
+      symbols:[],
+      tokenAddress:undefined
     }
   }
 
-  errorShow = (bool) => {
-    this.setState({ AlertError:bool })
+  componentDidMount(){
+    const symbols = tokens.ALLTokens
+    this.setState({ symbols })
   }
 
-  checkBalance = async () => {
-    const result = await axios.get(APIEnpoint + 'api/smartfund/' +this.props.smartFundAddress)
-    const tokenInfo = JSON.parse(result.data.result.balance)
-    const info = tokenInfo.find(el => el.symbol === this.state.Send)
+  componentWillUnmount(){
 
-    if(info){
-      return info.balance
-    }
-    else{
+  }
+
+  ErrorMsg = () => {
+    if(this.state.ERRORText.length > 0) {
+      return(
+        <Alert variant="danger">
+        {this.state.ERRORText}
+        </Alert>
+      )
+    }else {
       return null
     }
+  }
+
+  // get fund balance for a certain asset
+  // return from wei
+  getBalance = async () => {
+    if(this.state.Send === 'ETH'){
+      const ethBalance = await this.props.web3.eth.getBalance(this.props.smartFundAddress)
+      return fromWeiByDecimalsInput(18, ethBalance)
+    }else{
+      const tokenAddress = tokens[this.state.Send]
+      const ERC20 = new this.props.web3.eth.Contract(ERC20ABI, tokenAddress)
+      const decimals = await ERC20.methods.decimals().call()
+      const ercBalance = await ERC20.methods.balanceOf(this.props.smartFundAddress).call()
+      return fromWeiByDecimalsInput(decimals, ercBalance)
+    }
+  }
+
+  getDecimals = async (tokenAddress) => {
+    const ERC20 = new this.props.web3.eth.Contract(ERC20ABI, tokenAddress)
+    return await ERC20.methods.decimals().call()
   }
 
   change = e => {
@@ -71,8 +96,17 @@ class TradeModalV1 extends Component {
 
   trade = async () =>{
   const contract = new this.props.web3.eth.Contract(SmartFundABI, this.props.smartFundAddress)
-  // TODO CALCULATE BY DECIMALS NOT ONLY BY 18
-  const amount = this.props.web3.utils.toWei(this.state.AmountSend.toString(), 'ether')
+
+  // convert amount
+  let amount
+  if(this.state.Send === 'ETH'){
+    amount = toWeiByDecimalsInput(18, this.state.AmountSend)
+  }else{
+    const decimals = await this.getDecimals(tokens[this.state.Send])
+    amount = toWeiByDecimalsInput(decimals, this.state.AmountSend)
+  }
+
+  console.log(amount)
 
 
   this.setState({ ShowModal: false })
@@ -120,13 +154,11 @@ class TradeModalV1 extends Component {
   }
 
   validation = async () => {
-    const currentBalance = await this.checkBalance()
-    const requiredBalance = this.props.web3.utils.toWei(this.state.AmountSend.toString(), 'ether')
-
-    if(currentBalance && currentBalance >= requiredBalance && requiredBalance > 0){
+    const currentBalance = await this.getBalance()
+    if(currentBalance && currentBalance >= this.state.AmountSend){
       this.trade()
     }else{
-      this.errorShow(true)
+      this.setState({ ERRORText:  `Your smart fund don't have enough ${this.state.Send}` })
     }
   }
 
@@ -134,14 +166,13 @@ class TradeModalV1 extends Component {
    let CloseModal = () => this.setState({
      ShowModal: false,
      Send: 'ETH',
-     Recive:'ETH',
+     Recive:'KNC',
      AmountSend:0,
-     AmountRecive:0
+     AmountRecive:0,
+     ERRORText:'',
+     tokenAddress:undefined
    })
 
-   const tokensArray = tokens.ALLTokens
-
-   console.log(tokens)
    return (
       <div>
         <Button variant="outline-primary" onClick={() => this.setState({ ShowModal: true })}>
@@ -162,20 +193,20 @@ class TradeModalV1 extends Component {
           <Modal.Body>
 
           <Form>
-
-          <Form.Label>Send: {this.state.Send}</Form.Label>
+          {/*SEND*/}
+          <Form.Label>Pay with: {this.state.Send}</Form.Label>
           <InputGroup className="mb-3">
           <InputGroup.Prepend>
-          <Dropdown>
-          <Dropdown.Toggle variant="outline-primary">
-          Select token
-          </Dropdown.Toggle>
-          <Dropdown.Menu style={{"height":"290px", "overflowY":"scroll"}}>
-          {tokensArray.map((value, index) => {
-          return <Dropdown.Item onClick={() => this.changeByClick("Send", value)} key={index}><img src={coinPics(value) } alt={coinPics(value)} width="19" height="15"/> {value}</Dropdown.Item>
-          })}
-          </Dropdown.Menu>
-          </Dropdown>
+           <InputGroup.Text>
+             <Typeahead
+               labelKey="sendTokens"
+               multiple={false}
+               id="sendTokens"
+               options={this.state.symbols}
+               onChange={(s) => this.changeByClick("Send", s[0])}
+               placeholder="Choose a symbol"
+             />
+           </InputGroup.Text>
           </InputGroup.Prepend>
           <Form.Control
           type="number"
@@ -187,29 +218,20 @@ class TradeModalV1 extends Component {
           />
           </InputGroup>
 
-           {
-            this.state.AlertError ?(
-            <Alert variant="danger">
-            {
-              "ERROR: Not enought funds in this SmartFund or input amount 0"
-            }
-            </Alert>)
-            :(null)
-            }
-
-          <Form.Label>Recive: {this.state.Recive}</Form.Label>
+          {/*RECEIVE*/}
+          <Form.Label>Receive: {this.state.Recive}</Form.Label>
           <InputGroup className="mb-3">
           <InputGroup.Prepend>
-          <Dropdown>
-          <Dropdown.Toggle variant="outline-primary" id="dropdown-basic">
-          Select token
-          </Dropdown.Toggle>
-          <Dropdown.Menu style={{"height":"250px", "overflowY":"scroll"}}>
-          {tokensArray.map((value, index) => {
-          return <Dropdown.Item onClick={() => this.changeByClick("Recive", value)} key={index}><img src={coinPics(value) } alt={coinPics(value)} width="19" height="15"/> {value}</Dropdown.Item>
-          })}
-          </Dropdown.Menu>
-          </Dropdown>
+           <InputGroup.Text>
+             <Typeahead
+               labelKey="receiveTokens"
+               multiple={false}
+               id="receiveTokens"
+               options={this.state.symbols}
+               onChange={(s) => this.changeByClick("Recive", s[0])}
+               placeholder="Choose a symbol"
+             />
+           </InputGroup.Text>
           </InputGroup.Prepend>
           <Form.Control
           type="number"
@@ -220,6 +242,9 @@ class TradeModalV1 extends Component {
           onChange={e => this.change(e)}
           />
           </InputGroup>
+
+          {this.ErrorMsg()}
+
           <br />
           <Button variant="outline-primary" onClick={() => this.validation()}>Execute trade</Button>
            </Form>
