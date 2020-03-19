@@ -121,7 +121,7 @@ class TradeModalV1 extends Component {
   }
 
   // hide modal
-  this.setState({ ShowModal: false })
+  this.closeModal()
 
   // execude trade
   let block = await this.props.web3.eth.getBlockNumber()
@@ -197,17 +197,17 @@ class TradeModalV1 extends Component {
     }
   }
 
-  render() {
-   let CloseModal = () => this.setState({
-     ShowModal: false,
-     Send: 'ETH',
-     Recive:'KNC',
-     AmountSend:0,
-     AmountRecive:0,
-     ERRORText:'',
-     tokenAddress:undefined
-   })
+  closeModal = () => this.setState({
+    ShowModal: false,
+    Send: 'ETH',
+    Recive:'KNC',
+    AmountSend:0,
+    AmountRecive:0,
+    ERRORText:'',
+    tokenAddress:undefined
+  })
 
+  render() {
    return (
       <div>
         <Button variant="outline-primary" onClick={() => this.setState({ ShowModal: true })}>
@@ -217,7 +217,7 @@ class TradeModalV1 extends Component {
           <Modal
           size="lg"
           show={this.state.ShowModal}
-          onHide={CloseModal}
+          onHide={() => this.closeModal()}
           aria-labelledby="example-modal-sizes-title-lg"
           >
           <Modal.Header closeButton>
