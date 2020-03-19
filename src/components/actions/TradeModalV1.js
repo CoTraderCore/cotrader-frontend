@@ -24,13 +24,26 @@ class TradeModalV1 extends Component {
     }
   }
 
+  _isMounted = false
   componentDidMount(){
+    this._isMounted = true
     const symbols = tokens.ALLTokens
-    this.setState({ symbols })
+    if(this._isMounted)
+      this.setState({ symbols })
   }
 
   componentWillUnmount(){
+    this._isMounted = false
+  }
 
+  componentDidUpdate(prevProps, prevState){
+    if(prevState.Send !== this.state.Send
+      || prevState.Recive !== this.state.Recive
+      || prevState.AmountSend !== this.state.AmountSend
+      || prevState.AmountRecive !== this.state.AmountRecive
+    ){
+      this.setState({ ERRORText:'' })
+    }
   }
 
   ErrorMsg = () => {
@@ -95,6 +108,7 @@ class TradeModalV1 extends Component {
 
 
   trade = async () =>{
+  // get contract
   const contract = new this.props.web3.eth.Contract(SmartFundABI, this.props.smartFundAddress)
 
   // convert amount
@@ -106,11 +120,10 @@ class TradeModalV1 extends Component {
     amount = toWeiByDecimalsInput(decimals, this.state.AmountSend)
   }
 
-  console.log(amount)
-
-
+  // hide modal
   this.setState({ ShowModal: false })
 
+  // execude trade
   let block = await this.props.web3.eth.getBlockNumber()
 
   contract.methods.trade(
@@ -137,15 +150,30 @@ class TradeModalV1 extends Component {
   * @param {mul} state "AmountRecive" or "AmountSend" (we need mul Kyber result)
   */
   setRate = async (from, to, amount, type, mul) => {
-    if(amount){
+    if(amount > 0){
     const contract = new this.props.web3.eth.Contract(KyberInterfaceABI, KyberAddress)
-    // TODO CALCULATE BY DECIMALS NOT ONLY BY 18
-    const src = this.props.web3.utils.toWei(amount.toString(), 'ether')
-    const value = await contract.methods.getExpectedRate(from, to, src).call()
-    if(value){
-      // TODO CALCULATE BY DECIMALS NOT ONLY BY 18
-      const result = this.props.web3.utils.fromWei(this.props.web3.utils.hexToNumberString(value.expectedRate._hex))
-      const final = result * this.state[mul] // mul need only for Kyber
+    // convert src to wei by decimals
+    let src
+    if(from === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'){
+      src = toWeiByDecimalsInput(18, amount)
+    }else{
+      const decimals = await this.getDecimals(from)
+      src = toWeiByDecimalsInput(decimals, amount)
+    }
+
+    // get expected rate
+    const rate = await contract.methods.getExpectedRate(from, to, src).call()
+    if(rate){
+      // convert expected rate from wei
+      let rateFromWei
+      if(from === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'){
+        rateFromWei = fromWeiByDecimalsInput(18, this.props.web3.utils.hexToNumberString(rate.expectedRate._hex))
+      }else{
+        const decimals = await this.getDecimals(from)
+        rateFromWei= fromWeiByDecimalsInput(decimals, this.props.web3.utils.hexToNumberString(rate.expectedRate._hex))
+      }
+      // mul expected rate
+      const final = rateFromWei * this.state[mul]
       this.setState({ [type]: final })
     }else{
       this.setState({ [type]: 0 })
@@ -154,11 +182,18 @@ class TradeModalV1 extends Component {
   }
 
   validation = async () => {
-    const currentBalance = await this.getBalance()
-    if(currentBalance && currentBalance >= this.state.AmountSend){
-      this.trade()
-    }else{
-      this.setState({ ERRORText:  `Your smart fund don't have enough ${this.state.Send}` })
+    if(this.state.AmountSend === 0){
+      this.setState({ ERRORText:'Please input amount'})
+    }else if(this.state.Send === this.state.Recive){
+      this.setState({ ERRORText:'Token directions can not be the same'})
+    }
+    else{
+      const currentBalance = await this.getBalance()
+      if(currentBalance && currentBalance >= this.state.AmountSend){
+        this.trade()
+      }else{
+        this.setState({ ERRORText:  `Your smart fund don't have enough ${this.state.Send}` })
+      }
     }
   }
 
