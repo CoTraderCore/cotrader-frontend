@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Button, Modal, Form } from "react-bootstrap"
-import { NeworkID, ERC20ABI, SmartFundABIV5 } from '../../config.js'
+import { NeworkID, ERC20ABI, CTokenABI, SmartFundABIV5 } from '../../config.js'
 //import axios from 'axios'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import setPending from '../../utils/setPending'
-import { toWeiByDecimalsInput } from '../../utils/weiByDecimals'
+import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../utils/weiByDecimals'
 import { toWei } from 'web3-utils'
 
 class PoolModal extends Component {
@@ -69,33 +69,57 @@ class PoolModal extends Component {
     }
   }
 
-  getTokenWeiByDecimals = async () => {
+
+  // return from wei ETH or ERC20
+  getFundBalanceForLoan = async () => {
+    // check ETH balance
+    if(this.state.cTokenAddress === this.findAddressBySymbol('cETH')){
+      const ethBalance = await this.props.web3.eth.getBalance(this.props.smartFundAddress)
+      return this.props.web3.utils.fromWei(ethBalance)
+    }
+    // check erc20 token balance
+    else{
+      const cToken = new this.props.web3.eth.Contract(CTokenABI, this.state.cTokenAddress)
+      const tokenAddress = await cToken.methods.underlying().call()
+      const ercToken = new this.props.web3.eth.Contract(ERC20ABI, tokenAddress)
+      const ercBalance = await ercToken.methods.balanceOf(this.props.smartFundAddress).call()
+      const decimals = ercToken.methods.decimals().call()
+      return fromWeiByDecimalsInput(decimals, ercBalance)
+    }
+  }
+
+  getCETHWeiByDecimals = async () => {
     if(this.state.cTokenAddress === this.findAddressBySymbol('cETH')){
       return toWei(String(this.state.amount))
     }else{
-      const token = new this.props.web3.eth.Contract(ERC20ABI, this.state.cTokenAddress)
-      const decimals = await token.methods.decimals.call()
+      const cToken = new this.props.web3.eth.Contract(CTokenABI, this.state.cTokenAddress)
+      const decimals = await cToken.methods.decimals.call()
       return toWeiByDecimalsInput(decimals, String(this.state.amount))
     }
   }
 
   compoundMint = async () => {
     if(this.state.amount > 0 && this.state.cTokenAddress){
-      const fund = new this.props.web3.eth.Contract(SmartFundABIV5, this.props.smartFundAddress)
-      const block = await this.props.web3.eth.getBlockNumber()
-      const weiInput = await this.getTokenWeiByDecimals()
+      const curBalance = await this.getFundBalanceForLoan()
+      if(curBalance >= this.state.amount){
+        const fund = new this.props.web3.eth.Contract(SmartFundABIV5, this.props.smartFundAddress)
+        const block = await this.props.web3.eth.getBlockNumber()
+        const weiInput = await this.getCETHWeiByDecimals()
 
-      // Mint
-      fund.methods.compoundMint(weiInput, this.state.cTokenAddress)
-      .send({ from:this.props.accounts[0] })
-      .on('transactionHash', (hash) => {
-      // pending status for spiner
-      this.props.pending(true)
-      // pending status for DB
-      setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
-      })
-      // close pool modal
-      this.modalClose()
+        // Mint
+        fund.methods.compoundMint(weiInput, this.state.cTokenAddress)
+        .send({ from:this.props.accounts[0] })
+        .on('transactionHash', (hash) => {
+        // pending status for spiner
+        this.props.pending(true)
+        // pending status for DB
+        setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+        })
+        // close pool modal
+        this.modalClose()
+      }else{
+        alert('Your fund not have enough balance')
+      }
     }else{
       alert('Please fill all fields')
     }
