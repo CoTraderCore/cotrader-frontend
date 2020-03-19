@@ -67,7 +67,9 @@ class App extends Component {
     ReactGA.pageview('/');
   }
 
+  _isMounted = false
   componentDidMount = async () => {
+    this._isMounted = true
     this.initializeReactGA()
     // Time for checking web3 status
     setTimeout(() => {this.setState({
@@ -101,9 +103,13 @@ class App extends Component {
       })
     })
 
-    // If web3 connected init data for web3on component
-    const smartFunds = await getFundsList()
-    this.props.MobXStorage.initSFList(smartFunds)
+    // init smart fund list
+    if(this._isMounted){
+      const smartFunds = await getFundsList()
+      this.props.MobXStorage.initSFList(smartFunds)
+      // view current registry address 
+      console.log("SmartFundRegistryADDRESS: ", SmartFundRegistryADDRESS)
+    }
 
     this.setState({ isDataLoad: true })
 
@@ -112,8 +118,11 @@ class App extends Component {
     window.ethereum.on('accountsChanged', () => window.location.reload())
   }
 
+  componentWillUnmount(){
+    this._isMounted = false
+  }
+
   render() {
-    console.log("SmartFundRegistryADDRESS: ", SmartFundRegistryADDRESS)
     // redirect to web3off version if client has no web3
     if(this.state.timeOut && !this.state.web3){
     // temporary solution

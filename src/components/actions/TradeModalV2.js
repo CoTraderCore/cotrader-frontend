@@ -16,7 +16,6 @@ import {
   Modal,
   Form,
   Alert,
-  Dropdown,
   InputGroup
 } from "react-bootstrap"
 
@@ -24,7 +23,7 @@ import setPending from '../../utils/setPending'
 import axios from 'axios'
 import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../utils/weiByDecimals'
 import BigNumber from 'bignumber.js'
-import { coinPics } from '../../tokens/tokensHelpers'
+import { Typeahead } from 'react-bootstrap-typeahead'
 
 
 class TradeModalV2 extends Component {
@@ -34,7 +33,7 @@ class TradeModalV2 extends Component {
     this.state = {
       ShowModal: false,
       Send: 'ETH',
-      Recive:'ETH',
+      Recive:'DAI',
       AmountSend:0,
       AmountRecive:0,
       AlertError:false,
@@ -46,7 +45,7 @@ class TradeModalV2 extends Component {
     }
   }
 
-  _isMounted = false;
+  _isMounted = false
   componentDidMount(){
     this._isMounted = true
     this.initData()
@@ -338,19 +337,20 @@ class TradeModalV2 extends Component {
           ?
           (
           <Form>
-          <Form.Label>Send: {this.state.Send}</Form.Label>
+          {/* SEND */}
+          <Form.Label>Pay with: {this.state.Send}</Form.Label>
           <InputGroup className="mb-3">
           <InputGroup.Prepend>
-          <Dropdown>
-          <Dropdown.Toggle variant="outline-primary">
-          Select token
-          </Dropdown.Toggle>
-          <Dropdown.Menu style={{"height":"290px", "overflowY":"scroll"}}>
-          {this.state.symbols.map((symbol) => {
-          return <Dropdown.Item onClick={() => this.changeByClick("Send", symbol)} key={symbol}><img src={coinPics(symbol)} alt={symbol} width="19" height="15"/> {symbol}</Dropdown.Item>
-          })}
-          </Dropdown.Menu>
-          </Dropdown>
+          <InputGroup.Text>
+            <Typeahead
+              labelKey="sendTokens"
+              multiple={false}
+              id="sendTokens"
+              options={this.state.symbols}
+              onChange={(s) => this.changeByClick("Send", s[0])}
+              placeholder="Choose a symbol"
+            />
+          </InputGroup.Text>
           </InputGroup.Prepend>
           <Form.Control
           type="number"
@@ -362,29 +362,20 @@ class TradeModalV2 extends Component {
           />
           </InputGroup>
 
-           {
-            this.state.AlertError ?(
-            <Alert variant="danger">
-            {
-              `ERROR: Not enought ${this.state.Send} in this SmartFund`
-            }
-            </Alert>)
-            :(null)
-            }
-
-          <Form.Label>Recive: {this.state.Recive}</Form.Label>
+          {/* RECEIVE */}
+          <Form.Label>Receive: {this.state.Recive}</Form.Label>
           <InputGroup className="mb-3">
           <InputGroup.Prepend>
-          <Dropdown>
-          <Dropdown.Toggle variant="outline-primary" id="dropdown-basic">
-          Select token
-          </Dropdown.Toggle>
-          <Dropdown.Menu style={{"height":"250px", "overflowY":"scroll"}}>
-          {this.state.symbols.map((symbol) => {
-          return <Dropdown.Item onClick={() => this.changeByClick("Recive", symbol)} key={symbol}><img src={coinPics(symbol)} alt={symbol} width="19" height="15"/> {symbol}</Dropdown.Item>
-          })}
-          </Dropdown.Menu>
-          </Dropdown>
+          <InputGroup.Text>
+            <Typeahead
+              labelKey="receiveTokens"
+              multiple={false}
+              id="receiveTokens"
+              options={this.state.symbols}
+              onChange={(s) => this.changeByClick("Recive", s[0])}
+              placeholder="Choose a symbol"
+            />
+          </InputGroup.Text>
           </InputGroup.Prepend>
           <Form.Control
           type="number"
@@ -395,6 +386,17 @@ class TradeModalV2 extends Component {
           onChange={e => this.change(e)}
           />
           </InputGroup>
+
+          {
+           this.state.AlertError ?(
+           <Alert variant="danger">
+           {
+             `ERROR: Not enought ${this.state.Send} in this SmartFund`
+           }
+           </Alert>)
+           :(null)
+           }
+
           <br />
           <Button variant="outline-primary" onClick={() => this.validation()}>Execute trade</Button>
            </Form>
