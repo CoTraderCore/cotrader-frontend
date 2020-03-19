@@ -41,7 +41,8 @@ class TradeModalV2 extends Component {
       symbols: null,
       sendFrom: '',
       sendTo:'',
-      decimalsFrom:18
+      decimalsFrom:18,
+      prepareData:false
     }
   }
 
@@ -265,7 +266,7 @@ class TradeModalV2 extends Component {
   const smartFund = new this.props.web3.eth.Contract(SmartFundABIV2, this.props.smartFundAddress)
   const block = await this.props.web3.eth.getBlockNumber()
 
-  this.setState({ ShowModal: false })
+  this.closeModal()
 
   smartFund.methods.trade(
       _sourceToken,
@@ -319,6 +320,7 @@ class TradeModalV2 extends Component {
     else{
       const status = await this.checkFundBalance()
       if(status){
+        this.setState({ prepareData:true })
         this.trade()
       }else{
         this.setState({ ERRORText:  `Your smart fund don't have enough ${this.state.Send}` })
@@ -326,16 +328,16 @@ class TradeModalV2 extends Component {
     }
   }
 
+  closeModal = () => this.setState({
+    ShowModal: false,
+    Send: 'ETH',
+    Recive:'DAI',
+    AmountSend:0,
+    AmountRecive:0,
+    prepareData:false
+  })
 
   render() {
-   let CloseModal = () => this.setState({
-     ShowModal: false,
-     Send: 'ETH',
-     Recive:'ETH',
-     AmountSend:0,
-     AmountRecive:0
-   })
-
    return (
       <div>
         <Button variant="outline-primary" onClick={() => this.setState({ ShowModal: true })}>
@@ -345,7 +347,7 @@ class TradeModalV2 extends Component {
           <Modal
           size="lg"
           show={this.state.ShowModal}
-          onHide={CloseModal}
+          onHide={() => this.closeModal()}
           aria-labelledby="example-modal-sizes-title-lg"
           >
           <Modal.Header closeButton>
@@ -413,6 +415,10 @@ class TradeModalV2 extends Component {
 
           <br />
           <Button variant="outline-primary" onClick={() => this.validation()}>Execute trade</Button>
+          <br />
+          {
+            this.state.prepareData ? (<small>Preparing transaction data, please wait ...</small>) : null
+          }
            </Form>
           )
           :
