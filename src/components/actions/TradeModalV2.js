@@ -36,7 +36,7 @@ class TradeModalV2 extends Component {
       Recive:'DAI',
       AmountSend:0,
       AmountRecive:0,
-      AlertError:false,
+      ERRORText:'',
       tokens: null,
       symbols: null,
       sendFrom: '',
@@ -54,6 +54,16 @@ class TradeModalV2 extends Component {
 
   componentWillUnmount(){
     this._isMounted = false
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    if(prevState.Send !== this.state.Send
+      || prevState.Recive !== this.state.Recive
+      || prevState.AmountSend !== this.state.AmountSend
+      || prevState.AmountRecive !== this.state.AmountRecive
+    ){
+      this.setState({ ERRORText:'' })
+    }
   }
 
   // get tokens addresses and symbols from paraswap api
@@ -77,8 +87,17 @@ class TradeModalV2 extends Component {
     }
   }
 
-  errorShow = (bool) => {
-    this.setState({ AlertError:bool })
+  // Show err msg if there are some msg
+  ErrorMsg = () => {
+    if(this.state.ERRORText.length > 0) {
+      return(
+        <Alert variant="danger">
+        {this.state.ERRORText}
+        </Alert>
+      )
+    }else {
+      return null
+    }
   }
 
 
@@ -292,15 +311,18 @@ class TradeModalV2 extends Component {
 
   // Validation input and smart fund balance
   validation = async () => {
-    if(this.state.AmountSend > 0){
+    if(this.state.AmountSend === 0){
+      this.setState({ ERRORText:'Please input amount'})
+    }else if(this.state.Send === this.state.Recive){
+      this.setState({ ERRORText:'Token directions can not be the same'})
+    }
+    else{
       const status = await this.checkFundBalance()
       if(status){
         this.trade()
       }else{
-        this.errorShow(true)
+        this.setState({ ERRORText:  `Your smart fund don't have enough ${this.state.Send}` })
       }
-    }else{
-      alert('Please input amount')
     }
   }
 
@@ -387,15 +409,7 @@ class TradeModalV2 extends Component {
           />
           </InputGroup>
 
-          {
-           this.state.AlertError ?(
-           <Alert variant="danger">
-           {
-             `ERROR: Not enought ${this.state.Send} in this SmartFund`
-           }
-           </Alert>)
-           :(null)
-           }
+          {this.ErrorMsg()}
 
           <br />
           <Button variant="outline-primary" onClick={() => this.validation()}>Execute trade</Button>
