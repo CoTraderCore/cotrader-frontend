@@ -303,7 +303,9 @@ class TradeModalV2 extends Component {
     const value = await contract.methods.getBestPriceSimple(from, to, src).call()
     if(value){
       const result = fromWeiByDecimalsInput(decimalsTo, value)
-      this.setState({ [type]: result})
+      // cut slippage 1% percent
+      const ratio = result * 99 / 100
+      this.setState({ [type]: ratio})
     }else{
       this.setState({ [type]: 0})
     }
@@ -414,7 +416,7 @@ class TradeModalV2 extends Component {
           {this.ErrorMsg()}
 
           <br />
-          <Button variant="outline-primary" onClick={() => this.validation()}>Execute trade</Button>
+          <Button variant="outline-primary" onClick={() => this.validation()}>Trade</Button>
           <br />
           {
             this.state.prepareData ? (<small>Preparing transaction data, please wait ...</small>) : null

@@ -173,7 +173,9 @@ class TradeModalV1 extends Component {
         rateFromWei= fromWeiByDecimalsInput(decimals, this.props.web3.utils.hexToNumberString(rate.expectedRate._hex))
       }
       // mul expected rate
-      const final = rateFromWei * this.state[mul]
+      const ratio = rateFromWei * this.state[mul]
+      // cut 1% slippage
+      const final = ratio * 99 / 100
       this.setState({ [type]: final })
     }else{
       this.setState({ [type]: 0 })
@@ -281,7 +283,7 @@ class TradeModalV1 extends Component {
           {this.ErrorMsg()}
 
           <br />
-          <Button variant="outline-primary" onClick={() => this.validation()}>Execute trade</Button>
+          <Button variant="outline-primary" onClick={() => this.validation()}>Trade</Button>
            </Form>
           </Modal.Body>
         </Modal>
