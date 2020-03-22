@@ -14,7 +14,7 @@ export const ParaswapApi = 'https://paraswap.io/api'
 
 // V5
 export const SmartFundRegistryADDRESS = '0xD990B951F791f58E7548088f9C1D995cA1A39153'
-export const PoolPortal = '0xE8546d4De7927D0E6D314136b8980248aa095Ea6'
+export const PoolPortal = '0x3f49fEddB3c63E36552679BC972857312dC8b4b7'
 export const ExchangePortalAddressV3 = '0x9D82221F8C715De15103B5E5EF55644d29D84563'
 export const EtherscanLink = 'https://etherscan.io/'
 export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
