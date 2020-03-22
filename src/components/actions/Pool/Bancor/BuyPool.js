@@ -223,10 +223,11 @@ class BuyPool extends Component {
               <hr/>
               <small>
               Your balance is
-              <hr/>
+              &#8194;
               {this.state.BNTConnectorSymbol}:&#8194;{Number(this.state.curentBalanceBNT)}
-              <hr/>
+              &#8194;
               {this.state.ERCConnectorSymbol}:&#8194;{Number(this.state.currentBalanceERC)}
+              &#8194;
               <hr/>
               Note: please use exchange or pool swap methods for buy necessary tokens, don't send directly to contract</small>
               </Alert>

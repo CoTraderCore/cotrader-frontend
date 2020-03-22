@@ -45,7 +45,7 @@ class BuyPool extends Component {
     || parseFloat(this.state.ERCAmount) > parseFloat(tokenFromWei)){
       this.setState({
         ErrorText:`Your smart fund does not have enough assets for these operations
-        your balance: ETH ${ethFromWei}, ERC connector ${tokenFromWei}`
+        your balance: ETH ${ethFromWei}, ERC connector ${tokenFromWei}, please use exchange for buy assets`
       })
     }
   }
