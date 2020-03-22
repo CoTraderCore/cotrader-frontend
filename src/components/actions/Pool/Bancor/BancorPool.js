@@ -119,6 +119,9 @@ class BancorPool extends Component {
             </Form.Group>
            </Form>
             {
+              this.state.symbols.length === 0 ? <small>Loading data from Bancor...</small> : null
+            }
+            {
               this.state.action !== 'Swap'
               ?
               (
