@@ -47,8 +47,8 @@ class UniswapPool extends Component {
       console.log("get data")
     }else{
        // test data for Ropsten
-       symbols = ['NOT available need create in uniswap factory']
-       tokens = []
+       symbols = ['NAP']
+       tokens = [{symbol:'NAP', address:'0x2f5cc2e9353feb3cbe32d3ab1ded9e469fad88c4'}]
     }
 
     this.setState({ tokens, symbols })
