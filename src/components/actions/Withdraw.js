@@ -6,10 +6,9 @@ import setPending from '../../utils/setPending'
 class Withdraw extends Component {
   constructor(props, context) {
     super(props, context);
-
     this.state = {
       Show: false,
-      Percent: 0
+      Percent: 50
     }
   }
 
@@ -61,14 +60,16 @@ class Withdraw extends Component {
           </Modal.Header>
           <Modal.Body>
           <Form>
-           <Form.Group controlId="formBasicEmail">
-           <Form.Label>Percent</Form.Label>
-           <Form.Control
-           type="number"
-           placeholder="%"
-           min="0"
-           name="Percent"
-           onChange={e => this.change(e)} />
+           <Form.Group controlId="formBasicRange">
+             <Form.Label>Percent {this.state.Percent} %</Form.Label>
+             <Form.Control
+             type="range"
+             value={this.state.Percent}
+             min="1"
+             name="Percent"
+             max="100"
+             onChange={e => this.change(e)}
+             />
            </Form.Group>
            <Button
            variant="outline-primary"

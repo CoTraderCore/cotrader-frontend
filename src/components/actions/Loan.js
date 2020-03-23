@@ -17,7 +17,7 @@ class PoolModal extends Component {
       cTokenAddress:'',
       action:'Loan',
       amount:0,
-      percent:0
+      percent:50
     }
   }
 
@@ -171,11 +171,12 @@ class PoolModal extends Component {
     else if (this.state.action === "Redeem") {
       return(
         <React.Fragment>
+        <Form.Label>Reedem percent {this.state.percent} %</Form.Label>
         <Form.Control
-        type="number"
-        min="0"
+        type="range"
+        min="1"
+        max="100"
         placeholder="Enter percent for withdraw"
-        name="amount"
         onChange={(e) => this.setState({ percent:e.target.value })}
         />
         <br/>
@@ -194,7 +195,7 @@ class PoolModal extends Component {
     }
   }
 
-  modalClose = () => this.setState({ Show: false })
+  modalClose = () => this.setState({ Show: false, action:'Loan' })
   render() {
     return (
       <React.Fragment>
