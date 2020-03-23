@@ -20,7 +20,7 @@ class Withdraw extends Component {
 
   this.setState({ Show:false })
 
-  let block = await this.props.web3.eth.getBlockNumber()
+  const block = await this.props.web3.eth.getBlockNumber()
 
   contract.methods.withdraw(curentPercent).send({ from: this.props.accounts[0] })
   .on('transactionHash', (hash) => {
