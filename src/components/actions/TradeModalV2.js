@@ -117,8 +117,7 @@ class TradeModalV2 extends Component {
       fundBalance = await ERC20.methods.balanceOf(this.props.smartFundAddress).call()
       fundBalance = fromWeiByDecimalsInput(this.state.decimalsFrom, this.props.web3.utils.hexToNumberString(fundBalance._hex))
     }
-
-    if(fundBalance >= this.state.AmountSend)
+    if(parseFloat(fundBalance) >= parseFloat(this.state.AmountSend))
       result = true
 
     return result
