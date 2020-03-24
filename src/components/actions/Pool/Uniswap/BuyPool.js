@@ -51,6 +51,10 @@ class BuyPool extends Component {
     }
   }
 
+  calculateLiquidityMinted = async () => {
+    // return msg.value * total_liquidity / eth_reserve
+  }
+
   calculate = async () => {
     if(this.state.ETHAmount > 0 && this.props.tokenAddress){
       const poolPortal = new this.props.web3.eth.Contract(PoolPortalABI, PoolPortal)

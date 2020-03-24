@@ -18,6 +18,12 @@ class SellPool extends Component {
     }
   }
 
+
+  updateSellInfo = async() => {
+    // eth_amount: uint256(wei) = amount * self.balance / total_liquidity
+    // token_amount: uint256 = amount * token_reserve / total_liquidity
+  }
+
   sellPool = async () => {
     if(this.state.UniAmount > 0){
       const factory = new this.props.web3.eth.Contract(UniswapFactoryABI, UniswapFactory)
