@@ -48,12 +48,13 @@ class BuyPool extends Component {
      // get current reserve amount for pool
      const poolPortal = new web3.eth.Contract(PoolPortalABI, PoolPortal)
 
+     // get connectors amount
      const { bancorAmount, connectorAmount } = await poolPortal.methods.getBancorConnectorsAmountByRelayAmount(
        toWei(String(this.state.amount)),
        this.props.fromAddress
      ).call()
 
-     // check curent balance
+     // get connectors address
      const { BNTConnector, ERCConnector } = await poolPortal.methods.getBancorConnectorsByRelay(
        this.props.fromAddress
      ).call()
