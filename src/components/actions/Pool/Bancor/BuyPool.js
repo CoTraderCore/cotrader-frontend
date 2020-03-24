@@ -182,14 +182,16 @@ class BuyPool extends Component {
       onChange={(e) => this.setState({ amount: e.target.value })}
       type="number" min="1"/>
       <br/>
-      <Button variant="outline-primary" onClick={() => this.calculatePool()}>Calculate</Button>
       {
         this.state.isBNTEnough && this.state.isERCEnough
         ?
         (
           <Button variant="outline-primary" onClick={() => this.buy()}>Buy</Button>
         )
-        :null
+        :
+        (
+          <Button variant="outline-primary" onClick={() => this.calculatePool()}>Calculate</Button>
+        )
       }
       <br/>
       <br/>
