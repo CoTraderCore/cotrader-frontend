@@ -30,6 +30,7 @@ class SellPool extends Component {
     }
   }
 
+  // update connectors amount state and connectors symbols
   updateSellInfo = async () => {
     if(this.props.fromAddress && this.state.amount > 0){
       const web3 = this.props.web3
@@ -78,27 +79,37 @@ class SellPool extends Component {
 
   sell = async () => {
     if(this.props.fromAddress.length > 0 && this.state.amount > 0){
+      // Get smart token instance and check fund balance
       const web3 = this.props.web3
-      const block = await web3.eth.getBlockNumber()
-
-      // Get amount in wei by decimals
       const token = new web3.eth.Contract(ERC20ABI, this.props.fromAddress)
+      const fundBalance = await token.methods.balanceOf(this.props.smartFundAddress).call()
       const decimals = await token.methods.decimals().call()
-      const amountInWei = toWeiByDecimalsInput(decimals, this.state.amount)
+      const fundBalanceFromWei = fromWeiByDecimalsInput(decimals, String(fundBalance))
 
-      // Sell
-      const fund = new web3.eth.Contract(SmartFundABIV4, this.props.smartFundAddress)
-      fund.methods.sellPool(amountInWei, 0, this.props.fromAddress, []).send({ from:this.props.accounts[0] })
-      .on('transactionHash', (hash) => {
-      // pending status for spiner
-      this.props.pending(true)
-      // pending status for DB
-      setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+      // allow sell if fund has enough balance
+      if(fundBalanceFromWei >= this.state.amount){
+        // convert amount in wei by smart token decimals
+        const amountInWei = toWeiByDecimalsInput(decimals, this.state.amount)
+
+        // Sell
+        const fund = new web3.eth.Contract(SmartFundABIV4, this.props.smartFundAddress)
+        const block = await web3.eth.getBlockNumber()
+
+        fund.methods.sellPool(amountInWei, 0, this.props.fromAddress, []).send({ from:this.props.accounts[0] })
+        .on('transactionHash', (hash) => {
+        // pending status for spiner
+        this.props.pending(true)
+        // pending status for DB
+        setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+        // close pool modal
+        this.props.modalClose()
       })
-
-      // close pool modal
-      this.props.modalClose()
-    }else{
+      }
+      else{
+      alert('Not enough balance in your fund')
+      }
+    }
+    else{
       alert('Please fill in all fields')
     }
   }
