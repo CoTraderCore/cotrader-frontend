@@ -23,13 +23,14 @@ class BuyPool extends Component {
       ERCAmountInWEI:'0',
       ERCAmount:0,
       ERCSymbol: '',
-      ErrorText:''
+      ErrorText:'',
+      isCalculated:false
     }
   }
 
   componentDidUpdate(prevProps, prevState){
     if(prevProps.tokenAddress !== this.props.tokenAddress || prevState.ETHAmount !== this.state.ETHAmount){
-      this.setState({ ERCAmount:0, ErrorText: '' })
+      this.setState({ ERCAmount:0, ErrorText: '', isCalculated:false })
     }
   }
 
@@ -74,7 +75,7 @@ class BuyPool extends Component {
           ERCAmount: fromWeiByDecimalsInput(decimals, hexToNumberString(ERCAmount._hex)),
           ERCSymbol
         })
-        this.checkBalance()
+        await this.checkBalance()
       }catch(e){
         this.setState({
           ErrorText:"Sorry, but this token is not available, for Uniswap pool. Please try another token."
@@ -82,8 +83,7 @@ class BuyPool extends Component {
         console.log(e)
       }
 
-
-      console.log(this.state.ERCAmount, this.state.ERCAmountInWEI)
+      this.setState({ isCalculated:true })
     }else{
       alert('Please fill all fields')
     }
@@ -135,14 +135,29 @@ class BuyPool extends Component {
       onChange={e => this.setState({ ETHAmount:e.target.value })}
       />
       </Form.Group>
-
-      <Button
-      variant="outline-primary"
-      type="button"
-      onClick={() => this.calculate()}
-      >
-      Calculate
-      </Button>
+      {
+        this.state.isCalculated && this.state.ErrorText === ''
+        ?
+        (
+          <Button
+          variant="outline-primary"
+          type="button"
+          onClick={() => this.buyPool()}
+          >
+          Buy
+          </Button>
+        )
+        :
+        (
+          <Button
+          variant="outline-primary"
+          type="button"
+          onClick={() => this.calculate()}
+          >
+          Calculate
+          </Button>
+        )
+      }
       <br/>
       <br/>
       {
@@ -152,23 +167,9 @@ class BuyPool extends Component {
           <React.Fragment>
           <Alert variant="warning">
           You will stake {this.state.ETHAmount} ETH
-          and {this.state.ERCAmount} {this.state.ERCSymbol}
+          and {this.state.ERCAmount} {this.state.ERCSymbol},
+          you will receive {this.state.ETHAmount} UNI-V1
           </Alert>
-
-          {
-            this.state.ErrorText.length === 0
-            ?
-            (
-              <Button
-              variant="outline-primary"
-              type="button"
-              onClick={() => this.buyPool()}
-              >
-              Buy
-              </Button>
-            )
-            :null
-          }
           </React.Fragment>
         )
         :null
