@@ -127,19 +127,26 @@ class PoolModal extends Component {
 
   compoundRedeem = async () => {
     if(this.state.percent > 0 && this.state.percent <= 100 && this.state.cTokenAddress){
-      const fund = new this.props.web3.eth.Contract(SmartFundABIV5, this.props.smartFundAddress)
-      const block = await this.props.web3.eth.getBlockNumber()
-      // Mint
-      fund.methods.compoundRedeemByPercent(this.state.percent, this.state.cTokenAddress)
-      .send({ from:this.props.accounts[0] })
-      .on('transactionHash', (hash) => {
-      // pending status for spiner
-      this.props.pending(true)
-      // pending status for DB
-      setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
-      })
-      // close pool modal
-      this.modalClose()
+      const cToken = new this.props.web3.eth.Contract(ERC20ABI, this.state.cTokenAddress)
+      const balance = await cToken.methods.balanceOf(this.props.smartFundAddress).call()
+      // allow reedem only if there are some amount of current cToken
+      if(balance > 0){
+        const fund = new this.props.web3.eth.Contract(SmartFundABIV5, this.props.smartFundAddress)
+        const block = await this.props.web3.eth.getBlockNumber()
+        // Mint
+        fund.methods.compoundRedeemByPercent(this.state.percent, this.state.cTokenAddress)
+        .send({ from:this.props.accounts[0] })
+        .on('transactionHash', (hash) => {
+        // pending status for spiner
+        this.props.pending(true)
+        // pending status for DB
+        setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+        })
+        // close pool modal
+        this.modalClose()
+      }else{
+        alert("Nothing to reedem")
+      }
     }else{
       alert('Please fill all fields correct')
     }
