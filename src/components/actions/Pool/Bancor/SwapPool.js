@@ -80,9 +80,10 @@ class SwapPool extends Component {
     const token = new web3.eth.Contract(ERC20ABI, this.state.fromAddress)
     let balanceFromWei
     if(this.state.fromAddress === BNTEther){
-      const balance = web3.eth.getBalance(this.props.smartFundAddress)
+      const balance = await web3.eth.getBalance(this.props.smartFundAddress)
       balanceFromWei = fromWeiByDecimalsInput(18, balance)
-    }else{
+    }
+    else{
       const decimals = await token.methods.decimals().call()
       const balance = await token.methods.balanceOf(this.props.smartFundAddress).call()
       balanceFromWei = fromWeiByDecimalsInput(decimals, balance)
