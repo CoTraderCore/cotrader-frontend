@@ -3,26 +3,69 @@ import React, { Component } from 'react'
 import {
   SmartFundABIV5,
   UniswapFactoryABI,
-  UniswapFactory
+  UniswapFactory,
+  PoolPortalABI,
+  PoolPortal,
+  ERC20ABI
 } from '../../../../config.js'
 
-import { Form, Button } from "react-bootstrap"
-import { toWei } from 'web3-utils'
+import { Form, Button, Alert } from "react-bootstrap"
+import { toWei, fromWei } from 'web3-utils'
 import setPending from '../../../../utils/setPending'
+import { fromWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
+
+
 
 class SellPool extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      UniAmount:0
+      UniAmount:0,
+      ethAmountFromWei:0,
+      ercAmountFromWei:0,
+      ercSymbol:''
+    }
+  }
+
+
+  componentDidUpdate(prevProps, prevState){
+    if(prevProps.tokenAddress !== this.props.tokenAddress || prevState.UniAmount !== this.state.UniAmount){
+      this.updateSellInfo()
     }
   }
 
 
   updateSellInfo = async() => {
-    // eth_amount: uint256(wei) = amount * self.balance / total_liquidity
-    // token_amount: uint256 = amount * token_reserve / total_liquidity
+    if(this.props.tokenAddress && this.state.UniAmount > 0){
+      const uniswapFactory = new this.props.web3.eth.Contract(UniswapFactoryABI, UniswapFactory)
+      const exchangeAddress = await uniswapFactory.methods.getExchange(this.props.tokenAddress).call()
+      const poolPortal = new this.props.web3.eth.Contract(PoolPortalABI, PoolPortal)
+      const ercToken = new this.props.web3.eth.Contract(ERC20ABI, this.props.tokenAddress)
+      const tokenDecimals = await ercToken.methods.decimals().call()
+
+      let ercSymbol
+      // try catch for bytes32 return
+      try{
+        ercSymbol = await ercToken.methods.symbol().call()
+      }catch(e){
+        ercSymbol = "ERC20"
+      }
+
+      const { ethAmount, ercAmount } = await poolPortal.methods.getUniswapConnectorsAmountByPoolAmount(
+        toWei(this.state.UniAmount),
+        exchangeAddress
+      ).call()
+
+      const ethAmountFromWei = fromWei(String(ethAmount))
+      const ercAmountFromWei = fromWeiByDecimalsInput(tokenDecimals, String(ercAmount))
+
+      this.setState({ ethAmountFromWei, ercAmountFromWei, ercSymbol })
+    }else{
+      this.setState({ ethAmountFromWei:0, ercAmountFromWei:0, ercSymbol:'' })
+    }
   }
+
+
 
   sellPool = async () => {
     if(this.state.UniAmount > 0){
@@ -67,6 +110,23 @@ class SellPool extends Component {
       >
       Sell
       </Button>
+
+      <br/>
+      <br/>
+      {
+        this.state.ethAmountFromWei > 0 && this.state.ercAmountFromWei > 0
+        ?
+        (
+          <Alert variant="success">
+          You will receive
+          &nbsp;
+          ETH : {this.state.ethAmountFromWei},
+          &nbsp;
+          {this.state.ercSymbol} : {this.state.ercAmountFromWei}
+          </Alert>
+        )
+        :null
+      }
       </Form>
     )
   }
