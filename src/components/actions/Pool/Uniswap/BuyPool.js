@@ -9,6 +9,7 @@ import {
   ERC20ABI
 } from '../../../../config.js'
 
+import Pending from '../../../templates/Spiners/Pending'
 import { Form, Button, Alert } from "react-bootstrap"
 import { toWei, fromWei, hexToNumberString } from 'web3-utils'
 import { fromWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
@@ -24,13 +25,17 @@ class BuyPool extends Component {
       ERCAmount:0,
       ERCSymbol: '',
       ErrorText:'',
-      isCalculated:false
+      mintLiquidity:0,
+      isComputed:false
     }
   }
 
   componentDidUpdate(prevProps, prevState){
     if(prevProps.tokenAddress !== this.props.tokenAddress || prevState.ETHAmount !== this.state.ETHAmount){
-      this.setState({ ERCAmount:0, ErrorText: '', isCalculated:false })
+       this.setState({ ERCAmount:0, ErrorText: '', mintLiquidity:0})
+
+      if(this.props.tokenAddress && this.state.ETHAmount > 0)
+        this.calculate()
     }
   }
 
@@ -46,53 +51,61 @@ class BuyPool extends Component {
     || parseFloat(this.state.ERCAmount) > parseFloat(tokenFromWei)){
       this.setState({
         ErrorText:`Your smart fund does not have enough assets for these operations
-        your balance: ETH ${ethFromWei}, ERC connector ${tokenFromWei}, please use exchange for buy assets`
+        your balance: ETH : ${ethFromWei}, ${this.state.ERCSymbol} : ${tokenFromWei}, please use exchange for buy assets`
       })
     }
   }
 
-  calculateLiquidityMinted = async () => {
-    // return msg.value * total_liquidity / eth_reserve
-  }
-
+  // Calculate UNI pool and ERC20 amount by ETH amount
   calculate = async () => {
-    if(this.state.ETHAmount > 0 && this.props.tokenAddress){
-      const poolPortal = new this.props.web3.eth.Contract(PoolPortalABI, PoolPortal)
-      const ERCAmount = await poolPortal.methods.getUniswapTokenAmountByETH(
-        this.props.tokenAddress, toWei(this.state.ETHAmount)
+   this.setState({ isComputed:true })
+   try{
+     // GET ERC20 info
+     const poolPortal = new this.props.web3.eth.Contract(PoolPortalABI, PoolPortal)
+     const ERCAmount = await poolPortal.methods.getUniswapTokenAmountByETH(
+       this.props.tokenAddress, toWei(this.state.ETHAmount)
       ).call()
 
-      const token = new this.props.web3.eth.Contract(ERC20ABI, this.props.tokenAddress)
-      const decimals = await token.methods.decimals().call()
+     const token = new this.props.web3.eth.Contract(ERC20ABI, this.props.tokenAddress)
+     const decimals = await token.methods.decimals().call()
 
-      let ERCSymbol
+     let ERCSymbol
 
-      try{
-        ERCSymbol = await token.methods.symbol().call()
-      }catch(e){
-        ERCSymbol = 'ERC'
-      }
+     try{
+      ERCSymbol = await token.methods.symbol().call()
+     }catch(e){
+      ERCSymbol = 'ERC'
+     }
 
-      try{
-        this.setState({
-          ERCAmountInWEI: hexToNumberString(ERCAmount._hex),
-          ERCAmount: fromWeiByDecimalsInput(decimals, hexToNumberString(ERCAmount._hex)),
-          ERCSymbol
-        })
-        await this.checkBalance()
-      }catch(e){
-        this.setState({
-          ErrorText:"Sorry, but this token is not available, for Uniswap pool. Please try another token."
-        })
-        console.log(e)
-      }
+     // GET UNI Pool info
+     const factory = new this.props.web3.eth.Contract(UniswapFactoryABI, UniswapFactory)
+     const poolExchangeAddress = await factory.methods.getExchange(this.props.tokenAddress).call()
+     const exchangeERC = new this.props.web3.eth.Contract(ERC20ABI, poolExchangeAddress)
+     const totalSupply = await exchangeERC.methods.totalSupply().call()
+     const ethReserve = await this.props.web3.eth.getBalance(poolExchangeAddress)
+     const mintLiquidity = this.state.ETHAmount * (totalSupply / (ethReserve - this.state.ETHAmount))
 
-      this.setState({ isCalculated:true })
-    }else{
-      alert('Please fill all fields')
-    }
+     this.setState({
+      ERCAmountInWEI: hexToNumberString(ERCAmount._hex),
+      ERCAmount: fromWeiByDecimalsInput(decimals, hexToNumberString(ERCAmount._hex)),
+      ERCSymbol,
+      mintLiquidity
+     })
+     await this.checkBalance()
+   }
+   catch(e){
+     this.setState({
+       mintLiquidity:0,
+       ErrorText:"Sorry, but this token is not available, for Uniswap pool. Please try another token."
+     })
+     console.log(e)
+   }
+
+   this.setState({ isComputed:false })
   }
 
+
+  // Buy Uniswap pool
   buyPool = async () => {
     if(this.state.ETHAmount > 0 && this.props.tokenAddress){
       // get contracts and data
@@ -140,9 +153,10 @@ class BuyPool extends Component {
       />
       </Form.Group>
       {
-        this.state.isCalculated && this.state.ErrorText === ''
+        !this.state.isComputed && this.state.mintLiquidity > 0 && this.state.ErrorText.length === 0
         ?
         (
+          <>
           <Button
           variant="outline-primary"
           type="button"
@@ -150,29 +164,27 @@ class BuyPool extends Component {
           >
           Buy
           </Button>
+          <br/>
+          <br/>
+          </>
         )
-        :
-        (
-          <Button
-          variant="outline-primary"
-          type="button"
-          onClick={() => this.calculate()}
-          >
-          Calculate
-          </Button>
-        )
+        : this.state.isComputed ? (<Pending/>) : null
       }
-      <br/>
-      <br/>
       {
         parseFloat(this.state.ERCAmount) > 0
         ?
         (
           <React.Fragment>
           <Alert variant="warning">
-          You will stake {this.state.ETHAmount} ETH
-          and {this.state.ERCAmount} {this.state.ERCSymbol},
-          you will receive {this.state.ETHAmount} UNI-V1
+          You will stake
+          <hr/>
+          ETH: {this.state.ETHAmount}
+          <hr/>
+          {this.state.ERCSymbol} : {this.state.ERCAmount}
+          <hr/>
+          you will receive
+          <hr/>
+          {this.state.ERCSymbol} UNI-V1 : {this.state.mintLiquidity}
           </Alert>
           </React.Fragment>
         )
@@ -181,9 +193,9 @@ class BuyPool extends Component {
       {
         this.state.ErrorText.length > 0
         ?
-        <>
+        <small>
         {this.ERROR(this.state.ErrorText)}
-        </>
+        </small>
         :null
       }
       </Form>
