@@ -32,7 +32,8 @@ class BuyPool extends Component {
       RelaySymbol:'',
       isСalculate: false,
       showInfo:false,
-      poolShare:0
+      newPoolShare:0,
+      currentPoolShare:0
     }
   }
 
@@ -90,11 +91,16 @@ class BuyPool extends Component {
      const ERCConnectorSymbol = await this.getTokenSymbol(ercToken)
      const relay = new web3.eth.Contract(ERC20ABI, this.props.fromAddress)
      const RelaySymbol = await this.getTokenSymbol(relay)
-
-     // get pool share
      const relaySupply = await relay.methods.totalSupply().call()
+
+     // get curent pool share
+     const curentRelayBalance = await relay.methods.balanceOf(this.props.smartFundAddress).call()
+     const currentPoolShare = 1 / ((parseFloat(fromWei(String(relaySupply))) / 100)
+     / parseFloat(fromWei(String(curentRelayBalance))))
+
+     // get new pool share
      const poolOnePercent = (parseFloat(fromWei(String(relaySupply))) + parseFloat(this.state.amount)) / 100
-     const poolShare = 1 / (parseFloat(poolOnePercent) / parseFloat(this.state.amount))
+     const newPoolShare = 1 / (parseFloat(poolOnePercent) / parseFloat(this.state.amount))
 
      // update state
      this.setState({
@@ -111,7 +117,8 @@ class BuyPool extends Component {
        BNTConnector,
        ERCConnector,
        RelaySymbol,
-       poolShare,
+       newPoolShare,
+       currentPoolShare,
        isСalculate:false,
        showInfo:true
       })
@@ -156,7 +163,7 @@ class BuyPool extends Component {
     try{
       symbol = await token.methods.symbol().call()
     }catch(e){
-      symbol = "Connector Token"
+      symbol = "ERC20"
     }
 
     return symbol
@@ -180,7 +187,8 @@ class BuyPool extends Component {
       RelaySymbol:'',
       isСalculate:false,
       showInfo:false,
-      poolShare:0
+      newPoolShare:0,
+      currentPoolShare:0
      })
   }
 
@@ -246,7 +254,11 @@ class BuyPool extends Component {
           &#8194;:&#8194;
           { this.state.amount }
           <hr/>
-          Your share of pool will be : {this.state.poolShare} %
+          Your current share of pool : {this.state.currentPoolShare} %
+          <hr/>
+          Your gain share of pool will be : {this.state.newPoolShare} %
+          <hr/>
+          Your new share will be : {parseFloat(this.state.currentPoolShare) + parseFloat(this.state.newPoolShare)} %
           </Alert>
           {
             !this.state.isBNTEnough || !this.state.isERCEnough

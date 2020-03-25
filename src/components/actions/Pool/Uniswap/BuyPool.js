@@ -29,17 +29,33 @@ class BuyPool extends Component {
       mintLiquidity:0,
       isComputed:false,
       ERCAddress:'',
-      UNIPoolAddress:''
+      UNIPoolAddress:'',
+      newPoolShare:0,
+      currentPoolShare:0
     }
   }
 
   componentDidUpdate(prevProps, prevState){
     if(prevProps.tokenAddress !== this.props.tokenAddress || prevState.ETHAmount !== this.state.ETHAmount){
-       this.setState({ ERCAmount:0, ErrorText: '', mintLiquidity:0})
+      this.resetInfo()
 
       if(this.props.tokenAddress && this.state.ETHAmount > 0)
         this.calculate()
     }
+  }
+
+  resetInfo(){
+    this.setState({
+      ERCAmountInWEI:'0',
+      ERCAmount:0,
+      ERCSymbol: '',
+      ErrorText:'',
+      mintLiquidity:0,
+      ERCAddress:'',
+      UNIPoolAddress:'',
+      newPoolShare:0,
+      currentPoolShare:0
+    })
   }
 
   checkBalance = async () => {
@@ -61,6 +77,7 @@ class BuyPool extends Component {
   }
 
   // Calculate UNI pool and ERC20 amount by ETH amount
+  // Get share of pool
   calculate = async () => {
    this.setState({ isComputed:true })
    try{
@@ -88,12 +105,21 @@ class BuyPool extends Component {
      const totalSupply = await exchangeERC.methods.totalSupply().call()
      const ethReserve = await this.props.web3.eth.getBalance(poolExchangeAddress)
 
+     // GET Uni pool amount
      const mintLiquidity = parseFloat(this.state.ETHAmount)
       * (parseFloat(fromWei(String(totalSupply)))
       / (parseFloat(fromWei(String(ethReserve))) - parseFloat(this.state.ETHAmount)))
 
+
+
+     // GET cur share
+     const curPoolBalance = await exchangeERC.methods.balanceOf(this.props.smartFundAddress).call()
+     const currentPoolShare = 1 / ((parseFloat(fromWei(String(totalSupply))) / 100)
+     / parseFloat(fromWei(String(curPoolBalance))))
+
+     // GET new share
      const poolOnePercent = (parseFloat(fromWei(String(totalSupply))) + parseFloat(mintLiquidity)) / 100
-     const poolShare = 1 / (poolOnePercent / parseFloat(mintLiquidity))
+     const newPoolShare = 1 / (poolOnePercent / parseFloat(mintLiquidity))
 
 
      this.setState({
@@ -101,7 +127,8 @@ class BuyPool extends Component {
       ERCAmount: fromWeiByDecimalsInput(decimals, hexToNumberString(ERCAmount._hex)),
       ERCSymbol,
       mintLiquidity,
-      poolShare,
+      newPoolShare,
+      currentPoolShare,
       ERCAddress:this.props.tokenAddress,
       UNIPoolAddress: poolExchangeAddress
      })
@@ -216,7 +243,11 @@ class BuyPool extends Component {
           <a href={EtherscanLink + "address/" + this.state.UNIPoolAddress} target="_blank" rel="noopener noreferrer">{this.state.ERCSymbol} UNI-V1 </a>
           : {this.state.mintLiquidity}
           <hr/>
-          Your share of pool will be : {this.state.poolShare} %
+          Your current share of pool : {this.state.currentPoolShare} %
+          <hr/>
+          Your gain share of pool will be : {this.state.newPoolShare} %
+          <hr/>
+          Your new share will be : {parseFloat(this.state.currentPoolShare) + parseFloat(this.state.newPoolShare)} %
           </Alert>
           </React.Fragment>
         )
