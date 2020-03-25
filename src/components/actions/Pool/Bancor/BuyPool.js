@@ -44,6 +44,7 @@ class BuyPool extends Component {
     }
   }
 
+  // Calculate BNT and ERC connector by pool amount
   calculatePool = async () => {
     if(this.props.fromAddress.length > 0 && this.state.amount > 0){
      this.setState({ isСalculate:true })
@@ -113,6 +114,7 @@ class BuyPool extends Component {
     }
   }
 
+  // Buy Bancor Pool
   buy = async () => {
     if(this.state.isBNTEnough && this.state.isERCEnough){
       const web3 = this.props.web3
@@ -141,7 +143,7 @@ class BuyPool extends Component {
     }
   }
 
-  // param ERC20 token instance
+  // param ERC20 token contract instance
   getTokenSymbol = async (token) => {
     let symbol
     try{
@@ -153,6 +155,7 @@ class BuyPool extends Component {
     return symbol
   }
 
+  // reset states
   resetInfo = () => {
     this.setState({
       bancorAmount:0,
@@ -173,8 +176,22 @@ class BuyPool extends Component {
      })
   }
 
+  // update state only when user stop typing
+  delayChange(evt) {
+    if(this._timeout){ //if there is already a timeout in process cancel it
+        clearTimeout(this._timeout)
+    }
+    const name = evt.target.name
+    const val = evt.target.value
+    this._timeout = setTimeout(()=>{
+       this._timeout = null
+       this.setState({
+          [name]:val
+       })
+    },1000)
+  }
+
   render() {
-    console.log(this.state.isBNTEnough, this.state.isERCEnough)
     return (
       <React.Fragment>
       <Form.Label><small>Note: for Bancor we calculate amount by Bancor pool token</small></Form.Label>
@@ -182,7 +199,7 @@ class BuyPool extends Component {
       <Form.Control
       placeholder="Enter amount"
       name="amount"
-      onChange={(e) => this.setState({ amount: e.target.value })}
+      onChange={(e) => this.delayChange(e)}
       type="number" min="1"/>
       <br/>
       {

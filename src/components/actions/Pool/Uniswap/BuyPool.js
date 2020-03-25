@@ -131,6 +131,21 @@ class BuyPool extends Component {
     }
   }
 
+  // update state only when user stop typing
+  delayChange(evt) {
+    if(this._timeout){ //if there is already a timeout in process cancel it
+        clearTimeout(this._timeout)
+    }
+    const name = evt.target.name
+    const val = evt.target.value
+    this._timeout = setTimeout(()=>{
+       this._timeout = null
+       this.setState({
+          [name]:val
+       })
+    },1000)
+  }
+
   ERROR(errText){
     return (
       <Alert variant="danger">
@@ -150,7 +165,7 @@ class BuyPool extends Component {
       min="0"
       placeholder="ETH amount"
       name="ETHAmount"
-      onChange={e => this.setState({ ETHAmount:e.target.value })}
+      onChange={(e) => this.delayChange(e)}
       />
       </Form.Group>
       {
