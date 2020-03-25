@@ -80,8 +80,8 @@ class BuyPool extends Component {
      const currentBalanceERC = ercBalance > 0 ? fromWeiByDecimalsInput(ercDecimals, ercBalance) : 0
 
      // compare balance
-     const isBNTEnough = curentBalanceBNT >= bancorAmountFromWei ? true : false
-     const isERCEnough = currentBalanceERC >= connectorAmountFromWei ? true : false
+     const isBNTEnough = parseFloat(curentBalanceBNT) >= parseFloat(bancorAmountFromWei) ? true : false
+     const isERCEnough = parseFloat(currentBalanceERC) >= parseFloat(connectorAmountFromWei) ? true : false
 
      // get additional info
      const BNTConnectorSymbol = await this.getTokenSymbol(bntToken)
@@ -174,6 +174,7 @@ class BuyPool extends Component {
   }
 
   render() {
+    console.log(this.state.isBNTEnough, this.state.isERCEnough)
     return (
       <React.Fragment>
       <Form.Label><small>Note: for Bancor we calculate amount by Bancor pool token</small></Form.Label>
@@ -219,7 +220,7 @@ class BuyPool extends Component {
           { this.state.amount }
           </Alert>
           {
-            !this.state.isBNTEnough && !this.state.isERCEnough
+            !this.state.isBNTEnough || !this.state.isERCEnough
             ?
             (
               <Alert variant="danger">
