@@ -38,6 +38,9 @@ class BuyPool extends Component {
   componentDidUpdate(prevProps, prevState){
     if(prevProps.fromAddress !== this.props.fromAddress || prevState.amount !== this.state.amount){
       this.resetInfo()
+
+      if(this.props.fromAddress && this.state.amount > 0)
+         this.calculatePool()
     }
   }
 
@@ -186,15 +189,14 @@ class BuyPool extends Component {
         this.state.isBNTEnough && this.state.isERCEnough
         ?
         (
+          <>
           <Button variant="outline-primary" onClick={() => this.buy()}>Buy</Button>
+          <br/>
+          <br/>
+          </>
         )
-        :
-        (
-          <Button variant="outline-primary" onClick={() => this.calculatePool()}>Calculate</Button>
-        )
+        : null
       }
-      <br/>
-      <br/>
       {
         this.state.showInfo
         ?
@@ -222,17 +224,16 @@ class BuyPool extends Component {
             ?
             (
               <Alert variant="danger">
-              You don't have enough balance
-              <hr/>
               <small>
-              Your balance is
+              You don't have enough balance
+              your balance is
               &#8194;
               {this.state.BNTConnectorSymbol}:&#8194;{Number(this.state.curentBalanceBNT)}
               &#8194;
               {this.state.ERCConnectorSymbol}:&#8194;{Number(this.state.currentBalanceERC)}
-              &#8194;
-              <hr/>
-              Note: please use exchange or pool swap methods for buy necessary tokens, don't send directly to contract</small>
+              &#8194;,
+              Note: please use exchange or pool swap methods for buy necessary tokens, don't send directly to contract
+              </small>
               </Alert>
             )
             :null
