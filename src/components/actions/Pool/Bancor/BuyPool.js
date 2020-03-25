@@ -225,14 +225,13 @@ class BuyPool extends Component {
             (
               <Alert variant="danger">
               <small>
-              You don't have enough balance
+              You don't have enough balance,
               your balance is
               &#8194;
               {this.state.BNTConnectorSymbol}:&#8194;{Number(this.state.curentBalanceBNT)}
               &#8194;
-              {this.state.ERCConnectorSymbol}:&#8194;{Number(this.state.currentBalanceERC)}
-              &#8194;,
-              Note: please use exchange or pool swap methods for buy necessary tokens, don't send directly to contract
+              {this.state.ERCConnectorSymbol}:&#8194;{Number(this.state.currentBalanceERC)}.
+              Note: please use exchange or pool swap methods for buy necessary tokens, don't send directly to contract address
               </small>
               </Alert>
             )
