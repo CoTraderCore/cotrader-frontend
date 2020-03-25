@@ -8,7 +8,7 @@ import {
   EtherscanLink
 } from '../../../../config.js'
 import { fromWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
-import { toWei } from 'web3-utils'
+import { toWei, fromWei } from 'web3-utils'
 import Pending from '../../../templates/Spiners/Pending'
 import setPending from '../../../../utils/setPending'
 
@@ -31,7 +31,8 @@ class BuyPool extends Component {
       ERCConnector:'',
       RelaySymbol:'',
       isСalculate: false,
-      showInfo:false
+      showInfo:false,
+      poolShare:0
     }
   }
 
@@ -90,6 +91,11 @@ class BuyPool extends Component {
      const relay = new web3.eth.Contract(ERC20ABI, this.props.fromAddress)
      const RelaySymbol = await this.getTokenSymbol(relay)
 
+     // get pool share
+     const relaySupply = await relay.methods.totalSupply().call()
+     const poolOnePercent = (parseFloat(fromWei(String(relaySupply))) + parseFloat(this.state.amount)) / 100
+     const poolShare = 1 / (parseFloat(poolOnePercent) / parseFloat(this.state.amount))
+
      // update state
      this.setState({
        bancorAmount,
@@ -105,6 +111,7 @@ class BuyPool extends Component {
        BNTConnector,
        ERCConnector,
        RelaySymbol,
+       poolShare,
        isСalculate:false,
        showInfo:true
       })
@@ -172,7 +179,8 @@ class BuyPool extends Component {
       ERCConnector:'',
       RelaySymbol:'',
       isСalculate:false,
-      showInfo:false
+      showInfo:false,
+      poolShare:0
      })
   }
 
@@ -225,7 +233,9 @@ class BuyPool extends Component {
           <a href={EtherscanLink + "address/" + this.state.BNTConnector} target="_blank" rel="noopener noreferrer">{this.state.BNTConnectorSymbol}</a>
           &#8194;:&#8194;
           {Number(this.state.bancorAmountFromWei)}
-          <hr/>
+          :&#8194;
+          and
+          :&#8194;
           <a href={EtherscanLink + "address/" + this.state.ERCConnector} target="_blank" rel="noopener noreferrer">{this.state.ERCConnectorSymbol}</a>
           &#8194;:&#8194;
           {Number(this.state.connectorAmountFromWei)}
@@ -235,6 +245,8 @@ class BuyPool extends Component {
           <a href={EtherscanLink + "address/" + this.props.fromAddress} target="_blank" rel="noopener noreferrer">{this.state.RelaySymbol}</a>
           &#8194;:&#8194;
           { this.state.amount }
+          <hr/>
+          Your share of pool will be : {this.state.poolShare} %
           </Alert>
           {
             !this.state.isBNTEnough || !this.state.isERCEnough

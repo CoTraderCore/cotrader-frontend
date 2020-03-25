@@ -6,7 +6,8 @@ import {
   UniswapFactory,
   PoolPortalABI,
   PoolPortal,
-  ERC20ABI
+  ERC20ABI,
+  EtherscanLink
 } from '../../../../config.js'
 
 import Pending from '../../../templates/Spiners/Pending'
@@ -26,7 +27,9 @@ class BuyPool extends Component {
       ERCSymbol: '',
       ErrorText:'',
       mintLiquidity:0,
-      isComputed:false
+      isComputed:false,
+      ERCAddress:'',
+      UNIPoolAddress:''
     }
   }
 
@@ -84,13 +87,23 @@ class BuyPool extends Component {
      const exchangeERC = new this.props.web3.eth.Contract(ERC20ABI, poolExchangeAddress)
      const totalSupply = await exchangeERC.methods.totalSupply().call()
      const ethReserve = await this.props.web3.eth.getBalance(poolExchangeAddress)
-     const mintLiquidity = this.state.ETHAmount * (totalSupply / (ethReserve - this.state.ETHAmount))
+
+     const mintLiquidity = parseFloat(this.state.ETHAmount)
+      * (parseFloat(fromWei(String(totalSupply)))
+      / (parseFloat(fromWei(String(ethReserve))) - parseFloat(this.state.ETHAmount)))
+
+     const poolOnePercent = (parseFloat(fromWei(String(totalSupply))) + parseFloat(mintLiquidity)) / 100
+     const poolShare = 1 / (poolOnePercent / parseFloat(mintLiquidity))
+
 
      this.setState({
       ERCAmountInWEI: hexToNumberString(ERCAmount._hex),
       ERCAmount: fromWeiByDecimalsInput(decimals, hexToNumberString(ERCAmount._hex)),
       ERCSymbol,
-      mintLiquidity
+      mintLiquidity,
+      poolShare,
+      ERCAddress:this.props.tokenAddress,
+      UNIPoolAddress: poolExchangeAddress
      })
      await this.checkBalance()
    }
@@ -134,7 +147,7 @@ class BuyPool extends Component {
   // update state only when user stop typing
   delayChange(evt) {
     if(this._timeout){ //if there is already a timeout in process cancel it
-        clearTimeout(this._timeout)
+      clearTimeout(this._timeout)
     }
     const name = evt.target.name
     const val = evt.target.value
@@ -194,13 +207,16 @@ class BuyPool extends Component {
           <Alert variant="warning">
           You will stake
           <hr/>
-          ETH: {this.state.ETHAmount}
+          ETH: {this.state.ETHAmount} and &#8194;
+          <a href={EtherscanLink + "address/" + this.state.ERCAddress} target="_blank" rel="noopener noreferrer">{this.state.ERCSymbol}</a>
+           : {this.state.ERCAmount}
           <hr/>
-          {this.state.ERCSymbol} : {this.state.ERCAmount}
+          You will receive
           <hr/>
-          you will receive
+          <a href={EtherscanLink + "address/" + this.state.UNIPoolAddress} target="_blank" rel="noopener noreferrer">{this.state.ERCSymbol} UNI-V1 </a>
+          : {this.state.mintLiquidity}
           <hr/>
-          {this.state.ERCSymbol} UNI-V1 : {this.state.mintLiquidity}
+          Your share of pool will be : {this.state.poolShare} %
           </Alert>
           </React.Fragment>
         )
