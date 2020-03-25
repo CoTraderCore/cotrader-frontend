@@ -78,7 +78,6 @@ class BuyPool extends Component {
      // convert from wei curent banlance
      const curentBalanceBNT = bntBalance > 0 ? fromWeiByDecimalsInput(18, bntBalance) : 0
      const currentBalanceERC = ercBalance > 0 ? fromWeiByDecimalsInput(ercDecimals, ercBalance) : 0
-     console.log(currentBalanceERC)
 
      // compare balance
      const isBNTEnough = curentBalanceBNT >= bancorAmountFromWei ? true : false

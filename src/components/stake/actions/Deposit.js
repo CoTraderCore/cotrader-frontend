@@ -49,7 +49,6 @@ class Deposit extends Component{
   }
   else{
     const time = duration.days(this.state.Days)
-    console.log(time)
     await this.props.stakeContract.methods.deposit(this.props.web3.utils.toWei(String(this.state.Value)), time).send(
       {
         from: this.props.account

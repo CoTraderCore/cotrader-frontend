@@ -277,7 +277,6 @@ class TradeModalV2 extends Component {
     )
     .send({ from: this.props.accounts[0] })
     .on('transactionHash', (hash) => {
-    console.log(hash)
     // pending status for spiner
     this.props.pending(true)
     // pending status for DB

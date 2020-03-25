@@ -29,9 +29,7 @@ class UserHoldings extends Component {
     // Percent of fund fundValue
     const percent = fromWei(_fundValue.toString()) / 100
     const _percentOfFundValue = fromWei(_calculateAddressValue.toString()) / percent
-
-    console.log(percent)
-    console.log(_percentOfFundValue)
+    
     this.setState(
       {
         isLoad: true,

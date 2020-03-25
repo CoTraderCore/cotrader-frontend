@@ -44,7 +44,6 @@ class UniswapPool extends Component {
          alert("Can not get data from api, please try again latter")
          console.log(e)
       }
-      console.log("get data")
     }else{
        // test data for Ropsten
        symbols = ['NAP']

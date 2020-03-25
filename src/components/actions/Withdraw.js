@@ -24,7 +24,6 @@ class Withdraw extends Component {
 
   contract.methods.withdraw(curentPercent).send({ from: this.props.accounts[0] })
   .on('transactionHash', (hash) => {
-  console.log(hash)
   // pending status for spiner
   this.props.pending(true)
   // pending status for DB

@@ -39,7 +39,6 @@ class Deposit extends Component {
 
   contract.methods.deposit().send({ from: this.props.accounts[0], value:amount})
   .on('transactionHash', (hash) => {
-  console.log(hash)
   // pending status for spiner
   this.props.pending(true)
   // pending status for DB
