@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Button, Alert } from "react-bootstrap"
+import { Form, Button, Alert, Table } from "react-bootstrap"
 import {
   SmartFundABIV4,
   PoolPortalABI,
@@ -252,43 +252,78 @@ class BuyPool extends Component {
         ?
         (
           <React.Fragment>
-          <Alert variant="warning">
-          <strong>
-          You will stake
-          <hr/>
-          <a href={EtherscanLink + "address/" + this.state.BNTConnector} target="_blank" rel="noopener noreferrer">{this.state.BNTConnectorSymbol}</a>
-          &#8194;-&#8194;
-          {Number(this.state.bancorAmountFromWei)}
-          &#8194;
-          and
-          &#8194;
-          <a href={EtherscanLink + "address/" + this.state.ERCConnector} target="_blank" rel="noopener noreferrer">{this.state.ERCConnectorSymbol}</a>
-          &#8194;-&#8194;
-          {Number(this.state.connectorAmountFromWei)}
-          <hr/>
-          You will recieve
-          <hr/>
-          <a href={EtherscanLink + "address/" + this.props.fromAddress} target="_blank" rel="noopener noreferrer">{this.state.RelaySymbol}</a>
-          &#8194;-&#8194;
-          { this.state.amount }
-          </strong>
-          <hr/>
-          Additional info
           <small>
-          <hr/>
-          Your current share of pool : {this.state.currentPoolShare} %
-          <hr/>
-          Your gain share of pool will be : {this.state.newPoolShare} %
-          <hr/>
-          Your new share will be : {parseFloat(this.state.currentPoolShare) + parseFloat(this.state.newPoolShare)} %
-          <hr/>
-          Your current amount of assets in pool: {this.state.BNTConnectorSymbol} - {this.state.curBancorConnectorAmount} and {this.state.ERCConnectorSymbol} - {this.state.curErcConnectorAmount}
-          <hr/>
-          Your total amount of assets in pool will be : {this.state.BNTConnectorSymbol} - {parseFloat(this.state.bancorAmountFromWei) + parseFloat(this.state.curBancorConnectorAmount)}
-          &#8194; and &#8194;
-          {this.state.ERCConnectorSymbol} - {parseFloat(this.state.connectorAmountFromWei) + parseFloat(this.state.curErcConnectorAmount)}
+          <Table striped bordered hover size="sm">
+          <thead>
+            <tr>
+              <th>Your ERC20 tokens</th>
+              <th>You will stake</th>
+            </tr>
+          </thead>
+          <tbody>
+             <tr>
+               <td>
+               <a href={EtherscanLink + "address/" + this.state.BNTConnector} target="_blank" rel="noopener noreferrer">{this.state.BNTConnectorSymbol}</a>
+                :
+                {Number(this.state.curBancorConnectorAmount).toFixed(12)}
+               </td>
+               <td>+ {Number(this.state.bancorAmountFromWei).toFixed(12)}</td>
+             </tr>
+           </tbody>
+           <tbody>
+              <tr>
+                <td>
+                <a href={EtherscanLink + "address/" + this.state.ERCConnector} target="_blank" rel="noopener noreferrer">{this.state.ERCConnectorSymbol}</a>
+                :
+                {Number(this.state.curErcConnectorAmount).toFixed(12)}</td>
+                <td>+ {Number(this.state.connectorAmountFromWei).toFixed(12)}</td>
+              </tr>
+            </tbody>
+          </Table>
+          <Table striped bordered hover size="sm">
+          <thead>
+           <tr>
+             <th>Your pool token</th>
+             <th>You will get</th>
+           </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+               <a href={EtherscanLink + "address/" + this.props.fromAddress} target="_blank" rel="noopener noreferrer">{this.state.RelaySymbol}</a>
+               :
+               {Number(this.state.currentPoolShare).toFixed(12)}</td>
+              <td>+ {Number(this.state.amount).toFixed(12)}</td>
+            </tr>
+          </tbody>
+          </Table>
+          <Table striped bordered hover size="sm">
+          <thead>
+           <tr>
+             <th>Your {this.state.ERCConnectorSymbol}</th>
+             <th>pool share</th>
+           </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Share now</td>
+              <td>{Number(this.state.currentPoolShare).toFixed(12)} %</td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr>
+              <td>Share gain</td>
+              <td>{Number(this.state.newPoolShare).toFixed(12)} %</td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr>
+              <td>Share new</td>
+              <td>{Number(parseFloat(this.state.currentPoolShare) + parseFloat(this.state.newPoolShare)).toFixed(12)} %</td>
+            </tr>
+          </tbody>
+          </Table>
           </small>
-          </Alert>
           {
             !this.state.isBNTEnough || !this.state.isERCEnough
             ?

@@ -11,7 +11,7 @@ import {
 } from '../../../../config.js'
 
 import Pending from '../../../templates/Spiners/Pending'
-import { Form, Button, Alert } from "react-bootstrap"
+import { Form, Button, Alert, Table } from "react-bootstrap"
 import { toWei, fromWei, hexToNumberString } from 'web3-utils'
 import { fromWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
 import setPending from '../../../../utils/setPending'
@@ -249,36 +249,68 @@ class BuyPool extends Component {
         ?
         (
           <React.Fragment>
-          <Alert variant="warning">
-          <strong>
-          You will stake
-          <hr/>
-          ETH: {this.state.ETHAmount} and &#8194;
-          <a href={EtherscanLink + "address/" + this.state.ERCAddress} target="_blank" rel="noopener noreferrer">{this.state.ERCSymbol}</a>
-           : {this.state.ERCAmount}
-          <hr/>
-          You will receive
-          <hr/>
-          <a href={EtherscanLink + "address/" + this.state.UNIPoolAddress} target="_blank" rel="noopener noreferrer">{this.state.ERCSymbol} UNI-V1 </a>
-          : {this.state.mintLiquidity}
-          <hr/>
-          </strong>
-          Additional info
           <small>
-          <hr/>
-          Your current share of pool : {this.state.currentPoolShare} %
-          <hr/>
-          Your gain share of pool will be : {this.state.newPoolShare} %
-          <hr/>
-          Your total share will be : {parseFloat(this.state.currentPoolShare) + parseFloat(this.state.newPoolShare)} %
-          <hr/>
-          Your current amount of assets in pool: ETH - {this.state.curEthAmount} and {this.state.ERCSymbol} - {this.state.curErcAmount}
-          <hr/>
-          Your total amount of assets in pool will be : ETH - {parseFloat(this.state.ETHAmount) + parseFloat(this.state.curEthAmount)}
-          &#8194; and &#8194;
-          {this.state.ERCSymbol} - {parseFloat(this.state.ERCAmount) + parseFloat(this.state.curErcAmount)}
+          <Table striped bordered hover size="sm">
+          <thead>
+            <tr>
+              <th>Your ERC20 tokens</th>
+              <th>You will stake</th>
+            </tr>
+          </thead>
+          <tbody>
+             <tr>
+               <td>ETH : {Number(this.state.curEthAmount).toFixed(12)}</td>
+               <td>+ {Number(this.state.ETHAmount).toFixed(12)}</td>
+             </tr>
+           </tbody>
+           <tbody>
+              <tr>
+                <td><a href={EtherscanLink + "address/" + this.state.ERCAddress} target="_blank" rel="noopener noreferrer">{this.state.ERCSymbol}</a> : {Number(this.state.curErcAmount).toFixed(12)}</td>
+                <td>+ {Number(this.state.ERCAmount).toFixed(12)}</td>
+              </tr>
+            </tbody>
+          </Table>
+          <Table striped bordered hover size="sm">
+          <thead>
+           <tr>
+             <th>Your pool token</th>
+             <th>You will get</th>
+           </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href={EtherscanLink + "address/" + this.state.UNIPoolAddress} target="_blank" rel="noopener noreferrer">UNI-V1 </a> : {Number(this.state.curEthAmount).toFixed(12)}</td>
+              <td>+ {Number(this.state.mintLiquidity).toFixed(12)}</td>
+            </tr>
+          </tbody>
+          </Table>
+          <Table striped bordered hover size="sm">
+          <thead>
+           <tr>
+             <th>Your {this.state.ERCSymbol} UNI-V1</th>
+             <th>pool share</th>
+           </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Share now</td>
+              <td>{Number(this.state.currentPoolShare).toFixed(12)} %</td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr>
+              <td>Share gain</td>
+              <td>{Number(this.state.newPoolShare).toFixed(12)} %</td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr>
+              <td>Share new</td>
+              <td>{Number(parseFloat(this.state.currentPoolShare) + parseFloat(this.state.newPoolShare)).toFixed(12)} %</td>
+            </tr>
+          </tbody>
+          </Table>
           </small>
-          </Alert>
           </React.Fragment>
         )
         :null
