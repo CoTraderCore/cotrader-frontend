@@ -33,7 +33,9 @@ class BuyPool extends Component {
       isСalculate: false,
       showInfo:false,
       newPoolShare:0,
-      currentPoolShare:0
+      currentPoolShare:0,
+      curBancorConnectorAmount:0,
+      curErcConnectorAmount:0
     }
   }
 
@@ -74,13 +76,13 @@ class BuyPool extends Component {
      const ercBalance = await ercToken.methods.balanceOf(this.props.smartFundAddress).call()
 
      // convert from wei current reserve amount
-     const bancorAmountFromWei = fromWeiByDecimalsInput(18, bancorAmount)
+     const bancorAmountFromWei = fromWeiByDecimalsInput(18, String(bancorAmount))
      const ercDecimals = await ercToken.methods.decimals().call()
-     const connectorAmountFromWei = fromWeiByDecimalsInput(ercDecimals, connectorAmount)
+     const connectorAmountFromWei = fromWeiByDecimalsInput(ercDecimals, String(connectorAmount))
 
      // convert from wei curent banlance
-     const curentBalanceBNT = bntBalance > 0 ? fromWeiByDecimalsInput(18, bntBalance) : 0
-     const currentBalanceERC = ercBalance > 0 ? fromWeiByDecimalsInput(ercDecimals, ercBalance) : 0
+     const curentBalanceBNT = bntBalance > 0 ? fromWeiByDecimalsInput(18, String(bntBalance)) : 0
+     const currentBalanceERC = ercBalance > 0 ? fromWeiByDecimalsInput(ercDecimals, String(ercBalance)) : 0
 
      // compare balance
      const isBNTEnough = parseFloat(curentBalanceBNT) >= parseFloat(bancorAmountFromWei) ? true : false
@@ -97,6 +99,17 @@ class BuyPool extends Component {
      const curentRelayBalance = await relay.methods.balanceOf(this.props.smartFundAddress).call()
      const currentPoolShare = 1 / ((parseFloat(fromWei(String(relaySupply))) / 100)
      / parseFloat(fromWei(String(curentRelayBalance))))
+
+     // get current connectors amount
+     const { bancorAmount:curBancorConnectorWei, connectorAmount: curErcConnectorAmountWei} =
+     await poolPortal.methods.getBancorConnectorsAmountByRelayAmount(
+       curentRelayBalance,
+       this.props.fromAddress
+     ).call()
+
+     // convert connectors from wei
+     const curBancorConnectorAmount = fromWei(String(curBancorConnectorWei))
+     const curErcConnectorAmount = fromWeiByDecimalsInput(ercDecimals, String(curErcConnectorAmountWei))
 
      // get new pool share
      const poolOnePercent = (parseFloat(fromWei(String(relaySupply))) + parseFloat(this.state.amount)) / 100
@@ -119,6 +132,8 @@ class BuyPool extends Component {
        RelaySymbol,
        newPoolShare,
        currentPoolShare,
+       curBancorConnectorAmount,
+       curErcConnectorAmount,
        isСalculate:false,
        showInfo:true
       })
@@ -188,7 +203,9 @@ class BuyPool extends Component {
       isСalculate:false,
       showInfo:false,
       newPoolShare:0,
-      currentPoolShare:0
+      currentPoolShare:0,
+      curBancorConnectorAmount:0,
+      curErcConnectorAmount:0
      })
   }
 
@@ -236,29 +253,41 @@ class BuyPool extends Component {
         (
           <React.Fragment>
           <Alert variant="warning">
+          <strong>
           You will stake
           <hr/>
           <a href={EtherscanLink + "address/" + this.state.BNTConnector} target="_blank" rel="noopener noreferrer">{this.state.BNTConnectorSymbol}</a>
-          &#8194;:&#8194;
+          &#8194;-&#8194;
           {Number(this.state.bancorAmountFromWei)}
-          :&#8194;
+          &#8194;
           and
-          :&#8194;
+          &#8194;
           <a href={EtherscanLink + "address/" + this.state.ERCConnector} target="_blank" rel="noopener noreferrer">{this.state.ERCConnectorSymbol}</a>
-          &#8194;:&#8194;
+          &#8194;-&#8194;
           {Number(this.state.connectorAmountFromWei)}
           <hr/>
           You will recieve
           <hr/>
           <a href={EtherscanLink + "address/" + this.props.fromAddress} target="_blank" rel="noopener noreferrer">{this.state.RelaySymbol}</a>
-          &#8194;:&#8194;
+          &#8194;-&#8194;
           { this.state.amount }
+          </strong>
+          <hr/>
+          Additional info
+          <small>
           <hr/>
           Your current share of pool : {this.state.currentPoolShare} %
           <hr/>
           Your gain share of pool will be : {this.state.newPoolShare} %
           <hr/>
           Your new share will be : {parseFloat(this.state.currentPoolShare) + parseFloat(this.state.newPoolShare)} %
+          <hr/>
+          Your current amount of assets in pool: {this.state.BNTConnectorSymbol} - {this.state.curBancorConnectorAmount} and {this.state.ERCConnectorSymbol} - {this.state.curErcConnectorAmount}
+          <hr/>
+          Your total amount of assets in pool will be : {this.state.BNTConnectorSymbol} - {parseFloat(this.state.bancorAmountFromWei) + parseFloat(this.state.curBancorConnectorAmount)}
+          &#8194; and &#8194;
+          {this.state.ERCConnectorSymbol} - {parseFloat(this.state.connectorAmountFromWei) + parseFloat(this.state.curErcConnectorAmount)}
+          </small>
           </Alert>
           {
             !this.state.isBNTEnough || !this.state.isERCEnough

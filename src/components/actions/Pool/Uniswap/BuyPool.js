@@ -31,7 +31,9 @@ class BuyPool extends Component {
       ERCAddress:'',
       UNIPoolAddress:'',
       newPoolShare:0,
-      currentPoolShare:0
+      currentPoolShare:0,
+      curEthAmount:0,
+      curErcAmount:0
     }
   }
 
@@ -54,7 +56,9 @@ class BuyPool extends Component {
       ERCAddress:'',
       UNIPoolAddress:'',
       newPoolShare:0,
-      currentPoolShare:0
+      currentPoolShare:0,
+      curEthAmount:0,
+      curErcAmount:0
     })
   }
 
@@ -77,7 +81,8 @@ class BuyPool extends Component {
   }
 
   // Calculate UNI pool and ERC20 amount by ETH amount
-  // Get share of pool
+  // Calculate share of pool
+  // Calculate current amount of pool connectorts
   calculate = async () => {
    this.setState({ isComputed:true })
    try{
@@ -117,9 +122,20 @@ class BuyPool extends Component {
      const currentPoolShare = 1 / ((parseFloat(fromWei(String(totalSupply))) / 100)
      / parseFloat(fromWei(String(curPoolBalance))))
 
+     // GET cur connectors amount
+     const { ethAmount:curEthAmountWei, ercAmount:curErcAmountWei } =
+     await poolPortal.methods.getUniswapConnectorsAmountByPoolAmount(
+       curPoolBalance,
+       poolExchangeAddress
+     ).call()
+
      // GET new share
      const poolOnePercent = (parseFloat(fromWei(String(totalSupply))) + parseFloat(mintLiquidity)) / 100
      const newPoolShare = 1 / (poolOnePercent / parseFloat(mintLiquidity))
+
+     // Convert from wei
+     const curEthAmount = fromWei(String(curEthAmountWei))
+     const curErcAmount = fromWeiByDecimalsInput(decimals, String(curErcAmountWei))
 
 
      this.setState({
@@ -130,7 +146,9 @@ class BuyPool extends Component {
       newPoolShare,
       currentPoolShare,
       ERCAddress:this.props.tokenAddress,
-      UNIPoolAddress: poolExchangeAddress
+      UNIPoolAddress: poolExchangeAddress,
+      curEthAmount,
+      curErcAmount
      })
      await this.checkBalance()
    }
@@ -232,6 +250,7 @@ class BuyPool extends Component {
         (
           <React.Fragment>
           <Alert variant="warning">
+          <strong>
           You will stake
           <hr/>
           ETH: {this.state.ETHAmount} and &#8194;
@@ -243,11 +262,22 @@ class BuyPool extends Component {
           <a href={EtherscanLink + "address/" + this.state.UNIPoolAddress} target="_blank" rel="noopener noreferrer">{this.state.ERCSymbol} UNI-V1 </a>
           : {this.state.mintLiquidity}
           <hr/>
+          </strong>
+          Additional info
+          <small>
+          <hr/>
           Your current share of pool : {this.state.currentPoolShare} %
           <hr/>
           Your gain share of pool will be : {this.state.newPoolShare} %
           <hr/>
-          Your new share will be : {parseFloat(this.state.currentPoolShare) + parseFloat(this.state.newPoolShare)} %
+          Your total share will be : {parseFloat(this.state.currentPoolShare) + parseFloat(this.state.newPoolShare)} %
+          <hr/>
+          Your current amount of assets in pool: ETH - {this.state.curEthAmount} and {this.state.ERCSymbol} - {this.state.curErcAmount}
+          <hr/>
+          Your total amount of assets in pool will be : ETH - {parseFloat(this.state.ETHAmount) + parseFloat(this.state.curEthAmount)}
+          &#8194; and &#8194;
+          {this.state.ERCSymbol} - {parseFloat(this.state.ERCAmount) + parseFloat(this.state.curErcAmount)}
+          </small>
           </Alert>
           </React.Fragment>
         )
