@@ -119,6 +119,11 @@ class SellPool extends Component {
   setMaxSell = async () => {
     const curBalance = await this.getCurBalance()
     this.setState({ UniAmount:fromWei(String(curBalance)) })
+
+    if(Number(fromWei(String(curBalance))) === 0)
+      this.setState({
+         ErrorText:"Your balance is empty"
+      })
   }
 
   // sell pool
@@ -169,7 +174,9 @@ class SellPool extends Component {
         this.props.tokenAddress
         ?
         (
-          <Button variant="outline-secondary" size="sm" onClick={() => this.setMaxSell()}>set max</Button>
+          <Button variant="outline-secondary" size="sm" onClick={() => this.setMaxSell()}>
+          max
+          </Button>
         ):null
       }
       <Form.Control
@@ -181,6 +188,16 @@ class SellPool extends Component {
       onChange={e => this.setState({ UniAmount:e.target.value })}
       />
       </Form.Group>
+
+      {
+        this.state.ErrorText.length > 0
+        ?
+        <small>
+        {this.ERROR(this.state.ErrorText)}
+        </small>
+        :null
+      }
+
       {
         this.state.isEnoughBalance
         ?
@@ -220,15 +237,6 @@ class SellPool extends Component {
           {this.state.ercSymbol} : {this.state.ercAmountFromWei}
           </Alert>
         )
-        :null
-      }
-
-      {
-        this.state.ErrorText.length > 0
-        ?
-        <small>
-        {this.ERROR(this.state.ErrorText)}
-        </small>
         :null
       }
       </Form>

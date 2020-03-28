@@ -22,7 +22,8 @@ class SellPool extends Component {
       ercSymbol:'',
       bntSymbol:'',
       isEnoughBalance:false,
-      isComputed:false
+      isComputed:false,
+      ErrorText:''
     }
   }
 
@@ -33,7 +34,7 @@ class SellPool extends Component {
     }
   }
 
-  // update connectors amount state and connectors symbols
+  // update pool balance of fund, connectors amount, connectors symbols
   updateInfo = async () => {
     if(this.props.fromAddress && this.state.amount > 0){
       const web3 = this.props.web3
@@ -93,7 +94,8 @@ class SellPool extends Component {
       ercSymbol:'',
       bntSymbol:'',
       isEnoughBalance:false,
-      isComputed:false
+      isComputed:false,
+      ErrorText:''
     })
   }
 
@@ -110,6 +112,11 @@ class SellPool extends Component {
   setMaxSell = async () => {
     const { fundBalanceFromWei } = await this.getFundBalance()
     this.setState({ amount:fundBalanceFromWei })
+
+    if(Number(fundBalanceFromWei) === 0)
+      this.setState({
+         ErrorText:"Your balance is empty"
+      })
   }
 
   sell = async () => {
@@ -151,6 +158,14 @@ class SellPool extends Component {
     }
   }
 
+  ERROR(errText){
+    return (
+      <Alert variant="danger">
+      {errText}
+      </Alert>
+    )
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -161,7 +176,7 @@ class SellPool extends Component {
         this.props.fromAddress
         ?
         (
-          <Button variant="outline-secondary" size="sm" onClick={() => this.setMaxSell()}>set max</Button>
+          <Button variant="outline-secondary" size="sm" onClick={() => this.setMaxSell()}>max</Button>
         ):null
       }
       <Form.Control
@@ -171,6 +186,15 @@ class SellPool extends Component {
       value={this.state.amount > 0 ? this.state.amount : ""}
       type="number" min="1"/>
       <br/>
+      {
+        this.state.ErrorText.length > 0
+        ?
+        <small>
+        {this.ERROR(this.state.ErrorText)}
+        </small>
+        :null
+      }
+
       {
         this.state.isEnoughBalance
         ?
