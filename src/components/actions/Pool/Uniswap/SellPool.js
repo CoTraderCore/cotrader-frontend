@@ -38,10 +38,11 @@ class SellPool extends Component {
     }
   }
 
-  // check balance, get connectors amount and connector token symbol
+  // Check current pool balance in fund, get pool connectors amount and ERC connector symbol
   updateInfo = async() => {
     if(this.props.tokenAddress && this.state.UniAmount > 0)
       try{
+        // get core data
         const uniswapFactory = new this.props.web3.eth.Contract(UniswapFactoryABI, UniswapFactory)
         const exchangeAddress = await uniswapFactory.methods.getExchange(this.props.tokenAddress).call()
         const poolPortal = new this.props.web3.eth.Contract(PoolPortalABI, PoolPortal)
@@ -49,25 +50,28 @@ class SellPool extends Component {
         const tokenDecimals = await ercToken.methods.decimals().call()
 
         let ercSymbol
-        // try catch for bytes32 return
+        // wrap try catch for bytes32 return
         try{
           ercSymbol = await ercToken.methods.symbol().call()
         }catch(e){
           ercSymbol = "ERC20"
         }
 
+        // get UNI Pool conenctors amount
         const { ethAmount, ercAmount } = await poolPortal.methods.getUniswapConnectorsAmountByPoolAmount(
           toWei(this.state.UniAmount),
           exchangeAddress
         ).call()
 
+        // convert connectots from wei
         const ethAmountFromWei = fromWei(String(ethAmount))
         const ercAmountFromWei = fromWeiByDecimalsInput(tokenDecimals, String(ercAmount))
 
+        // check cur balance
         const curUNIBalance = await this.getCurBalance()
-
         const isEnoughBalance = fromWei(String(curUNIBalance)) >= this.state.UniAmount ? true : false
 
+        // update states
         this.setState({
           ethAmountFromWei,
           ercAmountFromWei,
@@ -84,6 +88,7 @@ class SellPool extends Component {
       }
   }
 
+  // reset states
   resetInfo(){
     this.setState({
       ethAmountFromWei:0,
@@ -96,6 +101,7 @@ class SellPool extends Component {
     })
   }
 
+  // check cur UNI pool balance in fund address
   getCurBalance = async () => {
     if(this.props.tokenAddress){
       const factory = new this.props.web3.eth.Contract(UniswapFactoryABI, UniswapFactory)
@@ -108,22 +114,21 @@ class SellPool extends Component {
     }
   }
 
-
+  // set max input by cur balance
   setMaxSell = async () => {
     const curBalance = await this.getCurBalance()
     this.setState({ UniAmount:fromWei(String(curBalance)) })
   }
 
-
+  // sell pool 
   sellPool = async () => {
     if(this.state.UniAmount > 0){
       // get additional data
       const factory = new this.props.web3.eth.Contract(UniswapFactoryABI, UniswapFactory)
       const poolExchangeAddress = await factory.methods.getExchange(this.props.tokenAddress).call()
-      const exchangeERCContract = new this.props.web3.eth.Contract(ERC20ABI, poolExchangeAddress)
-      const curBalance = await exchangeERCContract.methods.balanceOf(this.props.smartFundAddress).call()
+      const curBalance = await this.getCurBalance()
 
-      // check fun balance
+      // check fund balance
       if(fromWei(String(curBalance)) >= this.state.UniAmount){
         // sell pool
         const fund = new this.props.web3.eth.Contract(SmartFundABIV5, this.props.smartFundAddress)
