@@ -26,7 +26,8 @@ class SellPool extends Component {
       ercSymbol:'',
       curUNIBalance:0,
       ErrorText:'',
-      isComputed:false
+      isComputed:false,
+      isEnoughBalance:false
     }
   }
 
@@ -120,7 +121,7 @@ class SellPool extends Component {
     this.setState({ UniAmount:fromWei(String(curBalance)) })
   }
 
-  // sell pool 
+  // sell pool
   sellPool = async () => {
     if(this.state.UniAmount > 0){
       // get additional data
@@ -176,7 +177,7 @@ class SellPool extends Component {
       min="0"
       placeholder="Uniswap pool amount"
       name="UniAmount"
-      value={this.state.UniAmount}
+      value={this.state.UniAmount > 0 ? this.state.UniAmount : ""}
       onChange={e => this.setState({ UniAmount:e.target.value })}
       />
       </Form.Group>

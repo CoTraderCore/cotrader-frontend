@@ -20,18 +20,21 @@ class SellPool extends Component {
       bntAmountFromWei:0,
       ercAmountFromWei:0,
       ercSymbol:'',
-      bntSymbol:''
+      bntSymbol:'',
+      isEnoughBalance:false,
+      isComputed:false
     }
   }
 
   componentDidUpdate(prevProps, prevState){
     if(prevProps.fromAddress !== this.props.fromAddress || prevState.amount !== this.state.amount){
-      this.updateSellInfo()
+      this.resetInfo()
+      this.updateInfo()
     }
   }
 
   // update connectors amount state and connectors symbols
-  updateSellInfo = async () => {
+  updateInfo = async () => {
     if(this.props.fromAddress && this.state.amount > 0){
       const web3 = this.props.web3
       // get current reserve amount for pool
@@ -48,11 +51,11 @@ class SellPool extends Component {
         this.props.fromAddress
       ).call()
 
+      // get ERC conenctots contract
       const bntToken = new web3.eth.Contract(ERC20ABI, BNTConnector)
       const ercToken = new web3.eth.Contract(ERC20ABI, ERCConnector)
 
-      const ercDecimals = await ercToken.methods.decimals().call()
-
+      // get symbols
       // try catch for bytes32 return case
       let ercSymbol
       try{
@@ -63,28 +66,62 @@ class SellPool extends Component {
 
       const bntSymbol = await bntToken.methods.symbol().call()
 
+      // get amount
+      const ercDecimals = await ercToken.methods.decimals().call()
       const bntAmountFromWei = fromWeiByDecimalsInput(18, bancorAmount)
       const ercAmountFromWei = fromWeiByDecimalsInput(ercDecimals, connectorAmount)
 
-      this.setState({ bntAmountFromWei, ercAmountFromWei, ercSymbol, bntSymbol })
-    }else{
+      // check fund balance
+      const { fundBalanceFromWei } = await this.getFundBalance()
+      const isEnoughBalance = fundBalanceFromWei >= this.state.amount ? true : false
+
       this.setState({
-        bntAmountFromWei:0,
-        ercAmountFromWei:0,
-        ercSymbol:'',
-        bntSymbol:''
+        bntAmountFromWei,
+        ercAmountFromWei,
+        ercSymbol,
+        bntSymbol,
+        isEnoughBalance,
+        isComputed:true
       })
     }
   }
 
+  resetInfo(){
+    this.setState({
+      bntAmountFromWei:0,
+      ercAmountFromWei:0,
+      ercSymbol:'',
+      bntSymbol:'',
+      isEnoughBalance:false,
+      isComputed:false
+    })
+  }
+
+  getFundBalance = async () => {
+    const web3 = this.props.web3
+    const token = new web3.eth.Contract(ERC20ABI, this.props.fromAddress)
+    const fundBalance = await token.methods.balanceOf(this.props.smartFundAddress).call()
+    const decimals = await token.methods.decimals().call()
+    const fundBalanceFromWei = fromWeiByDecimalsInput(decimals, String(fundBalance))
+
+    return { fundBalance, fundBalanceFromWei }
+  }
+
+  setMaxSell = async () => {
+    const { fundBalanceFromWei } = await this.getFundBalance()
+    this.setState({ amount:fundBalanceFromWei })
+  }
+
   sell = async () => {
     if(this.props.fromAddress.length > 0 && this.state.amount > 0){
-      // Get smart token instance and check fund balance
       const web3 = this.props.web3
+
+      // get smart token instance
       const token = new web3.eth.Contract(ERC20ABI, this.props.fromAddress)
-      const fundBalance = await token.methods.balanceOf(this.props.smartFundAddress).call()
+
+      // check fund balance
+      const { fundBalanceFromWei } = await this.getFundBalance()
       const decimals = await token.methods.decimals().call()
-      const fundBalanceFromWei = fromWeiByDecimalsInput(decimals, String(fundBalance))
 
       // allow sell if fund has enough balance
       if(fundBalanceFromWei >= this.state.amount){
@@ -117,13 +154,45 @@ class SellPool extends Component {
   render() {
     return (
       <React.Fragment>
+      <Form>
+      <Form.Group>
+      <Form.Label><small>Enter amount to sell</small> &nbsp;</Form.Label>
+      {
+        this.props.fromAddress
+        ?
+        (
+          <Button variant="outline-secondary" size="sm" onClick={() => this.setMaxSell()}>set max</Button>
+        ):null
+      }
       <Form.Control
       placeholder="Enter amount"
       name="amount"
       onChange={(e) => this.setState({ amount: e.target.value })}
+      value={this.state.amount > 0 ? this.state.amount : ""}
       type="number" min="1"/>
       <br/>
-      <Button variant="outline-primary" onClick={() => this.sell()}>Sell</Button>
+      {
+        this.state.isEnoughBalance
+        ?
+        (
+          <>
+
+          <Button variant="outline-primary" onClick={() => this.sell()}>Sell</Button>
+          </>
+        )
+        :
+        (
+          <>
+          {
+            this.state.isComputed
+            ?
+            (
+              <small style={{color:"red"}}>Insufficient Balance</small>
+            ):null
+          }
+          </>
+        )
+      }
       <br/>
       <br/>
       {
@@ -139,6 +208,9 @@ class SellPool extends Component {
           </Alert>
         ):null
       }
+
+      </Form.Group>
+      </Form>
       </React.Fragment>
     )
   }
