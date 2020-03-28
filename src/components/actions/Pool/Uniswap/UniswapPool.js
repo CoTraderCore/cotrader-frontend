@@ -31,6 +31,8 @@ class UniswapPool extends Component {
   initData = async () => {
     let tokens
     let symbols
+    const blackListPool = ["OMG", "ETH", "ELF"]
+
     if(NeworkID === 1 || NeworkID === 42){
       // get data from Paraswap api
       try{
@@ -38,8 +40,11 @@ class UniswapPool extends Component {
          tokens = tokens.data.tokens
          symbols = []
          for(let i = 0; i< tokens.length; i++){
-           symbols.push(tokens[i].symbol)
+            symbols.push(tokens[i].symbol)
          }
+
+         // filter black listed pool
+         symbols = symbols.filter((item) => !blackListPool.includes(item))
        }catch(e){
          alert("Can not get data from api, please try again latter")
          console.log(e)
