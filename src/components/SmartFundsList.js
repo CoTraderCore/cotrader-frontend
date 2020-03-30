@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
+import axios from 'axios'
 
 import getFundsList from "../utils/getFundsList"
 import getFundData from "../utils/getFundData"
@@ -38,7 +39,8 @@ class SmartFundsList extends Component{
       pending:false,
       txName: '',
       txHash:'',
-      lastHash: ''
+      lastHash: '',
+      txCount:0
     }
   }
 
@@ -47,6 +49,7 @@ class SmartFundsList extends Component{
   componentDidMount=  async () => {
     this._isMounted = true
     this.initSocket()
+    this.checkPending()
   }
 
   componentWillUnmount(){
@@ -57,20 +60,31 @@ class SmartFundsList extends Component{
   updateSFList = async () => {
     const smartFunds = await getFundsList()
     this.props.MobXStorage.initSFList(smartFunds)
-    this.pending(false)
+    this.checkPending()
   }
 
   // Update card footer with profit and value
   updateSingleSF = async (address) => {
-    this.pending(false)
+    this.checkPending()
     const fund = await getFundData(address)
     if(this.refs[address])
     this.refs[address].UpdateValue(fund.data.result.profit, fund.data.result.value)
   }
 
-  pending = (_bool) => {
-    if(this._isMounted)
-    this.setState({ pending:_bool })
+  // props for create fund action
+  pending = (_bool, _txCount) => {
+    this.setState({ pending:_bool, txCount:_txCount })
+  }
+
+  checkPending = async () => {
+    if(this.props.accounts){
+      let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
+      txCount = txCount.data.result
+
+      const pending = Number(txCount) === 0 ? false : true
+      if(this._isMounted)
+         this.setState({ pending, txCount })
+    }
   }
 
   showPopup() {
@@ -102,7 +116,7 @@ class SmartFundsList extends Component{
       if(this._isMounted){
       this.setState({ lastHash: hash })
       this.setState({ txName:txName, txHash:hash })
-      this.pending(false)
+      this.checkPending()
 
       if(txName === "added new fund"){
         this.updateSFList()
@@ -127,7 +141,14 @@ class SmartFundsList extends Component{
            this.state.pending
            ?
            (
+             <>
+             <div align="center">
+             <small>
+             Pending transitions : {this.state.txCount}
+             </small>
+             </div>
              <Pending />
+             </>
            )
            :
            (

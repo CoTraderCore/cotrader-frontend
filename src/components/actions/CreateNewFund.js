@@ -1,14 +1,18 @@
 import React, { Component } from 'react'
+
 import {
+  APIEnpoint,
   SmartFundRegistryABIV4,
   SmartFundRegistryADDRESS
 } from '../../config.js'
-import { Modal, Form } from "react-bootstrap"
 
+import { Modal, Form } from "react-bootstrap"
+import setPending from '../../utils/setPending'
 import UserInfo from '../templates/UserInfo'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
+import axios from 'axios'
 
 class CreateNewFund extends Component {
   constructor(props, context) {
@@ -27,14 +31,26 @@ class CreateNewFund extends Component {
   const contract = new this.props.web3.eth.Contract(SmartFundRegistryABIV4, SmartFundRegistryADDRESS)
     if(this.state.FundName !== ''){
       try{
-        this.props.pending(true)
         const isUSDFund = this.state.FundAsset === "USD" ? true : false
         const name = this.state.FundName
         const percent = this.state.Percent
+        const block = await this.props.web3.eth.getBlockNumber()
+
         this.modalClose()
+
         console.log(name, percent, isUSDFund)
+
+        // get cur tx count
+        let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
+        txCount = txCount.data.result
+
         await contract.methods.createSmartFund(name, percent, isUSDFund)
         .send({ from: this.props.accounts[0] })
+        .on('transactionHash', (hash) => {
+        // pending status for DB
+        setPending(null, 1, this.props.accounts[0], block, hash, "SmartFundCreated")
+        this.props.pending(true, txCount+1)
+        })
       }catch(e){
         // for case if user reject transaction
         this.props.pending(false)
