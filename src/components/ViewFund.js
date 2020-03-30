@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 
+import axios from 'axios'
+
 import getFundData from '../utils/getFundData'
 import { Card, Row, Col, ListGroup, Badge, Alert } from "react-bootstrap"
 
@@ -48,25 +50,26 @@ class ViewFund extends Component {
      txHash:'',
      lastHash: '',
      shares: [],
-     version:0
+     version:0,
+     txCount:0
     }
 }
 
- _isMounted = false;
+ _isMounted = false
 
  componentDidMount = async () => {
-   this._isMounted = true;
+   this._isMounted = true
    await this.loadData()
-   if(this._isMounted)
    this.initSocket()
+   this.checkPending()
 }
 
  componentWillUnmount(){
-   this._isMounted = false;
+   this._isMounted = false
  }
 
 
- // TODO move this to separate file
+ // init socket listener
  initSocket = ()=>{
    const socket = io(APIEnpoint)
      socket.on('connect', ()=>{
@@ -84,6 +87,7 @@ class ViewFund extends Component {
    })
  }
 
+ // helper for update by socket events
  txUpdate = (txName, address, hash) => {
    if(address === this.props.match.params.address && this.state.lastHash !== hash){
      if(this._isMounted){
@@ -91,14 +95,15 @@ class ViewFund extends Component {
       this.setState({ txName:txName, txHash:hash })
 
       this.updateBalance()
-      this.pending(false)
+      this.checkPending()
 
       if(this._popupChild.current)
-      this.showPopup()
+        this.showPopup()
    }
    }
  }
 
+ // get data from api
  loadData = async () => {
    const fund = await getFundData(this.props.match.params.address)
 
@@ -121,6 +126,7 @@ class ViewFund extends Component {
     }
  }
 
+ // helper for update balance by socket event
  updateBalance = async () => {
    const fund = await getFundData(this.props.match.params.address)
 
@@ -136,14 +142,27 @@ class ViewFund extends Component {
     }
  }
 
- pending = (_bool) => {
-   if(this._isMounted)
-   this.setState({ pending:_bool})
+ // prop for components Deposit, Withdraw, Trade, FundManagerWinthdraw
+ pending = (_bool, _txCount) => {
+   this.setState({ pending:_bool, txCount:_txCount })
  }
 
+ // check if there are no more transactions hide peding info
+ checkPending = async () => {
+   if(this.props.accounts){
+     let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
+     txCount = txCount.data.result
+
+     const pending = Number(txCount) === 0 ? false : true
+     if(this._isMounted)
+        this.setState({ pending, txCount })
+   }
+ }
+
+ // show toast info
  showPopup() {
    if(this._popupChild.current)
-   this._popupChild.current.show()
+     this._popupChild.current.show()
  }
 
 
@@ -160,7 +179,14 @@ class ViewFund extends Component {
           this.state.pending
           ?
           (
-            <Pending />
+            <>
+              <div align="center">
+              <small>
+              Pending transitions : {this.state.txCount}
+              </small>
+              </div>
+              <Pending />
+            </>
           )
           :
           (

@@ -8,7 +8,8 @@ import {
   ParaswapPriceFeedAddress,
   ParaswapParamsABI,
   ParaswapParamsAddress,
-  ERC20ABI
+  ERC20ABI,
+  APIEnpoint
 } from '../../config.js'
 
 import {
@@ -265,6 +266,10 @@ class TradeModalV2 extends Component {
   const smartFund = new this.props.web3.eth.Contract(SmartFundABIV2, this.props.smartFundAddress)
   const block = await this.props.web3.eth.getBlockNumber()
 
+  // get cur tx count
+  let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
+  txCount = txCount.data.result
+
   this.closeModal()
 
   smartFund.methods.trade(
@@ -278,7 +283,7 @@ class TradeModalV2 extends Component {
     .send({ from: this.props.accounts[0] })
     .on('transactionHash', (hash) => {
     // pending status for spiner
-    this.props.pending(true)
+    this.props.pending(true, txCount+1)
     // pending status for DB
     setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
     })

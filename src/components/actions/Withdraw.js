@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import { SmartFundABI } from '../../config.js'
+import { SmartFundABI, APIEnpoint } from '../../config.js'
 import { Button, Modal, Form } from "react-bootstrap"
+import axios from 'axios'
 import setPending from '../../utils/setPending'
+
 
 class Withdraw extends Component {
   constructor(props, context) {
@@ -14,22 +16,26 @@ class Withdraw extends Component {
 
   withdraw = async (address, percent) => {
   if(percent >= 0 && percent <= 100){
-  const contract = new this.props.web3.eth.Contract(SmartFundABI, address)
-  const totalPercentage = await contract.methods.TOTAL_PERCENTAGE().call()
-  const curentPercent = totalPercentage / 100 * percent
+    const contract = new this.props.web3.eth.Contract(SmartFundABI, address)
+    const totalPercentage = await contract.methods.TOTAL_PERCENTAGE().call()
+    const curentPercent = totalPercentage / 100 * percent
 
-  this.setState({ Show:false })
+    this.setState({ Show:false })
 
-  const block = await this.props.web3.eth.getBlockNumber()
+    const block = await this.props.web3.eth.getBlockNumber()
 
-  contract.methods.withdraw(curentPercent).send({ from: this.props.accounts[0] })
-  .on('transactionHash', (hash) => {
-  // pending status for spiner
-  this.props.pending(true)
-  // pending status for DB
-  setPending(address, 1, this.props.accounts[0], block, hash, "Withdraw")
-   })
-   }
+    // get cur tx count
+    let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
+    txCount = txCount.data.result
+
+    contract.methods.withdraw(curentPercent).send({ from: this.props.accounts[0] })
+    .on('transactionHash', (hash) => {
+    // pending status for spiner
+    this.props.pending(true, txCount+1)
+    // pending status for DB
+    setPending(address, 1, this.props.accounts[0], block, hash, "Withdraw")
+    })
+    }
   }
 
   change = e => {

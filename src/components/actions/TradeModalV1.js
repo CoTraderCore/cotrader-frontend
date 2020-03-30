@@ -1,9 +1,9 @@
 // Modal for trade only via Kyber
 import React, { Component } from 'react'
-import { SmartFundABI, KyberInterfaceABI, KyberAddress, ERC20ABI } from '../../config.js'
+import { SmartFundABI, KyberInterfaceABI, KyberAddress, ERC20ABI, APIEnpoint } from '../../config.js'
 import { Button, Modal, Form, Alert, InputGroup } from "react-bootstrap"
 import setPending from '../../utils/setPending'
-
+import axios from 'axios'
 import { tokens } from '../../tokens/'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../utils/weiByDecimals'
@@ -120,6 +120,10 @@ class TradeModalV1 extends Component {
     amount = toWeiByDecimalsInput(decimals, this.state.AmountSend)
   }
 
+  // get cur tx count
+  let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
+  txCount = txCount.data.result
+
   // hide modal
   this.closeModal()
 
@@ -134,7 +138,7 @@ class TradeModalV1 extends Component {
     tokens.KyberParametrs).send({ from: this.props.accounts[0]})
     .on('transactionHash', (hash) => {
     // pending status for spiner
-    this.props.pending(true)
+    this.props.pending(true, txCount+1)
     // pending status for DB
     setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
     })
