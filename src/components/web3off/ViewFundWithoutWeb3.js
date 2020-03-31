@@ -24,7 +24,8 @@ class ViewFundWithoutWeb3 extends Component {
    managerTotalCut: '0',
    managerRemainingCut: '0',
    shares: [],
-   isDataLoad: false
+   isDataLoad: false,
+   mainAsset:''
   }
 
  _isMounted = false;
@@ -44,6 +45,7 @@ class ViewFundWithoutWeb3 extends Component {
         managerTotalCut: fund.data.result.managerTotalCut,
         managerRemainingCut: fund.data.result.managerRemainingCut,
         shares: fund.data.result.shares,
+        mainAsset: fund.data.result.mainAsset,
         isDataLoad:true
      });
    }
@@ -146,6 +148,16 @@ class ViewFundWithoutWeb3 extends Component {
          <li><FakeButton className="buttonsAdditional" buttonName={"Loan"} info={"please connect to web3"}/></li>
          <li><FakeButton className="buttonsAdditional" buttonName={"Take cut"} info={"please connect to web3"}/></li>
          <li><FakeButton className="buttonsAdditional"  buttonName={"White list"} info={"please connect to web3"}/></li>
+         {
+           this.state.mainAsset === 'USD'
+           ?
+           (
+            <li>
+            <FakeButton buttonName={"Stable tokens"} info={"please connect to web3"}/>
+            </li>
+           )
+           : null
+         }
          </ul>
         </div>
         </Card.Body>

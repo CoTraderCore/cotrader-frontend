@@ -332,16 +332,7 @@ class ViewFund extends Component {
                this.state.mainAsset === 'USD'
                ?
                (
-                 this.props.accounts[0] === this.state.owner
-                 ?
-                 (
-                   <UpdateUSDAsset web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} />
-                 )
-                 :
-                 (
-                   <FakeButton buttonName={"Stable tokens"} info={"You can't use this button because You are not owner of this smart fund"}/>
-                 )
-
+                  <UpdateUSDAsset web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} />
                )
                : null
              }
@@ -354,15 +345,42 @@ class ViewFund extends Component {
              <li>
              <FakeButton buttonName={"Exchange"} info={"You can't use this button because You are not owner of this smart fund"}/>
              </li>
-             <li>
-             <FakeButton buttonName={"Pool"} info={"You can't use this button because You are not owner of this smart fund"}/>
-             </li>
+             {
+               this.state.version >= 3
+               ?
+               (
+                 <li>
+                 <FakeButton buttonName={"Pool"} info={"You can't use this button because You are not owner of this smart fund"}/>
+                 </li>
+               )
+               :null
+             }
+             {
+               this.state.version >= 5
+               ?
+               (
+                 <li>
+                 <FakeButton buttonName={"Loan"} info={"You can't use this button because You are not owner of this smart fund"}/>
+                 </li>
+               )
+               :null
+             }
              <li>
              <FakeButton buttonName={"Take cut"} info={"You can't use this button because You are not owner of this smart fund"}/>
              </li>
              <li>
              <FakeButton buttonName={"White list"} info={"You can't use this button because You are not owner of this smart fund"}/>
              </li>
+             {
+               this.state.mainAsset === 'USD'
+               ?
+               (
+                <li>
+                <FakeButton buttonName={"Stable tokens"} info={"You can't use this button because You are not owner of this smart fund"}/>
+                </li>
+               )
+               : null
+             }
              </React.Fragment>
            )
          }
