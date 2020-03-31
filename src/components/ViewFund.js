@@ -20,6 +20,8 @@ import Withdraw from './actions/Withdraw'
 import Deposit from './actions/Deposit'
 import UserHoldings from './actions/UserHoldings'
 import Loan from './actions/Loan'
+import UpdateUSDAsset from './actions/UpdateUSDAsset'
+
 
 import Loading from './templates/Spiners/Loading'
 import Pending from './templates/Spiners/Pending'
@@ -51,7 +53,8 @@ class ViewFund extends Component {
      lastHash: '',
      shares: [],
      version:0,
-     txCount:0
+     txCount:0,
+     mainAsset:''
     }
 }
 
@@ -206,6 +209,7 @@ class ViewFund extends Component {
         </Alert>
         <br />
         <div className="fund-page-btns">
+        <div align="center"><strong>Investor actions</strong></div>
           <ul>
             <li><ChartsButton address={this.state.smartFundAddress}/></li>
             <li><Deposit web3={this.props.web3} address={this.state.smartFundAddress} accounts={this.props.accounts} mainAsset={this.state.mainAsset} pending={this.pending}/></li>
@@ -263,6 +267,7 @@ class ViewFund extends Component {
 
 
         <div className="fund-page-btns">
+        <div align="center"><strong>Manager actions</strong></div>
           <ul>
           {
            this.props.accounts[0] === this.state.owner ?
@@ -315,7 +320,6 @@ class ViewFund extends Component {
                  </li>
                )
              }
-
              <li>
              <WithdrawManager web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} owner={this.state.owner} pending={this.pending}/>
              </li>
@@ -324,22 +328,40 @@ class ViewFund extends Component {
              <WhiteList web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} owner={this.state.owner}/>
              </li>
 
+             {
+               this.state.mainAsset === 'USD'
+               ?
+               (
+                 this.props.accounts[0] === this.state.owner
+                 ?
+                 (
+                   <UpdateUSDAsset web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} />
+                 )
+                 :
+                 (
+                   <FakeButton buttonName={"Stable tokens"} info={"You can't use this button because You are not owner of this smart fund"}/>
+                 )
+
+               )
+               : null
+             }
+
              </React.Fragment>
            )
            :
            (
              <React.Fragment>
              <li>
-             <FakeButton buttonName={"Exchange"} info={"You can't use this button cause You are not owner of this smart fund"}/>
+             <FakeButton buttonName={"Exchange"} info={"You can't use this button because You are not owner of this smart fund"}/>
              </li>
              <li>
-             <FakeButton buttonName={"Pool"} info={"You can't use this button cause You are not owner of this smart fund"}/>
+             <FakeButton buttonName={"Pool"} info={"You can't use this button because You are not owner of this smart fund"}/>
              </li>
              <li>
-             <FakeButton buttonName={"Take cut"} info={"You can't use this button cause You are not owner of this smart fund"}/>
+             <FakeButton buttonName={"Take cut"} info={"You can't use this button because You are not owner of this smart fund"}/>
              </li>
              <li>
-             <FakeButton buttonName={"White list"} info={"You can't use this button cause You are not owner of this smart fund"}/>
+             <FakeButton buttonName={"White list"} info={"You can't use this button because You are not owner of this smart fund"}/>
              </li>
              </React.Fragment>
            )
