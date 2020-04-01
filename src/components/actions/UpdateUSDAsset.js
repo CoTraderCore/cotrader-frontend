@@ -3,11 +3,13 @@ import { SmartFundABIV4, EtherscanLink } from '../../config.js'
 import { Button, Modal, Form, Alert } from "react-bootstrap"
 import { isAddress } from 'web3-utils'
 
-const symblols = ["DAI", "USDT", "USDC"]
+// permitted stable coins
+const symblols = ["DAI", "USDT", "USDC", 'USDB']
 const assets = {
-  'DAI':'0x6b175474e89094c44da98b954eedeac495271d0f',
+  'DAI' : '0x6b175474e89094c44da98b954eedeac495271d0f',
   'USDT': '0xdac17f958d2ee523a2206206994597c13d831ec7',
-  'USDC': '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+  'USDC': '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+  'USDB': '0x309627af60f0926daa6041b8279484312f2bf060'
 }
 
 
