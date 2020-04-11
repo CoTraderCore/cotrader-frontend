@@ -43,7 +43,8 @@ class TradeModalV2 extends Component {
       sendFrom: '',
       sendTo:'',
       decimalsFrom:18,
-      prepareData:false
+      prepareData:false,
+      dexAggregator: 'Paraswap'
     }
   }
 
@@ -252,8 +253,47 @@ class TradeModalV2 extends Component {
      }
   }
 
+  trade(){
+    if(this.state.dexAggregator === "Paraswap"){
+      this.tradeViaParaswap()
+    }
+    else if (this.state.dexAggregator === "1inch") {
+      this.tradeViaOneInch()
+    }
+    else {
+      alert("Unknown aggregator type")
+    }
+  }
+
+  tradeViaOneInch = async () => {
+    const smartFund = new this.props.web3.eth.Contract(SmartFundABIV2, this.props.smartFundAddress)
+    const block = await this.props.web3.eth.getBlockNumber()
+    // get cur tx count
+    let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
+    txCount = txCount.data.result
+
+    const amountInWei = toWeiByDecimalsInput(this.state.decimalsFrom, this.state.AmountSend)
+
+    this.closeModal()
+    smartFund.methods.trade(
+        '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+        amountInWei,
+        this.state.sendTo,
+        2,
+        [],
+        "0x"
+      )
+      .send({ from: this.props.accounts[0] })
+      .on('transactionHash', (hash) => {
+      // pending status for spiner
+      this.props.pending(true, txCount+1)
+      // pending status for DB
+      setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+      })
+  }
+
   // trade from smart fund
-  trade = async () => {
+  tradeViaParaswap = async () => {
     const {
     _sourceToken,
     _sourceAmount,
@@ -417,6 +457,15 @@ class TradeModalV2 extends Component {
           </InputGroup>
 
           {this.ErrorMsg()}
+
+
+          <Form.Group>
+            <Form.Label><small>Dex aggregator</small></Form.Label>
+            <Form.Control as="select" onChange={(e) => this.setState({ dexAggregator:e.target.value })}>
+              <option>Paraswap</option>
+              <option>1inch</option>
+            </Form.Control>
+          </Form.Group>
 
           <br />
           <Button variant="outline-primary" onClick={() => this.validation()}>Trade</Button>
