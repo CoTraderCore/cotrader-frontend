@@ -21,7 +21,7 @@ import Deposit from './actions/Deposit'
 import UserHoldings from './actions/UserHoldings'
 import Loan from './actions/Loan'
 import UpdateUSDAsset from './actions/UpdateUSDAsset'
-
+import TradeSynth from './actions/TradeSynth'
 
 import Loading from './templates/Spiners/Loading'
 import Pending from './templates/Spiners/Pending'
@@ -311,6 +311,21 @@ class ViewFund extends Component {
                (
                  <li>
                  <Loan web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} pending={this.pending} version={this.state.version}/>
+                 </li>
+               )
+               :
+               (
+                 <li>
+                 <FakeButton buttonName={"Loan"} info={"This version of smart fund does not support this feature"}/>
+                 </li>
+               )
+             }
+             {
+               this.state.version >= 6
+               ?
+               (
+                 <li>
+                 <TradeSynth web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} pending={this.pending} version={this.state.version}/>
                  </li>
                )
                :
