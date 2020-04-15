@@ -263,6 +263,9 @@ class TradeModalV2 extends Component {
     _additionalData
   } = await this.getTradeData()
 
+  // TODO
+  // const fundABI = this.props.version < 6 ? SmartFundABIV2 : SmartFundABIV6
+  // this smae for v6 params ...spred
   const smartFund = new this.props.web3.eth.Contract(SmartFundABIV2, this.props.smartFundAddress)
   const block = await this.props.web3.eth.getBlockNumber()
 
