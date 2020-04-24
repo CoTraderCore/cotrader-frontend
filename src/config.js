@@ -54,13 +54,16 @@ export const UniswapFactory = '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95'
 // export const UniswapFactory = ''
 
 
-// // Ropsten
+// // // Ropsten
 //
 // // V4
 // // export const SmartFundRegistryADDRESS = '0x1a629611cfa27a3eaa22c34eba98255144764e57'
 //
 // // V5
-// export const SmartFundRegistryADDRESS = '0x49cE1FFfcf7eeC86289583B762278BCb0653AFBb'
+// // export const SmartFundRegistryADDRESS = '0x49cE1FFfcf7eeC86289583B762278BCb0653AFBb'
+//
+// // V6
+// export const SmartFundRegistryADDRESS = '0x6bFC520e34bDAc2c03b7f7513E97dC09E24FF013'
 //
 // export const EtherscanLink = 'https://ropsten.etherscan.io/'
 // export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
@@ -4159,7 +4162,7 @@ export const SmartFundABIV4 = [
 ]
 
 // ETH based
-export const SmartFundABIV5 = [
+export const SmartFundABIV6 = [
 	{
 		"constant": true,
 		"inputs": [
@@ -4239,6 +4242,20 @@ export const SmartFundABIV5 = [
 		"constant": false,
 		"inputs": [
 			{
+				"name": "_convert",
+				"type": "bool"
+			}
+		],
+		"name": "fundManagerWithdraw",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
 				"name": "_token",
 				"type": "address"
 			},
@@ -4260,25 +4277,6 @@ export const SmartFundABIV5 = [
 		"outputs": [
 			{
 				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "_cToken",
-				"type": "address"
-			}
-		],
-		"name": "compoundGetCTokenValue",
-		"outputs": [
-			{
-				"name": "result",
 				"type": "uint256"
 			}
 		],
@@ -4361,20 +4359,6 @@ export const SmartFundABIV5 = [
 		"type": "function"
 	},
 	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_percentageWithdraw",
-				"type": "uint256"
-			}
-		],
-		"name": "withdraw",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"constant": true,
 		"inputs": [],
 		"name": "poolPortal",
@@ -4422,6 +4406,24 @@ export const SmartFundABIV5 = [
 		"type": "function"
 	},
 	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_percentageWithdraw",
+				"type": "uint256"
+			},
+			{
+				"name": "_convert",
+				"type": "bool"
+			}
+		],
+		"name": "withdraw",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"constant": true,
 		"inputs": [],
 		"name": "totalShares",
@@ -4451,20 +4453,6 @@ export const SmartFundABIV5 = [
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "compoundGetAllFundCtokensinETH",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -4529,40 +4517,6 @@ export const SmartFundABIV5 = [
 		],
 		"payable": false,
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_source",
-				"type": "address"
-			},
-			{
-				"name": "_sourceAmount",
-				"type": "uint256"
-			},
-			{
-				"name": "_destination",
-				"type": "address"
-			},
-			{
-				"name": "_type",
-				"type": "uint256"
-			},
-			{
-				"name": "_additionalArgs",
-				"type": "bytes32[]"
-			},
-			{
-				"name": "_additionalData",
-				"type": "bytes"
-			}
-		],
-		"name": "trade",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -4635,29 +4589,6 @@ export const SmartFundABIV5 = [
 		"type": "function"
 	},
 	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "_percent",
-				"type": "uint256"
-			},
-			{
-				"name": "_cToken",
-				"type": "address"
-			}
-		],
-		"name": "getPercentFromCTokenBalance",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"constant": false,
 		"inputs": [
 			{
@@ -4711,6 +4642,58 @@ export const SmartFundABIV5 = [
 		],
 		"payable": false,
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "coreFundAsset",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_source",
+				"type": "address"
+			},
+			{
+				"name": "_sourceAmount",
+				"type": "uint256"
+			},
+			{
+				"name": "_destination",
+				"type": "address"
+			},
+			{
+				"name": "_type",
+				"type": "uint256"
+			},
+			{
+				"name": "_additionalArgs",
+				"type": "bytes32[]"
+			},
+			{
+				"name": "_additionalData",
+				"type": "bytes"
+			},
+			{
+				"name": "_minReturn",
+				"type": "uint256"
+			}
+		],
+		"name": "trade",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -4916,15 +4899,6 @@ export const SmartFundABIV5 = [
 		"type": "function"
 	},
 	{
-		"constant": false,
-		"inputs": [],
-		"name": "fundManagerWithdraw",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"constant": true,
 		"inputs": [],
 		"name": "onlyWhitelist",
@@ -4995,58 +4969,17 @@ export const SmartFundABIV5 = [
 		"type": "function"
 	},
 	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_amount",
-				"type": "uint256"
-			},
-			{
-				"name": "_cToken",
-				"type": "address"
-			}
-		],
-		"name": "compoundRedeemUnderlying",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "isCTOKEN",
+		"inputs": [],
+		"name": "convertPortal",
 		"outputs": [
 			{
 				"name": "",
-				"type": "bool"
+				"type": "address"
 			}
 		],
 		"payable": false,
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_amount",
-				"type": "uint256"
-			},
-			{
-				"name": "_cToken",
-				"type": "address"
-			}
-		],
-		"name": "compoundRedeem",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -5268,25 +5201,6 @@ export const SmartFundABIV5 = [
 		"type": "function"
 	},
 	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "compoundTokenAddresses",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"inputs": [
 			{
 				"name": "_owner",
@@ -5322,6 +5236,10 @@ export const SmartFundABIV5 = [
 			},
 			{
 				"name": "_poolPortalAddress",
+				"type": "address"
+			},
+			{
+				"name": "_convertPortalAddress",
 				"type": "address"
 			},
 			{

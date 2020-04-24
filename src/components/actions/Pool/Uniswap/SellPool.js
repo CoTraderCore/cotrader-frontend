@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import {
-  SmartFundABIV5,
+  SmartFundABIV6,
   UniswapFactoryABI,
   UniswapFactory,
   PoolPortalABI,
@@ -137,7 +137,7 @@ class SellPool extends Component {
       // check fund balance
       if(fromWei(String(curBalance)) >= this.state.UniAmount){
         // sell pool
-        const fund = new this.props.web3.eth.Contract(SmartFundABIV5, this.props.smartFundAddress)
+        const fund = new this.props.web3.eth.Contract(SmartFundABIV6, this.props.smartFundAddress)
         const block = await this.props.web3.eth.getBlockNumber()
         fund.methods.sellPool(toWei(String(this.state.UniAmount)), 1, poolExchangeAddress)
         .send({ from: this.props.accounts[0] })

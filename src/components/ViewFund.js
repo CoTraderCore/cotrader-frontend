@@ -213,7 +213,7 @@ class ViewFund extends Component {
           <ul>
             <li><ChartsButton address={this.state.smartFundAddress}/></li>
             <li><Deposit web3={this.props.web3} address={this.state.smartFundAddress} accounts={this.props.accounts} mainAsset={this.state.mainAsset} pending={this.pending}/></li>
-            <li><Withdraw web3={this.props.web3} address={this.state.smartFundAddress} accounts={this.props.accounts} pending={this.pending}/></li>
+            <li><Withdraw web3={this.props.web3} address={this.state.smartFundAddress} accounts={this.props.accounts} pending={this.pending} version={this.state.version} mainAsset={this.state.mainAsset}/></li>
             <li><UserHoldings web3={this.props.web3} address={this.state.smartFundAddress} accounts={this.props.accounts} pending={this.pending}/></li>
           </ul>
        </div>

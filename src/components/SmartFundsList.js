@@ -225,7 +225,7 @@ class SmartFundsList extends Component{
           <ButtonGroup horizontal="true">
           <NavLink to={"/fund/"+item.address}><Button variant="outline-primary" className="buttonsAdditional">Fund page</Button></NavLink>
           <Deposit web3={this.props.web3} address={item.address} accounts={this.props.accounts} mainAsset={item.mainAsset} pending={this.pending}/>
-          <Withdraw web3={this.props.web3} address={item.address} accounts={this.props.accounts} pending={this.pending}/>
+          <Withdraw web3={this.props.web3} address={item.address} accounts={this.props.accounts} pending={this.pending} version={item.version} mainAsset={item.mainAsset}/>
           <UserHoldings web3={this.props.web3} address={item.address} accounts={this.props.accounts}/>
           {
             NeworkID === 1 ?

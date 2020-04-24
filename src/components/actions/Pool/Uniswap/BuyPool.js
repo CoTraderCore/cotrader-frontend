@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import {
-  SmartFundABIV5,
+  SmartFundABIV6,
   UniswapFactoryABI,
   UniswapFactory,
   PoolPortalABI,
@@ -170,7 +170,7 @@ class BuyPool extends Component {
       // get contracts and data
       const factory = new this.props.web3.eth.Contract(UniswapFactoryABI, UniswapFactory)
       const poolExchangeAddress = await factory.methods.getExchange(this.props.tokenAddress).call()
-      const fund = new this.props.web3.eth.Contract(SmartFundABIV5, this.props.smartFundAddress)
+      const fund = new this.props.web3.eth.Contract(SmartFundABIV6, this.props.smartFundAddress)
       const block = await this.props.web3.eth.getBlockNumber()
 
       // buy pool

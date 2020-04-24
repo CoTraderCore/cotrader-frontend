@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Button, Modal, Form } from "react-bootstrap"
-import { NeworkID, ERC20ABI, CTokenABI, SmartFundABIV5 } from '../../config.js'
+import { NeworkID, ERC20ABI, CTokenABI, SmartFundABIV6 } from '../../config.js'
 //import axios from 'axios'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import setPending from '../../utils/setPending'
@@ -102,7 +102,7 @@ class PoolModal extends Component {
     if(this.state.amount > 0 && this.state.cTokenAddress){
       const curBalance = await this.getFundBalanceForLoan()
       if(curBalance >= this.state.amount){
-        const fund = new this.props.web3.eth.Contract(SmartFundABIV5, this.props.smartFundAddress)
+        const fund = new this.props.web3.eth.Contract(SmartFundABIV6, this.props.smartFundAddress)
         const block = await this.props.web3.eth.getBlockNumber()
         const weiInput = await this.getCETHWeiByDecimals()
 
@@ -131,7 +131,7 @@ class PoolModal extends Component {
       const balance = await cToken.methods.balanceOf(this.props.smartFundAddress).call()
       // allow reedem only if there are some amount of current cToken
       if(balance > 0){
-        const fund = new this.props.web3.eth.Contract(SmartFundABIV5, this.props.smartFundAddress)
+        const fund = new this.props.web3.eth.Contract(SmartFundABIV6, this.props.smartFundAddress)
         const block = await this.props.web3.eth.getBlockNumber()
         // Mint
         fund.methods.compoundRedeemByPercent(this.state.percent, this.state.cTokenAddress)

@@ -2,6 +2,7 @@
 import React, { Component } from 'react'
 import {
   SmartFundABIV2,
+  SmartFundABIV6,
   ParaswapApi,
   NeworkID,
   IParaswapPriceFeedABI,
@@ -43,6 +44,7 @@ class TradeModalV2 extends Component {
       sendFrom: '',
       sendTo:'',
       decimalsFrom:18,
+      decimalsTo:18,
       prepareData:false
     }
   }
@@ -135,7 +137,8 @@ class TradeModalV2 extends Component {
         [e.target.name]: e.target.value,
         sendFrom,
         sendTo,
-        decimalsFrom
+        decimalsFrom,
+        decimalsTo
       })
     }
     // Update rate in reverse order direction and set state
@@ -146,7 +149,8 @@ class TradeModalV2 extends Component {
         [e.target.name]: e.target.value,
         sendFrom,
         sendTo,
-        decimalsFrom
+        decimalsFrom,
+        decimalsTo
       })
     }
     // Just set state by input
@@ -263,10 +267,10 @@ class TradeModalV2 extends Component {
     _additionalData
   } = await this.getTradeData()
 
-  // TODO
-  // const fundABI = this.props.version < 6 ? SmartFundABIV2 : SmartFundABIV6
-  // this smae for v6 params ...spred
-  const smartFund = new this.props.web3.eth.Contract(SmartFundABIV2, this.props.smartFundAddress)
+  // get correct abi for a certain version
+  const fundABI = this.props.version >= 6 ? SmartFundABIV6 : SmartFundABIV2
+
+  const smartFund = new this.props.web3.eth.Contract(fundABI, this.props.smartFundAddress)
   const block = await this.props.web3.eth.getBlockNumber()
 
   // get cur tx count
@@ -275,13 +279,31 @@ class TradeModalV2 extends Component {
 
   this.closeModal()
 
+  // get correct params for a certain version
+  const recieveWithSlippage = Number(this.state.AmountRecive) * 95 / 100 // take cut 5% slippage
+  const minReturn = toWeiByDecimalsInput(this.state.decimalsTo, String(recieveWithSlippage))
+
+  const params = this.props.version >= 6
+  ?
+  [_sourceToken,
+  _sourceAmount,
+  _destinationToken,
+  _type,
+  _additionalArgs,
+  _additionalData,
+  minReturn
+  ]
+  :
+  [_sourceToken,
+  _sourceAmount,
+  _destinationToken,
+  _type,
+  _additionalArgs,
+  _additionalData
+  ]
+
   smartFund.methods.trade(
-      _sourceToken,
-      _sourceAmount,
-      _destinationToken,
-      _type,
-      _additionalArgs,
-      _additionalData
+      ...params
     )
     .send({ from: this.props.accounts[0] })
     .on('transactionHash', (hash) => {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { SmartFundABI, APIEnpoint } from '../../config.js'
+import { SmartFundABI, SmartFundABIV6, APIEnpoint } from '../../config.js'
 import { Button, Modal, Form } from "react-bootstrap"
 import axios from 'axios'
 import setPending from '../../utils/setPending'
@@ -10,13 +10,17 @@ class Withdraw extends Component {
     super(props, context);
     this.state = {
       Show: false,
-      Percent: 50
+      Percent: 50,
+      isConvert:false
     }
   }
 
   withdraw = async (address, percent) => {
   if(percent >= 0 && percent <= 100){
-    const contract = new this.props.web3.eth.Contract(SmartFundABI, address)
+    // get corerct ABI for a certain version
+    const contractABI = this.props.version >= 6 ? SmartFundABIV6 : SmartFundABI
+    const contract = new this.props.web3.eth.Contract(contractABI, address)
+
     const totalPercentage = await contract.methods.TOTAL_PERCENTAGE().call()
     const curentPercent = totalPercentage / 100 * percent
 
@@ -28,7 +32,10 @@ class Withdraw extends Component {
     let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
     txCount = txCount.data.result
 
-    contract.methods.withdraw(curentPercent).send({ from: this.props.accounts[0] })
+    // get corerct params for a certain version 
+    const params = this.props.version >= 6 ? [curentPercent, this.state.isConvert] : [curentPercent]
+
+    contract.methods.withdraw(...params).send({ from: this.props.accounts[0] })
     .on('transactionHash', (hash) => {
     // pending status for spiner
     this.props.pending(true, txCount+1)
@@ -75,6 +82,19 @@ class Withdraw extends Component {
              max="100"
              onChange={e => this.change(e)}
              />
+             {
+               this.props.version >= 6
+               ?
+               (
+                 <Form.Check
+                  type="checkbox"
+                  onChange={() => this.setState({ isConvert: !this.state.isConvert })}
+                  checked={this.state.isConvert}
+                  label={`Try convert assets to ${this.props.mainAsset}`}
+                  />
+               )
+               :null
+             }
            </Form.Group>
            <Button
            variant="outline-primary"
