@@ -130,7 +130,7 @@ class PoolModal extends Component {
       const cToken = new this.props.web3.eth.Contract(ERC20ABI, this.state.cTokenAddress)
       const balance = await cToken.methods.balanceOf(this.props.smartFundAddress).call()
       // allow reedem only if there are some amount of current cToken
-      if(balance > 0){
+      if(parseFloat(balance) > 0){
         const fund = new this.props.web3.eth.Contract(SmartFundABIV6, this.props.smartFundAddress)
         const block = await this.props.web3.eth.getBlockNumber()
         // Mint
@@ -202,7 +202,7 @@ class PoolModal extends Component {
     }
   }
 
-  modalClose = () => this.setState({ Show: false, action:'Loan' })
+  modalClose = () => this.setState({ Show: false, action:'Loan', percent:50 })
   render() {
     return (
       <React.Fragment>
