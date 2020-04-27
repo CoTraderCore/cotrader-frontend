@@ -320,7 +320,7 @@ class ViewFund extends Component {
                )
              }
              <li>
-             <WithdrawManager web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} owner={this.state.owner} pending={this.pending}/>
+             <WithdrawManager web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} owner={this.state.owner} pending={this.pending} version={this.state.version}/>
              </li>
 
              <li>
