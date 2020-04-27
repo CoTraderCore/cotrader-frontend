@@ -88,7 +88,7 @@ class WithdrawManager extends Component {
           <Modal.Body>
           <p>Your current cut : {this.state.managerCut}</p>
           {
-            this.state.managerCut > 0
+            parseFloat(this.state.managerCut) > 0
             ?
             (
               <Form>
