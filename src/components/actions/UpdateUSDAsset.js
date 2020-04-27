@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { SmartFundABIV4, EtherscanLink } from '../../config.js'
 import { Button, Modal, Form, Alert } from "react-bootstrap"
-import { isAddress } from 'web3-utils'
+import { isAddress, fromWei } from 'web3-utils'
 
 // permitted stable coins
 const symblols = ["DAI", "USDT", "USDC", 'USDB']
@@ -24,7 +24,8 @@ class UpdateUSDAsset extends Component {
       assets:[],
       fundContract:null,
       Show:false,
-      ShowSuccessesMsg:false
+      ShowSuccessesMsg:false,
+      totalWeiDeposited:0
     }
   }
 
@@ -40,6 +41,8 @@ class UpdateUSDAsset extends Component {
 
   initData = async () => {
     const fundContract = new this.props.web3.eth.Contract(SmartFundABIV4, this.props.smartFundAddress)
+    const totalWeiDepositedInWei = await fundContract.methods.totalWeiDeposited.call()
+    const totalWeiDeposited = Number(fromWei(String(totalWeiDepositedInWei)))
     const currentUSDTokenAddress = await fundContract.methods.stableCoinAddress().call()
     const currentUSDTokenSymbol = Object.keys(assets).find(
       k => assets[k].toLowerCase() === currentUSDTokenAddress.toLowerCase())
@@ -49,7 +52,8 @@ class UpdateUSDAsset extends Component {
         currentUSDTokenAddress,
         currentUSDTokenSymbol,
         symblols,
-        fundContract
+        fundContract,
+        totalWeiDeposited
       })
   }
 
@@ -110,9 +114,24 @@ class UpdateUSDAsset extends Component {
             { this.state.symblols.map((item, key) => (<option key={key}>{item}</option>))}
           </Form.Control>
           </Form.Group>
-          <Button variant="outline-primary" onClick={() => this.changeUSDToken()}>
-            Set new token
-          </Button>
+
+          {
+            this.state.totalWeiDeposited === 0
+            ?
+            (
+              <Button variant="outline-primary" onClick={() => this.changeUSDToken()}>
+                Set new token
+              </Button>
+            )
+            :
+            (
+              <Alert variant="danger">
+              <small>
+              You can't change stable coin address, because a deposit has already been made in the current USD token
+              </small>
+              </Alert>
+            )
+          }
           {
             this.state.ShowSuccessesMsg
             ?
