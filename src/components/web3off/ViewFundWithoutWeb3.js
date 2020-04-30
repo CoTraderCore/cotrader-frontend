@@ -3,6 +3,8 @@ import { NeworkID, EtherscanLink }  from '../../config.js'
 import getFundData from '../../utils/getFundData'
 import { Card, Row, Col, ListGroup, Badge, Alert } from "react-bootstrap"
 import { fromWei } from 'web3-utils'
+import { fromWeiByDecimalsInput } from '../../utils/weiByDecimals'
+
 // Components
 import Web3Allert from './Web3Allert'
 import FakeButton from '../templates/FakeButton'
@@ -124,7 +126,9 @@ class ViewFundWithoutWeb3 extends Component {
           this.state.balance.length > 0 ?
           (
             this.state.balance.map((item, key) =>
-            <ListGroup.Item key={key + Math.random()}>{item["symbol"]}: &nbsp; {fromWei(item["balance"], 'ether')}</ListGroup.Item>
+            <ListGroup.Item key={key + Math.random()}>
+            {item["symbol"]}: &nbsp; {fromWeiByDecimalsInput(item["decimals"], item["balance"].toString())}
+            </ListGroup.Item>
           )
           ):
           (

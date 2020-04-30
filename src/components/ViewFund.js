@@ -4,7 +4,7 @@ import axios from 'axios'
 
 import getFundData from '../utils/getFundData'
 import { Card, Row, Col, ListGroup, Badge, Alert } from "react-bootstrap"
-
+import { fromWeiByDecimalsInput } from '../utils/weiByDecimals'
 import { EtherscanLink, APIEnpoint, NeworkID }  from '../config.js'
 import io from "socket.io-client"
 import _ from 'lodash'
@@ -248,7 +248,9 @@ class ViewFund extends Component {
         this.state.balance.length > 0 ?
         (
           this.state.balance.map((item, key) =>
-          <ListGroup.Item key={key}>{item["symbol"]}: &nbsp; {this.props.web3.utils.fromWei(item["balance"].toString(), "Ether")}</ListGroup.Item>
+          <ListGroup.Item key={key}>
+          {item["symbol"]}: &nbsp; {fromWeiByDecimalsInput(item["decimals"], item["balance"].toString())}
+          </ListGroup.Item>
         )
         ):
         (
