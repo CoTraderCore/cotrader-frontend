@@ -4,16 +4,19 @@ const isLocal = false
 export const ParaswapApi = 'https://paraswap.io/api'
 
 // Mainnet
-
+// V1
+// export const SmartFundRegistryADDRESS = '0x9d1a4dac9a35861abc003acfc680bf5ae1b8ed5b'
 // V2
 // export const SmartFundRegistryADDRESS = '0x0f1f46239e6ea6b8922bc4ad343100d47e417a4c'
 // V3
 // export const SmartFundRegistryADDRESS = '0x16875b1b717b3748b18fbb27b036aa4fbca88ec5'
 // V4
 // export const SmartFundRegistryADDRESS = '0x97dc743077611db9a3019023985e180004ce2ace'
-
 // V5
-export const SmartFundRegistryADDRESS = '0xD990B951F791f58E7548088f9C1D995cA1A39153'
+// export const SmartFundRegistryADDRESS = '0xD990B951F791f58E7548088f9C1D995cA1A39153'
+// V6
+export const SmartFundRegistryADDRESS = '0x667613aefd95591af5c3145974f0f7d3bf8767fb'
+
 export const PoolPortal = '0x3f49fEddB3c63E36552679BC972857312dC8b4b7'
 export const ExchangePortalAddressV3 = '0x9D82221F8C715De15103B5E5EF55644d29D84563'
 export const EtherscanLink = 'https://etherscan.io/'
