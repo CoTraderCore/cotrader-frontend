@@ -18,7 +18,7 @@ export const ParaswapApi = 'https://paraswap.io/api'
 export const SmartFundRegistryADDRESS = '0x667613aefd95591af5c3145974f0f7d3bf8767fb'
 
 export const PoolPortal = '0x3f49fEddB3c63E36552679BC972857312dC8b4b7'
-export const ExchangePortalAddressV3 = '0x9D82221F8C715De15103B5E5EF55644d29D84563'
+export const ExchangePortalAddressV6 = '0xDABB0a62894A19C0D4Cb86BEd6cFdfeE7c4652c2'
 export const EtherscanLink = 'https://etherscan.io/'
 export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
 export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'
