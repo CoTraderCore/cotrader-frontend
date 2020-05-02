@@ -279,13 +279,23 @@ class ViewFund extends Component {
                ?
                (
                  <li>
-                 <TradeModalV1 web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} pending={this.pending}/>
+                 <TradeModalV1
+                 web3={this.props.web3}
+                 accounts={this.props.accounts}
+                 smartFundAddress={this.state.smartFundAddress}
+                 pending={this.pending}/>
                  </li>
                )
                :
                (
                  <li>
-                 <TradeModalV2 web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} pending={this.pending}/>
+                 <TradeModalV2
+                 web3={this.props.web3}
+                 accounts={this.props.accounts}
+                 smartFundAddress={this.state.smartFundAddress}
+                 pending={this.pending}
+                 version={this.state.version}
+                 />
                  </li>
                )
              }
@@ -295,7 +305,12 @@ class ViewFund extends Component {
                ?
                (
                  <li>
-                 <PoolModal web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} pending={this.pending} version={this.state.version}/>
+                 <PoolModal
+                 web3={this.props.web3}
+                 accounts={this.props.accounts}
+                 smartFundAddress={this.state.smartFundAddress}
+                 pending={this.pending}
+                 version={this.state.version}/>
                  </li>
                )
                :
@@ -311,7 +326,12 @@ class ViewFund extends Component {
                ?
                (
                  <li>
-                 <Loan web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} pending={this.pending} version={this.state.version}/>
+                 <Loan
+                 web3={this.props.web3}
+                 accounts={this.props.accounts}
+                 smartFundAddress={this.state.smartFundAddress}
+                 pending={this.pending}
+                 version={this.state.version}/>
                  </li>
                )
                :
@@ -322,18 +342,31 @@ class ViewFund extends Component {
                )
              }
              <li>
-             <WithdrawManager web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} owner={this.state.owner} pending={this.pending} version={this.state.version}/>
+             <WithdrawManager
+             web3={this.props.web3}
+             accounts={this.props.accounts}
+             smartFundAddress={this.state.smartFundAddress}
+             owner={this.state.owner}
+             pending={this.pending}
+             version={this.state.version}/>
              </li>
 
              <li>
-             <WhiteList web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} owner={this.state.owner}/>
+             <WhiteList
+             web3={this.props.web3}
+             accounts={this.props.accounts}
+             smartFundAddress={this.state.smartFundAddress}
+             owner={this.state.owner}/>
              </li>
 
              {
                this.state.mainAsset === 'USD'
                ?
                (
-                  <UpdateUSDAsset web3={this.props.web3} accounts={this.props.accounts} smartFundAddress={this.state.smartFundAddress} />
+                  <UpdateUSDAsset
+                  web3={this.props.web3}
+                  accounts={this.props.accounts}
+                  smartFundAddress={this.state.smartFundAddress} />
                )
                : null
              }
