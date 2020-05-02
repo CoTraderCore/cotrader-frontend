@@ -156,6 +156,7 @@ class BancorPool extends Component {
                   smartFundAddress={this.props.smartFundAddress}
                   pending={this.props.pending}
                   modalClose={this.props.modalClose}
+                  version={this.props.version}
                 />
               )
            }

@@ -39,6 +39,7 @@ class PoolModal extends Component {
              Show={this.state.Show}
              pending={this.props.pending}
              modalClose={this.modalClose}
+             version={this.props.version}
            />
         </Tab>
         <Tab eventKey="uniswap" title="Uniswap">

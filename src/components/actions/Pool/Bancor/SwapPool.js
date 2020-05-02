@@ -3,6 +3,7 @@ import { Button, Form, Alert } from "react-bootstrap"
 import { Typeahead } from 'react-bootstrap-typeahead'
 import {
   SmartFundABIV4,
+  SmartFundABIV6,
   PoolPortalABI,
   PoolPortal,
   ERC20ABI,
@@ -98,22 +99,38 @@ class SwapPool extends Component {
     const isEnoughBalance = await this.checkFundBalance()
     if(isEnoughBalance){
       const web3 = this.props.web3
-      const fund = new web3.eth.Contract(SmartFundABIV4, this.props.smartFundAddress)
+      const fundABI = this.props.version >= 6 ? SmartFundABIV6 : SmartFundABIV4
+      const fund = new web3.eth.Contract(fundABI, this.props.smartFundAddress)
       const block = await web3.eth.getBlockNumber()
 
       // wrap ETH case
       const from = this.state.fromAddress === BNTEther ? ETH : this.state.fromAddress
       const to = this.state.toAddress === BNTEther ? ETH : this.state.toAddress
 
-      // trade
-      fund.methods.trade(
+      // prepare params
+      const initialParams = [
         from,
         this.state.amountInWei,
         to,
         1, // via Bancor portal
         [],
         "0x0000000000000000000000000000000000000000000000000000000000000000"
-      ).send({ from: this.props.accounts[0]})
+      ]
+
+      const params = this.props.version >= 6
+      ?
+       [...initialParams, 1] // add additional parameter for v6
+      :
+       initialParams
+
+      console.log(params)
+
+      // trade
+      fund.methods.trade(
+        ...params
+      )
+      .send({ from: this.props.accounts[0]}
+      )
       .on('transactionHash', (hash) => {
       // pending status for spiner
       this.props.pending(true)
@@ -154,6 +171,7 @@ class SwapPool extends Component {
 
 
   render() {
+    console.log("this.props.version", this.props.version)
     return (
       <React.Fragment>
 
