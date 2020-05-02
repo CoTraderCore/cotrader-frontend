@@ -258,51 +258,53 @@ class TradeModalV2 extends Component {
 
   // trade from smart fund
   trade = async () => {
-    const {
-    _sourceToken,
-    _sourceAmount,
-    _destinationToken,
-    _type,
-    _additionalArgs,
-    _additionalData
-  } = await this.getTradeData()
+   const AmountRecive = this.state.AmountRecive
+   const decimalsTo = this.state.decimalsTo
+   const {
+   _sourceToken,
+   _sourceAmount,
+   _destinationToken,
+   _type,
+   _additionalArgs,
+   _additionalData
+   } = await this.getTradeData()
 
-  // get correct abi for a certain version
-  const fundABI = this.props.version >= 6 ? SmartFundABIV6 : SmartFundABIV2
+   // get correct abi for a certain version
+   const fundABI = this.props.version >= 6 ? SmartFundABIV6 : SmartFundABIV2
 
-  const smartFund = new this.props.web3.eth.Contract(fundABI, this.props.smartFundAddress)
-  const block = await this.props.web3.eth.getBlockNumber()
+   const smartFund = new this.props.web3.eth.Contract(fundABI, this.props.smartFundAddress)
+   const block = await this.props.web3.eth.getBlockNumber()
 
-  // get cur tx count
-  let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
-  txCount = txCount.data.result
+   // get cur tx count
+   let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
+   txCount = txCount.data.result
 
-  this.closeModal()
+   this.closeModal()
 
-  // get correct params for a certain version
-  const recieveWithSlippage = Number(this.state.AmountRecive) * 95 / 100 // take cut 5% slippage
-  const minReturn = toWeiByDecimalsInput(this.state.decimalsTo, String(recieveWithSlippage))
+   // get correct params for a certain version
+   const recieveWithSlippage = Number(AmountRecive) * 95 / 100 // take cut 5% slippage
+   const minReturn = toWeiByDecimalsInput(decimalsTo, String(recieveWithSlippage))
 
-  const params = this.props.version >= 6
-  ?
-  [_sourceToken,
-  _sourceAmount,
-  _destinationToken,
-  _type,
-  _additionalArgs,
-  _additionalData,
-  minReturn
-  ]
-  :
-  [_sourceToken,
-  _sourceAmount,
-  _destinationToken,
-  _type,
-  _additionalArgs,
-  _additionalData
-  ]
+   const params = this.props.version >= 6
+   ?
+   [_sourceToken,
+   _sourceAmount,
+   _destinationToken,
+   _type,
+   _additionalArgs,
+   _additionalData,
+   minReturn
+   ]
+   :
+   [_sourceToken,
+   _sourceAmount,
+   _destinationToken,
+   _type,
+   _additionalArgs,
+   _additionalData
+   ]
 
-  smartFund.methods.trade(
+   smartFund.methods.trade(
       ...params
     )
     .send({ from: this.props.accounts[0] })
