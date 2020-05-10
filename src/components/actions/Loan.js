@@ -83,17 +83,20 @@ class PoolModal extends Component {
       const tokenAddress = await cToken.methods.underlying().call()
       const ercToken = new this.props.web3.eth.Contract(ERC20ABI, tokenAddress)
       const ercBalance = await ercToken.methods.balanceOf(this.props.smartFundAddress).call()
-      const decimals = ercToken.methods.decimals().call()
+      const decimals = await ercToken.methods.decimals().call()
       return fromWeiByDecimalsInput(decimals, ercBalance)
     }
   }
 
-  getCETHWeiByDecimals = async () => {
+  // return wei by cToken underlying decimals
+  getCETHUnderlyingWeiByDecimals = async () => {
     if(this.state.cTokenAddress === this.findAddressBySymbol('cETH')){
       return toWei(String(this.state.amount))
     }else{
       const cToken = new this.props.web3.eth.Contract(CTokenABI, this.state.cTokenAddress)
-      const decimals = await cToken.methods.decimals.call()
+      const tokenAddress = await cToken.methods.underlying().call()
+      const ercToken = new this.props.web3.eth.Contract(ERC20ABI, tokenAddress)
+      const decimals = await ercToken.methods.decimals().call()
       return toWeiByDecimalsInput(decimals, String(this.state.amount))
     }
   }
@@ -104,10 +107,10 @@ class PoolModal extends Component {
       if(curBalance >= this.state.amount){
         const fund = new this.props.web3.eth.Contract(SmartFundABIV6, this.props.smartFundAddress)
         const block = await this.props.web3.eth.getBlockNumber()
-        const weiInput = await this.getCETHWeiByDecimals()
+        const weiInput = await this.getCETHUnderlyingWeiByDecimals()
 
         // Mint
-        fund.methods.compoundMint(weiInput, this.state.cTokenAddress)
+        fund.methods.compoundMint(Number(weiInput).toFixed(), this.state.cTokenAddress)
         .send({ from:this.props.accounts[0] })
         .on('transactionHash', (hash) => {
         // pending status for spiner
