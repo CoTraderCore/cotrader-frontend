@@ -293,7 +293,7 @@ class TradeModalV2 extends Component {
    _type,
    _additionalArgs,
    _additionalData,
-   minReturn
+   String(Number(minReturn).toFixed())
    ]
    :
    [_sourceToken,
