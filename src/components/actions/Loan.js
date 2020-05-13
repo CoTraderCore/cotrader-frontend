@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Button, Modal, Form } from "react-bootstrap"
 import { NeworkID, ERC20ABI, CTokenABI, SmartFundABIV6 } from '../../config.js'
-//import axios from 'axios'
+import checkTokensLimit from '../../utils/checkTokensLimit'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import setPending from '../../utils/setPending'
 import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../utils/weiByDecimals'
@@ -108,6 +108,9 @@ class PoolModal extends Component {
         const fund = new this.props.web3.eth.Contract(SmartFundABIV6, this.props.smartFundAddress)
         const block = await this.props.web3.eth.getBlockNumber()
         const weiInput = await this.getCETHUnderlyingWeiByDecimals()
+
+        // this function will throw execution with alert warning if there are limit
+        await checkTokensLimit(this.state.cTokenAddress, fund)
 
         // Mint
         fund.methods.compoundMint(Number(weiInput).toFixed(), this.state.cTokenAddress)

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Button, Alert, Table } from "react-bootstrap"
+
 import {
   SmartFundABIV4,
   PoolPortalABI,
@@ -7,10 +8,14 @@ import {
   ERC20ABI,
   EtherscanLink
 } from '../../../../config.js'
+
 import { fromWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
 import { toWei, fromWei } from 'web3-utils'
 import Pending from '../../../templates/Spiners/Pending'
 import setPending from '../../../../utils/setPending'
+import checkTokensLimit from '../../../../utils/checkTokensLimit'
+
+
 
 class BuyPool extends Component {
   constructor(props, context) {
@@ -148,8 +153,12 @@ class BuyPool extends Component {
     if(this.state.isBNTEnough && this.state.isERCEnough){
       const web3 = this.props.web3
       const fund = new web3.eth.Contract(SmartFundABIV4, this.props.smartFundAddress)
-      const block = await web3.eth.getBlockNumber()
 
+      // this function will throw execution with alert warning if there are limit
+      await checkTokensLimit(this.props.fromAddress, fund)
+
+
+      const block = await web3.eth.getBlockNumber()
       // buy pool
       fund.methods.buyPool(
         toWei(String(this.state.amount)),

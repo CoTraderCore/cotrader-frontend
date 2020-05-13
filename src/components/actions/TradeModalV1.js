@@ -7,6 +7,8 @@ import axios from 'axios'
 import { tokens } from '../../tokens/'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../utils/weiByDecimals'
+import checkTokensLimit from '../../utils/checkTokensLimit'
+
 
 class TradeModalV1 extends Component {
   constructor(props, context) {
@@ -123,6 +125,9 @@ class TradeModalV1 extends Component {
   // get cur tx count
   let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
   txCount = txCount.data.result
+
+  // this function will throw execution with alert warning if there are limit
+  await checkTokensLimit(tokens[this.state.Recive], contract)
 
   // hide modal
   this.closeModal()

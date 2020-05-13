@@ -1,6 +1,9 @@
 // switch this to false in production
 const isLocal = false
 
+// maximum available for trade tokens in smart fund 
+export const MAX_TOKENS = 20
+
 export const ParaswapApi = 'https://paraswap.io/api'
 
 // // Mainnet

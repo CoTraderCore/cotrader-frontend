@@ -15,6 +15,7 @@ import { Form, Button, Alert, Table } from "react-bootstrap"
 import { toWei, fromWei, hexToNumberString } from 'web3-utils'
 import { fromWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
 import setPending from '../../../../utils/setPending'
+import checkTokensLimit from '../../../../utils/checkTokensLimit'
 
 
 class BuyPool extends Component {
@@ -171,6 +172,10 @@ class BuyPool extends Component {
       const factory = new this.props.web3.eth.Contract(UniswapFactoryABI, UniswapFactory)
       const poolExchangeAddress = await factory.methods.getExchange(this.props.tokenAddress).call()
       const fund = new this.props.web3.eth.Contract(SmartFundABIV6, this.props.smartFundAddress)
+
+      // this function will throw execution with alert warning if there are limit
+      await checkTokensLimit(poolExchangeAddress, fund)
+
       const block = await this.props.web3.eth.getBlockNumber()
 
       // buy pool

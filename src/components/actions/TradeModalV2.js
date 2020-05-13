@@ -23,7 +23,10 @@ import {
 
 import setPending from '../../utils/setPending'
 import axios from 'axios'
+
 import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../utils/weiByDecimals'
+import checkTokensLimit from '../../utils/checkTokensLimit'
+
 import BigNumber from 'bignumber.js'
 import { Typeahead } from 'react-bootstrap-typeahead'
 
@@ -273,6 +276,10 @@ class TradeModalV2 extends Component {
    const fundABI = this.props.version >= 6 ? SmartFundABIV6 : SmartFundABIV2
 
    const smartFund = new this.props.web3.eth.Contract(fundABI, this.props.smartFundAddress)
+
+   // this function will throw execution with alert warning if there are limit
+   await checkTokensLimit(_destinationToken, smartFund)
+
    const block = await this.props.web3.eth.getBlockNumber()
 
    // get cur tx count
