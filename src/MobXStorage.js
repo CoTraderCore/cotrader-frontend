@@ -72,6 +72,18 @@ class MOBXStorage {
     }
   }
 
+  searchFundByProfit(value){
+    if(value !== 0){
+      this.SmartFunds = this.SmartFundsOriginal.filter(fund => fromWei(fund.profit) >= fromWei(value))
+      this.FilterActive = true
+      this.FilterInfo = "Filter funds by profit: " + fromWei(value)
+    }else{
+      this.SmartFunds = this.SmartFundsCurrentPage
+      this.FilterActive = false
+      this.FilterInfo = ""
+    }
+  }
+
   myFunds(owner){
     this.SmartFunds = this.SmartFundsOriginal.filter(fund => fund.owner.toLowerCase().includes(owner.toLowerCase()))
     this.FilterActive = true
