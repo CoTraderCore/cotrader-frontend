@@ -18,6 +18,7 @@ class FundSearch extends Component {
       searchByManager: '',
       searchByValue: 0,
       searchByProfit:0,
+      searchByProfitPercent:0,
       Show: false,
       isRed: true
     }
@@ -41,6 +42,9 @@ class FundSearch extends Component {
     }
     else if(param === 4){
       this.props.MobXStorage.searchFundByProfit(this.state.searchByProfit)
+    }
+    else if(param === 5){
+      this.props.MobXStorage.searchFundByProfitPercent(this.state.searchByProfitPercent)
     }
     else if(param === 6){
       // Reset filter
@@ -78,6 +82,7 @@ class FundSearch extends Component {
         <Modal.Body>
       <Form>
 
+      {/* Filter by name */}
       <Form.Group>
       <InputGroup>
       <TextField
@@ -106,11 +111,11 @@ class FundSearch extends Component {
       </InputGroup>
       </Form.Group>
 
-
+      {/* Filter by manager address */}
       <Form.Group>
       <InputGroup>
       <TextField
-        label="Find fund by manager address"
+        label="Find funds by manager address"
         value={this.state.searchByManager}
         name="searchByManager"
         onChange={e => this.change(e)}
@@ -135,10 +140,11 @@ class FundSearch extends Component {
       </InputGroup>
       </Form.Group>
 
+     {/* Filter by deposit value  */}
       <Form.Group>
       <InputGroup>
       <TextField
-        label="Find fund by deposit value"
+        label="Find funds by min amount of deposit"
         value={this.state.searchByValue > 0 ? fromWei(this.state.searchByValue.toString()): 0}
         onChange={e => this.setState({ searchByValue: toWei(e.target.value) })}
         name="searchByValue"
@@ -167,11 +173,11 @@ class FundSearch extends Component {
       </Form.Text>
       </Form.Group>
 
-
+      {/* Filter by profit value */}
       <Form.Group>
       <InputGroup>
       <TextField
-        label="Find fund by profit value"
+        label="Find funds by min amount of profit"
         value={this.state.searchByProfit > 0 ? fromWei(this.state.searchByProfit.toString()): 0}
         onChange={e => this.setState({ searchByProfit: toWei(e.target.value) })}
         name="searchByProfit"
@@ -198,6 +204,37 @@ class FundSearch extends Component {
       <Form.Text className="text-muted">
       Value greater or equal to (in wei): {this.state.searchByProfit}
       </Form.Text>
+      </Form.Group>
+
+
+      {/* Filter by profit percent */}
+      <Form.Group>
+      <InputGroup>
+      <TextField
+        label="Find funds by profit percentage"
+        value={ this.state.searchByProfitPercent }
+        onChange={e => this.setState({ searchByProfitPercent: e.target.value })}
+        name="searchByProfitPercent"
+        type="number"
+        margin="normal"
+        variant="outlined"
+        style={{flex:1}}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                edge="end"
+                style={{color:"#6A5ACD"}}
+                aria-label="Find"
+                onClick={() => this.Filter(5)}
+              >
+                <Search />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+      />
+      </InputGroup>
       </Form.Group>
 
       </Form>

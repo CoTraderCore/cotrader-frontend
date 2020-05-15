@@ -85,7 +85,9 @@ class MOBXStorage {
 
   searchFundByProfitPercent(percent){
     if(percent !== 0){
-      this.SmartFunds = this.SmartFundsOriginal.filter(fund => parseFloat(percent) >= parseFloat(fromWei(fund.value) / 100 * fromWei(fund.profit)))
+      this.SmartFunds = this.SmartFundsOriginal.filter(fund =>
+      Number(fund.profit) !== 0 && parseFloat(fromWei(fund.profit)) >= parseFloat(fromWei(fund.value)) / 100 * parseFloat(percent))
+
       this.FilterActive = true
       this.FilterInfo = "Filter funds by profit percent: " + percent
     }else{
