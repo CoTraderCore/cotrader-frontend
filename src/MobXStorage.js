@@ -11,6 +11,8 @@ class MOBXStorage {
   FilterActive = false
   FilterInfo = ''
 
+
+  // Initializers
   initWeb3AndAccounts(_web3, accounts){
     this.web3 = _web3
     this.account = accounts
@@ -24,16 +26,13 @@ class MOBXStorage {
     this.SmartFunds = this.sortSFByValue(_newList).slice(0, initPageNumber)
   }
 
+
+  // Filters
   sortSFByValue(smartFunds){
     const sorted = smartFunds.slice().sort(function (a, b) {
     return a.profit - b.profit;
     })
     return sorted.reverse()
-  }
-
-  paginationChange(_smartFunds) {
-    this.SmartFunds = _smartFunds
-    this.SmartFundsCurrentPage = _smartFunds
   }
 
   searchFund(name){
@@ -84,6 +83,18 @@ class MOBXStorage {
     }
   }
 
+  searchFundByProfitPercent(percent){
+    if(percent !== 0){
+      this.SmartFunds = this.SmartFundsOriginal.filter(fund => parseFloat(percent) >= parseFloat(fromWei(fund.value) / 100 * fromWei(fund.profit)))
+      this.FilterActive = true
+      this.FilterInfo = "Filter funds by profit percent: " + percent
+    }else{
+      this.SmartFunds = this.SmartFundsCurrentPage
+      this.FilterActive = false
+      this.FilterInfo = ""
+    }
+  }
+
   myFunds(owner){
     this.SmartFunds = this.SmartFundsOriginal.filter(fund => fund.owner.toLowerCase().includes(owner.toLowerCase()))
     this.FilterActive = true
@@ -96,10 +107,17 @@ class MOBXStorage {
     this.FilterInfo = "Filter funds by investor: " + address.slice(0,-35) + "..."
   }
 
+  // reset filters
   AllFunds(owner){
     this.SmartFunds = this.SmartFundsCurrentPage
     this.FilterActive = false
     this.FilterInfo = ""
+  }
+
+  // pagination
+  paginationChange(_smartFunds) {
+    this.SmartFunds = _smartFunds
+    this.SmartFundsCurrentPage = _smartFunds
   }
 }
 
