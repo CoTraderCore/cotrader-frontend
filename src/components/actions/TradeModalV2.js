@@ -18,7 +18,10 @@ import {
   Modal,
   Form,
   Alert,
-  InputGroup
+  InputGroup,
+  Tooltip,
+  OverlayTrigger,
+  Badge
 } from "react-bootstrap"
 
 import setPending from '../../utils/setPending'
@@ -48,7 +51,8 @@ class TradeModalV2 extends Component {
       sendTo:'',
       decimalsFrom:18,
       decimalsTo:18,
-      prepareData:false
+      prepareData:false,
+      dexAggregator: 'Paraswap'
     }
   }
 
@@ -261,10 +265,8 @@ class TradeModalV2 extends Component {
      }
   }
 
-  // trade from smart fund
-  trade = async () => {
-   const AmountRecive = this.state.AmountRecive
-   const decimalsTo = this.state.decimalsTo
+  // trade via paraswap
+  tradeViaParaswap = async () => {
    const {
    _sourceToken,
    _sourceAmount,
@@ -291,8 +293,8 @@ class TradeModalV2 extends Component {
    this.closeModal()
 
    // get correct params for a certain version
-   const recieveWithSlippage = Number(AmountRecive) * 95 / 100 // take cut 5% slippage
-   const minReturn = toWeiByDecimalsInput(decimalsTo, String(recieveWithSlippage))
+   // TODO: calculate correct mi return
+   const minReturn = 1
 
    const params = this.props.version >= 6
    ?
@@ -302,7 +304,7 @@ class TradeModalV2 extends Component {
    _type,
    _additionalArgs,
    _additionalData,
-   String(Number(minReturn).toFixed())
+   minReturn
    ]
    :
    [_sourceToken,
@@ -323,6 +325,70 @@ class TradeModalV2 extends Component {
     // pending status for DB
     setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
     })
+  }
+
+  // trade via 1 inch
+  tradeViaOneInch = async () => {
+    const smartFund = new this.props.web3.eth.Contract(SmartFundABIV6, this.props.smartFundAddress)
+    const block = await this.props.web3.eth.getBlockNumber()
+    // get cur tx count
+    let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
+    txCount = txCount.data.result
+
+    const amountInWei = toWeiByDecimalsInput(this.state.decimalsFrom, this.state.AmountSend)
+
+    // TODO: calculate correct min return
+    const minReturn = 1
+
+    this.closeModal()
+    smartFund.methods.trade(
+        this.state.sendFrom,
+        amountInWei,
+        this.state.sendTo,
+        2,
+        [],
+        "0x",
+        minReturn
+      )
+      .send({ from: this.props.accounts[0] })
+      .on('transactionHash', (hash) => {
+      // pending status for spiner
+      this.props.pending(true, txCount+1)
+      // pending status for DB
+      setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+      })
+  }
+
+  // select trade method
+  trade(){
+    if(this.state.dexAggregator === "Paraswap"){
+      this.tradeViaParaswap()
+    }
+    else if (this.state.dexAggregator === "1inch") {
+      this.tradeViaOneInch()
+    }
+    else {
+      alert("Unknown aggregator type")
+    }
+  }
+
+
+  // Validation input and smart fund balance
+  validation = async () => {
+    if(this.state.AmountSend === 0){
+      this.setState({ ERRORText:'Please input amount'})
+    }else if(this.state.Send === this.state.Recive){
+      this.setState({ ERRORText:'Token directions can not be the same'})
+    }
+    else{
+      const status = await this.checkFundBalance()
+      if(status){
+        this.setState({ prepareData:true })
+        this.trade()
+      }else{
+        this.setState({ ERRORText:  `Your smart fund don't have enough ${this.state.Send}` })
+      }
+    }
   }
 
 
@@ -351,23 +417,6 @@ class TradeModalV2 extends Component {
    }
   }
 
-  // Validation input and smart fund balance
-  validation = async () => {
-    if(this.state.AmountSend === 0){
-      this.setState({ ERRORText:'Please input amount'})
-    }else if(this.state.Send === this.state.Recive){
-      this.setState({ ERRORText:'Token directions can not be the same'})
-    }
-    else{
-      const status = await this.checkFundBalance()
-      if(status){
-        this.setState({ prepareData:true })
-        this.trade()
-      }else{
-        this.setState({ ERRORText:  `Your smart fund don't have enough ${this.state.Send}` })
-      }
-    }
-  }
 
   closeModal = () => this.setState({
     ShowModal: false,
@@ -454,6 +503,30 @@ class TradeModalV2 extends Component {
 
           {this.ErrorMsg()}
 
+          {
+            this.props.version >= 6
+            ?
+            (
+              <Form.Group>
+                <Form.Label><small>Select dex aggregator :</small></Form.Label>
+
+                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">
+                Transaction execution prices may be different in Paraswap and 1inch, so we have included two aggregators, for more convenient trading.
+                </Tooltip>}>
+                <Badge variant="info">
+                <small>? info</small>
+                </Badge>
+                </OverlayTrigger>
+
+
+                <Form.Control as="select" onChange={(e) => this.setState({ dexAggregator:e.target.value })}>
+                  <option>Paraswap</option>
+                  <option>1inch</option>
+                </Form.Control>
+              </Form.Group>
+            )
+            :null
+          }
           <br />
           <Button variant="outline-primary" onClick={() => this.validation()}>Trade</Button>
           <br />
