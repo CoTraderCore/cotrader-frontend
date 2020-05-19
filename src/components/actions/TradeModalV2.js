@@ -237,8 +237,10 @@ class TradeModalV2 extends Component {
     // STEP 3 convert addition data to bytes32
     // take 1% slippage from minDestinationAmount
     const minDestBN = new BigNumber(aggregatedData.data.minDestinationAmount)
-    const minDestinationAmountWilthSlippage = minDestBN.multipliedBy(99).dividedBy(100)
-    const minDestinationAmount = String(Math.floor(minDestinationAmountWilthSlippage.toFixed()))
+
+    BigNumber.config({ EXPONENTIAL_AT: 1e+9 })
+    let minDestinationAmount = minDestBN.multipliedBy(99).dividedBy(100)
+    minDestinationAmount = String(minDestinationAmount.toFixed())
 
     const bytes32Array = await this.packDataToBytes32Array(
       minDestinationAmount,
