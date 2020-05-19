@@ -240,7 +240,7 @@ class TradeModalV2 extends Component {
 
     BigNumber.config({ EXPONENTIAL_AT: 1e+9 })
     let minDestinationAmount = minDestBN.multipliedBy(99).dividedBy(100)
-    minDestinationAmount = String(minDestinationAmount.toFixed())
+    minDestinationAmount = String(minDestinationAmount.toFixed(0))
 
     const bytes32Array = await this.packDataToBytes32Array(
       minDestinationAmount,
