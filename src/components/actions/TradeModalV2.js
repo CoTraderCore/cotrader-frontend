@@ -1,4 +1,6 @@
-// Modal for trade via Paraswap (Paraswap get best rate from Kyber, Bancor, Uniswap ect)
+// Modal for trade via Paraswap aggregator (Paraswap get best rate from Kyber, Bancor, Uniswap ect)
+// version >= 6 support also trade via 1inch aggregator
+
 import React, { Component } from 'react'
 import {
   SmartFundABIV2,
@@ -290,12 +292,12 @@ class TradeModalV2 extends Component {
    let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
    txCount = txCount.data.result
 
-   this.closeModal()
 
-   // get correct params for a certain version
    // TODO: calculate correct mi return
    const minReturn = 1
 
+   // get correct params for a certain version
+   // version >= 6 require additional param MinReturn
    const params = this.props.version >= 6
    ?
    [_sourceToken,
@@ -325,6 +327,8 @@ class TradeModalV2 extends Component {
     // pending status for DB
     setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
     })
+
+   this.closeModal()
   }
 
   // trade via 1 inch
@@ -340,7 +344,6 @@ class TradeModalV2 extends Component {
     // TODO: calculate correct min return
     const minReturn = 1
 
-    this.closeModal()
     smartFund.methods.trade(
         this.state.sendFrom,
         amountInWei,
@@ -356,7 +359,9 @@ class TradeModalV2 extends Component {
       this.props.pending(true, txCount+1)
       // pending status for DB
       setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
-      })
+    })
+
+    this.closeModal()
   }
 
   // select trade method
