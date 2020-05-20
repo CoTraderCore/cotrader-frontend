@@ -28,7 +28,7 @@ import {
 
 import setPending from '../../utils/setPending'
 import axios from 'axios'
-
+import { toHex } from 'web3-utils'
 import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../utils/weiByDecimals'
 import checkTokensLimit from '../../utils/checkTokensLimit'
 
@@ -292,9 +292,7 @@ class TradeModalV2 extends Component {
    let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
    txCount = txCount.data.result
 
-
-   // TODO: calculate correct mi return
-   const minReturn = 1
+   const minReturn = this.getMinReturn()
 
    // get correct params for a certain version
    // version >= 6 require additional param MinReturn
@@ -341,8 +339,7 @@ class TradeModalV2 extends Component {
 
     const amountInWei = toWeiByDecimalsInput(this.state.decimalsFrom, this.state.AmountSend)
 
-    // TODO: calculate correct min return
-    const minReturn = 1
+    const minReturn = this.getMinReturn()
 
     smartFund.methods.trade(
         this.state.sendFrom,
@@ -420,6 +417,16 @@ class TradeModalV2 extends Component {
       this.setState({ [type]: 0})
     }
    }
+  }
+
+  // return number of min expected return for dest amount
+  getMinReturn(){
+    const minReturn = toWeiByDecimalsInput(this.state.decimalsTo, this.state.AmountRecive)
+    const input = new BigNumber(minReturn)
+    // take 1% slippage
+    const result = input.multipliedBy(99).dividedBy(100)
+    // return as hex
+    return toHex(new BigNumber(Math.floor(result)))
   }
 
 
