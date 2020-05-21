@@ -68,7 +68,12 @@ class SmartFundsList extends Component{
     this.checkPending()
     const fund = await getFundData(address)
     if(this.refs[address])
-    this.refs[address].UpdateValue(fund.data.result.profit, fund.data.result.value)
+      this.refs[address].UpdateValue(
+         fund.data.result.profitInETH,
+         fund.data.result.profitInUSD,
+         fund.data.result.valueInETH,
+         fund.data.result.valueInUSD
+      )
   }
 
   // props for create fund action
@@ -240,7 +245,13 @@ class SmartFundsList extends Component{
           </Col>
          </Row>
          </Card.Body>
-         <UpgradableCard ref={item.address} profit={item.profit} value={item.value} mainAsset={item.mainAsset}/>
+         <UpgradableCard
+           ref={item.address}
+           profitInETH={item.profitInETH}
+           profitInUSD={item.profitInUSD}
+           valueInETH={item.valueInETH}
+           valueInUSD={item.valueInUSD}
+         />
          </Card>
          )
          )

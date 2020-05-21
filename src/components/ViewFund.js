@@ -40,8 +40,10 @@ class ViewFund extends Component {
      name: '',
      balance: null,
      owner: '',
-     profit: '0',
-     value: '0',
+     profitInETH: '0',
+     profitInUSD: '0',
+     valueInETH: '0',
+     valueInUSD: '0',
      managerTotalCut: '0',
      managerRemainingCut: '0',
      pending: false,
@@ -115,8 +117,10 @@ class ViewFund extends Component {
       name: fund.data.result.name,
       balance: JSON.parse(fund.data.result.balance),
       owner: fund.data.result.owner,
-      profit: fund.data.result.profit,
-      value: fund.data.result.value,
+      profitInETH: fund.data.result.profitInETH,
+      profitInUSD: fund.data.result.profitInUSD,
+      valueInETH: fund.data.result.valueInETH,
+      valueInUSD: fund.data.result.valueInUSD,
       managerTotalCut: fund.data.result.managerTotalCut,
       managerRemainingCut: fund.data.result.managerRemainingCut,
       //smartBankAddress: fund.data.result.bank,
@@ -135,8 +139,10 @@ class ViewFund extends Component {
    if(this._isMounted){
     this.setState({
       balance: JSON.parse(fund.data.result.balance),
-      profit: fund.data.result.profit,
-      value: fund.data.result.value,
+      profitInETH: fund.data.result.profitInETH,
+      profitInUSD: fund.data.result.profitInUSD,
+      valueInETH: fund.data.result.valueInETH,
+      valueInUSD: fund.data.result.valueInUSD,
       managerTotalCut: fund.data.result.managerTotalCut,
       managerRemainingCut: fund.data.result.managerRemainingCut,
       shares: fund.data.result.shares
@@ -201,10 +207,14 @@ class ViewFund extends Component {
         </Card.Header>
         <Card.Body>
         <Alert variant="dark">
+        <small>
         <Row>
-         <Col>Fund profit: { this.props.web3.utils.fromWei(this.state.profit)} in {this.state.mainAsset}</Col>
-         <Col>Fund value: {this.props.web3.utils.fromWei(this.state.value)} in {this.state.mainAsset}</Col>
+         <Col>Fund profit: { this.props.web3.utils.fromWei(this.state.profitInETH)} in ETH</Col>
+         <Col>Fund profit: { this.props.web3.utils.fromWei(this.state.profitInUSD)} in USD</Col>
+         <Col>Fund value: {this.props.web3.utils.fromWei(this.state.valueInETH)} in ETH</Col>
+         <Col>Fund value: {this.props.web3.utils.fromWei(this.state.valueInUSD)} in USD</Col>
         </Row>
+        </small>
         </Alert>
         <br />
         <div className="fund-page-btns">

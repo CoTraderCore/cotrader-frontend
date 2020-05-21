@@ -6,22 +6,28 @@ class UpgradableCard extends Component {
   constructor(props) {
    super(props);
     this.state = {
-      profit:this.props.profit,
-      value:this.props.value
+      profitInETH:this.props.profitInETH,
+      profitInUSD:this.props.profitInUSD,
+      valueInETH:this.props.valueInETH,
+      valueInUSD:this.props.valueInUSD
     }
   }
 
-  UpdateValue = (profit, value) => {
-    this.setState({ profit, value });
+  UpdateValue = (profitInETH, profitInUSD, valueInETH, valueInUSD) => {
+    this.setState({ profitInETH, profitInUSD, valueInETH, valueInUSD });
   }
 
   render() {
   	return (
       <Card.Footer className="text-muted cardsAdditional">
+      <small>
         <Row>
-        <Col>Fund profit in {this.props.mainAsset}: { fromWei(this.state.profit) }</Col>
-        <Col>Fund value in {this.props.mainAsset}: { fromWei(this.state.value) }</Col>
+        <Col>Fund profit in ETH: { fromWei(this.state.profitInETH) }</Col>
+        <Col>Fund profit in USD: { fromWei(this.state.profitInUSD) }</Col>
+        <Col>Fund value in ETH: { fromWei(this.state.valueInETH) }</Col>
+        <Col>Fund value in USD: { fromWei(this.state.valueInUSD) }</Col>
         </Row>
+      </small>
       </Card.Footer>
     )
   }

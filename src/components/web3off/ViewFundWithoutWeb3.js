@@ -21,8 +21,10 @@ class ViewFundWithoutWeb3 extends Component {
    name: '',
    balance: [],
    owner: '',
-   profit: '0',
-   value: '0',
+   profitInETH: '0',
+   profitInUSD: '0',
+   valueInETH: '0',
+   valueInUSD: '0',
    managerTotalCut: '0',
    managerRemainingCut: '0',
    shares: [],
@@ -42,8 +44,10 @@ class ViewFundWithoutWeb3 extends Component {
         name: fund.data.result.name,
         balance: JSON.parse(fund.data.result.balance),
         owner: fund.data.result.owner,
-        profit: fund.data.result.profit,
-        value: fund.data.result.value,
+        profitInETH: fund.data.result.profitInETH,
+        profitInUSD: fund.data.result.profitInUSD,
+        valueInETH: fund.data.result.valueInETH,
+        valueInUSD: fund.data.result.valueInUSD,
         managerTotalCut: fund.data.result.managerTotalCut,
         managerRemainingCut: fund.data.result.managerRemainingCut,
         shares: fund.data.result.shares,
@@ -78,8 +82,10 @@ class ViewFundWithoutWeb3 extends Component {
         <Card.Body>
         <Alert variant="dark">
         <Row>
-         <Col>Fund profit in ETH: { fromWei(this.state.profit, 'ether')}</Col>
-         <Col>Fund value in ETH: {fromWei(this.state.value, 'ether')}</Col>
+         <Col>Fund profit in ETH: { fromWei(this.state.profitInETH, 'ether')}</Col>
+         <Col>Fund profit in USD: { fromWei(this.state.profitInUSD, 'ether')}</Col>
+         <Col>Fund value in ETH: {fromWei(this.state.valueInETH, 'ether')}</Col>
+         <Col>Fund value in USD: {fromWei(this.state.valueInUSD, 'ether')}</Col>
         </Row>
         </Alert>
         <br />
