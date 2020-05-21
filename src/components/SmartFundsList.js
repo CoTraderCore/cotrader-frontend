@@ -203,7 +203,7 @@ class SmartFundsList extends Component{
          <Card.Header className="cardsAdditional">
          <Badge variant="ligth">Fund name: {item.name}</Badge>
          <br/>
-         <small>Version: {String(item.version)}</small>
+         <small>Type : {item.mainAsset} based fund, version: {String(item.version)}</small>
          </Card.Header>
          <Card.Body className="cardsAdditional">
          <Row className="justify-content-md-center mb-3">
