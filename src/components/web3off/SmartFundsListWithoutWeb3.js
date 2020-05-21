@@ -150,12 +150,14 @@ class SmartFundsListWithoutWeb3 extends Component{
              </div>
              </Card.Body>
              <Card.Footer className="text-muted cardsAdditional">
+             <small>
                <Row>
                <Col>Fund profit in ETH: { fromWei(item.profitInETH, 'ether')}</Col>
                <Col>Fund profit in USD: { fromWei(item.profitInUSD, 'ether')}</Col>
                <Col>Fund value in ETH: { fromWei(item.valueInETH, 'ether') }</Col>
                <Col>Fund value in USD: { fromWei(item.valueInUSD, 'ether') }</Col>
                </Row>
+             </small>
              </Card.Footer>
              </Card>
              )
