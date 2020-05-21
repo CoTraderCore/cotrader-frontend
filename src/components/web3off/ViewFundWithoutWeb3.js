@@ -83,10 +83,10 @@ class ViewFundWithoutWeb3 extends Component {
         <Alert variant="dark">
         <small>
         <Row>
-         <Col>Fund profit in ETH: { fromWei(this.state.profitInETH, 'ether')}</Col>
-         <Col>Fund profit in USD: { fromWei(this.state.profitInUSD, 'ether')}</Col>
-         <Col>Fund value in ETH: {fromWei(this.state.valueInETH, 'ether')}</Col>
-         <Col>Fund value in USD: {fromWei(this.state.valueInUSD, 'ether')}</Col>
+         <Col>Fund profit in ETH: { fromWei(String(this.state.profitInETH), 'ether')}</Col>
+         <Col>Fund profit in USD: { fromWei(String(this.state.profitInUSD), 'ether')}</Col>
+         <Col>Fund value in ETH: {fromWei(String(this.state.valueInETH), 'ether')}</Col>
+         <Col>Fund value in USD: {fromWei(String(this.state.valueInUSD), 'ether')}</Col>
         </Row>
         </small>
         </Alert>

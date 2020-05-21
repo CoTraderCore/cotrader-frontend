@@ -209,10 +209,10 @@ class ViewFund extends Component {
         <Alert variant="dark">
         <small>
         <Row>
-         <Col>Fund profit: { this.props.web3.utils.fromWei(this.state.profitInETH)} in ETH</Col>
-         <Col>Fund profit: { this.props.web3.utils.fromWei(this.state.profitInUSD)} in USD</Col>
-         <Col>Fund value: {this.props.web3.utils.fromWei(this.state.valueInETH)} in ETH</Col>
-         <Col>Fund value: {this.props.web3.utils.fromWei(this.state.valueInUSD)} in USD</Col>
+         <Col>Fund profit: { this.props.web3.utils.fromWei(String(this.state.profitInETH))} in ETH</Col>
+         <Col>Fund profit: { this.props.web3.utils.fromWei(String(this.state.profitInUSD))} in USD</Col>
+         <Col>Fund value: {this.props.web3.utils.fromWei(String(this.state.valueInETH))} in ETH</Col>
+         <Col>Fund value: {this.props.web3.utils.fromWei(String(this.state.valueInUSD))} in USD</Col>
         </Row>
         </small>
         </Alert>
