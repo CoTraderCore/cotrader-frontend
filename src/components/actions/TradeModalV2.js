@@ -292,7 +292,7 @@ class TradeModalV2 extends Component {
    let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
    txCount = txCount.data.result
 
-   const minReturn = this.getMinReturn()
+   const minReturn = 1 // this.getMinReturn()
 
    // get correct params for a certain version
    // version >= 6 require additional param MinReturn
@@ -339,7 +339,7 @@ class TradeModalV2 extends Component {
 
     const amountInWei = toWeiByDecimalsInput(this.state.decimalsFrom, this.state.AmountSend)
 
-    const minReturn = this.getMinReturn()
+    const minReturn = 1 //this.getMinReturn()
 
     smartFund.methods.trade(
         this.state.sendFrom,
