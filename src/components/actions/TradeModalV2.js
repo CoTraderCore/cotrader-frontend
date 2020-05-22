@@ -464,7 +464,7 @@ class TradeModalV2 extends Component {
           (
           <Form>
           {/* SEND */}
-          <Form.Label>Pay with: {this.state.Send}</Form.Label>
+          <Form.Label>Pay with</Form.Label>
           <InputGroup className="mb-3">
           <InputGroup.Prepend>
           <InputGroup.Text>
@@ -474,7 +474,7 @@ class TradeModalV2 extends Component {
               id="sendTokens"
               options={this.state.symbols}
               onChange={(s) => this.changeByClick("Send", s[0])}
-              placeholder="Choose a symbol"
+              placeholder={this.state.Send}
             />
           </InputGroup.Text>
           </InputGroup.Prepend>
@@ -489,7 +489,7 @@ class TradeModalV2 extends Component {
           </InputGroup>
 
           {/* RECEIVE */}
-          <Form.Label>Receive: {this.state.Recive}</Form.Label>
+          <Form.Label>Receive</Form.Label>
           <InputGroup className="mb-3">
           <InputGroup.Prepend>
           <InputGroup.Text>
@@ -499,7 +499,7 @@ class TradeModalV2 extends Component {
               id="receiveTokens"
               options={this.state.symbols}
               onChange={(s) => this.changeByClick("Recive", s[0])}
-              placeholder="Choose a symbol"
+              placeholder={this.state.Recive}
             />
           </InputGroup.Text>
           </InputGroup.Prepend>
