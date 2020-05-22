@@ -46,6 +46,8 @@ class TradeModalV2 extends Component {
       Recive:'DAI',
       AmountSend:0,
       AmountRecive:0,
+      slippageFrom:0,
+      slippageTo:0,
       ERRORText:'',
       tokens: null,
       symbols: null,
@@ -137,29 +139,45 @@ class TradeModalV2 extends Component {
 
 
   // helper for update state by onchange
-  change = e => {
+  change = async e => {
     // Update rate in correct direction order and set state
     if(e.target.name === "AmountSend"){
+      // get data
+      const targetName = e.target.name
+      const targerValue = e.target.value
       const { sendFrom, sendTo, decimalsFrom, decimalsTo } = this.getDirectionInfo()
-      this.setRate(sendFrom, sendTo, e.target.value, "AmountRecive", decimalsFrom, decimalsTo)
+      // get rate and slippage in current order
+      const amountRecive = await this.setRate(sendFrom, sendTo, targerValue, "AmountRecive", decimalsFrom, decimalsTo)
+      const slippageFrom = await this.getSlippage(sendFrom, sendTo, targerValue, amountRecive, decimalsFrom, decimalsTo)
+      // update states
       this.setState({
-        [e.target.name]: e.target.value,
+        [targetName]: targerValue,
         sendFrom,
         sendTo,
         decimalsFrom,
-        decimalsTo
+        decimalsTo,
+        slippageFrom,
+        slippageTo:0,
       })
     }
     // Update rate in reverse order direction and set state
     else if(e.target.name === "AmountRecive"){
+      // get data
+      const targetName = e.target.name
+      const targerValue = e.target.value
       const { sendFrom, sendTo, decimalsFrom, decimalsTo } = this.getDirectionInfo()
-      this.setRate(sendTo, sendFrom, e.target.value, "AmountSend", decimalsTo, decimalsFrom)
+      // update rate and slippage in vice versa order
+      const amountRecive = await this.setRate(sendTo, sendFrom, targerValue, "AmountSend", decimalsTo, decimalsFrom)
+      const slippageTo = await this.getSlippage(sendTo, sendFrom, targerValue, amountRecive, decimalsTo, decimalsFrom)
+      // update states
       this.setState({
-        [e.target.name]: e.target.value,
+        [targetName]: targerValue,
         sendFrom,
         sendTo,
         decimalsFrom,
-        decimalsTo
+        decimalsTo,
+        slippageFrom:0,
+        slippageTo
       })
     }
     // Just set state by input
@@ -403,20 +421,30 @@ class TradeModalV2 extends Component {
   * decimals token decimals
   */
   setRate = async (from, to, amount, type, decimalsFrom, decimalsTo) => {
-    if(amount > 0 && from !== to){
-    const contract = new this.props.web3.eth.Contract(IParaswapPriceFeedABI, ParaswapPriceFeedAddress)
-    const src = toWeiByDecimalsInput(decimalsFrom, amount.toString())
-
-    const value = await contract.methods.getBestPriceSimple(from, to, src).call()
+    const value = await this.getRate(from, to, amount, decimalsFrom, decimalsTo)
     if(value){
       const result = fromWeiByDecimalsInput(decimalsTo, value)
-      // cut slippage 1% percent
-      const ratio = result * 99 / 100
-      this.setState({ [type]: ratio})
+      this.setState({ [type]: result})
+      return result
     }else{
       this.setState({ [type]: 0})
+      return 0
     }
-   }
+  }
+
+  // get value via Paraswap IFeed contract
+  // TODO GET RATE Via 1inch and Paraswap dependse of select type
+  getRate = async (from, to, amount, decimalsFrom, decimalsTo) => {
+    if(amount > 0 && from !== to){
+      const contract = new this.props.web3.eth.Contract(IParaswapPriceFeedABI, ParaswapPriceFeedAddress)
+      const src = toWeiByDecimalsInput(decimalsFrom, amount.toString())
+      const value = await contract.methods.getBestPriceSimple(
+        from,
+        to,
+        Number(src).toFixed()
+      ).call()
+      return value
+    }
   }
 
   // return number of min expected return for dest amount
@@ -429,7 +457,27 @@ class TradeModalV2 extends Component {
     return toHex(new BigNumber(Math.floor(result)))
   }
 
+  // get slippage different
+  // Formula for 1000 COT for example
+  // Slippage = 1000 COT to ETH - (1 COT to ETH * 1000)
+  getSlippage = async (sendFrom, sendTo, amountSend, amountRecive, decimalsFrom, decimalsTo) => {
+    const reciveTotalInWei = new BigNumber(
+      toWeiByDecimalsInput(decimalsTo, amountRecive)
+    )
+    const onePercentFromInput = amountSend - amountSend * 99 / 100
+    const ratioForOnePercent = new BigNumber(await this.getRate(
+      sendFrom,
+      sendTo,
+      onePercentFromInput,
+      decimalsFrom,
+      decimalsTo
+    ))
+    const result = reciveTotalInWei.minus(ratioForOnePercent.multipliedBy(amountSend))
+    console.log("Slippage :",fromWeiByDecimalsInput(decimalsTo, result))
+    return fromWeiByDecimalsInput(decimalsTo, result)
+  }
 
+  // reset states after close modal
   closeModal = () => this.setState({
     ShowModal: false,
     Send: 'ETH',
@@ -463,6 +511,7 @@ class TradeModalV2 extends Component {
           ?
           (
           <Form>
+
           {/* SEND */}
           <Form.Label>Pay with</Form.Label>
           <InputGroup className="mb-3">
@@ -487,6 +536,15 @@ class TradeModalV2 extends Component {
           onChange={e => this.change(e)}
           />
           </InputGroup>
+          {
+            this.state.slippageTo > 0
+            ?
+            (
+              <small style={{color:"blue"}}>Slippage: {String(this.state.slippageTo)}</small>
+            ):null
+          }
+
+          <br/>
 
           {/* RECEIVE */}
           <Form.Label>Receive</Form.Label>
@@ -512,9 +570,18 @@ class TradeModalV2 extends Component {
           onChange={e => this.change(e)}
           />
           </InputGroup>
+          {
+            this.state.slippageFrom > 0
+            ?
+            (
+              <small style={{color:"blue"}}>Slippage: {String(this.state.slippageFrom)}</small>
+            ):null
+          }
 
+          {/* Display error */}
           {this.ErrorMsg()}
 
+          {/* Select DEX aggregator for version >= 6 */}
           {
             this.props.version >= 6
             ?
@@ -539,6 +606,8 @@ class TradeModalV2 extends Component {
             )
             :null
           }
+
+          {/* Trigger tarde */}
           <br />
           <Button variant="outline-primary" onClick={() => this.validation()}>Trade</Button>
           <br />
