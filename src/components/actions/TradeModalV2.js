@@ -438,10 +438,12 @@ class TradeModalV2 extends Component {
     if(amount > 0 && from !== to){
       const contract = new this.props.web3.eth.Contract(IParaswapPriceFeedABI, ParaswapPriceFeedAddress)
       const src = toWeiByDecimalsInput(decimalsFrom, amount.toString())
+      BigNumber.config({ EXPONENTIAL_AT: 1e+9 })
+      const srcBN = new BigNumber(src)
       const value = await contract.methods.getBestPriceSimple(
         from,
         to,
-        Number(src).toFixed()
+        srcBN.toFixed()
       ).call()
       return value
     }
@@ -461,10 +463,13 @@ class TradeModalV2 extends Component {
   // Formula for 1000 COT for example
   // Slippage = 1000 COT to ETH - (1 COT to ETH * 1000)
   getSlippage = async (sendFrom, sendTo, amountSend, amountRecive, decimalsFrom, decimalsTo) => {
+    BigNumber.config({ EXPONENTIAL_AT: 1e+9 })
+
     const reciveTotalInWei = new BigNumber(
       toWeiByDecimalsInput(decimalsTo, amountRecive)
     )
-    const onePercentFromInput = amountSend - amountSend * 99 / 100
+    const amountSendBN = new BigNumber(amountSend)
+    const onePercentFromInput = amountSendBN.minus(amountSendBN.multipliedBy(99).dividedBy(100))
     const ratioForOnePercent = new BigNumber(await this.getRate(
       sendFrom,
       sendTo,
@@ -472,9 +477,11 @@ class TradeModalV2 extends Component {
       decimalsFrom,
       decimalsTo
     ))
-    const result = reciveTotalInWei.minus(ratioForOnePercent.multipliedBy(amountSend))
-    console.log("Slippage :",fromWeiByDecimalsInput(decimalsTo, result))
-    return fromWeiByDecimalsInput(decimalsTo, result)
+    const recive = new BigNumber(reciveTotalInWei.minus(ratioForOnePercent.multipliedBy(amountSend)))
+    const slippage = reciveTotalInWei.dividedBy(recive)
+
+    console.log("Slippage :",fromWeiByDecimalsInput(decimalsTo, recive), String(slippage.toFixed()))
+    return fromWeiByDecimalsInput(decimalsTo, recive)
   }
 
   // reset states after close modal
