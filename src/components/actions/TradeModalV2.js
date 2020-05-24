@@ -28,7 +28,6 @@ import {
 
 import setPending from '../../utils/setPending'
 import axios from 'axios'
-import { toHex } from 'web3-utils'
 import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../utils/weiByDecimals'
 import checkTokensLimit from '../../utils/checkTokensLimit'
 
@@ -287,86 +286,57 @@ class TradeModalV2 extends Component {
 
   // trade via paraswap
   tradeViaParaswap = async () => {
-   const {
-   _sourceToken,
-   _sourceAmount,
-   _destinationToken,
-   _type,
-   _additionalArgs,
-   _additionalData
-   } = await this.getTradeData()
+   try{
+     const {
+     _sourceToken,
+     _sourceAmount,
+     _destinationToken,
+     _type,
+     _additionalArgs,
+     _additionalData
+     } = await this.getTradeData()
 
-   // get correct abi for a certain version
-   const fundABI = this.props.version >= 6 ? SmartFundABIV6 : SmartFundABIV2
+     // get correct abi for a certain version
+     const fundABI = this.props.version >= 6 ? SmartFundABIV6 : SmartFundABIV2
 
-   const smartFund = new this.props.web3.eth.Contract(fundABI, this.props.smartFundAddress)
+     const smartFund = new this.props.web3.eth.Contract(fundABI, this.props.smartFundAddress)
 
-   // this function will throw execution with alert warning if there are limit
-   await checkTokensLimit(_destinationToken, smartFund)
+     // this function will throw execution with alert warning if there are limit
+     await checkTokensLimit(_destinationToken, smartFund)
 
-   const block = await this.props.web3.eth.getBlockNumber()
+     const block = await this.props.web3.eth.getBlockNumber()
 
-   // get cur tx count
-   let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
-   txCount = txCount.data.result
 
-   const minReturn = 1 // this.getMinReturn()
+     // get cur tx count
+     let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
+     txCount = txCount.data.result
 
-   // get correct params for a certain version
-   // version >= 6 require additional param MinReturn
-   const params = this.props.version >= 6
-   ?
-   [_sourceToken,
-   _sourceAmount,
-   _destinationToken,
-   _type,
-   _additionalArgs,
-   _additionalData,
-   minReturn
-   ]
-   :
-   [_sourceToken,
-   _sourceAmount,
-   _destinationToken,
-   _type,
-   _additionalArgs,
-   _additionalData
-   ]
+     // TODO get mi return from getSlippage() recieve
+     const minReturn = 1
 
-   smartFund.methods.trade(
-      ...params
-    )
-    .send({ from: this.props.accounts[0] })
-    .on('transactionHash', (hash) => {
-    // pending status for spiner
-    this.props.pending(true, txCount+1)
-    // pending status for DB
-    setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
-    })
+     // get correct params for a certain version
+     // version >= 6 require additional param MinReturn
+     const params = this.props.version >= 6
+     ?
+     [_sourceToken,
+     _sourceAmount,
+     _destinationToken,
+     _type,
+     _additionalArgs,
+     _additionalData,
+     minReturn
+     ]
+     :
+     [_sourceToken,
+     _sourceAmount,
+     _destinationToken,
+     _type,
+     _additionalArgs,
+     _additionalData
+     ]
 
-   this.closeModal()
-  }
-
-  // trade via 1 inch
-  tradeViaOneInch = async () => {
-    const smartFund = new this.props.web3.eth.Contract(SmartFundABIV6, this.props.smartFundAddress)
-    const block = await this.props.web3.eth.getBlockNumber()
-    // get cur tx count
-    let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
-    txCount = txCount.data.result
-
-    const amountInWei = toWeiByDecimalsInput(this.state.decimalsFrom, this.state.AmountSend)
-
-    const minReturn = 1 //this.getMinReturn()
-
-    smartFund.methods.trade(
-        this.state.sendFrom,
-        amountInWei,
-        this.state.sendTo,
-        2,
-        [],
-        "0x",
-        minReturn
+     smartFund.methods.trade(
+        ...params
       )
       .send({ from: this.props.accounts[0] })
       .on('transactionHash', (hash) => {
@@ -374,9 +344,49 @@ class TradeModalV2 extends Component {
       this.props.pending(true, txCount+1)
       // pending status for DB
       setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
-    })
+      })
 
-    this.closeModal()
+     this.closeModal()
+   }catch(e){
+     this.setState({ ERRORText:'An error occurred while trying to get data from server, please try again in few secconds' })
+   }
+  }
+
+  // trade via 1 inch
+  tradeViaOneInch = async () => {
+    try{
+      const smartFund = new this.props.web3.eth.Contract(SmartFundABIV6, this.props.smartFundAddress)
+      const block = await this.props.web3.eth.getBlockNumber()
+      // get cur tx count
+      let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
+      txCount = txCount.data.result
+
+      const amountInWei = toWeiByDecimalsInput(this.state.decimalsFrom, this.state.AmountSend)
+
+      // TODO get mi return from getSlippage() recieve
+      const minReturn = 1
+
+      smartFund.methods.trade(
+          this.state.sendFrom,
+          amountInWei,
+          this.state.sendTo,
+          2,
+          [],
+          "0x",
+          minReturn
+        )
+        .send({ from: this.props.accounts[0] })
+        .on('transactionHash', (hash) => {
+        // pending status for spiner
+        this.props.pending(true, txCount+1)
+        // pending status for DB
+        setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+      })
+
+      this.closeModal()
+    }catch(e){
+      this.setState({ ERRORText:'An error occurred while trying to get data from server, please try again in few secconds' })
+    }
   }
 
   // select trade method
@@ -449,39 +459,31 @@ class TradeModalV2 extends Component {
     }
   }
 
-  // return number of min expected return for dest amount
-  getMinReturn(){
-    const minReturn = toWeiByDecimalsInput(this.state.decimalsTo, this.state.AmountRecive)
-    const input = new BigNumber(minReturn)
-    // take 1% slippage
-    const result = input.multipliedBy(99).dividedBy(100)
-    // return as hex
-    return toHex(new BigNumber(Math.floor(result)))
-  }
-
   // get slippage different
   // Formula for 1000 COT for example
   // Slippage = 1000 COT to ETH - (1 COT to ETH * 1000)
   getSlippage = async (sendFrom, sendTo, amountSend, amountRecive, decimalsFrom, decimalsTo) => {
-    BigNumber.config({ EXPONENTIAL_AT: 1e+9 })
+    try{
+      BigNumber.config({ EXPONENTIAL_AT: 1e+9 })
+      const reciveTotalInWei = new BigNumber(
+        toWeiByDecimalsInput(decimalsTo, amountRecive)
+      )
+      const amountSendBN = new BigNumber(amountSend)
+      const onePercentFromInput = amountSendBN.minus(amountSendBN.multipliedBy(99).dividedBy(100))
+      const ratioForOnePercent = new BigNumber(await this.getRate(
+        sendFrom,
+        sendTo,
+        onePercentFromInput,
+        decimalsFrom,
+        decimalsTo
+      ))
 
-    const reciveTotalInWei = new BigNumber(
-      toWeiByDecimalsInput(decimalsTo, amountRecive)
-    )
-    const amountSendBN = new BigNumber(amountSend)
-    const onePercentFromInput = amountSendBN.minus(amountSendBN.multipliedBy(99).dividedBy(100))
-    const ratioForOnePercent = new BigNumber(await this.getRate(
-      sendFrom,
-      sendTo,
-      onePercentFromInput,
-      decimalsFrom,
-      decimalsTo
-    ))
-    const recive = new BigNumber(reciveTotalInWei.minus(ratioForOnePercent.multipliedBy(amountSend)))
-    const slippage = reciveTotalInWei.dividedBy(recive)
-
-    console.log("Slippage :",fromWeiByDecimalsInput(decimalsTo, recive), String(slippage.toFixed()))
-    return fromWeiByDecimalsInput(decimalsTo, recive)
+      const recive = new BigNumber(reciveTotalInWei.minus(ratioForOnePercent.multipliedBy(amountSend)))
+      const slippage = reciveTotalInWei.dividedBy(recive)
+      return Number(slippage).toFixed()
+    }catch(e){
+      return 0
+    }
   }
 
   // reset states after close modal
@@ -547,7 +549,7 @@ class TradeModalV2 extends Component {
             this.state.slippageTo > 0
             ?
             (
-              <small style={{color:"blue"}}>Slippage: {String(this.state.slippageTo)}</small>
+              <small style={{color:"blue"}}>Slippage: {String(this.state.slippageTo)} %</small>
             ):null
           }
 
@@ -581,7 +583,7 @@ class TradeModalV2 extends Component {
             this.state.slippageFrom > 0
             ?
             (
-              <small style={{color:"blue"}}>Slippage: {String(this.state.slippageFrom)}</small>
+              <small style={{color:"blue"}}>Slippage: {String(this.state.slippageFrom)} %</small>
             ):null
           }
 
