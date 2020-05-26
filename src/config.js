@@ -6,7 +6,7 @@ export const MAX_TOKENS = 20
 
 export const ParaswapApi = 'https://paraswap.io/api'
 
-// // Mainnet
+// Mainnet
 // V1
 // export const SmartFundRegistryADDRESS = '0x9d1a4dac9a35861abc003acfc680bf5ae1b8ed5b'
 // V2

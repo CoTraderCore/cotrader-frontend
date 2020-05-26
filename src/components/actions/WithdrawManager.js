@@ -20,8 +20,14 @@ class WithdrawManager extends Component {
   componentDidMount = async () => {
     this._isMounted = true
     const contract = new this.props.web3.eth.Contract(SmartFundABI, this.props.smartFundAddress)
-    const { fundManagerRemainingCut } = await contract.methods.calculateFundManagerCut().call()
-    const managerCut = parseFloat(fromWei(String(fundManagerRemainingCut)))
+    let managerCut
+    
+    try{
+      const { fundManagerRemainingCut } = await contract.methods.calculateFundManagerCut().call()
+      managerCut = parseFloat(fromWei(String(fundManagerRemainingCut)))
+    }catch(e){
+      managerCut = 0
+    }
 
     if(this._isMounted)
       this.setState({ managerCut })
