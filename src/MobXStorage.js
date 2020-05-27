@@ -162,7 +162,7 @@ class MOBXStorage {
       const reducer = (accumulator, currentValue) => Number(accumulator) + Number(currentValue)
       // get value
       const value = SmartFunds.map(fund => Number(fromWei(fund.valueInUSD)))
-      const totalValue = value.reduce(reducer)
+      const totalValue = Number(value.reduce(reducer)).toFixed(2)
 
       // get profit
       const profit = SmartFunds.map((fund) => {
@@ -172,7 +172,7 @@ class MOBXStorage {
           return 0
         }
       })
-      const totalProfit = profit.reduce(reducer)
+      const totalProfit = Number(profit.reduce(reducer)).toFixed(2)
 
       return { totalValue, totalProfit }
     }
