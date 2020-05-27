@@ -180,9 +180,9 @@ class SmartFundsList extends Component{
             <span>Total funds: {this.props.MobXStorage.SmartFundsOriginal.length}</span>
             </Badge>
             </h4>
-            <small>Total value: {this.props.MobXStorage.TotalValue} $</small>
+            <small>Total value: ${this.props.MobXStorage.TotalValue}</small>
             <br/>
-            <small>Total profit: {this.props.MobXStorage.TotalProfit} $</small>
+            <small>Total profit: ${this.props.MobXStorage.TotalProfit}</small>
             <br/>
             </>
           ):
@@ -204,9 +204,9 @@ class SmartFundsList extends Component{
             <br/>
             <small style={{color:"green"}}>{this.props.MobXStorage.FilterInfo}</small>
             <br/>
-            <small>Total value: {this.props.MobXStorage.userTotalValue} $</small>
+            <small>Total value: ${this.props.MobXStorage.userTotalValue}</small>
             <br/>
-            <small>Total profit: {this.props.MobXStorage.userTotalProfit} $</small>
+            <small>Total profit: ${this.props.MobXStorage.userTotalProfit}</small>
             <br/>
             </div>
           )
