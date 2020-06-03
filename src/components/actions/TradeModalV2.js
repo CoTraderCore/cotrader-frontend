@@ -460,12 +460,10 @@ class TradeModalV2 extends Component {
   }
 
   // get slippage different
-  // Formula for 1000 COT for example
-  // Slippage = 1000 COT to ETH - (1 COT to ETH * 1000)
   getSlippage = async (sendFrom, sendTo, amountSend, amountRecive, decimalsFrom, decimalsTo) => {
     try{
       BigNumber.config({ EXPONENTIAL_AT: 1e+9 })
-      const reciveTotalInWei = new BigNumber(
+      const expectedRatio = new BigNumber(
         toWeiByDecimalsInput(decimalsTo, amountRecive)
       )
       const amountSendBN = new BigNumber(amountSend)
@@ -478,9 +476,10 @@ class TradeModalV2 extends Component {
         decimalsTo
       ))
 
-      const recive = new BigNumber(reciveTotalInWei.minus(ratioForOnePercent.multipliedBy(amountSend)))
-      const slippage = reciveTotalInWei.dividedBy(recive)
-      return Number(slippage).toFixed()
+      const realRatio = new BigNumber(ratioForOnePercent.multipliedBy(100))
+
+      const slippage = expectedRatio.dividedBy(realRatio)
+      return slippage.toFixed(2)
     }catch(e){
       return 0
     }
@@ -493,7 +492,9 @@ class TradeModalV2 extends Component {
     Recive:'DAI',
     AmountSend:0,
     AmountRecive:0,
-    prepareData:false
+    prepareData:false,
+    slippageFrom:0,
+    slippageTo:0
   })
 
   render() {
