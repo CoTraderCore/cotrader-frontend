@@ -482,9 +482,10 @@ class TradeModalV2 extends Component {
       ))
 
       const realRatio = new BigNumber(ratioForOnePercent.multipliedBy(100))
+      const difference = realRatio.minus(expectedRatio)
 
-      const slippage = expectedRatio.dividedBy(realRatio)
-      return slippage.toFixed(2)
+      const slippage = difference.dividedBy(expectedRatio.dividedBy(100))
+      return slippage.toFixed(6)
     }catch(e){
       return 0
     }
