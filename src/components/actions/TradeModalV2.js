@@ -33,7 +33,7 @@ import checkTokensLimit from '../../utils/checkTokensLimit'
 import Pending from '../templates/Spiners/Pending'
 import BigNumber from 'bignumber.js'
 import { Typeahead } from 'react-bootstrap-typeahead'
-
+import { toHex } from 'web3-utils'
 
 class TradeModalV2 extends Component {
   constructor(props, context) {
@@ -265,8 +265,6 @@ class TradeModalV2 extends Component {
     // STEP 3 convert addition data to bytes32
     // take 1% slippage from minDestinationAmount
     const minDestBN = new BigNumber(aggregatedData.data.minDestinationAmount)
-
-    BigNumber.config({ EXPONENTIAL_AT: 1e+9 })
     let minDestinationAmount = minDestBN.multipliedBy(99).dividedBy(100)
     minDestinationAmount = String(minDestinationAmount.toFixed(0))
 
@@ -316,8 +314,8 @@ class TradeModalV2 extends Component {
      let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
      txCount = txCount.data.result
 
-     // TODO get mi return from getSlippage() recieve
-     const minReturn = 1
+     // TODO allow user select slippage  min return
+     const minReturn = this.getMinReturn()
 
      // get correct params for a certain version
      // version >= 6 require additional param MinReturn
@@ -368,8 +366,8 @@ class TradeModalV2 extends Component {
 
       const amountInWei = toWeiByDecimalsInput(this.state.decimalsFrom, this.state.AmountSend)
 
-      // TODO get mi return from getSlippage() recieve
-      const minReturn = 1
+      // TODO allow user select slippage  min return
+      const minReturn = this.getMinReturn()
 
       smartFund.methods.trade(
           this.state.sendFrom,
@@ -453,7 +451,6 @@ class TradeModalV2 extends Component {
     if(amount > 0 && from !== to){
       const portal = new this.props.web3.eth.Contract(ExchangePortalABIV6, ExchangePortalAddressV6)
       const src = toWeiByDecimalsInput(decimalsFrom, amount.toString())
-      BigNumber.config({ EXPONENTIAL_AT: 1e+9 })
       const srcBN = new BigNumber(src)
 
       let value
@@ -464,7 +461,7 @@ class TradeModalV2 extends Component {
           const data = await axios.get(`${ParaswapApi}/v1/prices/1/${from}/${to}/${srcBN}`)
           value = data.data.priceRoute.amount
         }catch(e){
-          // just get from contract 
+          // just get from contract
           value = await portal.methods.getValueViaParaswap(
             from,
             to,
@@ -488,7 +485,6 @@ class TradeModalV2 extends Component {
   // get slippage different
   getSlippage = async (sendFrom, sendTo, amountSend, amountRecive, decimalsFrom, decimalsTo) => {
     try{
-      BigNumber.config({ EXPONENTIAL_AT: 1e+9 })
       const expectedRatio = new BigNumber(
         toWeiByDecimalsInput(decimalsTo, amountRecive)
       )
@@ -510,6 +506,14 @@ class TradeModalV2 extends Component {
     }catch(e){
       return 0
     }
+  }
+
+  // TODO: User can select slipapge percent
+  // cut 5% slippage for min return
+  getMinReturn(){
+    const amountReceive = toWeiByDecimalsInput(this.state.decimalsTo, this.state.AmountRecive)
+    const result = new BigNumber(String(amountReceive)).multipliedBy(95).dividedBy(100)
+    return toHex(BigNumber(String(Math.floor(result.toPrecision()))))
   }
 
   // update state only when user stop typing
