@@ -389,6 +389,7 @@ class TradeModalV2 extends Component {
       this.closeModal()
     }catch(e){
       this.setState({ ERRORText:'An error occurred while trying to get data from server, please try again in few secconds' })
+      console.log("error: ",e)
     }
   }
 
@@ -648,7 +649,9 @@ class TradeModalV2 extends Component {
                 <Form.Label><small>Select dex aggregator :</small></Form.Label>
 
                 <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">
-                Transaction execution prices, and rates may be different in Paraswap and 1inch, so we have included two aggregators, for more convenient trading.
+                Transaction execution prices, and rates may be different in Paraswap and 1inch,
+                so we have included two aggregators, for more convenient trading.
+                Note: some token pairs can work in one aggregator, but not work in another.
                 </Tooltip>}>
                 <Badge variant="info">
                 <small>? info</small>
