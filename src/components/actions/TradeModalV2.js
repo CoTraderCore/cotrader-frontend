@@ -459,11 +459,18 @@ class TradeModalV2 extends Component {
       let value
       // get value via Paraswap
       if(this.state.dexAggregator === "Paraswap"){
-        value = await portal.methods.getValueViaParaswap(
-          from,
-          to,
-          srcBN.toFixed()
-        ).call()
+        try{
+          // try get at first from Paraswap api, because paraswap contract can return not accuracy
+          const data = await axios.get(`${ParaswapApi}/v1/prices/1/${from}/${to}/${srcBN}`)
+          value = data.data.priceRoute.amount
+        }catch(e){
+          // just get from contract 
+          value = await portal.methods.getValueViaParaswap(
+            from,
+            to,
+            srcBN.toFixed()
+          ).call()
+        }
       }
       // get value via 1inch
       else{
