@@ -30,7 +30,7 @@ import setPending from '../../utils/setPending'
 import axios from 'axios'
 import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../utils/weiByDecimals'
 import checkTokensLimit from '../../utils/checkTokensLimit'
-
+import Pending from '../templates/Spiners/Pending'
 import BigNumber from 'bignumber.js'
 import { Typeahead } from 'react-bootstrap-typeahead'
 
@@ -55,7 +55,8 @@ class TradeModalV2 extends Component {
       decimalsFrom:18,
       decimalsTo:18,
       prepareData:false,
-      dexAggregator: 'Paraswap'
+      dexAggregator: 'Paraswap',
+      shouldUpdatePrice:false
     }
   }
 
@@ -141,6 +142,7 @@ class TradeModalV2 extends Component {
   change = async e => {
     // Update rate in correct direction order and set state
     if(e.target.name === "AmountSend"){
+      this.setState({ shouldUpdatePrice:true, slippageTo:0, slippageFrom:0 })
       // get data
       const targetName = e.target.name
       const targerValue = e.target.value
@@ -157,10 +159,12 @@ class TradeModalV2 extends Component {
         decimalsTo,
         slippageFrom,
         slippageTo:0,
+        shouldUpdatePrice:false
       })
     }
     // Update rate in reverse order direction and set state
     else if(e.target.name === "AmountRecive"){
+      this.setState({ shouldUpdatePrice:true, slippageTo:0, slippageFrom:0 })
       // get data
       const targetName = e.target.name
       const targerValue = e.target.value
@@ -176,7 +180,8 @@ class TradeModalV2 extends Component {
         decimalsFrom,
         decimalsTo,
         slippageFrom:0,
-        slippageTo
+        slippageTo,
+        shouldUpdatePrice:false
       })
     }
     // Just set state by input
@@ -485,6 +490,19 @@ class TradeModalV2 extends Component {
     }
   }
 
+  // update state only when user stop typing
+  delayChange = (e) => {
+    e.persist()
+    this.setState({ [e.target.name]:e.target.value })
+    if(this._timeout){ //if there is already a timeout in process cancel it
+        clearTimeout(this._timeout)
+    }
+    this._timeout = setTimeout(async()=>{
+       this._timeout = null
+       await this.change(e)
+    },1000)
+  }
+
   // reset states after close modal
   closeModal = () => this.setState({
     ShowModal: false,
@@ -543,7 +561,7 @@ class TradeModalV2 extends Component {
           min="0"
           name="AmountSend"
           value={this.state.AmountSend}
-          onChange={e => this.change(e)}
+          onChange={e => this.delayChange(e)}
           />
           </InputGroup>
           {
@@ -554,6 +572,9 @@ class TradeModalV2 extends Component {
             ):null
           }
 
+          {
+            this.state.shouldUpdatePrice ? (<Pending/>) : null
+          }
           <br/>
 
           {/* RECEIVE */}
@@ -577,7 +598,7 @@ class TradeModalV2 extends Component {
           min="0"
           name="AmountRecive"
           value={this.state.AmountRecive}
-          onChange={e => this.change(e)}
+          onChange={e => this.delayChange(e)}
           />
           </InputGroup>
           {
