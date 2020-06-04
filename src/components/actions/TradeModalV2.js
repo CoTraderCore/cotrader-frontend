@@ -464,8 +464,6 @@ class TradeModalV2 extends Component {
           to,
           srcBN.toFixed()
         ).call()
-
-        console.log("Paraswap value", value)
       }
       // get value via 1inch
       else{
@@ -474,8 +472,6 @@ class TradeModalV2 extends Component {
           to,
           srcBN.toFixed()
         ).call()
-
-        console.log("1inch value", value)
       }
 
       return value
