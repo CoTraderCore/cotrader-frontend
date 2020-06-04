@@ -514,7 +514,7 @@ class TradeModalV2 extends Component {
   getMinReturn(){
     const amountReceive = toWeiByDecimalsInput(this.state.decimalsTo, this.state.AmountRecive)
     const result = new BigNumber(String(amountReceive)).multipliedBy(95).dividedBy(100)
-    return toHex(BigNumber(String(Math.floor(result.toPrecision()))))
+    return toHex(BigNumber(String(Math.floor(result))))
   }
 
   // update state only when user stop typing
