@@ -7,12 +7,12 @@ import {
   SmartFundABIV6,
   ParaswapApi,
   NeworkID,
-  IParaswapPriceFeedABI,
-  ParaswapPriceFeedAddress,
   ParaswapParamsABI,
   ParaswapParamsAddress,
   ERC20ABI,
-  APIEnpoint
+  APIEnpoint,
+  ExchangePortalAddressV6,
+  ExchangePortalABIV6
 } from '../../config.js'
 
 import {
@@ -55,7 +55,7 @@ class TradeModalV2 extends Component {
       decimalsFrom:18,
       decimalsTo:18,
       prepareData:false,
-      dexAggregator: 'Paraswap',
+      dexAggregator: '1inch',
       shouldUpdatePrice:false
     }
   }
@@ -451,15 +451,33 @@ class TradeModalV2 extends Component {
   // TODO GET RATE Via 1inch and Paraswap dependse of select type
   getRate = async (from, to, amount, decimalsFrom, decimalsTo) => {
     if(amount > 0 && from !== to){
-      const contract = new this.props.web3.eth.Contract(IParaswapPriceFeedABI, ParaswapPriceFeedAddress)
+      const portal = new this.props.web3.eth.Contract(ExchangePortalABIV6, ExchangePortalAddressV6)
       const src = toWeiByDecimalsInput(decimalsFrom, amount.toString())
       BigNumber.config({ EXPONENTIAL_AT: 1e+9 })
       const srcBN = new BigNumber(src)
-      const value = await contract.methods.getBestPriceSimple(
-        from,
-        to,
-        srcBN.toFixed()
-      ).call()
+
+      let value
+      // get value via Paraswap
+      if(this.state.dexAggregator === "Paraswap"){
+        value = await portal.methods.getValueViaParaswap(
+          from,
+          to,
+          srcBN.toFixed()
+        ).call()
+
+        console.log("Paraswap value", value)
+      }
+      // get value via 1inch
+      else{
+        value = await portal.methods.getValueViaOneInch(
+          from,
+          to,
+          srcBN.toFixed()
+        ).call()
+
+        console.log("1inch value", value)
+      }
+
       return value
     }
   }
@@ -513,7 +531,8 @@ class TradeModalV2 extends Component {
     AmountRecive:0,
     prepareData:false,
     slippageFrom:0,
-    slippageTo:0
+    slippageTo:0,
+    dexAggregator: '1inch'
   })
 
   render() {
@@ -622,7 +641,7 @@ class TradeModalV2 extends Component {
                 <Form.Label><small>Select dex aggregator :</small></Form.Label>
 
                 <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">
-                Transaction execution prices may be different in Paraswap and 1inch, so we have included two aggregators, for more convenient trading.
+                Transaction execution prices, and rates may be different in Paraswap and 1inch, so we have included two aggregators, for more convenient trading.
                 </Tooltip>}>
                 <Badge variant="info">
                 <small>? info</small>
@@ -631,8 +650,8 @@ class TradeModalV2 extends Component {
 
 
                 <Form.Control as="select" onChange={(e) => this.setState({ dexAggregator:e.target.value })}>
-                  <option>Paraswap</option>
                   <option>1inch</option>
+                  <option>Paraswap</option>
                 </Form.Control>
               </Form.Group>
             )
