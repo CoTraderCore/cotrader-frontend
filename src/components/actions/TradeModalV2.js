@@ -33,7 +33,7 @@ import checkTokensLimit from '../../utils/checkTokensLimit'
 import Pending from '../templates/Spiners/Pending'
 import BigNumber from 'bignumber.js'
 import { Typeahead } from 'react-bootstrap-typeahead'
-import { toHex } from 'web3-utils'
+// import { toHex } from 'web3-utils'
 
 class TradeModalV2 extends Component {
   constructor(props, context) {
@@ -510,11 +510,13 @@ class TradeModalV2 extends Component {
   }
 
   // TODO: User can select slipapge percent
-  // cut 5% slippage for min return
+  // cut 10% slippage for min return
   getMinReturn(){
-    const amountReceive = toWeiByDecimalsInput(this.state.decimalsTo, this.state.AmountRecive)
-    const result = new BigNumber(String(amountReceive)).multipliedBy(95).dividedBy(100)
-    return toHex(BigNumber(String(Math.floor(result))))
+    // TODO fix this
+    // const amountReceive = toWeiByDecimalsInput(this.state.decimalsTo, this.state.AmountRecive)
+    // const result = new BigNumber(String(amountReceive)).multipliedBy(90).dividedBy(100)
+    // return  toHex(BigNumber(String(Math.floor(result))))
+    return 1
   }
 
   // update state only when user stop typing
