@@ -17,7 +17,6 @@ import {
 
 import {
   Button,
-  ButtonGroup,
   Modal,
   Form,
   Alert,
@@ -27,6 +26,7 @@ import {
   Badge
 } from "react-bootstrap"
 
+import SetGasPrice from '../settings/SetGasPrice'
 import setPending from '../../utils/setPending'
 import axios from 'axios'
 import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../utils/weiByDecimals'
@@ -58,8 +58,6 @@ class TradeModalV2 extends Component {
       prepareData:false,
       dexAggregator: '1inch',
       shouldUpdatePrice:false,
-      gasPrice: 2000000000,
-      gasPriceState: 'high'
     }
   }
 
@@ -104,10 +102,6 @@ class TradeModalV2 extends Component {
       alert("Can not get data from api, please try again latter")
       console.log(e)
     }
-
-    // get gas price
-    const gasPrice = await this.props.web3.eth.getGasPrice()
-    this.setState({ gasPrice })
   }
 
   // Show err msg if there are some msg
@@ -346,10 +340,13 @@ class TradeModalV2 extends Component {
      _additionalData
      ]
 
+     // get gas price from local storage
+     const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
+
      smartFund.methods.trade(
         ...params
       )
-      .send({ from: this.props.accounts[0], gasPrice:this.state.gasPrice })
+      .send({ from: this.props.accounts[0], gasPrice })
       .on('transactionHash', (hash) => {
       // pending status for spiner
       this.props.pending(true, txCount+1)
@@ -377,6 +374,9 @@ class TradeModalV2 extends Component {
       // TODO allow user select slippage  min return
       const minReturn = this.getMinReturn()
 
+      // get gas price from local storage
+      const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
+
       smartFund.methods.trade(
           this.state.sendFrom,
           amountInWei,
@@ -386,7 +386,7 @@ class TradeModalV2 extends Component {
           "0x",
           minReturn
         )
-        .send({ from: this.props.accounts[0], gasPrice:this.state.gasPrice })
+        .send({ from: this.props.accounts[0], gasPrice })
         .on('transactionHash', (hash) => {
         // pending status for spiner
         this.props.pending(true, txCount+1)
@@ -523,25 +523,6 @@ class TradeModalV2 extends Component {
     const result = new BigNumber(String(amountReceive)).multipliedBy(95).dividedBy(100)
 
     return new BigNumber(String(Math.floor(result))).toString()
-  }
-
-  // set gasPrice for trade
-  setGasPrice = async (gasPriceState) => {
-    const currentGasPrice = await this.props.web3.eth.getGasPrice()
-    let gasPrice = 1000000000
-
-    if(gasPriceState === "high")
-      gasPrice = currentGasPrice
-
-    if(gasPriceState === "average")
-      gasPrice = currentGasPrice / 2 < 1000000000
-      ? currentGasPrice
-      : currentGasPrice / 2
-
-    if(gasPriceState === "low")
-      gasPrice = 1000000000
-
-    this.setState({ gasPrice, gasPriceState })
   }
 
   // update state only when user stop typing
@@ -704,28 +685,9 @@ class TradeModalV2 extends Component {
 
           {/* Update gas price */}
           <br />
-          <div align="center">
-          <small>select gas price</small>
-          <br />
-          <ButtonGroup size="sm">
-            <Button
-            variant={this.state.gasPriceState === "high" ? "info" : "outline-primary"}
-            onClick={() => this.setGasPrice("high")}
-            >Higth</Button>
-
-            <Button
-            variant={this.state.gasPriceState === "average" ? "info" : "outline-primary"}
-            onClick={() => this.setGasPrice("average")}
-            >Average</Button>
-
-            <Button
-            variant={this.state.gasPriceState === "low" ? "info" : "outline-primary"}
-            onClick={() => this.setGasPrice("low")}
-            >Low</Button>
-          </ButtonGroup>
-          <br />
-          <small>current {this.state.gasPrice / 1000000000} gwei</small>
-          </div>
+          {
+            this.props.web3 ? <SetGasPrice web3={this.props.web3}/> : null
+          }
            </Form>
           )
           :

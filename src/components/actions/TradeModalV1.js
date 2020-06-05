@@ -8,6 +8,7 @@ import { tokens } from '../../tokens/'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../utils/weiByDecimals'
 import checkTokensLimit from '../../utils/checkTokensLimit'
+import SetGasPrice from '../settings/SetGasPrice'
 
 
 class TradeModalV1 extends Component {
@@ -132,6 +133,9 @@ class TradeModalV1 extends Component {
   // hide modal
   this.closeModal()
 
+  // get gas price from local storage
+  const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
+
   // execude trade
   let block = await this.props.web3.eth.getBlockNumber()
 
@@ -140,7 +144,7 @@ class TradeModalV1 extends Component {
     amount,
     tokens[this.state.Recive],
     0,
-    tokens.KyberParametrs).send({ from: this.props.accounts[0]})
+    tokens.KyberParametrs).send({ from: this.props.accounts[0], gasPrice})
     .on('transactionHash', (hash) => {
     // pending status for spiner
     this.props.pending(true, txCount+1)
@@ -292,6 +296,12 @@ class TradeModalV1 extends Component {
 
           <br />
           <Button variant="outline-primary" onClick={() => this.validation()}>Trade</Button>
+
+          {/* Update gas price */}
+          <br />
+          {
+            this.props.web3 ? <SetGasPrice web3={this.props.web3}/> : null
+          }
            </Form>
           </Modal.Body>
         </Modal>
