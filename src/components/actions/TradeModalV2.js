@@ -17,6 +17,7 @@ import {
 
 import {
   Button,
+  ButtonGroup,
   Modal,
   Form,
   Alert,
@@ -56,7 +57,9 @@ class TradeModalV2 extends Component {
       decimalsTo:18,
       prepareData:false,
       dexAggregator: '1inch',
-      shouldUpdatePrice:false
+      shouldUpdatePrice:false,
+      gasPrice: 2000000000,
+      gasPriceState: 'high'
     }
   }
 
@@ -83,6 +86,7 @@ class TradeModalV2 extends Component {
 
   // get tokens addresses and symbols from paraswap api
   initData = async () => {
+    // get tokens
     try{
       let tokens = await axios.get(ParaswapApi + '/tokens')
       tokens = tokens.data.tokens
@@ -100,6 +104,10 @@ class TradeModalV2 extends Component {
       alert("Can not get data from api, please try again latter")
       console.log(e)
     }
+
+    // get gas price
+    const gasPrice = await this.props.web3.eth.getGasPrice()
+    this.setState({ gasPrice })
   }
 
   // Show err msg if there are some msg
@@ -138,7 +146,7 @@ class TradeModalV2 extends Component {
   }
 
 
-  // helper for update state by onchange
+  // helper for update state
   change = async e => {
     // Update rate in correct direction order and set state
     if(e.target.name === "AmountSend"){
@@ -341,7 +349,7 @@ class TradeModalV2 extends Component {
      smartFund.methods.trade(
         ...params
       )
-      .send({ from: this.props.accounts[0] })
+      .send({ from: this.props.accounts[0], gasPrice:this.state.gasPrice })
       .on('transactionHash', (hash) => {
       // pending status for spiner
       this.props.pending(true, txCount+1)
@@ -378,7 +386,7 @@ class TradeModalV2 extends Component {
           "0x",
           minReturn
         )
-        .send({ from: this.props.accounts[0] })
+        .send({ from: this.props.accounts[0], gasPrice:this.state.gasPrice })
         .on('transactionHash', (hash) => {
         // pending status for spiner
         this.props.pending(true, txCount+1)
@@ -446,8 +454,7 @@ class TradeModalV2 extends Component {
     }
   }
 
-  // get value via Paraswap IFeed contract
-  // TODO GET RATE Via 1inch and Paraswap dependse of select type
+  // get ratio from 1inch or Paraswap (dependse of selected type)
   getRate = async (from, to, amount, decimalsFrom, decimalsTo) => {
     if(amount > 0 && from !== to){
       const portal = new this.props.web3.eth.Contract(ExchangePortalABIV6, ExchangePortalAddressV6)
@@ -483,7 +490,7 @@ class TradeModalV2 extends Component {
     }
   }
 
-  // get slippage different
+  // get slippage percent
   getSlippage = async (sendFrom, sendTo, amountSend, amountRecive, decimalsFrom, decimalsTo) => {
     try{
       const expectedRatio = new BigNumber(
@@ -516,6 +523,25 @@ class TradeModalV2 extends Component {
     const result = new BigNumber(String(amountReceive)).multipliedBy(95).dividedBy(100)
 
     return new BigNumber(String(Math.floor(result))).toString()
+  }
+
+  // set gasPrice for trade
+  setGasPrice = async (gasPriceState) => {
+    const currentGasPrice = await this.props.web3.eth.getGasPrice()
+    let gasPrice = 1000000000
+
+    if(gasPriceState === "high")
+      gasPrice = currentGasPrice
+
+    if(gasPriceState === "average")
+      gasPrice = currentGasPrice / 2 < 1000000000
+      ? currentGasPrice
+      : currentGasPrice / 2
+
+    if(gasPriceState === "low")
+      gasPrice = 1000000000
+
+    this.setState({ gasPrice, gasPriceState })
   }
 
   // update state only when user stop typing
@@ -652,7 +678,6 @@ class TradeModalV2 extends Component {
                 <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">
                 Transaction execution prices, and rates may be different in Paraswap and 1inch,
                 so we have included two aggregators, for more convenient trading.
-                Note: some token pairs can work in one aggregator, but not work in another.
                 </Tooltip>}>
                 <Badge variant="info">
                 <small>? info</small>
@@ -676,6 +701,31 @@ class TradeModalV2 extends Component {
           {
             this.state.prepareData ? (<small>Preparing transaction data, please wait ...</small>) : null
           }
+
+          {/* Update gas price */}
+          <br />
+          <div align="center">
+          <small>select gas price</small>
+          <br />
+          <ButtonGroup size="sm">
+            <Button
+            variant={this.state.gasPriceState === "high" ? "info" : "outline-primary"}
+            onClick={() => this.setGasPrice("high")}
+            >Higth</Button>
+
+            <Button
+            variant={this.state.gasPriceState === "average" ? "info" : "outline-primary"}
+            onClick={() => this.setGasPrice("average")}
+            >Average</Button>
+
+            <Button
+            variant={this.state.gasPriceState === "low" ? "info" : "outline-primary"}
+            onClick={() => this.setGasPrice("low")}
+            >Low</Button>
+          </ButtonGroup>
+          <br />
+          <small>current {this.state.gasPrice / 1000000000} gwei</small>
+          </div>
            </Form>
           )
           :
