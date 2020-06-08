@@ -107,6 +107,9 @@ class SwapPool extends Component {
       const from = this.state.fromAddress === BNTEther ? ETH : this.state.fromAddress
       const to = this.state.toAddress === BNTEther ? ETH : this.state.toAddress
 
+      // get gas price from local storage
+      const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
+
       // prepare params
       const initialParams = [
         from,
@@ -129,7 +132,7 @@ class SwapPool extends Component {
       fund.methods.trade(
         ...params
       )
-      .send({ from: this.props.accounts[0]}
+      .send({ from: this.props.accounts[0], gasPrice}
       )
       .on('transactionHash', (hash) => {
       // pending status for spiner

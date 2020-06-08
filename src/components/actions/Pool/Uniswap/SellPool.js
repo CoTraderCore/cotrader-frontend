@@ -134,13 +134,16 @@ class SellPool extends Component {
       const poolExchangeAddress = await factory.methods.getExchange(this.props.tokenAddress).call()
       const curBalance = await this.getCurBalance()
 
+      // get gas price from local storage
+      const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
+
       // check fund balance
       if(fromWei(String(curBalance)) >= this.state.UniAmount){
         // sell pool
         const fund = new this.props.web3.eth.Contract(SmartFundABIV6, this.props.smartFundAddress)
         const block = await this.props.web3.eth.getBlockNumber()
         fund.methods.sellPool(toWei(String(this.state.UniAmount)), 1, poolExchangeAddress)
-        .send({ from: this.props.accounts[0] })
+        .send({ from: this.props.accounts[0], gasPrice })
         .on('transactionHash', (hash) => {
         // pending status for spiner
         this.props.pending(true)

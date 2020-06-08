@@ -123,6 +123,9 @@ class SellPool extends Component {
     if(this.props.fromAddress.length > 0 && this.state.amount > 0){
       const web3 = this.props.web3
 
+      // get gas price from local storage
+      const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
+
       // get smart token instance
       const token = new web3.eth.Contract(ERC20ABI, this.props.fromAddress)
 
@@ -139,7 +142,7 @@ class SellPool extends Component {
         const fund = new web3.eth.Contract(SmartFundABIV4, this.props.smartFundAddress)
         const block = await web3.eth.getBlockNumber()
 
-        fund.methods.sellPool(amountInWei, 0, this.props.fromAddress, []).send({ from:this.props.accounts[0] })
+        fund.methods.sellPool(amountInWei, 0, this.props.fromAddress, []).send({ from:this.props.accounts[0], gasPrice })
         .on('transactionHash', (hash) => {
         // pending status for spiner
         this.props.pending(true)

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Button, Modal, Tabs, Tab } from 'react-bootstrap'
 import BancorPool from './Bancor/BancorPool'
 import Uniswap from './Uniswap/UniswapPool'
-
+import SetGasPrice from '../../settings/SetGasPrice'
 
 class PoolModal extends Component {
   constructor(props, context) {
@@ -55,6 +55,11 @@ class PoolModal extends Component {
            />
         </Tab>
         </Tabs>
+        {/* Update gas price */}
+        <br />
+        {
+          this.props.web3 ? <SetGasPrice web3={this.props.web3}/> : null
+        }
       </Modal.Body>
       </Modal>
       </React.Fragment>

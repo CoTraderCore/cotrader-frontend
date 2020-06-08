@@ -178,9 +178,12 @@ class BuyPool extends Component {
 
       const block = await this.props.web3.eth.getBlockNumber()
 
+      // get gas price from local storage
+      const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
+
       // buy pool
       fund.methods.buyPool(toWei(String(this.state.ETHAmount)), 1, poolExchangeAddress)
-      .send({ from: this.props.accounts[0] })
+      .send({ from: this.props.accounts[0], gasPrice })
       .on('transactionHash', (hash) => {
       // pending status for spiner
       this.props.pending(true)

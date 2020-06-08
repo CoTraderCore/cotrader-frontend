@@ -157,6 +157,8 @@ class BuyPool extends Component {
       // this function will throw execution with alert warning if there are limit
       await checkTokensLimit(this.props.fromAddress, fund)
 
+      // get gas price from local storage
+      const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
 
       const block = await web3.eth.getBlockNumber()
       // buy pool
@@ -165,7 +167,7 @@ class BuyPool extends Component {
         0,
         this.props.fromAddress,
         [])
-      .send({ from:this.props.accounts[0] })
+      .send({ from:this.props.accounts[0], gasPrice })
       .on('transactionHash', (hash) => {
       // pending status for spiner
       this.props.pending(true)
