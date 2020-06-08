@@ -6,6 +6,8 @@ import { Typeahead } from 'react-bootstrap-typeahead'
 import setPending from '../../utils/setPending'
 import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../utils/weiByDecimals'
 import { toWei } from 'web3-utils'
+import SetGasPrice from '../settings/SetGasPrice'
+
 
 class PoolModal extends Component {
   constructor(props, context) {
@@ -109,12 +111,15 @@ class PoolModal extends Component {
         const block = await this.props.web3.eth.getBlockNumber()
         const weiInput = await this.getCETHUnderlyingWeiByDecimals()
 
+        // get gas price from local storage
+        const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
+
         // this function will throw execution with alert warning if there are limit
         await checkTokensLimit(this.state.cTokenAddress, fund)
 
         // Mint
         fund.methods.compoundMint(Number(weiInput).toFixed(), this.state.cTokenAddress)
-        .send({ from:this.props.accounts[0] })
+        .send({ from:this.props.accounts[0], gasPrice })
         .on('transactionHash', (hash) => {
         // pending status for spiner
         this.props.pending(true)
@@ -135,13 +140,17 @@ class PoolModal extends Component {
     if(this.state.percent > 0 && this.state.percent <= 100 && this.state.cTokenAddress){
       const cToken = new this.props.web3.eth.Contract(ERC20ABI, this.state.cTokenAddress)
       const balance = await cToken.methods.balanceOf(this.props.smartFundAddress).call()
+
+      // get gas price from local storage
+      const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
+
       // allow reedem only if there are some amount of current cToken
       if(parseFloat(balance) > 0){
         const fund = new this.props.web3.eth.Contract(SmartFundABIV6, this.props.smartFundAddress)
         const block = await this.props.web3.eth.getBlockNumber()
         // Mint
         fund.methods.compoundRedeemByPercent(this.state.percent, this.state.cTokenAddress)
-        .send({ from:this.props.accounts[0] })
+        .send({ from:this.props.accounts[0], gasPrice })
         .on('transactionHash', (hash) => {
         // pending status for spiner
         this.props.pending(true)
@@ -254,6 +263,12 @@ class PoolModal extends Component {
           this.renderAction()
         }
         </Form.Group>
+
+        {/* Update gas price */}
+        <br />
+        {
+          this.props.web3 ? <SetGasPrice web3={this.props.web3}/> : null
+        }
         </Form>
         </Modal.Body>
       </Modal>
