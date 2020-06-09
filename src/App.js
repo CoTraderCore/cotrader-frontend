@@ -42,6 +42,7 @@ class App extends Component {
     accounts: null,
     isReactGarbagetytyweyety: false,
     network: 0,
+    isLoadNetID:false,
     timeOut: false,
     isDataLoad: false,
     themeType : 'light'
@@ -74,7 +75,7 @@ class App extends Component {
     // Time for checking web3 status
     setTimeout(() => {this.setState({
       timeOut:true
-    })}, 1000);
+    })}, 1000)
 
     try {
       // Get network provider and web3 instance.
@@ -96,22 +97,15 @@ class App extends Component {
       console.error(error)
     }
 
+    this.initData()
+
     // Get network ID
     this.state.web3.eth.net.getId().then(netId => {
       this.setState({
-        network:netId
+        network:netId,
+        isLoadNetID:true
       })
     })
-
-    // init smart fund list
-    if(this._isMounted){
-      const smartFunds = await getFundsList()
-      this.props.MobXStorage.initSFList(smartFunds)
-      // view current registry address
-      console.log("SmartFundRegistryADDRESS: ", SmartFundRegistryADDRESS, "version 05/06/20")
-    }
-
-    this.setState({ isDataLoad: true })
 
     // relaod app if accout was changed
     if(window.ethereum)
@@ -120,6 +114,17 @@ class App extends Component {
 
   componentWillUnmount(){
     this._isMounted = false
+  }
+
+  // init smart funds list
+  initData = async () => {
+    if(this._isMounted){
+      const smartFunds = await getFundsList()
+      this.props.MobXStorage.initSFList(smartFunds)
+      // view current registry address
+      console.log("SmartFundRegistryADDRESS: ", SmartFundRegistryADDRESS, "version 05/06/20")
+      this.setState({ isDataLoad: true })
+    }
   }
 
   render() {
@@ -164,7 +169,7 @@ class App extends Component {
 
       {
         // Check network ID
-        NeworkID !== this.state.network && this.state.timeOut && this.state.web3 ?
+        NeworkID !== this.state.network && this.state.isLoadNetID && this.state.web3 ?
         (
           <Alert variant="danger">
           Wrong network ID, please make sure You use &nbsp;
@@ -181,7 +186,7 @@ class App extends Component {
     <Switch>
       <Route path="/web3off/fund/:address" component={(props) => <ViewFundWithoutWeb3 {...props} web3={this.state.web3}/>} />
       <Route exact path="/" component={(props) => <SmartFundsList {...props} web3={this.state.web3} accounts={this.state.accounts} isDataLoad={this.state.isDataLoad}/>} />
-      <Route path="/web3off" component={(props) => <SmartFundsListWithoutWeb3 {...props} web3={this.state.web3} />}/>
+      <Route path="/web3off" component={(props) => <SmartFundsListWithoutWeb3 {...props} web3={this.state.web3} isDataLoad={this.state.isDataLoad}/>}/>
       <Route path="/fund/:address" component={(props) => <ViewFund {...props} web3={this.state.web3} accounts={this.state.accounts}/>} />
       <Route path="/user-txs/:address" component={(props) => <ViewUserTx {...props} />} />
       <Route path="/fund-txs/:address" component={(props) => <ViewFundTx {...props} />} />

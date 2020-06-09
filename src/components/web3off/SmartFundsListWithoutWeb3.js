@@ -37,9 +37,16 @@ class SmartFundsListWithoutWeb3 extends Component{
 
   _isMounted = false;
 
-  componentDidMount = async () =>{
+  componentDidMount = async () => {
     this._isMounted = true
+    await this.initData()
+  }
 
+  componentWillUnmount(){
+    this._isMounted = false;
+  }
+
+  initData = async () => {
     if(this._isMounted){
     // Get fata for web3 off  component
     const smartFunds = await getFundsList()
@@ -48,16 +55,12 @@ class SmartFundsListWithoutWeb3 extends Component{
     this.setState({
       isDataLoad:true
     })
-  }
-  }
-
-  componentWillUnmount(){
-  this._isMounted = false;
+    }
   }
 
   // if coonected to web3 go out from web3off
-  componentDidUpdate(nextProps){
-    if(nextProps.web3){
+  componentDidUpdate(prevProps, nextProps){
+    if(prevProps.web3){
       window.location = "/"
     }
   }
