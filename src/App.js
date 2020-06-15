@@ -122,7 +122,7 @@ class App extends Component {
       const smartFunds = await getFundsList()
       this.props.MobXStorage.initSFList(smartFunds)
       // view current registry address
-      console.log("SmartFundRegistryADDRESS: ", SmartFundRegistryADDRESS, "version 05/06/20")
+      console.log("SmartFundRegistryADDRESS: ", SmartFundRegistryADDRESS, "version 15/06/20")
       this.setState({ isDataLoad: true })
     }
   }
@@ -137,6 +137,7 @@ class App extends Component {
     if(!isIncludes){
       // replace current address with web3 off
       const web3offAddress = String(window.location.href).replace('#/', '#/web3off/')
+      console.log(web3offAddress)
       window.location = web3offAddress
       }
     }
@@ -190,15 +191,15 @@ class App extends Component {
         )
       }
 
-    <Switch>
-      <Route path="/web3off/fund/:address" component={(props) => <ViewFundWithoutWeb3 {...props} web3={this.state.web3}/>} />
-      <Route exact path="/" component={(props) => <SmartFundsList {...props} web3={this.state.web3} accounts={this.state.accounts} isDataLoad={this.state.isDataLoad}/>} />
-      <Route path="/web3off" component={(props) => <SmartFundsListWithoutWeb3 {...props} web3={this.state.web3} isDataLoad={this.state.isDataLoad}/>}/>
-      <Route path="/fund/:address" component={(props) => <ViewFund {...props} web3={this.state.web3} accounts={this.state.accounts}/>} />
-      <Route path="/user-txs/:address" component={(props) => <ViewUserTx {...props} />} />
-      <Route path="/fund-txs/:address" component={(props) => <ViewFundTx {...props} />} />
-      <Route path="/how-to-start" component={(props) => <HowToStart {...props} />} />
-      <Route path="/stake" component={(props) => <Stake {...props} />} />
+      <Switch>
+         <Route path="/web3off/fund/:address" render={(props) => <ViewFundWithoutWeb3 {...props} web3={this.state.web3}/>} />
+         <Route exact path="/" render={(props) => <SmartFundsList {...props} web3={this.state.web3} accounts={this.state.accounts} isDataLoad={this.state.isDataLoad}/>} />
+         <Route path="/web3off" render={(props) => <SmartFundsListWithoutWeb3 {...props} web3={this.state.web3} isDataLoad={this.state.isDataLoad}/>}/>
+         <Route path="/fund/:address" render={(props) => <ViewFund {...props} web3={this.state.web3} accounts={this.state.accounts}/>} />
+         <Route path="/user-txs/:address" render={(props) => <ViewUserTx {...props} />} />
+         <Route path="/fund-txs/:address" render={(props) => <ViewFundTx {...props} />} />
+         <Route path="/how-to-start" render={(props) => <HowToStart {...props} />} />
+         <Route path="/stake" render={(props) => <Stake {...props} />} />
       </Switch>
       </Container>
       <br />
