@@ -127,20 +127,23 @@ class App extends Component {
     }
   }
 
-  render() {
+  checkWeb3OffRedirect = () => {
     // redirect to web3off version if client has no web3
     if(this.state.timeOut && !this.state.web3){
-    // if current location web3off, no need redirect 
-    if(!String(window.location.href).includes('web3off')){
-      // temporary solution
-      // not redirect client without web3 to web3 off main page
-      // if user go to stake page
-      if(window.location.href.indexOf('stake') === -1)
-        window.location = "/#/web3off"
+    // if current location web3off, stake, how-to-start no need redirect to web3 off
+    const redirectOff = ['web3off', 'stake', 'how-to-start']
+    const isIncludes = redirectOff.some((el) => String(window.location.href).includes(el))
+
+    if(!isIncludes){
+      // replace current address with web3 off
+      const web3offAddress = String(window.location.href).replace('#/', '#/web3off/')
+      window.location = web3offAddress
       }
     }
+  }
 
-
+  render() {
+    this.checkWeb3OffRedirect()
     let theme = createMuiTheme({
       palette: {
         primary: {
