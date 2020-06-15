@@ -27,27 +27,41 @@ import FundsNav from '../navigation/FundsNav'
 
 
 class SmartFundsListWithoutWeb3 extends Component{
+  constructor(state, context) {
+     super(state, context);
 
-  componentDidMount = async () => {
-    console.log("Mount")
-    await this.initData()
-  }
+     this.state = {
+       isDataLoad:false
+     }
+   }
 
+   _isMounted = false;
 
-  initData = async () => {
-    if(this.props.MobXStorage.SmartFundsOriginal.length === 0){
-      // Get fata for web3 off  component
-      const smartFunds = await getFundsList()
-      this.props.MobXStorage.initSFList(smartFunds)
-    }
-  }
+   componentDidMount = async () =>{
+     this._isMounted = true
 
-  // if coonected to web3 go out from web3off
-  componentDidUpdate(prevProps, prevState){
-    if(prevProps.web3){
-      window.location = "/"
-    }
-  }
+     if(this.props.MobXStorage.SmartFundsOriginal.length === 0){
+     // Get fata for web3 off  component
+     const smartFunds = await getFundsList()
+     this.props.MobXStorage.initSFList(smartFunds)
+     }
+
+     if(this._isMounted)
+      this.setState({
+       isDataLoad:true
+      })
+   }
+
+   componentWillUnmount(){
+     this._isMounted = false;
+   }
+
+   // if coonected to web3 go out from web3off
+   componentDidUpdate(nextProps){
+     if(nextProps.web3){
+       window.location = "/"
+     }
+   }
 
   render() {
    return(

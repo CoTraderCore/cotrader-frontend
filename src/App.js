@@ -118,7 +118,7 @@ class App extends Component {
 
   // init smart funds list
   initData = async () => {
-    if(this._isMounted){
+    if(this._isMounted && this.props.MobXStorage.SmartFundsOriginal.length === 0){
       const smartFunds = await getFundsList()
       this.props.MobXStorage.initSFList(smartFunds)
       // view current registry address
@@ -130,12 +130,16 @@ class App extends Component {
   render() {
     // redirect to web3off version if client has no web3
     if(this.state.timeOut && !this.state.web3){
-    // temporary solution
-    // not redirect client without web3 to web3 off main page
-    // if user go to stake page
-    if(window.location.href.indexOf('stake') === -1)
-      window.location = "/#/web3off"
+    // if current location web3off, no need redirect 
+    if(!String(window.location.href).includes('web3off')){
+      // temporary solution
+      // not redirect client without web3 to web3 off main page
+      // if user go to stake page
+      if(window.location.href.indexOf('stake') === -1)
+        window.location = "/#/web3off"
+      }
     }
+
 
     let theme = createMuiTheme({
       palette: {
