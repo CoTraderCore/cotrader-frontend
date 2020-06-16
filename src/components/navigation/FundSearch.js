@@ -19,6 +19,7 @@ class FundSearch extends Component {
       searchByValue: 0,
       searchByProfit:0,
       searchByProfitPercent:0,
+      userAddress:'',
       Show: false,
       isRed: true
     }
@@ -47,6 +48,10 @@ class FundSearch extends Component {
       this.props.MobXStorage.searchFundByProfitPercent(this.state.searchByProfitPercent)
     }
     else if(param === 6){
+      console.log(this.state.userAddress)
+       window.location = "/#/user/" + this.state.userAddress
+    }
+    else if(param === 7){
       // Reset filter
       this.props.MobXStorage.AllFunds()
       this.setState({ searchByName: '', searchByManager: '', searchByValue: 0})
@@ -76,7 +81,7 @@ class FundSearch extends Component {
       >
         <Modal.Header closeButton>
         <Modal.Title>
-        Filter smart funds
+        Filter and search smart funds
         </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -237,8 +242,38 @@ class FundSearch extends Component {
       </InputGroup>
       </Form.Group>
 
+      {/* Search data by user address */}
+      <Form.Group>
+      <InputGroup>
+      <TextField
+        label="Search total data for user address"
+        value={ this.state.userAddress }
+        onChange={e => this.setState({ userAddress: e.target.value })}
+        name="userAddress"
+        type="string"
+        margin="normal"
+        variant="outlined"
+        style={{flex:1}}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                edge="end"
+                style={{color:"#6A5ACD"}}
+                aria-label="Find"
+                onClick={() => this.Filter(6)}
+              >
+                <Search />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+      />
+      </InputGroup>
+      </Form.Group>
+
       </Form>
-      <Button variant="contained" onClick={() => this.Filter(6)}>Reset filters</Button>
+      <Button variant="contained" onClick={() => this.Filter(7)}>Reset filters</Button>
       </Modal.Body>
     </Modal>
 
