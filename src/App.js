@@ -21,6 +21,7 @@ import SmartFundsList from './components/SmartFundsList'
 import ViewFund from './components/ViewFund'
 import ViewUserTx from './components/ViewUserTx'
 import ViewFundTx from './components/ViewFundTx'
+import ViewUser from './components/ViewUser'
 
 import SmartFundsListWithoutWeb3 from './components/web3off/SmartFundsListWithoutWeb3'
 import ViewFundWithoutWeb3 from './components/web3off/ViewFundWithoutWeb3'
@@ -131,7 +132,7 @@ class App extends Component {
     // redirect to web3off version if client has no web3
     if(this.state.timeOut && !this.state.web3){
     // if current location web3off, stake, how-to-start no need redirect to web3 off
-    const redirectOff = ['web3off', 'stake', 'how-to-start']
+    const redirectOff = ['web3off', 'stake', 'how-to-start', 'user-txs', 'fund-txs', 'user']
     const isIncludes = redirectOff.some((el) => String(window.location.href).includes(el))
 
     if(!isIncludes){
@@ -198,6 +199,7 @@ class App extends Component {
          <Route path="/fund/:address" render={(props) => <ViewFund {...props} web3={this.state.web3} accounts={this.state.accounts}/>} />
          <Route path="/user-txs/:address" render={(props) => <ViewUserTx {...props} />} />
          <Route path="/fund-txs/:address" render={(props) => <ViewFundTx {...props} />} />
+         <Route path="/user/:address" render={(props) => <ViewUser {...props} />} />
          <Route path="/how-to-start" render={(props) => <HowToStart {...props} />} />
          <Route path="/stake" render={(props) => <Stake {...props} />} />
       </Switch>
