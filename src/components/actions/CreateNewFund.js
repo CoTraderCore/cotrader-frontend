@@ -20,20 +20,20 @@ class CreateNewFund extends Component {
 
     this.state = {
       Show: false,
-      Percent: 20,
+      Percent: 20,  // NOTE: this number should be mul by 100 !!!
       FundAsset: 'ETH',
       FundName: ''
     }
   }
 
   createNewFund = async () =>{
-  if(this.state.Percent > 0 && this.state.Percent <= 100){
+  if(this.state.Percent > 0 && this.state.Percent <= 30){
   const contract = new this.props.web3.eth.Contract(SmartFundRegistryABIV4, SmartFundRegistryADDRESS)
     if(this.state.FundName !== ''){
       try{
         const isUSDFund = this.state.FundAsset === "USD" ? true : false
         const name = this.state.FundName
-        const percent = this.state.Percent
+        const percent = this.state.Percent * 100 // MUL Percent by 100
         const block = await this.props.web3.eth.getBlockNumber()
 
         this.modalClose()
@@ -59,7 +59,7 @@ class CreateNewFund extends Component {
       alert('Please input fund name')
     }
   }else{
-    alert('Please select correct percent')
+    alert('Please select correct percent, we support from 0.01% to 30%')
   }
   }
 
