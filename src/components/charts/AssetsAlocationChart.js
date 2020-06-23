@@ -4,7 +4,7 @@ import { fromWei, toWei } from 'web3-utils'
 import { Badge } from "react-bootstrap"
 import { IExchangePortalABI, ExchangePortalAddress, ExchangePortalAddressV6 } from '../../config.js'
 import { inject } from 'mobx-react'
-
+import defaultWeb3 from '../../utils/defaultWeb3'
 
 class AssetsAlocationChart extends React.Component{
   constructor(props, context) {
@@ -120,18 +120,19 @@ class AssetsAlocationChart extends React.Component{
   }
 
   RateToETH = async (from, amount) => {
+    const web3 = this.props.MobXStorage.web3 ? this.props.MobXStorage.web3 : defaultWeb3
     if(from === this.state.eth_token){
       return amount
     }
     else{
       let value
       if(this.props.version === 1){
-        const contract = new this.props.MobXStorage.web3.eth.Contract(IExchangePortalABI, ExchangePortalAddress)
+        const contract = new web3.eth.Contract(IExchangePortalABI, ExchangePortalAddress)
         const src = toWei(String(amount), 'ether')
         value = await contract.methods.getValue(from, this.state.eth_token, src).call()
       }
       else{
-        const contract = new this.props.MobXStorage.web3.eth.Contract(IExchangePortalABI, ExchangePortalAddressV6)
+        const contract = new web3.eth.Contract(IExchangePortalABI, ExchangePortalAddressV6)
         const src = toWei(String(amount), 'ether')
         value = await contract.methods.getValue(from, this.state.eth_token, src).call()
       }
