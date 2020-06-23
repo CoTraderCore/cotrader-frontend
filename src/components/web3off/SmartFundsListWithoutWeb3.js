@@ -138,13 +138,23 @@ class SmartFundsListWithoutWeb3 extends Component{
              type : {item.mainAsset} based fund,
              version: {String(item.version)},
              manager fee: {Number(item.managerFee/100).toFixed(2)} %,
-             total assets:
+             assets: 
              {
                // get total assets count
                (() => {
                if(item && item.hasOwnProperty('balance')){
                  const addresses = JSON.parse(item.balance).map(i => i.address)
                  return addresses.length
+               }
+               })()
+             },
+             investors:
+             {
+               // get total investors count
+               (() => {
+               if(item && item.hasOwnProperty('shares')){
+                 const investors = JSON.parse(item.shares).map(i => i.user)
+                 return investors.length
                }
                })()
              }
