@@ -12,10 +12,10 @@ class FundFilter extends Component {
     const initialState = {
       owner: '',
       name: '',
-      valueInETH:0,
-      valueInUSD:0,
-      profitInETH:0,
-      profitInUSD:0,
+      valueInETH:'',
+      valueInUSD:'',
+      profitInETH:'',
+      profitInUSD:'',
       mainAsset:'',
       address:''
     }
