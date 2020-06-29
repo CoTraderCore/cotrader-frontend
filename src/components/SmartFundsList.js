@@ -27,7 +27,7 @@ import PopupMsg from './templates/PopupMsg'
 
 import MainPageCharts from './charts/MainPageCharts'
 import PagePagination from './navigation/PagePagination'
-import FundSearch from './navigation/FundSearch'
+import FilterAndSearch from './navigation/FilterAndSearch/FilterAndSearch'
 import FundsNav from './navigation/FundsNav'
 
 class SmartFundsList extends Component{
@@ -166,7 +166,7 @@ class SmartFundsList extends Component{
             <CreateNewFund web3={this.props.web3} accounts={this.props.accounts} pending={this.pending}/>
          </div>
          <div className="col-lg-6 col-sm-6 col filter-fund">
-            <FundSearch />
+            <FilterAndSearch />
          </div>
 
          <div className="col-lg-12 col-sm-12">

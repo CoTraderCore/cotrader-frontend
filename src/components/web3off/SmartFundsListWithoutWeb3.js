@@ -22,7 +22,7 @@ import ManagerModal from '../actions/ManagerModal'
 import FundModal from '../actions/FundModal'
 
 import PagePagination from '../navigation/PagePagination'
-import FundSearch from '../navigation/FundSearch'
+import FilterAndSearch from '../navigation/FilterAndSearch/FilterAndSearch'
 import FundsNav from '../navigation/FundsNav'
 
 
@@ -77,7 +77,7 @@ class SmartFundsListWithoutWeb3 extends Component{
             </div>
 
             <div className="col-lg-6 col-sm-6 col filter-fund">
-               <FundSearch />
+               <FilterAndSearch />
             </div>
 
             <div className="col-lg-12 col-sm-12">

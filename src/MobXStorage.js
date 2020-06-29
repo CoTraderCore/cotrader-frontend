@@ -14,6 +14,7 @@ class MOBXStorage {
   TotalProfit = 0
   userTotalValue = 0
   userTotalProfit = 0
+  filterOptions = null
 
   // Initializers
   initWeb3AndAccounts(_web3, accounts){
@@ -33,6 +34,14 @@ class MOBXStorage {
     this.TotalProfit = totalProfit
   }
 
+  // Update fund list with custom data
+  updateSmartFundsListByFilter(smartFunds, filterOptions, filterKeys){
+    const keys = filterKeys.join(',')
+    this.FilterActive = true
+    this.FilterInfo = `Filter funds by ${keys}`
+    this.SmartFunds = smartFunds
+    this.filterOptions = filterOptions
+  }
 
   // Filters
   sortSFByValue(smartFunds){
@@ -42,87 +51,6 @@ class MOBXStorage {
     return sorted.reverse()
   }
 
-  searchFund(name){
-    if(name !== ''){
-      this.SmartFunds = this.SmartFundsOriginal.filter(fund => fund.name.toLowerCase().includes(name.toLowerCase()))
-      this.FilterActive = true
-      this.FilterInfo = "Filter funds by name: " + name
-
-      const { totalValue, totalProfit } = this.calculateValueAndProfit(this.SmartFunds)
-      this.userTotalValue = totalValue
-      this.userTotalProfit = totalProfit
-    }else{
-      this.SmartFunds = this.SmartFundsCurrentPage
-      this.FilterActive = false
-      this.FilterInfo = ""
-    }
-  }
-
-  searchFundByManager(address){
-    if(address !== ''){
-      this.SmartFunds = this.SmartFundsOriginal.filter(fund => fund.owner.toLowerCase().includes(address.toLowerCase()))
-      this.FilterActive = true
-      this.FilterInfo = "Filter funds by manager: " + address.slice(0,-35) + "..."
-
-      const { totalValue, totalProfit } = this.calculateValueAndProfit(this.SmartFunds)
-      this.userTotalValue = totalValue
-      this.userTotalProfit = totalProfit
-    }else{
-      this.SmartFunds = this.SmartFundsCurrentPage
-      this.FilterActive = false
-      this.FilterInfo = ""
-    }
-  }
-
-  searchFundByValue(value){
-    if(value !== 0){
-      this.SmartFunds = this.SmartFundsOriginal.filter(fund => parseFloat(fromWei(String(fund.valueInETH))) >= parseFloat(fromWei(String(value))))
-      this.FilterActive = true
-      this.FilterInfo = "Filter funds by ETH value: " + fromWei(String(value))
-
-      const { totalValue, totalProfit } = this.calculateValueAndProfit(this.SmartFunds)
-      this.userTotalValue = totalValue
-      this.userTotalProfit = totalProfit
-    }else{
-      this.SmartFunds = this.SmartFundsCurrentPage
-      this.FilterActive = false
-      this.FilterInfo = ""
-    }
-  }
-
-  searchFundByProfit(value){
-    if(value !== 0){
-      this.SmartFunds = this.SmartFundsOriginal.filter(fund => parseFloat(fromWei(String(fund.profitInETH))) >= parseFloat(fromWei(String(value))))
-      this.FilterActive = true
-      this.FilterInfo = "Filter funds by ETH profit: " + fromWei(String(value))
-
-      const { totalValue, totalProfit } = this.calculateValueAndProfit(this.SmartFunds)
-      this.userTotalValue = totalValue
-      this.userTotalProfit = totalProfit
-    }else{
-      this.SmartFunds = this.SmartFundsCurrentPage
-      this.FilterActive = false
-      this.FilterInfo = ""
-    }
-  }
-
-  searchFundByProfitPercent(percent){
-    if(percent !== 0){
-      this.SmartFunds = this.SmartFundsOriginal.filter(fund =>
-      Number(fund.profitInETH) > 0 && parseFloat(fromWei(fund.profitInETH)) >= parseFloat(fromWei(fund.profitInETH)) / 100 * parseFloat(percent))
-
-      this.FilterActive = true
-      this.FilterInfo = "Filter funds by profit percent: " + percent
-
-      const { totalValue, totalProfit } = this.calculateValueAndProfit(this.SmartFunds)
-      this.userTotalValue = totalValue
-      this.userTotalProfit = totalProfit
-    }else{
-      this.SmartFunds = this.SmartFundsCurrentPage
-      this.FilterActive = false
-      this.FilterInfo = ""
-    }
-  }
 
   myFunds(owner){
     this.SmartFunds = this.SmartFundsOriginal.filter(fund => fund.owner.toLowerCase().includes(owner.toLowerCase()))
@@ -145,10 +73,11 @@ class MOBXStorage {
   }
 
   // reset filters
-  AllFunds(owner){
+  AllFunds(){
     this.SmartFunds = this.SmartFundsCurrentPage
     this.FilterActive = false
     this.FilterInfo = ""
+    this.filterOptions = null
   }
 
   // pagination
@@ -157,6 +86,7 @@ class MOBXStorage {
     this.SmartFundsCurrentPage = _smartFunds
   }
 
+  // internal helper
   calculateValueAndProfit(SmartFunds){
     if(SmartFunds.length > 0){
       const reducer = (accumulator, currentValue) => Number(accumulator) + Number(currentValue)
@@ -187,12 +117,13 @@ decorate(MOBXStorage, {
     SmartFunds: observable,
     SmartFundsOriginal: observable,
     FilterInfo: observable,
+    FilterActive:observable,
     initSFList: action,
     initWeb3AndAccounts:action,
     paginationChange: action,
-    searchFund: action,
-    searchFundByManager:action,
-    searchFundByValue:action
+    myInvestments:action,
+    myFunds: action,
+    updateSmartFundsList:action
 })
 
 const MobXStorage = new MOBXStorage()
