@@ -232,9 +232,13 @@ class SmartFundsList extends Component{
          {
            // get total assets count
            (() => {
-           if(item && item.balance){
-             const addresses = JSON.parse(item.balance).map(i => i.address)
-             return addresses.length
+           if(item && item.balance && item.hasOwnProperty('balance')){
+             try{
+              const addresses = JSON.parse(item.balance).map(i => i.address)
+              return addresses.length
+             }catch(e){
+              return 0
+             }
            }else{
              return 0
            }
@@ -245,9 +249,13 @@ class SmartFundsList extends Component{
          {
            // get total investors count
            (() => {
-           if(item && item.shares){
-             const investors = JSON.parse(item.shares).map(i => i.user)
-             return investors.length
+           if(item && item.shares && item.hasOwnProperty('shares')){
+             try{
+               const investors = JSON.parse(item.shares).map(i => i.user)
+               return investors.length
+             }catch(e){
+               return 0
+             }
            }else{
              return 0
            }

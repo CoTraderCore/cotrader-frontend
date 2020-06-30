@@ -68,7 +68,7 @@ export const UniswapFactory = '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95'
 // // export const SmartFundRegistryADDRESS = '0x49cE1FFfcf7eeC86289583B762278BCb0653AFBb'
 //
 // // V6
-// export const SmartFundRegistryADDRESS = '0x2f211b50512324C61588f36b9d33710F70d21166'
+// export const SmartFundRegistryADDRESS = '0x2712ed661d7E7A9ba0C03929CB07545D62AC6c28'
 //
 // export const EtherscanLink = 'https://ropsten.etherscan.io/'
 // export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
