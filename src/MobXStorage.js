@@ -12,8 +12,10 @@ class MOBXStorage {
   FilterInfo = ''
   TotalValue = 0
   TotalProfit = 0
+  HistoryTotalProfit = 0
   userTotalValue = 0
   userTotalProfit = 0
+  userHistoryTotalProfit = 0
   filterOptions = null
 
   // Initializers
@@ -29,9 +31,10 @@ class MOBXStorage {
     this.SmartFundsCurrentPage = this.sortSFByValue(_newList).slice(0, initPageNumber)
     this.SmartFunds = this.sortSFByValue(_newList).slice(0, initPageNumber)
 
-    const { totalValue, totalProfit } = this.calculateValueAndProfit(this.SmartFundsOriginal)
+    const { totalValue, totalProfit, historyTotalProfit } = this.calculateValueAndProfit(this.SmartFundsOriginal)
     this.TotalValue = totalValue
     this.TotalProfit = totalProfit
+    this.HistoryTotalProfit = historyTotalProfit
   }
 
   // Update fund list with custom data
@@ -57,9 +60,10 @@ class MOBXStorage {
     this.FilterActive = true
     this.FilterInfo = "Filter funds by owner: " + owner.slice(0,-35) + "..."
 
-    const { totalValue, totalProfit } = this.calculateValueAndProfit(this.SmartFunds)
+    const { totalValue, totalProfit, historyTotalProfit } = this.calculateValueAndProfit(this.SmartFunds)
     this.userTotalValue = totalValue
     this.userTotalProfit = totalProfit
+    this.userHistoryTotalProfit = historyTotalProfit
   }
 
   myInvestments(address){
@@ -67,9 +71,10 @@ class MOBXStorage {
     this.FilterActive = true
     this.FilterInfo = "Filter funds by investor: " + address.slice(0,-35) + "..."
 
-    const { totalValue, totalProfit } = this.calculateValueAndProfit(this.SmartFunds)
+    const { totalValue, totalProfit, historyTotalProfit } = this.calculateValueAndProfit(this.SmartFunds)
     this.userTotalValue = totalValue
     this.userTotalProfit = totalProfit
+    this.userHistoryTotalProfit = historyTotalProfit
   }
 
   // reset filters
@@ -104,10 +109,21 @@ class MOBXStorage {
       })
       const totalProfit = Number(profit.reduce(reducer)).toFixed(2)
 
-      return { totalValue, totalProfit }
+      // get history profit
+      const historyProfit = SmartFunds.map((fund) => {
+        if(fund.historyProfitInUSD > 0){
+          return Number(fromWei(fund.historyProfitInUSD))
+        }else{
+          return 0
+        }
+      })
+
+      const historyTotalProfit = Number(historyProfit.reduce(reducer)).toFixed(2)
+
+      return { totalValue, totalProfit, historyTotalProfit }
     }
     else{
-      return { totalValue:0, totalProfit:0 }
+      return { totalValue:0, totalProfit:0, historyTotalProfit:0 }
     }
   }
 }

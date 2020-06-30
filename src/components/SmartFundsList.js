@@ -184,6 +184,8 @@ class SmartFundsList extends Component{
             <br/>
             <small>Total profit: ${this.props.MobXStorage.TotalProfit}</small>
             <br/>
+            <small>History total profit: ${this.props.MobXStorage.HistoryTotalProfit}</small>
+            <br/>
             </>
           ):
           (
@@ -207,6 +209,8 @@ class SmartFundsList extends Component{
             <small>Total value: ${this.props.MobXStorage.userTotalValue}</small>
             <br/>
             <small>Total profit: ${this.props.MobXStorage.userTotalProfit}</small>
+            <br/>
+            <small>History total profit: ${this.props.MobXStorage.userHistoryTotalProfit}</small>
             <br/>
             </div>
           )
