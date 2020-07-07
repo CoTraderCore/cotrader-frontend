@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Form, Button, Modal, Alert } from "react-bootstrap"
 import duration from '../../../utils/duration'
 
+
 class Deposit extends Component{
   constructor(props, context) {
     super(props, context);
@@ -41,7 +42,10 @@ class Deposit extends Component{
   }
 
   Deposit = async () => {
-  if (this.state.Days === null && typeof this.state.Days !== "number"){
+  if(this.state.Value > Number(this.props.freeReserve)){
+    alert("Sorry contract doesn't have free reserve for your input")
+  }
+  else if (this.state.Days === null && typeof this.state.Days !== "number"){
     alert("Please select percent")
   }
   else if(this.state.Value <= 0){

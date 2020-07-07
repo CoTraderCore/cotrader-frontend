@@ -18,17 +18,21 @@ class Approve extends Component{
   }
 
   Approve = async () => {
-  if(this.state.Value > 0){
-    this.setState({ Show: false })
-    this.props.tokenContract.methods.approve(this.props.spender, this.props.web3.utils.toWei(String(this.state.Value))).send(
-      {
-        from: this.props.account
-      }
-    )
-  }else{
-    alert("Please input correct value")
+    if(this.state.Value > Number(this.props.freeReserve)){
+      alert("Sorry contract doesn't have free reserve for your input")
+    }
+    else if(this.state.Value > 0){
+      this.setState({ Show: false })
+      this.props.tokenContract.methods.approve(this.props.spender, this.props.web3.utils.toWei(String(this.state.Value))).send(
+        {
+          from: this.props.account
+        }
+      )
+    }else{
+      alert("Please input correct value")
+    }
   }
-  }
+
 
   render(){
     let modalClose = () => this.setState({ Show: false });

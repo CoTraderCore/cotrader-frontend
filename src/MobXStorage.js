@@ -102,7 +102,12 @@ class MOBXStorage {
       // get profit
       const profit = SmartFunds.map((fund) => {
         if(fund.profitInUSD > 0){
-          return Number(fromWei(fund.profitInUSD))
+          try{
+            return Number(fromWei(fund.profitInUSD))
+          }catch(e){
+            console.log("Error, can't convert fund.profitInUSD error ", e)
+            return 0
+          }
         }else{
           return 0
         }
@@ -112,7 +117,12 @@ class MOBXStorage {
       // get history profit
       const historyProfit = SmartFunds.map((fund) => {
         if(fund.historyProfitInUSD > 0){
-          return Number(fromWei(fund.historyProfitInUSD))
+          try{
+            return Number(fromWei(fund.historyProfitInUSD))
+          }catch(e){
+            console.log("Error, can't convert fund.historyProfitInUSD error ", e)
+            return 0
+          }
         }else{
           return 0
         }

@@ -132,8 +132,8 @@ class Stake extends Component{
             ?
             (
               <ButtonGroup vertical={this.state.isMobileSize}>
-                <Approve web3={this.state.web3} tokenContract={this.state.tokenContract} spender={StakeAddress} account={this.state.account[0]}/>
-                <Deposit web3={this.state.web3}  stakeContract={this.state.stakeContract} account={this.state.account[0]}/>
+                <Approve freeReserve={this.state.freeReserve} web3={this.state.web3} tokenContract={this.state.tokenContract} spender={StakeAddress} account={this.state.account[0]}/>
+                <Deposit freeReserve={this.state.freeReserve} web3={this.state.web3}  stakeContract={this.state.stakeContract} account={this.state.account[0]}/>
                 <Withdraw web3={this.state.web3} stakeContract={this.state.stakeContract} account={this.state.account[0]}/>
                 <MyInfo web3={this.state.web3} stakeContract={this.state.stakeContract} account={this.state.account[0]}/>
               </ButtonGroup>
