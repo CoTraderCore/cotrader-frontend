@@ -36,10 +36,6 @@ class BuyPool extends Component {
 
   componentDidUpdate(prevProps, prevState){
     if(prevProps.fromAddress !== this.props.fromAddress || prevState.amount !== this.state.amount){
-      this.setState({
-        showInfo:false
-       })
-
       if(this.props.fromAddress && this.state.amount > 0)
          this.calculatePool()
     }
@@ -48,6 +44,7 @@ class BuyPool extends Component {
   // Calculate BNT and ERC connector by pool amount
   calculatePool = async () => {
     if(this.props.fromAddress.length > 0 && this.state.amount > 0){
+     const poolAddress = this.props.fromAddress
 
      this.setState({ isСalculate: true })
 
@@ -58,7 +55,7 @@ class BuyPool extends Component {
 
      // get connectors address
      const connectors = await poolPortal.methods.getBancorConnectorsByRelay(
-       this.props.fromAddress
+       poolAddress
      ).call()
 
      let connectorAddress
@@ -79,7 +76,7 @@ class BuyPool extends Component {
        // get connector amount needs
        connectorAmount = await poolPortal.methods.getBancorConnectorsAmountByRelayAmount(
          toWei(String(this.state.amount)),
-         this.props.fromAddress,
+         poolAddress,
          connectors[i]).call()
 
        // get connector balance
@@ -126,7 +123,7 @@ class BuyPool extends Component {
        })
      }
 
-     const relay = new web3.eth.Contract(ERC20ABI, this.props.fromAddress)
+     const relay = new web3.eth.Contract(ERC20ABI, poolAddress)
      const RelaySymbol = await this.getTokenSymbol(relay)
      const relaySupply = await relay.methods.totalSupply().call()
 
