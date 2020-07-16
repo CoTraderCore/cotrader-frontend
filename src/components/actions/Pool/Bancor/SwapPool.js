@@ -6,8 +6,7 @@ import {
   SmartFundABIV6,
   PoolPortalABI,
   PoolPortal,
-  ERC20ABI,
-  BNTEther
+  ERC20ABI
 } from '../../../../config.js'
 import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
 import { isAddress } from 'web3-utils'
@@ -15,7 +14,7 @@ import setPending from '../../../../utils/setPending'
 
 
 // Fund recognize ETH by this address
-export const ETH = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+export const ETH = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 
 class SwapPool extends Component {
   constructor(props, context) {
@@ -64,6 +63,8 @@ class SwapPool extends Component {
     amountInWei
     ).call()
 
+    console.log("this.state.toAddress", this.state.toAddress)
+
     // Convert recieve in wei
     const toTokenInfo = await this.getTokenInfo(this.state.toAddress)
     const decimalsTo = toTokenInfo.decimals
@@ -80,7 +81,7 @@ class SwapPool extends Component {
     const web3 = this.props.web3
     const token = new web3.eth.Contract(ERC20ABI, this.state.fromAddress)
     let balanceFromWei
-    if(this.state.fromAddress === BNTEther){
+    if(String(this.state.fromAddress).toLowerCase() === String(ETH).toLowerCase()){
       const balance = await web3.eth.getBalance(this.props.smartFundAddress)
       balanceFromWei = fromWeiByDecimalsInput(18, balance)
     }
@@ -103,18 +104,14 @@ class SwapPool extends Component {
       const fund = new web3.eth.Contract(fundABI, this.props.smartFundAddress)
       const block = await web3.eth.getBlockNumber()
 
-      // wrap ETH case
-      const from = this.state.fromAddress === BNTEther ? ETH : this.state.fromAddress
-      const to = this.state.toAddress === BNTEther ? ETH : this.state.toAddress
-
       // get gas price from local storage
       const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
 
       // prepare params
       const initialParams = [
-        from,
+        this.state.fromAddress,
         this.state.amountInWei,
-        to,
+        this.state.toAddress,
         1, // via Bancor portal
         [],
         "0x0000000000000000000000000000000000000000000000000000000000000000"
@@ -154,7 +151,7 @@ class SwapPool extends Component {
     let decimals
     let symbol
 
-    if(tokenAddress === BNTEther){
+    if(String(tokenAddress).toLowerCase() === String(ETH).toLowerCase()){
       decimals = 18
       symbol = 'ETH'
     }

@@ -3,7 +3,6 @@ import { Form } from "react-bootstrap"
 import {
   CoTraderBancorEndPoint,
   BNTToken,
-  BNTEther,
   BNTUSDBToken,
   NeworkID
 } from '../../../../config.js'
@@ -48,7 +47,7 @@ class BancorPool extends Component {
   findAddressBySymbol = (symbol, isFromERC20=false) =>{
     let result
     if(symbol === "ETH"){
-      result = BNTEther
+      result = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
     }
     else if(symbol === "BNT"){
       result = BNTToken
