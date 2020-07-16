@@ -14,7 +14,7 @@ import setPending from '../../../../utils/setPending'
 
 
 // Fund recognize ETH by this address
-export const ETH = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+const ETH = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 
 class SwapPool extends Component {
   constructor(props, context) {

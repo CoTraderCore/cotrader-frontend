@@ -15,6 +15,8 @@ import Pending from '../../../templates/Spiners/Pending'
 import setPending from '../../../../utils/setPending'
 import checkTokensLimit from '../../../../utils/checkTokensLimit'
 
+// Fund recognize ETH by this address
+const ETH = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 
 
 class BuyPool extends Component {
@@ -22,31 +24,21 @@ class BuyPool extends Component {
     super(props, context);
     this.state = {
       amount:0,
-      bancorAmount:0,
-      connectorAmount:0,
-      bancorAmountFromWei:0,
-      connectorAmountFromWei:0,
-      curentBalanceBNT:0,
-      currentBalanceERC:0,
-      isBNTEnough:false,
-      isERCEnough:false,
-      BNTConnectorSymbol:'',
-      ERCConnectorSymbol:'',
-      BNTConnector:'',
-      ERCConnector:'',
+      currentPoolShare:0,
+      newPoolShare:0,
       RelaySymbol:'',
       isСalculate: false,
       showInfo:false,
-      newPoolShare:0,
-      currentPoolShare:0,
-      curBancorConnectorAmount:0,
-      curErcConnectorAmount:0
+      connectorsDATA:[],
+      isEnoughTotalBalanceForBuy:false
     }
   }
 
   componentDidUpdate(prevProps, prevState){
     if(prevProps.fromAddress !== this.props.fromAddress || prevState.amount !== this.state.amount){
-      this.resetInfo()
+      this.setState({
+        showInfo:false
+       })
 
       if(this.props.fromAddress && this.state.amount > 0)
          this.calculatePool()
@@ -56,46 +48,84 @@ class BuyPool extends Component {
   // Calculate BNT and ERC connector by pool amount
   calculatePool = async () => {
     if(this.props.fromAddress.length > 0 && this.state.amount > 0){
-     this.setState({ isСalculate:true })
+
+     this.setState({ isСalculate: true })
+
      const web3 = this.props.web3
+
      // get current reserve amount for pool
      const poolPortal = new web3.eth.Contract(PoolPortalABI, PoolPortal)
 
-     // get connectors amount
-     const { bancorAmount, connectorAmount } = await poolPortal.methods.getBancorConnectorsAmountByRelayAmount(
-       toWei(String(this.state.amount)),
-       this.props.fromAddress
-     ).call()
-
      // get connectors address
-     const { BNTConnector, ERCConnector } = await poolPortal.methods.getBancorConnectorsByRelay(
+     const connectors = await poolPortal.methods.getBancorConnectorsByRelay(
        this.props.fromAddress
      ).call()
 
-     // get token contracts instance
-     const bntToken = new web3.eth.Contract(ERC20ABI, BNTConnector)
-     const ercToken = new web3.eth.Contract(ERC20ABI, ERCConnector)
+     let connectorAddress
+     let connectorAmount
+     let connectorBalance
+     let connectorAmountFromWei
+     let connectorBalanceFromWei
+     let isETHConnector = false
+     let isEnoughBalance
+     let symbol
+     let isEnoughTotalBalanceForBuy = true
 
-     // get balances
-     const bntBalance = await bntToken.methods.balanceOf(this.props.smartFundAddress).call()
-     const ercBalance = await ercToken.methods.balanceOf(this.props.smartFundAddress).call()
+     const connectorsDATA = []
 
-     // convert from wei current reserve amount
-     const bancorAmountFromWei = fromWeiByDecimalsInput(18, String(bancorAmount))
-     const ercDecimals = await ercToken.methods.decimals().call()
-     const connectorAmountFromWei = fromWeiByDecimalsInput(ercDecimals, String(connectorAmount))
+     for(let i = 0; i < connectors.length; i++){
+       connectorAddress = connectors[i]
 
-     // convert from wei curent banlance
-     const curentBalanceBNT = bntBalance > 0 ? fromWeiByDecimalsInput(18, String(bntBalance)) : 0
-     const currentBalanceERC = ercBalance > 0 ? fromWeiByDecimalsInput(ercDecimals, String(ercBalance)) : 0
+       // get connector amount needs
+       connectorAmount = await poolPortal.methods.getBancorConnectorsAmountByRelayAmount(
+         toWei(String(this.state.amount)),
+         this.props.fromAddress,
+         connectors[i]).call()
 
-     // compare balance
-     const isBNTEnough = parseFloat(curentBalanceBNT) >= parseFloat(bancorAmountFromWei) ? true : false
-     const isERCEnough = parseFloat(currentBalanceERC) >= parseFloat(connectorAmountFromWei) ? true : false
+       // get connector balance
+       // and convert data from wei
 
-     // get additional info
-     const BNTConnectorSymbol = await this.getTokenSymbol(bntToken)
-     const ERCConnectorSymbol = await this.getTokenSymbol(ercToken)
+       // ETH case
+       if(String(connectors[i]).toLowerCase() === String(ETH).toLowerCase()){
+         connectorBalance = web3.eth.getBalance(this.props.smartFundAddress)
+         connectorAmountFromWei = fromWei(connectorAmount)
+         connectorBalanceFromWei = fromWei(connectorBalance)
+         isETHConnector = true
+         symbol = "ETH"
+       }
+       // ERC20 case
+       else{
+         const tokenContract = new web3.eth.Contract(ERC20ABI, connectors[i])
+         connectorBalance = await tokenContract.methods.balanceOf(this.props.smartFundAddress).call()
+
+         connectorAmountFromWei = connectorAmount > 0
+         ? fromWeiByDecimalsInput(await tokenContract.methods.decimals().call(), connectorAmount)
+         : 0
+         connectorBalanceFromWei = connectorBalance > 0
+         ? fromWeiByDecimalsInput(await tokenContract.methods.decimals().call(), connectorBalance)
+         : 0
+
+         symbol = await this.getTokenSymbol(tokenContract)
+       }
+
+       // check if enough balance for cur connector
+       isEnoughBalance = parseFloat(connectorBalanceFromWei) >= parseFloat(connectorAmountFromWei) ? true : false
+
+       if(!isEnoughBalance)
+         isEnoughTotalBalanceForBuy = false
+
+       connectorsDATA.push({
+         connectorAddress,
+         connectorAmount,
+         connectorBalance,
+         connectorAmountFromWei,
+         connectorBalanceFromWei,
+         isETHConnector,
+         isEnoughBalance,
+         symbol
+       })
+     }
+
      const relay = new web3.eth.Contract(ERC20ABI, this.props.fromAddress)
      const RelaySymbol = await this.getTokenSymbol(relay)
      const relaySupply = await relay.methods.totalSupply().call()
@@ -105,40 +135,17 @@ class BuyPool extends Component {
      const currentPoolShare = 1 / ((parseFloat(fromWei(String(relaySupply))) / 100)
      / parseFloat(fromWei(String(curentRelayBalance))))
 
-     // get current connectors amount
-     const { bancorAmount:curBancorConnectorWei, connectorAmount: curErcConnectorAmountWei} =
-     await poolPortal.methods.getBancorConnectorsAmountByRelayAmount(
-       curentRelayBalance,
-       this.props.fromAddress
-     ).call()
-
-     // convert connectors from wei
-     const curBancorConnectorAmount = fromWei(String(curBancorConnectorWei))
-     const curErcConnectorAmount = fromWeiByDecimalsInput(ercDecimals, String(curErcConnectorAmountWei))
-
      // get new pool share
      const poolOnePercent = (parseFloat(fromWei(String(relaySupply))) + parseFloat(this.state.amount)) / 100
      const newPoolShare = 1 / (parseFloat(poolOnePercent) / parseFloat(this.state.amount))
 
      // update state
      this.setState({
-       bancorAmount,
-       connectorAmount,
-       bancorAmountFromWei,
-       connectorAmountFromWei,
-       curentBalanceBNT,
-       currentBalanceERC,
-       isBNTEnough,
-       isERCEnough,
-       BNTConnectorSymbol,
-       ERCConnectorSymbol,
-       BNTConnector,
-       ERCConnector,
-       RelaySymbol,
-       newPoolShare,
        currentPoolShare,
-       curBancorConnectorAmount,
-       curErcConnectorAmount,
+       newPoolShare,
+       RelaySymbol,
+       connectorsDATA,
+       isEnoughTotalBalanceForBuy,
        isСalculate:false,
        showInfo:true
       })
@@ -150,7 +157,7 @@ class BuyPool extends Component {
 
   // Buy Bancor Pool
   buy = async () => {
-    if(this.state.isBNTEnough && this.state.isERCEnough){
+    if(this.state.isEnoughTotalBalanceForBuy){
       const web3 = this.props.web3
       const fund = new web3.eth.Contract(SmartFundABIV4, this.props.smartFundAddress)
 
@@ -195,31 +202,6 @@ class BuyPool extends Component {
     return symbol
   }
 
-  // reset states
-  resetInfo = () => {
-    this.setState({
-      bancorAmount:0,
-      connectorAmount:0,
-      bancorAmountFromWei:0,
-      connectorAmountFromWei:0,
-      curentBalanceBNT:0,
-      currentBalanceERC:0,
-      isBNTEnough:false,
-      isERCEnough:false,
-      BNTConnectorSymbol:'',
-      ERCConnectorSymbol:'',
-      BNTConnector:'',
-      ERCConnector:'',
-      RelaySymbol:'',
-      isСalculate:false,
-      showInfo:false,
-      newPoolShare:0,
-      currentPoolShare:0,
-      curBancorConnectorAmount:0,
-      curErcConnectorAmount:0
-     })
-  }
-
   // update state only when user stop typing
   delayChange(evt) {
     if(this._timeout){ //if there is already a timeout in process cancel it
@@ -247,7 +229,7 @@ class BuyPool extends Component {
       type="number" min="1"/>
       <br/>
       {
-        this.state.isBNTEnough && this.state.isERCEnough
+        this.state.isEnoughTotalBalanceForBuy
         ?
         (
           <>
@@ -259,7 +241,15 @@ class BuyPool extends Component {
         : null
       }
       {
-        this.state.showInfo
+        this.state.isСalculate
+        ?
+        (
+          <Pending/>
+        )
+        :null
+      }
+      {
+        this.state.showInfo && this.state.connectorsDATA.length > 0
         ?
         (
           <React.Fragment>
@@ -271,25 +261,22 @@ class BuyPool extends Component {
               <th>You will stake</th>
             </tr>
           </thead>
-          <tbody>
-             <tr>
-               <td>
-               <a href={EtherscanLink + "address/" + this.state.BNTConnector} target="_blank" rel="noopener noreferrer">{this.state.BNTConnectorSymbol}</a>
-                :
-                {Number(this.state.curBancorConnectorAmount).toFixed(12)}
-               </td>
-               <td>+ {Number(this.state.bancorAmountFromWei).toFixed(12)}</td>
-             </tr>
-           </tbody>
-           <tbody>
-              <tr>
-                <td>
-                <a href={EtherscanLink + "address/" + this.state.ERCConnector} target="_blank" rel="noopener noreferrer">{this.state.ERCConnectorSymbol}</a>
-                :
-                {Number(this.state.curErcConnectorAmount).toFixed(12)}</td>
-                <td>+ {Number(this.state.connectorAmountFromWei).toFixed(12)}</td>
-              </tr>
-            </tbody>
+          {
+            this.state.connectorsDATA.map((item, key) => {
+              return(
+                <tbody key={key}>
+                <tr>
+                  <td>
+                  <a href={EtherscanLink + "address/" + item.connectorAddress} target="_blank" rel="noopener noreferrer">{item.symbol}</a>
+                   :
+                   {Number(item.connectorBalanceFromWei).toFixed(12)}
+                  </td>
+                  <td>+ {Number(item.connectorAmountFromWei).toFixed(12)}</td>
+                </tr>
+              </tbody>
+              )
+            })
+          }
           </Table>
           <Table striped bordered hover size="sm">
           <thead>
@@ -336,17 +323,26 @@ class BuyPool extends Component {
           </Table>
           </small>
           {
-            !this.state.isBNTEnough || !this.state.isERCEnough
+            !this.state.isEnoughTotalBalanceForBuy
             ?
             (
               <Alert variant="danger">
               <small>
               You don't have enough balance,
               your balance is
-              &#8194;
-              {this.state.BNTConnectorSymbol}:&#8194;{Number(this.state.curentBalanceBNT)}
-              &#8194;
-              {this.state.ERCConnectorSymbol}:&#8194;{Number(this.state.currentBalanceERC)}.
+
+              <hr/>
+              {
+                this.state.connectorsDATA.map((item, key) => {
+                  return(
+                    <p key={key}>
+                    {item.symbol}:&#8194;{Number(item.connectorBalanceFromWei)}
+                    </p>
+                  )
+                })
+              }
+              <hr/>
+
               Note: please use exchange or pool swap methods for buy necessary tokens, don't send directly to contract address
               </small>
               </Alert>
@@ -354,15 +350,6 @@ class BuyPool extends Component {
             :null
           }
           </React.Fragment>
-        )
-        :null
-      }
-
-      {
-        this.state.isСalculate
-        ?
-        (
-          <Pending/>
         )
         :null
       }
