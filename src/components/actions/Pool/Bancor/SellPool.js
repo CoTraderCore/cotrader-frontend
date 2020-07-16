@@ -3,6 +3,7 @@ import { Alert, Form, Button } from "react-bootstrap"
 
 import {
   SmartFundABIV4,
+  SmartFundABIV6,
   ERC20ABI,
   PoolPortalABI,
   PoolPortal
@@ -40,7 +41,7 @@ class SellPool extends Component {
     if(this.props.fromAddress && this.state.amount > 0){
       const web3 = this.props.web3
       const poolAddress = this.props.fromAddress
-      
+
       // get current reserve amount for pool
       const poolPortal = new web3.eth.Contract(PoolPortalABI, PoolPortal)
 
@@ -143,11 +144,29 @@ class SellPool extends Component {
         // convert amount in wei by smart token decimals
         const amountInWei = toWeiByDecimalsInput(decimals, this.state.amount)
 
+        // version 5 and 6 not support additional bytes32 array param
+        const FundABI = this.props.version === 5 || this.props.version === 6
+        ? SmartFundABIV6
+        : SmartFundABIV4
+
         // Sell
-        const fund = new web3.eth.Contract(SmartFundABIV4, this.props.smartFundAddress)
+        const fund = new web3.eth.Contract(FundABI, this.props.smartFundAddress)
         const block = await web3.eth.getBlockNumber()
 
-        fund.methods.sellPool(amountInWei, 0, this.props.fromAddress, []).send({ from:this.props.accounts[0], gasPrice })
+        const poolParams = [
+          amountInWei,
+          0,
+          this.props.fromAddress
+        ]
+
+        // add additional bytes32 array param
+        if(this.props.version !== 5 && this.props.version !== 6){
+          poolParams.push([])
+        }
+
+        console.log(poolParams)
+
+        fund.methods.sellPool(...poolParams).send({ from:this.props.accounts[0], gasPrice })
         .on('transactionHash', (hash) => {
         // pending status for spiner
         this.props.pending(true)

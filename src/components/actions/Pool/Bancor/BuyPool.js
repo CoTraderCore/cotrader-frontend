@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Form, Button, Alert, Table } from "react-bootstrap"
 
 import {
+  SmartFundABIV6,
   SmartFundABIV4,
   PoolPortalABI,
   PoolPortal,
@@ -156,7 +157,13 @@ class BuyPool extends Component {
   buy = async () => {
     if(this.state.isEnoughTotalBalanceForBuy){
       const web3 = this.props.web3
-      const fund = new web3.eth.Contract(SmartFundABIV4, this.props.smartFundAddress)
+
+      // version 5 and 6 not support additional bytes32 array param
+      const FundABI = this.props.version === 5 || this.props.version === 6
+      ? SmartFundABIV6
+      : SmartFundABIV4
+
+      const fund = new web3.eth.Contract(FundABI, this.props.smartFundAddress)
 
       // this function will throw execution with alert warning if there are limit
       await checkTokensLimit(this.props.fromAddress, fund)
@@ -165,12 +172,21 @@ class BuyPool extends Component {
       const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
 
       const block = await web3.eth.getBlockNumber()
-      // buy pool
-      fund.methods.buyPool(
+
+      const poolParams = [
         toWei(String(this.state.amount)),
         0,
-        this.props.fromAddress,
-        [])
+        this.props.fromAddress
+      ]
+
+      // add additional bytes32 array param
+      if(this.props.version !== 5 && this.props.version !== 6){
+        poolParams.push([])
+      }
+
+      // buy pool
+      fund.methods.buyPool(...poolParams)
+
       .send({ from:this.props.accounts[0], gasPrice })
       .on('transactionHash', (hash) => {
       // pending status for spiner
