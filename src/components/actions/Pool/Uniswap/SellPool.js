@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
 import {
+  SmartFundABIV4,
   SmartFundABIV6,
   UniswapFactoryABI,
   UniswapFactory,
@@ -139,10 +140,23 @@ class SellPool extends Component {
 
       // check fund balance
       if(fromWei(String(curBalance)) >= this.state.UniAmount){
+        // version 5 and 6 not support additional bytes32 array param
+        const FundABI = this.props.version === 5 || this.props.version === 6
+        ? SmartFundABIV6
+        : SmartFundABIV4
+
         // sell pool
-        const fund = new this.props.web3.eth.Contract(SmartFundABIV6, this.props.smartFundAddress)
+        const fund = new this.props.web3.eth.Contract(FundABI, this.props.smartFundAddress)
         const block = await this.props.web3.eth.getBlockNumber()
-        fund.methods.sellPool(toWei(String(this.state.UniAmount)), 1, poolExchangeAddress)
+
+        const poolParams = [toWei(String(this.state.UniAmount)), 1, poolExchangeAddress]
+
+        // add additional bytes32 array param
+        if(this.props.version !== 5 && this.props.version !== 6){
+          poolParams.push([])
+        }
+
+        fund.methods.sellPool(...poolParams)
         .send({ from: this.props.accounts[0], gasPrice })
         .on('transactionHash', (hash) => {
         // pending status for spiner
