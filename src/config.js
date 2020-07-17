@@ -68,7 +68,7 @@ export const ParaswapApi = 'https://paraswap.io/api'
 // export const SmartFundRegistryADDRESS = '0x49cE1FFfcf7eeC86289583B762278BCb0653AFBb'
 
 // V6
-export const SmartFundRegistryADDRESS = '0x97EBe9d1c81f25C3476B2873277e1ED1364ae6E7'
+export const SmartFundRegistryADDRESS = '0xe0B38Bd58AFeeD20B2F19234d7442A207D166d67'
 
 export const EtherscanLink = 'https://ropsten.etherscan.io/'
 export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
@@ -80,7 +80,7 @@ export const COTAddress = '0xab726e4664d1c28B084d77cD9be4eF18884e858d'
 export const ParaswapPriceFeedAddress = '0x5ca10df04e94ac4a68b1e86facc271a34082293c'
 export const ParaswapParamsAddress = '0x6fa269bba578d3d12e262a85feb15641a7f17ed5'
 export const CoTraderBancorEndPoint = !isLocal ? 'https://api-bancor.cotrader.com/' : 'http://localhost:9003/'
-export const PoolPortal = '0xe0B38Bd58AFeeD20B2F19234d7442A207D166d67'
+export const PoolPortal = '0xf53d170Dd36f5548a401325C74AF0D73A4044215'
 export const ExchangePortalAddress = '0x3791df7e89c688107C4bCEDa0A8eeE1ac4Cec5b3'
 export const ExchangePortalAddressV6 = '0x3791df7e89c688107C4bCEDa0A8eeE1ac4Cec5b3'
 export const BNTToken = '0xc74bE418ADf788a04dB7d23E3916f332B74A9617'
