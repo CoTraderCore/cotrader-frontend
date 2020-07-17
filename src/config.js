@@ -1,11 +1,11 @@
 // switch this to false in production
 const isLocal = true
 
-// // maximum available for trade tokens in smart fund
-// export const MAX_TOKENS = 20
-//
-// export const ParaswapApi = 'https://paraswap.io/api'
-//
+// maximum available for trade tokens in smart fund
+export const MAX_TOKENS = 20
+
+export const ParaswapApi = 'https://paraswap.io/api'
+
 // // // Mainnet
 // // V1
 // // export const SmartFundRegistryADDRESS = '0x9d1a4dac9a35861abc003acfc680bf5ae1b8ed5b'
@@ -80,9 +80,9 @@ export const COTAddress = '0xab726e4664d1c28B084d77cD9be4eF18884e858d'
 export const ParaswapPriceFeedAddress = '0x5ca10df04e94ac4a68b1e86facc271a34082293c'
 export const ParaswapParamsAddress = '0x6fa269bba578d3d12e262a85feb15641a7f17ed5'
 export const CoTraderBancorEndPoint = !isLocal ? 'https://api-bancor.cotrader.com/' : 'http://localhost:9003/'
-export const PoolPortal = '0x7c2C8B394C3E9E806A5D4f202de8e151a79401B2'
-export const ExchangePortalAddress = '0x643aFC8774034E4a36076F7Dad453FcEb6c917Cd'
-export const ExchangePortalAddressV6 = '0x643aFC8774034E4a36076F7Dad453FcEb6c917Cd'
+export const PoolPortal = '0xe0B38Bd58AFeeD20B2F19234d7442A207D166d67'
+export const ExchangePortalAddress = '0x3791df7e89c688107C4bCEDa0A8eeE1ac4Cec5b3'
+export const ExchangePortalAddressV6 = '0x3791df7e89c688107C4bCEDa0A8eeE1ac4Cec5b3'
 export const BNTToken = '0xc74bE418ADf788a04dB7d23E3916f332B74A9617'
 //export const BNTEther = '0xD368b98d03855835E2923Dc000b3f9c2EBF1b27b'
 export const BNTUSDBToken = ''
