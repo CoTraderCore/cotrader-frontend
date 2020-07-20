@@ -1,6 +1,9 @@
 import { observable, action, decorate } from 'mobx'
 import isMobile from './utils/isMobile'
-import { fromWei } from 'web3-utils'
+import { fromWei, toBN } from 'web3-utils'
+import BigNumber from 'bignumber.js'
+
+
 
 class MOBXStorage {
   web3 = null
@@ -103,7 +106,7 @@ class MOBXStorage {
       const profit = SmartFunds.map((fund) => {
         if(fund.profitInUSD > 0){
           try{
-            return Number(fromWei(fund.profitInUSD))
+            return fromWei(toBN(new BigNumber(fund.profitInUSD)))
           }catch(e){
             console.log("Error, can't convert fund.profitInUSD error ", e)
             return 0
@@ -118,7 +121,7 @@ class MOBXStorage {
       const historyProfit = SmartFunds.map((fund) => {
         if(fund.historyProfitInUSD > 0){
           try{
-            return Number(fromWei(fund.historyProfitInUSD))
+            return fromWei(toBN(new BigNumber(fund.historyProfitInUSD)))
           }catch(e){
             console.log("Error, can't convert fund.historyProfitInUSD error ", e)
             return 0
