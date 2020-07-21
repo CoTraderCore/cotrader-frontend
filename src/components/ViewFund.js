@@ -12,6 +12,7 @@ import _ from 'lodash'
 import PoolModal from './actions/Pool/PoolModal'
 import TradeModalV1 from './actions/TradeModalV1'
 import TradeModalV2 from './actions/TradeModalV2'
+import TradeModalV3 from './actions/TradeModalV3'
 import WithdrawManager from './actions/WithdrawManager'
 import WhiteList from './actions/WhiteList'
 import FakeButton from './templates/FakeButton'
@@ -299,13 +300,29 @@ class ViewFund extends Component {
                :
                (
                  <li>
-                 <TradeModalV2
-                 web3={this.props.web3}
-                 accounts={this.props.accounts}
-                 smartFundAddress={this.state.smartFundAddress}
-                 pending={this.pending}
-                 version={this.state.version}
-                 />
+                 {
+                   this.state.version < 7
+                   ?
+                   (
+                     <TradeModalV2
+                     web3={this.props.web3}
+                     accounts={this.props.accounts}
+                     smartFundAddress={this.state.smartFundAddress}
+                     pending={this.pending}
+                     version={this.state.version}
+                     />
+                   )
+                   :
+                   (
+                     <TradeModalV3
+                     web3={this.props.web3}
+                     accounts={this.props.accounts}
+                     smartFundAddress={this.state.smartFundAddress}
+                     pending={this.pending}
+                     version={this.state.version}
+                     />
+                   )
+                 }
                  </li>
                )
              }
