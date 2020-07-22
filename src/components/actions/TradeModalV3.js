@@ -9,7 +9,9 @@ import {
   ERC20ABI,
   APIEnpoint,
   ExchangePortalAddressV6,
-  ExchangePortalABIV6
+  ExchangePortalABIV6,
+  OneInch,
+  OneInchABI
 } from '../../config.js'
 
 import {
@@ -87,12 +89,8 @@ class TradeModalV3 extends Component {
       for(let i = 0; i< tokens.length; i++){
         symbols.push(tokens[i].symbol)
       }
-      if(this._isMounted){
+      if(this._isMounted)
         this.setState({ tokens, symbols })
-        if(NeworkID !== 1 && NeworkID !== 42){
-          console.log("WARNING v2 Paraswap trade avilable only for Mainnet and Kovan")
-        }
-      }
     }catch(e){
       alert("Can not get data from api, please try again latter")
       console.log(e)
@@ -217,6 +215,7 @@ class TradeModalV3 extends Component {
   // trade via 1 inch
   tradeViaOneInch = async () => {
     try{
+      const oneInchContract = new this.props.web3.eth.Contract(OneInchABI, OneInch)
       const smartFund = new this.props.web3.eth.Contract(SmartFundABIV7, this.props.smartFundAddress)
       const block = await this.props.web3.eth.getBlockNumber()
       // get cur tx count
@@ -231,12 +230,24 @@ class TradeModalV3 extends Component {
       // get gas price from local storage
       const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
 
+      // this function will throw execution with alert warning if there are limit
+      await checkTokensLimit(this.state.sendTo, smartFund)
+
+      const { distribution } = await oneInchContract.methods.getExpectedReturn(
+        this.state.sendFrom,
+        this.state.sendTo,
+        amountInWei,
+        10,
+        0
+      ).call()
+
       smartFund.methods.trade(
           this.state.sendFrom,
           amountInWei,
           this.state.sendTo,
           2,
-          [],
+          distribution,
+          ['0x000000000000000000000000000000000000000000000000000000000000000a'],
           "0x",
           minReturn
         )

@@ -37,6 +37,7 @@ export const BNTToken = '0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C'
 export const BNTEther = '0xc0829421C1d260BD3cB3E0F06cfE2D52db2cE315'
 export const BNTUSDBToken = '0xd1146B08e8104EeDBa44a73B7bda1d102c6ceDC9'
 export const UniswapFactory = '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95'
+export const OneInch = '0xC586BeF4a0992C495Cf22e1aeEE4E446CECDee0E'
 
 
 // Kovan
@@ -87,7 +88,7 @@ export const UniswapFactory = '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95'
 // //export const BNTEther = '0xD368b98d03855835E2923Dc000b3f9c2EBF1b27b'
 // export const BNTUSDBToken = ''
 // export const UniswapFactory = '0x9c83dCE8CA20E9aAF9D3efc003b2ea62aBC08351'
-
+// export const OneInch = '0xc9536F9cAe60F671f2704C6F4aC3Bf2076137337'
 
 
 export const StakeABI = [
@@ -9432,6 +9433,48 @@ export const ExchangePortalABIV6 = [
 				"type": "uint256"
 			}
 		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
+
+export const OneInchABI = [
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "fromToken",
+				"type": "address"
+			},
+			{
+				"name": "toToken",
+				"type": "address"
+			},
+			{
+				"name": "amount",
+				"type": "uint256"
+			},
+			{
+				"name": "parts",
+				"type": "uint256"
+			},
+			{
+				"name": "featureFlags",
+				"type": "uint256"
+			}
+		],
+		"name": "getExpectedReturn",
+		"outputs": [
+			{
+				"name": "returnAmount",
+				"type": "uint256"
+			},
+			{
+				"name": "distribution",
+				"type": "uint256[]"
+			}
+		],
+		"payable": false,
 		"stateMutability": "view",
 		"type": "function"
 	}

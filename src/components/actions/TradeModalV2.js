@@ -377,6 +377,9 @@ class TradeModalV2 extends Component {
       // get gas price from local storage
       const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
 
+      // this function will throw execution with alert warning if there are limit
+      await checkTokensLimit(this.state.sendTo, smartFund)
+
       smartFund.methods.trade(
           this.state.sendFrom,
           amountInWei,
