@@ -2,7 +2,7 @@ import React from 'react'
 import { Pie } from 'react-chartjs-2'
 import { fromWei, toWei } from 'web3-utils'
 import { Badge } from "react-bootstrap"
-import { IExchangePortalABI, ExchangePortalAddress, ExchangePortalAddressV6 } from '../../config.js'
+import { IExchangePortalABI, ExchangePortalAddressV6 } from '../../config.js'
 import { inject } from 'mobx-react'
 import defaultWeb3 from '../../utils/defaultWeb3'
 
@@ -111,12 +111,8 @@ class AssetsAlocationChart extends React.Component{
 	    	]
 	    }]
       }
-    })
-  }
-  }
-
-  getTokenWeiByDecimals = async () => {
-
+     })
+    }
   }
 
   RateToETH = async (from, amount) => {
@@ -125,19 +121,10 @@ class AssetsAlocationChart extends React.Component{
       return amount
     }
     else{
-      let value
-      if(this.props.version === 1){
-        const contract = new web3.eth.Contract(IExchangePortalABI, ExchangePortalAddress)
-        const src = toWei(String(amount), 'ether')
-        value = await contract.methods.getValue(from, this.state.eth_token, src).call()
-      }
-      else{
-        const contract = new web3.eth.Contract(IExchangePortalABI, ExchangePortalAddressV6)
-        const src = toWei(String(amount), 'ether')
-        value = await contract.methods.getValue(from, this.state.eth_token, src).call()
-      }
-
-      return fromWei(String(value))
+      const contract = new web3.eth.Contract(IExchangePortalABI, ExchangePortalAddressV6)
+      const src = toWei(String(amount), 'ether')
+      const value = await contract.methods.getValue(from, this.state.eth_token, src).call()
+      return value > 0 ? fromWei(String(value)) : 0
     }
   }
 
