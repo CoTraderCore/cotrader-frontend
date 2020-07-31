@@ -42,7 +42,7 @@ export const OneInch = '0xC586BeF4a0992C495Cf22e1aeEE4E446CECDee0E'
 
 // // Ropsten
 // // V4
-// // export const SmartFundRegistryADDRESS = '0x1a629611cfa27a3eaa22c34eba98255144764e57'
+// // export const SmartFundRegistryADDRESS = '0xE1d062D3BFdfF15fb878E80691ed70112251E13d'
 //
 // // V5
 // // export const SmartFundRegistryADDRESS = '0x49cE1FFfcf7eeC86289583B762278BCb0653AFBb'
