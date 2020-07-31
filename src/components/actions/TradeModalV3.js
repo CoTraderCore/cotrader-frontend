@@ -227,9 +227,6 @@ class TradeModalV3 extends Component {
 
   // trade via 1 inch
   tradeViaOneInch = async () => {
-    const { proof, positions } = getMerkleTreeData(this.state.sendTo)
-    console.log(proof, positions)
-
     try{
       const oneInchContract = new this.props.web3.eth.Contract(OneInchABI, OneInch)
       const smartFund = new this.props.web3.eth.Contract(SmartFundABIV7, this.props.smartFundAddress)
@@ -249,6 +246,10 @@ class TradeModalV3 extends Component {
       // this function will throw execution with alert warning if there are limit
       await checkTokensLimit(this.state.sendTo, smartFund)
 
+      // get merkle tree data
+      const { proof, positions } = getMerkleTreeData(this.state.sendTo)
+
+      // get 1 inch additional data
       const { distribution } = await oneInchContract.methods.getExpectedReturn(
         this.state.sendFrom,
         this.state.sendTo,
@@ -257,14 +258,18 @@ class TradeModalV3 extends Component {
         0
       ).call()
 
+      const additionalData = this.props.web3.eth.abi.encodeParameters(
+        ['uint256', 'uint256[]'],
+        [10, distribution])
+
       smartFund.methods.trade(
           this.state.sendFrom,
           amountInWei,
           this.state.sendTo,
           2,
-          distribution,
-          ['0x000000000000000000000000000000000000000000000000000000000000000a'],
-          "0x",
+          proof,
+          positions,
+          additionalData,
           minReturn
         )
         .send({ from: this.props.accounts[0], gasPrice })
