@@ -48,7 +48,7 @@ export const OneInch = '0xC586BeF4a0992C495Cf22e1aeEE4E446CECDee0E'
 // // export const SmartFundRegistryADDRESS = '0x49cE1FFfcf7eeC86289583B762278BCb0653AFBb'
 //
 // // V6
-// export const SmartFundRegistryADDRESS = '0xe0B38Bd58AFeeD20B2F19234d7442A207D166d67'
+// export const SmartFundRegistryADDRESS = '0xAc4cE01BEAD25f4dF941Ff1b17BCaAef2c32c43C'
 //
 // export const EtherscanLink = 'https://ropsten.etherscan.io/'
 // export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
@@ -6026,6 +6026,11 @@ export const SmartFundABIV7 = [
 				"internalType": "bytes32[]",
 				"name": "_additionalArgs",
 				"type": "bytes32[]"
+			},
+			{
+				"internalType": "bytes",
+				"name": "_additionData",
+				"type": "bytes"
 			}
 		],
 		"name": "buyPool",
@@ -6576,6 +6581,11 @@ export const SmartFundABIV7 = [
 				"internalType": "bytes32[]",
 				"name": "_additionalArgs",
 				"type": "bytes32[]"
+			},
+			{
+				"internalType": "bytes",
+				"name": "_additionData",
+				"type": "bytes"
 			}
 		],
 		"name": "sellPool",
@@ -6792,14 +6802,14 @@ export const SmartFundABIV7 = [
 				"type": "uint256"
 			},
 			{
-				"internalType": "uint256[]",
-				"name": "_distribution",
-				"type": "uint256[]"
+				"internalType": "bytes32[]",
+				"name": "_proof",
+				"type": "bytes32[]"
 			},
 			{
-				"internalType": "bytes32[]",
-				"name": "_additionalArgs",
-				"type": "bytes32[]"
+				"internalType": "uint256[]",
+				"name": "_positions",
+				"type": "uint256[]"
 			},
 			{
 				"internalType": "bytes",
