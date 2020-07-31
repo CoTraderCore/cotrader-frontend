@@ -40,27 +40,6 @@ export const UniswapFactory = '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95'
 export const OneInch = '0xC586BeF4a0992C495Cf22e1aeEE4E446CECDee0E'
 
 
-// Kovan
-
-// export const SmartFundRegistryADDRESS = '0x090ba16ae386ca797c529620689203b27567f1a3'
-// export const EtherscanLink = 'https://kovan.etherscan.io/'
-// export const KyberAddress = '0x692f391bCc85cefCe8C237C01e1f636BbD70EA4D'
-// export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'
-// export const BloxyLink = 'https://bloxy.info/portfolios/'
-// export const NeworkID = 42
-// export const StakeAddress = '0x67bb720dfbcf6ee890ad6aa45e7c3e402bf2dc90'
-// export const COTAddress = '0xab726e4664d1c28B084d77cD9be4eF18884e858d'
-// export const ParaswapPriceFeedAddress = '0xe7B08b5ce1594653d7Bc8457c42FaE1385160823'
-// export const ParaswapParamsAddress = '0x128f2abe35a46e78e433d6facc300fa6a8e2e731'
-// export const ExchangePortalAddress = ''
-// export const PoolPortal = ''
-// export const ExchangePortal = ''
-// export const BNTToken = ''
-// export const BNTEther = ''
-// export const BNTUSDBToken = ''
-// export const UniswapFactory = ''
-
-
 // // Ropsten
 // // V4
 // // export const SmartFundRegistryADDRESS = '0x1a629611cfa27a3eaa22c34eba98255144764e57'

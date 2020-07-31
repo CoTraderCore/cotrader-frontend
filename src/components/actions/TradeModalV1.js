@@ -4,7 +4,7 @@ import { SmartFundABI, KyberInterfaceABI, KyberAddress, ERC20ABI, APIEnpoint } f
 import { Button, Modal, Form, Alert, InputGroup } from "react-bootstrap"
 import setPending from '../../utils/setPending'
 import axios from 'axios'
-import { tokens } from '../../tokens/'
+import { tokens } from '../../storage/tokens/'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../utils/weiByDecimals'
 import checkTokensLimit from '../../utils/checkTokensLimit'

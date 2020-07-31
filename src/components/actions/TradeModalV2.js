@@ -209,11 +209,11 @@ class TradeModalV2 extends Component {
   getDirectionInfo = () => {
     const From = this.state.tokens.filter(item => item.symbol === this.state.Send)
     const decimalsFrom = From[0].decimals
-    const sendFrom = From[0].addresses[NeworkID]
+    const sendFrom = From[0].address
 
     const To = this.state.tokens.filter(item => item.symbol === this.state.Recive)
     const decimalsTo = To[0].decimals
-    const sendTo = To[0].addresses[NeworkID]
+    const sendTo = To[0].address
 
     return { sendFrom, sendTo, decimalsFrom, decimalsTo }
   }

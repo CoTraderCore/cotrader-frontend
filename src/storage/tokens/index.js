@@ -1,4 +1,4 @@
-import { NeworkID } from '../config.js'
+import { NeworkID } from '../../config.js'
 import * as mainnetTokens from './mainnet'
 import * as rosptenTokens from './ropsten'
 

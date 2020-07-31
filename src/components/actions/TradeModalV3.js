@@ -1,4 +1,5 @@
 // this trade modal work only with 1 inch with lovest price by pass additional params offchain
+// also this modal work with merkle tree tokens white list
 // support only for versions >= 7
 
 import React, { Component } from 'react'
@@ -27,6 +28,7 @@ import {
 
 import SetGasPrice from '../settings/SetGasPrice'
 import setPending from '../../utils/setPending'
+import getMerkleTreeData from '../../utils/getMerkleTreeData'
 import axios from 'axios'
 import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../utils/weiByDecimals'
 import checkTokensLimit from '../../utils/checkTokensLimit'
@@ -81,19 +83,30 @@ class TradeModalV3 extends Component {
 
   // get tokens addresses and symbols from paraswap api
   initData = async () => {
-    // get tokens
-    try{
-      let tokens = await axios.get(ParaswapApi + '/tokens')
-      tokens = tokens.data.tokens
-      let symbols = []
-      for(let i = 0; i< tokens.length; i++){
-        symbols.push(tokens[i].symbol)
+    if(NeworkID === 1){
+      // get tokens from api
+      try{
+        let tokens = await axios.get(ParaswapApi + '/tokens')
+        tokens = tokens.data.tokens
+        let symbols = []
+        for(let i = 0; i< tokens.length; i++){
+          symbols.push(tokens[i].symbol)
+        }
+        if(this._isMounted)
+          this.setState({ tokens, symbols })
+      }catch(e){
+        alert("Can not get data from api, please try again latter")
+        console.log(e)
       }
-      if(this._isMounted)
-        this.setState({ tokens, symbols })
-    }catch(e){
-      alert("Can not get data from api, please try again latter")
-      console.log(e)
+    }else{
+      // provide just test few Ropsten tokens
+      const tokens = [
+        {symbol:"NAP", address:"0x2f5Cc2E9353feB3cBe32d3ab1DED9e469fAD88C4", decimals:18},
+        {symbol:"ETH", address:"0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", decimals:18}
+      ]
+
+      const symbols = ["NAP", "ETH"]
+      this.setState({ tokens, symbols })
     }
   }
 
@@ -202,11 +215,11 @@ class TradeModalV3 extends Component {
   getDirectionInfo = () => {
     const From = this.state.tokens.filter(item => item.symbol === this.state.Send)
     const decimalsFrom = From[0].decimals
-    const sendFrom = From[0].addresses[NeworkID]
+    const sendFrom = From[0].address
 
     const To = this.state.tokens.filter(item => item.symbol === this.state.Recive)
     const decimalsTo = To[0].decimals
-    const sendTo = To[0].addresses[NeworkID]
+    const sendTo = To[0].address
 
     return { sendFrom, sendTo, decimalsFrom, decimalsTo }
   }
@@ -214,6 +227,9 @@ class TradeModalV3 extends Component {
 
   // trade via 1 inch
   tradeViaOneInch = async () => {
+    const { proof, positions } = getMerkleTreeData(this.state.sendTo)
+    console.log(proof, positions)
+
     try{
       const oneInchContract = new this.props.web3.eth.Contract(OneInchABI, OneInch)
       const smartFund = new this.props.web3.eth.Contract(SmartFundABIV7, this.props.smartFundAddress)
