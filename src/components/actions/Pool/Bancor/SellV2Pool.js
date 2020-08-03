@@ -1,3 +1,5 @@
+//  BancorFormula.liquidateReserveAmount for get minReturn 
+
 import React, { PureComponent } from 'react'
 
 class SellV2Pool extends PureComponent {

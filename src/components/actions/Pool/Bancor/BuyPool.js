@@ -1,3 +1,5 @@
+// Buy by pool amount
+
 import React, { Component } from 'react'
 import { Form, Button, Alert, Table } from "react-bootstrap"
 
