@@ -1,13 +1,7 @@
 import React, { Component } from 'react'
 import { Form } from "react-bootstrap"
-import {
-  CoTraderBancorEndPoint,
-  BNTToken,
-  BNTUSDBToken,
-  NeworkID
-} from '../../../../config.js'
+import { CoTraderBancorEndPoint } from '../../../../config.js'
 import axios from 'axios'
-
 import { Typeahead } from 'react-bootstrap-typeahead'
 
 import BuyPool from './BuyPool'
@@ -15,8 +9,8 @@ import BuyV2Pool from './BuyV2Pool'
 import SellPool from './SellPool'
 import SellV2Pool from './SellV2Pool'
 
-
-
+// Select v1 or v2 dependse of smart fund and converter versions
+// Note smart funds version < 7 not support Bancor v2 
 const getComponentList = (isV2) => {
   return {
     Buy: isV2 ? BuyV2Pool : BuyPool,
@@ -48,65 +42,45 @@ class BancorPool extends Component {
     this._isMounted = false
   }
 
-  // Find ERC20 or Relay address by symbol
-  findAddressBySymbol = (symbol, isFromERC20=false) => {
-    let result
-    if(symbol === "ETH"){
-      result = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-    }
-    else if(symbol === "BNT"){
-      result = BNTToken
-    }
-    else if(symbol === "USDB"){
-      result = BNTUSDBToken
-    }
-    else{
-      // Parse tokens object
-      const column = isFromERC20 ? 'symbol' : 'smartTokenSymbol'
-      const property = isFromERC20 ? 'tokenAddress' : 'smartTokenAddress'
-      const res = this.state.tokensObject.filter(item => item[column] === symbol)
+  // Find Bancor relay address by symbol
+  findAddressBySymbol = (symbol) => {
+    let address
+    const res = this.state.tokensObject.filter(item => item['smartTokenSymbol'] === symbol)
 
-      if(res && res.length > 0 && res[0].hasOwnProperty(property)){
-        result = res[0][property]
-      }else{
-        result = null
-      }
+    if(res && res.length > 0 && res[0].hasOwnProperty('smartTokenAddress')){
+      address = res[0].smartTokenAddress
+    }else{
+      address = null
     }
-
-    return result
+    return address
   }
 
+  // Get Bancor converter version by relay address
   getConverterVersion = (address) => {
     const tokenData = this.state.tokensObject.filter(item => item['smartTokenAddress'] === address)
     console.log(tokenData, tokenData[0].converterVersion)
     return Number(tokenData[0].converterVersion)
   }
 
+  // Update states by symbol select
   updateDataBySymbolSelect = (symbol) => {
     const fromAddress = this.findAddressBySymbol(symbol)
     const coneverterVersion = this.getConverterVersion(fromAddress)
-    const isV2 = coneverterVersion >= 28 ? true : false
-    console.log(fromAddress, coneverterVersion,  isV2)
 
+    // true if smartfund version > 6 and converter >= 28
+    const isV2 = this.props.version > 6 && coneverterVersion >= 28 ? true : false
     this.setState({ fromAddress, isV2 })
   }
 
+  // init data from cotrader bancor api
   initData = async () => {
     const res = await axios.get(CoTraderBancorEndPoint + 'official')
     const tokensObject = res.data.result
     const symbols = res.data.result.map(item => item.symbol)
-
-    // PUSH ETH and BNT for Ropsten case, because Ropsten API don't have
-    if(NeworkID === 3){
-      symbols.push('ETH')
-      symbols.push('BNT')
-    }else{
-      symbols.push('USDB')
-    }
-
     const smartTokenSymbols = res.data.result.map(item => item.smartTokenSymbol)
+
     if(this._isMounted)
-    this.setState({ tokensObject, symbols, smartTokenSymbols })
+      this.setState({ tokensObject, symbols, smartTokenSymbols })
   }
 
 
