@@ -11,13 +11,17 @@ import axios from 'axios'
 import { Typeahead } from 'react-bootstrap-typeahead'
 
 import BuyPool from './BuyPool'
+import BuyV2Pool from './BuyV2Pool'
 import SellPool from './SellPool'
-import SwapPool from './SwapPool'
+import SellV2Pool from './SellV2Pool'
 
-const componentList = {
-  Buy: BuyPool,
-  Sell: SellPool,
-  Swap: SwapPool
+
+
+const getComponentList = (isV2) => {
+  return {
+    Buy: isV2 ? BuyV2Pool : BuyPool,
+    Sell: isV2 ? SellV2Pool : SellPool,
+  }
 }
 
 class BancorPool extends Component {
@@ -28,7 +32,8 @@ class BancorPool extends Component {
       smartTokenSymbols: [],
       tokensObject: null,
       action: 'Buy',
-      fromAddress:''
+      fromAddress:'',
+      isV2:false
     }
   }
 
@@ -44,7 +49,7 @@ class BancorPool extends Component {
   }
 
   // Find ERC20 or Relay address by symbol
-  findAddressBySymbol = (symbol, isFromERC20=false) =>{
+  findAddressBySymbol = (symbol, isFromERC20=false) => {
     let result
     if(symbol === "ETH"){
       result = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
@@ -71,6 +76,21 @@ class BancorPool extends Component {
     return result
   }
 
+  getConverterVersion = (address) => {
+    const tokenData = this.state.tokensObject.filter(item => item['smartTokenAddress'] === address)
+    console.log(tokenData, tokenData[0].converterVersion)
+    return Number(tokenData[0].converterVersion)
+  }
+
+  updateDataBySymbolSelect = (symbol) => {
+    const fromAddress = this.findAddressBySymbol(symbol)
+    const coneverterVersion = this.getConverterVersion(fromAddress)
+    const isV2 = coneverterVersion >= 28 ? true : false
+    console.log(fromAddress, coneverterVersion,  isV2)
+
+    this.setState({ fromAddress, isV2 })
+  }
+
   initData = async () => {
     const res = await axios.get(CoTraderBancorEndPoint + 'official')
     const tokensObject = res.data.result
@@ -93,6 +113,8 @@ class BancorPool extends Component {
   render() {
     // Change component (Buy/Sell/Swap) dynamicly
     let CurrentAction
+    const componentList = getComponentList(this.state.isV2)
+
     if(this.state.action in componentList){
       CurrentAction = componentList[this.state.action]
     }else{
@@ -113,7 +135,6 @@ class BancorPool extends Component {
             {/* NOTE: render of actions components dependse of this actions*/}
             <option>Buy</option>
             <option>Sell</option>
-            <option>Swap</option>
             </Form.Control>
             </Form.Group>
            </Form>
@@ -126,11 +147,11 @@ class BancorPool extends Component {
               (
                 <React.Fragment>
                 <Typeahead
-                   labelKey="smartTokenSymbols"
+                   labelKey="symbols"
                    multiple={false}
-                   id="smartTokenSymbols"
+                   id="symbols"
                    options={this.state.smartTokenSymbols}
-                   onChange={(s) => this.setState({fromAddress: this.findAddressBySymbol(s[0])})}
+                   onChange={(s) => { if(s[0]) this.updateDataBySymbolSelect(s[0]) } }
                    placeholder="Choose a symbol"
                  />
                  <br/>
