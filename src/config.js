@@ -19,8 +19,8 @@ export const ParaswapApi = 'https://paraswap.io/api'
 // export const SmartFundRegistryADDRESS = '0xD990B951F791f58E7548088f9C1D995cA1A39153'
 // V6
 export const SmartFundRegistryADDRESS = '0xd81736Eb54D4FbCDF8779E0b488dd1a5f12F2f17'
-
 export const PoolPortal = '0x3f49fEddB3c63E36552679BC972857312dC8b4b7'
+export const PoolPortalV6 = '0xd63495461cA711d59e480AC5c3827B7f7C334Fb3'
 export const ExchangePortalAddressV6 = '0xa145eCA55AE0E39D7c228ed7A962424a97AC74cB'
 export const EtherscanLink = 'https://etherscan.io/'
 export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
@@ -41,10 +41,7 @@ export const OneInch = '0xC586BeF4a0992C495Cf22e1aeEE4E446CECDee0E'
 
 
 // // Ropsten
-//
-// // V6
 // export const SmartFundRegistryADDRESS = '0xE1d062D3BFdfF15fb878E80691ed70112251E13d'
-//
 // export const EtherscanLink = 'https://ropsten.etherscan.io/'
 // export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
 // export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'
@@ -56,6 +53,7 @@ export const OneInch = '0xC586BeF4a0992C495Cf22e1aeEE4E446CECDee0E'
 // export const ParaswapParamsAddress = '0x6fa269bba578d3d12e262a85feb15641a7f17ed5'
 // export const CoTraderBancorEndPoint = !isLocal ? 'https://api-bancor.cotrader.com/' : 'http://localhost:9003/'
 // export const PoolPortal = '0xf53d170Dd36f5548a401325C74AF0D73A4044215'
+// export const PoolPortalV6 = '0x96A8f7FCEd4D0CBb2140FC25Bc32b7d7F462AE0a'
 // export const ExchangePortalAddress = '0x3791df7e89c688107C4bCEDa0A8eeE1ac4Cec5b3'
 // export const ExchangePortalAddressV6 = '0xC719f103c5d295d4e7659d1cad67C8f4dbd8E2e6'
 // export const BNTToken = '0xc74bE418ADf788a04dB7d23E3916f332B74A9617'
@@ -9621,6 +9619,488 @@ export const BancorFormulaABI = [
 			}
 		],
 		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
+
+export const PoolPortalABIV7 = [
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_bancorData",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_uniswapFactory",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_tokensTypes",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "poolToken",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "trader",
+				"type": "address"
+			}
+		],
+		"name": "BuyPool",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "previousOwner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "OwnershipTransferred",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "poolToken",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "trader",
+				"type": "address"
+			}
+		],
+		"name": "SellPool",
+		"type": "event"
+	},
+	{
+		"stateMutability": "payable",
+		"type": "fallback"
+	},
+	{
+		"inputs": [],
+		"name": "bancorData",
+		"outputs": [
+			{
+				"internalType": "contract IGetBancorData",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_type",
+				"type": "uint256"
+			},
+			{
+				"internalType": "contract IERC20",
+				"name": "_poolToken",
+				"type": "address"
+			},
+			{
+				"internalType": "bytes32[]",
+				"name": "_additionalArgs",
+				"type": "bytes32[]"
+			},
+			{
+				"internalType": "bytes",
+				"name": "_additionalData",
+				"type": "bytes"
+			}
+		],
+		"name": "buyPool",
+		"outputs": [
+			{
+				"internalType": "address[]",
+				"name": "connectorsAddress",
+				"type": "address[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "connectorsAmount",
+				"type": "uint256[]"
+			},
+			{
+				"internalType": "uint256",
+				"name": "poolAmountReceive",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_relay",
+				"type": "address"
+			}
+		],
+		"name": "getBacorConverterAddressByRelay",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "converter",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "contract IERC20",
+				"name": "_relay",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_connector",
+				"type": "address"
+			}
+		],
+		"name": "getBancorConnectorsAmountByRelayAmount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "connectorAmount",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_relay",
+				"type": "address"
+			}
+		],
+		"name": "getBancorConnectorsByRelay",
+		"outputs": [
+			{
+				"internalType": "address[]",
+				"name": "connectorsAddress",
+				"type": "address[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_from",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			}
+		],
+		"name": "getBancorRatio",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "contract IERC20",
+				"name": "_poolToken",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_type",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			}
+		],
+		"name": "getDataForBuyingPool",
+		"outputs": [
+			{
+				"internalType": "address[]",
+				"name": "connectorsAddress",
+				"type": "address[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "connectorsAmount",
+				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_exchange",
+				"type": "address"
+			}
+		],
+		"name": "getTokenByUniswapExchange",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "_exchange",
+				"type": "address"
+			}
+		],
+		"name": "getUniswapConnectorsAmountByPoolAmount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "ethAmount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "ercAmount",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_token",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			}
+		],
+		"name": "getUniswapTokenAmountByETH",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "renounceOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_type",
+				"type": "uint256"
+			},
+			{
+				"internalType": "contract IERC20",
+				"name": "_poolToken",
+				"type": "address"
+			},
+			{
+				"internalType": "bytes32[]",
+				"name": "_additionalArgs",
+				"type": "bytes32[]"
+			},
+			{
+				"internalType": "bytes",
+				"name": "_additionalData",
+				"type": "bytes"
+			}
+		],
+		"name": "sellPool",
+		"outputs": [
+			{
+				"internalType": "address[]",
+				"name": "connectorsAddress",
+				"type": "address[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "connectorsAmount",
+				"type": "uint256[]"
+			},
+			{
+				"internalType": "uint256",
+				"name": "poolAmountSent",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_bancorData",
+				"type": "address"
+			}
+		],
+		"name": "senNewGetBancorData",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "tokensTypes",
+		"outputs": [
+			{
+				"internalType": "contract ITokensTypeStorage",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "uniswapFactory",
+		"outputs": [
+			{
+				"internalType": "contract UniswapFactoryInterface",
+				"name": "",
+				"type": "address"
+			}
+		],
 		"stateMutability": "view",
 		"type": "function"
 	}
