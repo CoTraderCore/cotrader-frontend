@@ -10,7 +10,7 @@ import SellPool from './SellPool'
 import SellV2Pool from './SellV2Pool'
 
 // Select v1 or v2 dependse of smart fund and converter versions
-// Note smart funds version < 7 not support Bancor v2 
+// Note smart funds version < 7 not support Bancor v2
 const getComponentList = (isV2) => {
   return {
     Buy: isV2 ? BuyV2Pool : BuyPool,
@@ -142,6 +142,7 @@ class BancorPool extends Component {
               :
               (
                 <CurrentAction
+                  tokensObject={this.state.tokensObject}
                   smartTokenSymbols={this.state.smartTokenSymbols}
                   symbols={this.state.symbols}
                   findAddressBySymbol={this.findAddressBySymbol}
