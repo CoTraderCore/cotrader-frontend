@@ -27,6 +27,7 @@ class BancorPool extends Component {
       tokensObject: null,
       action: 'Buy',
       fromAddress:'',
+      converterAddress:'',
       isV2:false
     }
   }
@@ -55,21 +56,18 @@ class BancorPool extends Component {
     return address
   }
 
-  // Get Bancor converter version by relay address
-  getConverterVersion = (address) => {
-    const tokenData = this.state.tokensObject.filter(item => item['smartTokenAddress'] === address)
-    console.log(tokenData, tokenData[0].converterVersion)
-    return Number(tokenData[0].converterVersion)
-  }
 
   // Update states by symbol select
   updateDataBySymbolSelect = (symbol) => {
     const fromAddress = this.findAddressBySymbol(symbol)
-    const coneverterVersion = this.getConverterVersion(fromAddress)
+    const tokenData = this.state.tokensObject.filter(item => item['smartTokenAddress'] === fromAddress)
+    const converterVersion = Number(tokenData[0].converterVersion)
+    const converterAddress = tokenData[0].converterAddress
 
     // true if smartfund version > 6 and converter >= 28
-    const isV2 = this.props.version > 6 && coneverterVersion >= 28 ? true : false
-    this.setState({ fromAddress, isV2 })
+    const isV2 = this.props.version > 6 && converterVersion >= 28 ? true : false
+
+    this.setState({ fromAddress, isV2, converterAddress })
   }
 
   // init data from cotrader bancor api
@@ -131,6 +129,7 @@ class BancorPool extends Component {
                  <br/>
                  <CurrentAction
                    fromAddress={this.state.fromAddress}
+                   converterAddress={this.state.converterAddress}
                    web3={this.props.web3}
                    accounts={this.props.accounts}
                    smartFundAddress={this.props.smartFundAddress}
@@ -142,7 +141,7 @@ class BancorPool extends Component {
               :
               (
                 <CurrentAction
-                  tokensObject={this.state.tokensObject}
+                  tokenData={this.state.tokensObject}
                   smartTokenSymbols={this.state.smartTokenSymbols}
                   symbols={this.state.symbols}
                   findAddressBySymbol={this.findAddressBySymbol}
