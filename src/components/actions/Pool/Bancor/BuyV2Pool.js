@@ -32,6 +32,7 @@ class BuyV2Pool extends PureComponent {
       this.updateConnectorsData()
   }
 
+  // get connectors by converter address
   updateConnectorsData = async () => {
     if(this.props.converterAddress){
       this.setState({ showSpinner:true })
@@ -42,29 +43,43 @@ class BuyV2Pool extends PureComponent {
 
       for(let i = 0; i < connectorsCount; i++){
         const address = await converter.methods.connectorTokens(i).call()
-        const symbol = await this.getTokenSymbol(address)
-        connectors.push({ symbol, address })
+        const { symbol, decimals } = await this.getTokenSymbolAndDecimals(address)
+        connectors.push({ symbol, address, amount:0, decimals })
       }
 
       this.setState({ connectors, showSpinner:false })
     }
   }
 
-  getTokenSymbol = async (address) => {
+  // find a certain connector by symbol and update amount
+  updateConnectorAmount = (symbol, amount) => {
+    const searchObj = this.state.connectors.filter((item) => {
+    return item.symbol === symbol
+    })
+    // TODO: convert  to wei by decimals
+    searchObj[0].amount = amount
+    console.log(this.state.connectors)
+  }
+
+  getTokenSymbolAndDecimals = async (address) => {
     // ETH case
     if(String(address).toLowerCase() === String('0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE').toLowerCase()){
-      return 'ETH'
+      return { symbol: 'ETH', decimals: 18}
     }
     else{
       // ERC20 String return case
       try{
         const token = new this.props.web3.eth.Contract(ERC20ABI, address)
-        return await token.methods.symbol().call()
+        const symbol = await token.methods.symbol().call()
+        const decimals = await token.methods.decimals().call()
+        return { symbol, decimals }
       }
       // EC20 Bytes32 return case
       catch(e){
         const token = new this.props.web3.eth.Contract(ERC20Bytes32ABI, address)
-        return await this.props.web3.utils.toUtf8(token.methods.symbol().call())
+        const symbol = await this.props.web3.utils.toUtf8(token.methods.symbol().call())
+        const decimals = await token.methods.decimals().call()
+        return { symbol, decimals }
       }
     }
   }
@@ -77,8 +92,6 @@ class BuyV2Pool extends PureComponent {
       {
         this.state.showSpinner ? (<>Updating ...</>) : null
       }
-
-
       {
         this.state.connectors && this.state.connectors.length > 0
         ?
@@ -90,7 +103,11 @@ class BuyV2Pool extends PureComponent {
               return(
                 <Form.Group key={index}>
                  <Form.Label>Enter amount of { item.symbol }</Form.Label>
-                 <Form.Control type="number" />
+                 <Form.Control
+                 name={item.symbol}
+                 type="number"
+                 min="1"
+                 onChange={(e) => this.updateConnectorAmount(e.target.name, e.target.value)}/>
                </Form.Group>
               )
             })
