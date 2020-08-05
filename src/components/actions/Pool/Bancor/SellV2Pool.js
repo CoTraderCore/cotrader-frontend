@@ -89,11 +89,13 @@ class SellV2Pool extends PureComponent {
   // TODO
   getConnectorsMinReturn = async (connectors) => {
     //  BancorFormula.liquidateReserveAmount for get minReturn
-    const GetBancorData = new this.props.web3.eth.Contract()
-    const BancorFormulaAddress = ''
+    const GetBancorData = new this.props.web3.eth.Contract(GetBancorDataABI, GetBancorData)
+    const BancorFormulaAddress = await GetBancorData.methods.getBancorContractAddresByName(
+      "BancorFormula"
+    ).call()
+    const BancorFormula = new this.props.web3.eth.Contract(BancorFormulaABI, BancorFormulaAddress)
   }
 
-  // TODO
   getFundBalance = async (poolTokenAddress) => {
     const poolToken = new this.props.web3.eth.Contract(ERC20ABI, poolTokenAddress)
     return fromWei(String(await poolToken.methods.balanceOf(this.props.smartFundAddress).call()))
