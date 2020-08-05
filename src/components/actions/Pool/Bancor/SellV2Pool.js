@@ -6,51 +6,69 @@ import {
   BancorConverterABI,
   BancorFormulaABI,
   GetBancorDataABI,
-  GetBancorData
+  GetBancorData,
+  ERC20ABI
 } from '../../../../config.js'
-
+import { toWei, fromWei } from 'web3-utils'
 
 class SellV2Pool extends PureComponent {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      poolAmount:0
+      poolAmount:0,
+      ErrorText:''
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    if(prevProps.fromAddress !== this.props.fromAddress || prevState.poolAmount !== this.state.poolAmount){
+      this.setState({ ErrorText:''})
     }
   }
 
   removeLiqudity = async () => {
-    const connectorsAddress = await this.getConnectors(this.props.converterAddress)
-    const reserveMinReturnAmounts = Array(connectorsAddress.length).fill([1]) // for test
-    const smartFund = new this.props.web3.eth.Contract(SmartFundABIV7, this.props.smartFundAddress)
+    if(this.state.poolAmount > 0){
+      const poolAmountFromWei = await this.getFundBalance(this.props.fromAddress)
+      if(poolAmountFromWei >= this.state.poolAmount){
+        const connectorsAddress = await this.getConnectors(this.props.converterAddress)
+        const reserveMinReturnAmounts = Array(connectorsAddress.length).fill([1]) // for test
+        const smartFund = new this.props.web3.eth.Contract(SmartFundABIV7, this.props.smartFundAddress)
 
-    // get gas price from local storage
-    const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
-    const block = await this.props.web3.eth.getBlockNumber()
+        // get gas price from local storage
+        const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
+        const block = await this.props.web3.eth.getBlockNumber()
 
-    // encode additional data in bytes
-    const data = this.props.web3.eth.abi.encodeParameters(
-      ['address[]', 'uint256[]'],
-      [connectorsAddress, reserveMinReturnAmounts]
-    )
+        // encode additional data in bytes
+        const data = this.props.web3.eth.abi.encodeParameters(
+          ['address[]', 'uint256[]'],
+          [connectorsAddress, reserveMinReturnAmounts]
+        )
 
-    // sell pool
-    smartFund.methods.sellPool(
-      this.state.poolAmount,
-      0, // type Bancor
-      this.props.fromAddress, // pool address
-      ['0x000000000000000000000000000000000000000000000000000000000000001c'], // TODO convert converter version to bytes32
-      data
-    )
-    .send({ from:this.props.accounts[0], gasPrice })
-    .on('transactionHash', (hash) => {
-    // pending status for spiner
-    this.props.pending(true)
-    // pending status for DB
-    setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
-    })
+        // sell pool
+        smartFund.methods.sellPool(
+          toWei(String(this.state.poolAmount)),
+          0, // type Bancor
+          this.props.fromAddress, // pool address
+          ['0x000000000000000000000000000000000000000000000000000000000000001c'], // TODO convert converter version to bytes32
+          data
+        )
+        .send({ from:this.props.accounts[0], gasPrice })
+        .on('transactionHash', (hash) => {
+        // pending status for spiner
+        this.props.pending(true)
+        // pending status for DB
+        setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+        })
 
-    // close pool modal
-    this.props.modalClose()
+        // close pool modal
+        this.props.modalClose()
+      }
+      else{
+        this.setState({ ErrorText: "Not enough balance in your fund" })
+      }
+    }else{
+      this.setState({ ErrorText: "Not correct pool amount" })
+    }
   }
 
   getConnectors = async (converterAddress) => {
@@ -75,9 +93,44 @@ class SellV2Pool extends PureComponent {
     const BancorFormulaAddress = ''
   }
 
+  // TODO
+  getFundBalance = async (poolTokenAddress) => {
+    const poolToken = new this.props.web3.eth.Contract(ERC20ABI, poolTokenAddress)
+    return fromWei(String(await poolToken.methods.balanceOf(this.props.smartFundAddress).call()))
+  }
+
+  setMaxSell = async () => {
+    const poolAmountFromWei = await this.getFundBalance(this.props.fromAddress)
+    this.setState({ poolAmount:poolAmountFromWei })
+
+    if(Number(poolAmountFromWei) === 0)
+      this.setState({
+         ErrorText:"Your balance is empty"
+      })
+  }
+
   render() {
     return (
-      <div>SellV2Pool test</div>
+      <Form>
+      <Form.Group>
+       <Form.Label><small>Enter amount to sell</small> &nbsp;</Form.Label>
+       <Button variant="outline-secondary" size="sm" onClick={() => this.setMaxSell()}>max</Button>
+       <Form.Control
+       value={this.state.poolAmount}
+       type="number"
+       min="1"
+       onChange={(e) => this.setState({ poolAmount:e.target.value })}/>
+     </Form.Group>
+     {
+       this.state.ErrorText.length > 0
+       ?
+       (
+         <Alert variant="danger">{ this.state.ErrorText }</Alert>
+       )
+       :null
+     }
+     <Button variant="outline-primary" onClick={() => this.removeLiqudity()}>Sell</Button>
+      </Form>
     )
   }
 
