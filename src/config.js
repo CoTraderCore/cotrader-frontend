@@ -38,6 +38,7 @@ export const ParaswapApi = 'https://paraswap.io/api'
 // export const BNTUSDBToken = '0xd1146B08e8104EeDBa44a73B7bda1d102c6ceDC9'
 // export const UniswapFactory = '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95'
 // export const OneInch = '0xC586BeF4a0992C495Cf22e1aeEE4E446CECDee0E'
+// export const GetBancorData
 
 
 // Ropsten
@@ -61,6 +62,7 @@ export const BNTToken = '0xc74bE418ADf788a04dB7d23E3916f332B74A9617'
 export const BNTUSDBToken = ''
 export const UniswapFactory = '0x9c83dCE8CA20E9aAF9D3efc003b2ea62aBC08351'
 export const OneInch = '0xc9536F9cAe60F671f2704C6F4aC3Bf2076137337'
+export const GetBancorData = '0x9D4249D4398b0E7c6459277B58fb470490DE8a0e'
 
 
 export const StakeABI = [
@@ -6253,6 +6255,16 @@ export const SmartFundABIV7 = [
 				"type": "address"
 			},
 			{
+				"internalType": "address[]",
+				"name": "_connectorsAddress",
+				"type": "address[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "_connectorsAmount",
+				"type": "uint256[]"
+			},
+			{
 				"internalType": "bytes32[]",
 				"name": "_additionalArgs",
 				"type": "bytes32[]"
@@ -11276,6 +11288,183 @@ export const BancorConverterABI = [
 			}
 		],
 		"name": "OwnerUpdate",
+		"type": "event"
+	}
+]
+
+export const GetBancorDataABI = [
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_bancorRegistry",
+				"type": "address"
+			}
+		],
+		"name": "changeRegistryAddress",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "bancorRegistry",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_from",
+				"type": "address"
+			},
+			{
+				"name": "_to",
+				"type": "address"
+			},
+			{
+				"name": "_amount",
+				"type": "uint256"
+			}
+		],
+		"name": "getBancorRatioForAssets",
+		"outputs": [
+			{
+				"name": "result",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "renounceOwnership",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_from",
+				"type": "address"
+			},
+			{
+				"name": "_to",
+				"type": "address"
+			}
+		],
+		"name": "getBancorPathForAssets",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address[]"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_name",
+				"type": "string"
+			}
+		],
+		"name": "getBancorContractAddresByName",
+		"outputs": [
+			{
+				"name": "result",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"name": "_bancorRegistry",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "previousOwner",
+				"type": "address"
+			}
+		],
+		"name": "OwnershipRenounced",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "previousOwner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "OwnershipTransferred",
 		"type": "event"
 	}
 ]

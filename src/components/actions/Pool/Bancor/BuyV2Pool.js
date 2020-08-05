@@ -35,7 +35,7 @@ class BuyV2Pool extends PureComponent {
     const connectorsAmount = this.state.connectors.map(item => item.amount)
     const smartFund = new this.props.web3.eth.Contract(SmartFundABIV7, this.props.smartFundAddress)
 
-    // pack data in bytes
+    // encode additional data in bytes
     const data = this.props.web3.eth.abi.encodeParameters(
       ['address[]', 'uint256[]', 'uint256'],
       [connectorsAddress, connectorsAmount, 1]
@@ -62,6 +62,9 @@ class BuyV2Pool extends PureComponent {
     // pending status for DB
     setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
     })
+
+    // close pool modal
+    this.props.modalClose()
   }
 
   // get connectors by converter address

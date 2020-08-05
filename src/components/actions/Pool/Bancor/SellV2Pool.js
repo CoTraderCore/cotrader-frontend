@@ -1,8 +1,79 @@
-//  BancorFormula.liquidateReserveAmount for get minReturn 
-
 import React, { PureComponent } from 'react'
+import { Form, Button, Alert } from "react-bootstrap"
+import setPending from '../../../../utils/setPending'
+import {
+  SmartFundABIV7,
+  BancorConverterABI,
+  BancorFormulaABI,
+  GetBancorDataABI,
+  GetBancorData
+} from '../../../../config.js'
+
 
 class SellV2Pool extends PureComponent {
+  constructor(props, context) {
+    super(props, context)
+    this.state = {
+      poolAmount:0
+    }
+  }
+
+  removeLiqudity = async () => {
+    const connectorsAddress = await this.getConnectors(this.props.converterAddress)
+    const reserveMinReturnAmounts = Array(connectorsAddress.length).fill([1]) // for test
+    const smartFund = new this.props.web3.eth.Contract(SmartFundABIV7, this.props.smartFundAddress)
+
+    // get gas price from local storage
+    const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
+    const block = await this.props.web3.eth.getBlockNumber()
+
+    // encode additional data in bytes
+    const data = this.props.web3.eth.abi.encodeParameters(
+      ['address[]', 'uint256[]'],
+      [connectorsAddress, reserveMinReturnAmounts]
+    )
+
+    // sell pool
+    smartFund.methods.sellPool(
+      this.state.poolAmount,
+      0, // type Bancor
+      this.props.fromAddress, // pool address
+      ['0x000000000000000000000000000000000000000000000000000000000000001c'], // TODO convert converter version to bytes32
+      data
+    )
+    .send({ from:this.props.accounts[0], gasPrice })
+    .on('transactionHash', (hash) => {
+    // pending status for spiner
+    this.props.pending(true)
+    // pending status for DB
+    setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+    })
+
+    // close pool modal
+    this.props.modalClose()
+  }
+
+  getConnectors = async (converterAddress) => {
+    if(converterAddress){
+      const converter = new this.props.web3.eth.Contract(BancorConverterABI, converterAddress)
+      const connectorsCount = await converter.methods.connectorTokenCount().call()
+      const connectors = []
+
+      for(let i = 0; i < connectorsCount; i++){
+        const address = await converter.methods.connectorTokens(i).call()
+        connectors.push(address)
+      }
+
+      return connectors
+    }
+  }
+
+  // TODO
+  getConnectorsMinReturn = async (connectors) => {
+    //  BancorFormula.liquidateReserveAmount for get minReturn
+    const GetBancorData = new this.props.web3.eth.Contract()
+    const BancorFormulaAddress = ''
+  }
 
   render() {
     return (
