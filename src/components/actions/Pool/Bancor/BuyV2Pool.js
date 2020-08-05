@@ -11,13 +11,16 @@ import {
 } from '../../../../config.js'
 import setPending from '../../../../utils/setPending'
 import { toWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
+import Loading from '../../../templates/Spiners/Loading'
+
 
 class BuyV2Pool extends PureComponent {
   constructor(props, context) {
     super(props, context)
     this.state = {
       connectors:[],
-      showSpinner:false
+      showSpinner:false,
+      isETHBased:false
     }
   }
 
@@ -45,8 +48,7 @@ class BuyV2Pool extends PureComponent {
     const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
     const block = await this.props.web3.eth.getBlockNumber()
 
-    // buy pool
-    smartFund.methods.buyPool(
+    const params = [
       0, // for Bancor v2 we calculate pool amount by connectors
       0, // type Bancor
       this.props.fromAddress, // pool address
@@ -54,14 +56,36 @@ class BuyV2Pool extends PureComponent {
       connectorsAmount,
       ['0x000000000000000000000000000000000000000000000000000000000000001c'], // TODO convert converter version to bytes32
       data
-    )
-    .send({ from:this.props.accounts[0], gasPrice })
-    .on('transactionHash', (hash) => {
-    // pending status for spiner
-    this.props.pending(true)
-    // pending status for DB
-    setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
-    })
+    ]
+
+    // Buy pool
+    if(this.state.isETHBased){
+      const ETHAmount = this.state.connectors.filter(item => item.symbol === 'ETH')[0].amount
+      // buy pool payable
+      smartFund.methods.buyPool.value(ETHAmount)(
+        ...params
+      )
+      .send({ from:this.props.accounts[0], gasPrice })
+      .on('transactionHash', (hash) => {
+      // pending status for spiner
+      this.props.pending(true)
+      // pending status for DB
+      setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+      })
+    }
+    else{
+      // buy pool non payable
+      smartFund.methods.buyPool(
+        ...params
+      )
+      .send({ from:this.props.accounts[0], gasPrice })
+      .on('transactionHash', (hash) => {
+      // pending status for spiner
+      this.props.pending(true)
+      // pending status for DB
+      setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+      })
+    }
 
     // close pool modal
     this.props.modalClose()
@@ -93,12 +117,12 @@ class BuyV2Pool extends PureComponent {
     })
     // TODO: convert  to wei by decimals
     searchObj[0].amount = toWeiByDecimalsInput(searchObj[0].decimals, amount)
-    console.log(this.state.connectors)
   }
 
   getTokenSymbolAndDecimals = async (address) => {
     // ETH case
     if(String(address).toLowerCase() === String('0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE').toLowerCase()){
+      this.setState({ isETHBased:true }) // for detect ETH based pools
       return { symbol: 'ETH', decimals: 18}
     }
     else{
@@ -125,7 +149,16 @@ class BuyV2Pool extends PureComponent {
     return (
       <>
       {
-        this.state.showSpinner ? (<>Updating ...</>) : null
+        this.state.showSpinner
+        ?
+        (
+          <>
+          <Loading/>
+          <div align="center">
+          <small>checking pool version ...</small>
+          </div>
+          </>
+        ) : null
       }
       {
         this.state.connectors && this.state.connectors.length > 0
