@@ -38,7 +38,7 @@ export const BNTEther = '0xc0829421C1d260BD3cB3E0F06cfE2D52db2cE315'
 export const BNTUSDBToken = '0xd1146B08e8104EeDBa44a73B7bda1d102c6ceDC9'
 export const UniswapFactory = '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95'
 export const OneInch = '0xC586BeF4a0992C495Cf22e1aeEE4E446CECDee0E'
-export const GetBancorData
+export const GetBancorData = ''
 
 
 // Ropsten

@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 
 import {
-  SmartFundABIV4,
-  SmartFundABIV6,
   UniswapFactoryABI,
   UniswapFactory,
   PoolPortalABI,
@@ -17,6 +15,8 @@ import { toWei, fromWei, hexToNumberString } from 'web3-utils'
 import { fromWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
 import setPending from '../../../../utils/setPending'
 import checkTokensLimit from '../../../../utils/checkTokensLimit'
+import getFundFundABIByVersion from '../../../../utils/getFundFundABIByVersion'
+
 
 
 class BuyPool extends Component {
@@ -172,11 +172,8 @@ class BuyPool extends Component {
       // get contracts and data
       const factory = new this.props.web3.eth.Contract(UniswapFactoryABI, UniswapFactory)
       const poolExchangeAddress = await factory.methods.getExchange(this.props.tokenAddress).call()
-
-      // version 5 and 6 not support additional bytes32 array param
-      const FundABI = this.props.version === 5 || this.props.version === 6
-      ? SmartFundABIV6
-      : SmartFundABIV4
+      // Get ABI according fund version
+      const FundABI = getFundFundABIByVersion(this.props.version)
 
       const fund = new this.props.web3.eth.Contract(FundABI, this.props.smartFundAddress)
 
@@ -194,9 +191,13 @@ class BuyPool extends Component {
         poolExchangeAddress
       ]
 
-      // add additional bytes32 array param
+      // add additional params for different version
+      // 5 and 6 version not support bytes32[] _additionalArgs
       if(this.props.version !== 5 && this.props.version !== 6){
         poolParams.push([])
+        // version >= 7 require additional bytes data
+        if(this.props.version >= 7)
+          poolParams.push("0x")
       }
 
       // buy pool

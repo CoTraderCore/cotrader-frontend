@@ -4,8 +4,6 @@ import React, { Component } from 'react'
 import { Form, Button, Alert, Table } from "react-bootstrap"
 
 import {
-  SmartFundABIV6,
-  SmartFundABIV4,
   PoolPortalABI,
   PoolPortal,
   ERC20ABI,
@@ -17,6 +15,7 @@ import { toWei, fromWei } from 'web3-utils'
 import Pending from '../../../templates/Spiners/Pending'
 import setPending from '../../../../utils/setPending'
 import checkTokensLimit from '../../../../utils/checkTokensLimit'
+import getFundFundABIByVersion from '../../../../utils/getFundFundABIByVersion'
 
 // Fund recognize ETH by this address
 const ETH = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
@@ -159,11 +158,8 @@ class BuyPool extends Component {
   buy = async () => {
     if(this.state.isEnoughTotalBalanceForBuy){
       const web3 = this.props.web3
-
-      // version 5 and 6 not support additional bytes32 array param
-      const FundABI = this.props.version === 5 || this.props.version === 6
-      ? SmartFundABIV6
-      : SmartFundABIV4
+      // Get ABI according fund version
+      const FundABI = getFundFundABIByVersion(this.props.version) 
 
       const fund = new web3.eth.Contract(FundABI, this.props.smartFundAddress)
 
@@ -181,9 +177,13 @@ class BuyPool extends Component {
         this.props.fromAddress
       ]
 
-      // add additional bytes32 array param
+      // add additional params for different version
+      // 5 and 6 version not support bytes32[] _additionalArgs
       if(this.props.version !== 5 && this.props.version !== 6){
         poolParams.push([])
+        // version >= 7 require additional bytes data
+        if(this.props.version >= 7)
+          poolParams.push("0x")
       }
 
       // buy pool
