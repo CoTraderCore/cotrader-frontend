@@ -42,7 +42,7 @@ export const ParaswapApi = 'https://paraswap.io/api'
 
 
 // Ropsten
-export const SmartFundRegistryADDRESS = '0xE1d062D3BFdfF15fb878E80691ed70112251E13d'
+export const SmartFundRegistryADDRESS = '0xc0F81fA3B2Ce8aC3C4b5268b7DB51608Da5a0599'
 export const EtherscanLink = 'https://ropsten.etherscan.io/'
 export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
 export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'

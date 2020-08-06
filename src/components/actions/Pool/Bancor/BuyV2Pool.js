@@ -10,7 +10,8 @@ import {
   ERC20Bytes32ABI,
 } from '../../../../config.js'
 import setPending from '../../../../utils/setPending'
-import { toWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
+import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
+import { fromWei } from 'web3-utils'
 import Loading from '../../../templates/Spiners/Loading'
 
 
@@ -20,7 +21,7 @@ class BuyV2Pool extends PureComponent {
     this.state = {
       connectors:[],
       showSpinner:false,
-      isETHBased:false
+      ErrorText:''
     }
   }
 
@@ -31,50 +32,38 @@ class BuyV2Pool extends PureComponent {
   componentDidUpdate(prevProps, prevState){
     if(prevProps.converterAddress !== this.props.converterAddress)
       this.updateConnectorsData()
+
+    if(prevState.connectors !== this.state.connectors)
+      this.setState({ ErrorText:'' })
   }
 
   addLiquidity = async () => {
-    const connectorsAddress = this.state.connectors.map(item => item.address)
-    const connectorsAmount = this.state.connectors.map(item => item.amount)
-    const smartFund = new this.props.web3.eth.Contract(SmartFundABIV7, this.props.smartFundAddress)
+    const isEnoughBalance = await this.checkInputBalance(this.state.connectors)
+    if(isEnoughBalance){
+      const connectorsAddress = this.state.connectors.map(item => item.address)
+      const connectorsAmount = this.state.connectors.map(item => item.amount)
+      const smartFund = new this.props.web3.eth.Contract(SmartFundABIV7, this.props.smartFundAddress)
 
-    // encode additional data in bytes
-    const data = this.props.web3.eth.abi.encodeParameters(
-      ['address[]', 'uint256[]', 'uint256'],
-      [connectorsAddress, connectorsAmount, 1]
-    )
-
-    // get gas price from local storage
-    const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
-    const block = await this.props.web3.eth.getBlockNumber()
-
-    const params = [
-      0, // for Bancor v2 we calculate pool amount by connectors
-      0, // type Bancor
-      this.props.fromAddress, // pool address
-      connectorsAddress,
-      connectorsAmount,
-      ['0x000000000000000000000000000000000000000000000000000000000000001c'], // TODO convert converter version to bytes32
-      data
-    ]
-
-    // Buy pool
-    if(this.state.isETHBased){
-      const ETHAmount = this.state.connectors.filter(item => item.symbol === 'ETH')[0].amount
-      // buy pool payable
-      smartFund.methods.buyPool.value(ETHAmount)(
-        ...params
+      // encode additional data in bytes
+      const data = this.props.web3.eth.abi.encodeParameters(
+        ['address[]', 'uint256[]', 'uint256'],
+        [connectorsAddress, connectorsAmount, 1]
       )
-      .send({ from:this.props.accounts[0], gasPrice })
-      .on('transactionHash', (hash) => {
-      // pending status for spiner
-      this.props.pending(true)
-      // pending status for DB
-      setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
-      })
-    }
-    else{
-      // buy pool non payable
+
+      // get gas price from local storage
+      const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
+      const block = await this.props.web3.eth.getBlockNumber()
+
+      const params = [
+        0, // for Bancor v2 we calculate pool amount by connectors
+        0, // type Bancor
+        this.props.fromAddress, // pool address
+        connectorsAddress,
+        connectorsAmount,
+        ['0x000000000000000000000000000000000000000000000000000000000000001c'], // TODO convert converter version to bytes32
+        data
+      ]
+
       smartFund.methods.buyPool(
         ...params
       )
@@ -85,10 +74,14 @@ class BuyV2Pool extends PureComponent {
       // pending status for DB
       setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
       })
-    }
 
-    // close pool modal
-    this.props.modalClose()
+      // close pool modal
+      this.props.modalClose()
+    }else{
+      this.setState({
+         ErrorText:"You do not have enough assets in the fund for this operation"
+      })
+    }
   }
 
   // get connectors by converter address
@@ -122,7 +115,6 @@ class BuyV2Pool extends PureComponent {
   getTokenSymbolAndDecimals = async (address) => {
     // ETH case
     if(String(address).toLowerCase() === String('0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE').toLowerCase()){
-      this.setState({ isETHBased:true }) // for detect ETH based pools
       return { symbol: 'ETH', decimals: 18}
     }
     else{
@@ -143,6 +135,28 @@ class BuyV2Pool extends PureComponent {
     }
   }
 
+  // return false if not enough balance on fund for a some certain token
+  checkInputBalance = async (tokensData) => {
+  // check
+    for(const item of tokensData){
+      const curInput = fromWeiByDecimalsInput(item.decimals, item.amount)
+      let curBalance
+      // ERC20 case
+      if(String(item.address).toLowerCase() !== String('0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE').toLowerCase()){
+        const token = new this.props.web3.eth.Contract(ERC20ABI, item.address)
+        const fundBalance = await token.methods.balanceOf(this.props.smartFundAddress).call()
+        curBalance = fromWeiByDecimalsInput(item.decimals, fundBalance)
+      }
+      // ETH case
+      else{
+        curBalance = fromWei(await this.props.web3.eth.getBalance(this.props.smartFundAddress))
+      }
+      // compare
+      if(parseFloat(curInput) > parseFloat(curBalance))
+        return false
+    }
+    return true
+  }
 
 
   render() {
@@ -179,6 +193,14 @@ class BuyV2Pool extends PureComponent {
                </Form.Group>
               )
             })
+          }
+          {
+            this.state.ErrorText.length > 0
+            ?
+            (
+              <Alert variant="danger">{ this.state.ErrorText }</Alert>
+            )
+            :null
           }
           <Button variant="outline-primary" onClick={() => this.addLiquidity()}>Buy</Button>
           </Form>
