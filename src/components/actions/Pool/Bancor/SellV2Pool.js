@@ -31,7 +31,7 @@ class SellV2Pool extends PureComponent {
       const poolAmountFromWei = await this.getFundBalance(this.props.fromAddress)
       if(poolAmountFromWei >= this.state.poolAmount){
         const connectorsAddress = await this.getConnectors(this.props.converterAddress)
-        const reserveMinReturnAmounts = Array(connectorsAddress.length).fill(1) 
+        const reserveMinReturnAmounts = Array(connectorsAddress.length).fill(1)
         const smartFund = new this.props.web3.eth.Contract(SmartFundABIV7, this.props.smartFundAddress)
 
         console.log(connectorsAddress, reserveMinReturnAmounts)
