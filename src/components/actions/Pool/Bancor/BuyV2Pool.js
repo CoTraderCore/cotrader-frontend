@@ -1,15 +1,23 @@
 // Buy pool by connectors amount
+// This componnent support both new Bancor converter type 1 and 2
 
 import React, { PureComponent } from 'react'
 import { Form, Button, Alert } from "react-bootstrap"
+
 import {
   SmartFundABIV7,
   BancorConverterABI,
   ERC20ABI,
   ERC20Bytes32ABI,
 } from '../../../../config.js'
+
 import setPending from '../../../../utils/setPending'
-import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
+
+import {
+  toWeiByDecimalsInput,
+  fromWeiByDecimalsInput
+} from '../../../../utils/weiByDecimals'
+
 import { numStringToBytes32 } from '../../../../utils/numberToFromBytes32'
 import { fromWei } from 'web3-utils'
 import Loading from '../../../templates/Spiners/Loading'
@@ -37,29 +45,27 @@ class BuyV2Pool extends PureComponent {
       this.setState({ ErrorText:'' })
   }
 
+  // this method work with both new Bancor converter types
+  // 1 - (multiple connectors) and 2 -(single connector)
   addLiquidity = async () => {
+    // check if enough balance
     const isEnoughBalance = await this.checkInputBalance(this.state.connectors)
     if(isEnoughBalance){
+      // get connectors addresses and amount
       const connectorsAddress = this.state.connectors.map(item => item.address)
       const connectorsAmount = this.state.connectors.map(item => item.amount)
+      // get smart fund contract
       const smartFund = new this.props.web3.eth.Contract(SmartFundABIV7, this.props.smartFundAddress)
-
-
-
       // get gas price from local storage
       const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
+      // get block number
       const block = await this.props.web3.eth.getBlockNumber()
 
-      // get params for buying pool
+      // get params for buying pool according to converter type
       let params
+
       // type 1 multiple connectors case
       if(this.props.converterType === 1){
-        // encode additional data in bytes
-        const additionalData = this.props.web3.eth.abi.encodeParameters(
-          ['uint256'],
-          [1]
-        )
-
         params = [
           0, // for Bancor v2 we calculate pool amount by connectors
           0, // type Bancor
@@ -70,7 +76,10 @@ class BuyV2Pool extends PureComponent {
             numStringToBytes32(String(this.props.converterVersion)),
             numStringToBytes32(String(this.props.converterType))
           ],
-          additionalData
+          this.props.web3.eth.abi.encodeParameters(
+            ['uint256'],
+            [1]
+          )
         ]
       }
       // type 2 single connector case
