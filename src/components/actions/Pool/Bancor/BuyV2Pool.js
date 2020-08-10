@@ -1,5 +1,4 @@
-// Buy by connectors amount
-// get all connectors by selected token
+// Buy pool by connectors amount
 
 import React, { PureComponent } from 'react'
 import { Form, Button, Alert } from "react-bootstrap"
@@ -46,8 +45,8 @@ class BuyV2Pool extends PureComponent {
 
       // encode additional data in bytes
       const data = this.props.web3.eth.abi.encodeParameters(
-        ['address[]', 'uint256[]', 'uint256'],
-        [connectorsAddress, connectorsAmount, 1]
+        ['uint256'],
+        [1]
       )
 
       // get gas price from local storage
@@ -86,21 +85,35 @@ class BuyV2Pool extends PureComponent {
 
   // get connectors by converter address
   updateConnectorsData = async () => {
-    if(this.props.converterAddress){
       this.setState({ showSpinner:true })
-
-      const converter = new this.props.web3.eth.Contract(BancorConverterABI, this.props.converterAddress)
-      const connectorsCount = await converter.methods.connectorTokenCount().call()
       const connectors = []
 
-      for(let i = 0; i < connectorsCount; i++){
-        const address = await converter.methods.connectorTokens(i).call()
-        const { symbol, decimals } = await this.getTokenSymbolAndDecimals(address)
-        connectors.push({ symbol, address, amount:0, decimals })
+      // multiple connectots case
+      if(this.props.converterType === 1){
+        if(this.props.converterAddress){
+          const converter = new this.props.web3.eth.Contract(BancorConverterABI, this.props.converterAddress)
+          const connectorsCount = await converter.methods.connectorTokenCount().call()
+
+          for(let i = 0; i < connectorsCount; i++){
+            const address = await converter.methods.connectorTokens(i).call()
+            const { symbol, decimals } = await this.getTokenSymbolAndDecimals(address)
+            connectors.push({ symbol, address, amount:0, decimals })
+          }
+        }
+      }
+      // single conenctor case
+      else{
+        if(this.props.poolSourceTokenAddress){
+          console.log("this.props.poolSourceTokenAddress", this.props.poolSourceTokenAddress)
+          const address = this.props.poolSourceTokenAddress
+          const { symbol, decimals } = await this.getTokenSymbolAndDecimals(address)
+          connectors.push({ symbol, address, amount:0, decimals })
+        }
       }
 
+
       this.setState({ connectors, showSpinner:false })
-    }
+
   }
 
   // find a certain connector by symbol and update amount
@@ -179,7 +192,17 @@ class BuyV2Pool extends PureComponent {
         ?
         (
           <Form>
-          <Form.Label><small>Note: for Bancor v2 we calculate pool amount by pool conenctors</small></Form.Label>
+          {
+            this.props.converterType === 1
+            ?
+            (
+              <Form.Label><small>Note: for new Bancor v1 we calculate pool amount by multiple pool conenctors</small></Form.Label>
+            )
+            :
+            (
+              <Form.Label><small>Note: for new Bancor v2 we calculate pool amount by single pool conenctor</small></Form.Label>
+            )
+          }
           {
             this.state.connectors.map((item, index) => {
               return(

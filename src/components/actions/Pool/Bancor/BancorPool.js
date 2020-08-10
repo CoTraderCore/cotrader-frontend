@@ -11,10 +11,10 @@ import SellV2Pool from './SellV2Pool'
 
 // Select v1 or v2 dependse of smart fund and converter versions
 // Note smart funds version < 7 not support Bancor v2
-const getComponentList = (isV2) => {
+const getComponentList = (converterVersion) => {
   return {
-    Buy: isV2 ? BuyV2Pool : BuyPool,
-    Sell: isV2 ? SellV2Pool : SellPool,
+    Buy: converterVersion ? converterVersion >= 28 ? BuyV2Pool : BuyPool : BuyPool,
+    Sell: converterVersion? converterVersion >= 28 ? SellV2Pool : SellPool : SellPool,
   }
 }
 
@@ -26,9 +26,11 @@ class BancorPool extends Component {
       smartTokenSymbols: [],
       tokensObject: null,
       action: 'Buy',
-      fromAddress:'',
-      converterAddress:'',
-      isV2:false
+      fromAddress:undefined,
+      converterAddress:undefined,
+      converterVersion:undefined,
+      converterType:0,
+      poolSourceTokenAddress:undefined
     }
   }
 
@@ -62,12 +64,17 @@ class BancorPool extends Component {
     const fromAddress = this.findAddressBySymbol(symbol)
     const tokenData = this.state.tokensObject.filter(item => item['smartTokenAddress'] === fromAddress)
     const converterVersion = Number(tokenData[0].converterVersion)
+    const converterType = Number(tokenData[0].converterType)
+    const poolSourceTokenAddress = tokenData[0].tokenAddress
     const converterAddress = tokenData[0].converterAddress
 
-    // true if smartfund version > 6 and converter >= 28
-    const isV2 = this.props.version > 6 && converterVersion >= 28 ? true : false
-
-    this.setState({ fromAddress, isV2, converterAddress })
+    this.setState({
+      fromAddress,
+      converterVersion,
+      converterType,
+      converterAddress,
+      poolSourceTokenAddress
+    })
   }
 
   // init data from cotrader bancor api
@@ -85,7 +92,7 @@ class BancorPool extends Component {
   render() {
     // Change component (Buy/Sell/Swap) dynamicly
     let CurrentAction
-    const componentList = getComponentList(this.state.isV2)
+    const componentList = getComponentList(this.state.converterVersion)
 
     if(this.state.action in componentList){
       CurrentAction = componentList[this.state.action]
@@ -135,6 +142,9 @@ class BancorPool extends Component {
                    smartFundAddress={this.props.smartFundAddress}
                    pending={this.props.pending}
                    modalClose={this.props.modalClose}
+                   converterVersion={this.state.converterVersion}
+                   converterType={this.state.converterType}
+                   poolSourceTokenAddress={this.state.poolSourceTokenAddress}
                  />
                </React.Fragment>
               )
