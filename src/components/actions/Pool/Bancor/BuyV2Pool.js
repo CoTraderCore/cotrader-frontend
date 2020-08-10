@@ -10,6 +10,7 @@ import {
 } from '../../../../config.js'
 import setPending from '../../../../utils/setPending'
 import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
+import { numStringToBytes32 } from '../../../../utils/numberToFromBytes32'
 import { fromWei } from 'web3-utils'
 import Loading from '../../../templates/Spiners/Loading'
 
@@ -43,26 +44,49 @@ class BuyV2Pool extends PureComponent {
       const connectorsAmount = this.state.connectors.map(item => item.amount)
       const smartFund = new this.props.web3.eth.Contract(SmartFundABIV7, this.props.smartFundAddress)
 
-      // encode additional data in bytes
-      const data = this.props.web3.eth.abi.encodeParameters(
-        ['uint256'],
-        [1]
-      )
+
 
       // get gas price from local storage
       const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
       const block = await this.props.web3.eth.getBlockNumber()
 
-      const params = [
-        0, // for Bancor v2 we calculate pool amount by connectors
-        0, // type Bancor
-        this.props.fromAddress, // pool address
-        connectorsAddress,
-        connectorsAmount,
-        ['0x000000000000000000000000000000000000000000000000000000000000001c'], // TODO convert converter version to bytes32
-        data
-      ]
+      // get params for buying pool
+      let params
+      // type 1 multiple connectors case
+      if(this.props.converterType === 1){
+        // encode additional data in bytes
+        const additionalData = this.props.web3.eth.abi.encodeParameters(
+          ['uint256'],
+          [1]
+        )
 
+        params = [
+          0, // for Bancor v2 we calculate pool amount by connectors
+          0, // type Bancor
+          this.props.fromAddress, // pool address
+          connectorsAddress,
+          connectorsAmount,
+          [
+            numStringToBytes32(String(this.props.converterVersion)),
+            numStringToBytes32(String(this.props.converterType))
+          ],
+          additionalData
+        ]
+      }
+      // type 2 single connector case
+      else{
+        params = [
+          0, // for Bancor v2 we calculate pool amount by connectors
+          0, // type Bancor
+          this.props.fromAddress, // pool address
+          connectorsAddress,
+          connectorsAmount,
+          [],
+          "0x"
+        ]
+      }
+
+      // buy pool
       smartFund.methods.buyPool(
         ...params
       )
