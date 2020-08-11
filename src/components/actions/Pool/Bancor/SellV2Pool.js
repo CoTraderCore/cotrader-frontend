@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import { Form, Button, Alert } from "react-bootstrap"
 import setPending from '../../../../utils/setPending'
+
 import {
   SmartFundABIV7,
   BancorConverterABI,
@@ -9,7 +10,11 @@ import {
   GetBancorData,
   ERC20ABI
 } from '../../../../config.js'
+
 import { toWei, fromWei } from 'web3-utils'
+import { numStringToBytes32 } from '../../../../utils/numberToFromBytes32'
+
+
 
 class SellV2Pool extends PureComponent {
   constructor(props, context) {
@@ -28,8 +33,8 @@ class SellV2Pool extends PureComponent {
 
   removeLiqudity = async () => {
     if(this.state.poolAmount > 0){
-      const poolAmountFromWei = await this.getFundBalance(this.props.fromAddress)
-      if(poolAmountFromWei >= this.state.poolAmount){
+      const fundBalance = await this.getFundBalance(this.props.fromAddress)
+      if(fundBalance >= this.state.poolAmount){
         const connectorsAddress = await this.getConnectors(this.props.converterAddress)
         const reserveMinReturnAmounts = Array(connectorsAddress.length).fill(1)
         const smartFund = new this.props.web3.eth.Contract(SmartFundABIV7, this.props.smartFundAddress)
@@ -41,9 +46,17 @@ class SellV2Pool extends PureComponent {
         const block = await this.props.web3.eth.getBlockNumber()
 
         // encode additional data in bytes
-        const data = this.props.web3.eth.abi.encodeParameters(
+        // dependse of converterType
+        const additionalData = this.props.converterType === 1
+        ?
+        this.props.web3.eth.abi.encodeParameters(
           ['address[]', 'uint256[]'],
           [connectorsAddress, reserveMinReturnAmounts]
+        )
+        :
+        this.props.web3.eth.abi.encodeParameters(
+          ['address[]'],
+          [connectorsAddress]
         )
 
         // sell pool
@@ -51,8 +64,11 @@ class SellV2Pool extends PureComponent {
           toWei(String(this.state.poolAmount)),
           0, // type Bancor
           this.props.fromAddress, // pool address
-          ['0x000000000000000000000000000000000000000000000000000000000000001c'], // TODO convert converter version to bytes32
-          data
+          [
+            numStringToBytes32(String(this.props.converterVersion)),
+            numStringToBytes32(String(this.props.converterType))
+          ],
+          additionalData
         )
         .send({ from:this.props.accounts[0], gasPrice })
         .on('transactionHash', (hash) => {
@@ -101,7 +117,8 @@ class SellV2Pool extends PureComponent {
 
   getFundBalance = async (poolTokenAddress) => {
     const poolToken = new this.props.web3.eth.Contract(ERC20ABI, poolTokenAddress)
-    return fromWei(String(await poolToken.methods.balanceOf(this.props.smartFundAddress).call()))
+    const balance = await poolToken.methods.balanceOf(this.props.smartFundAddress).call()
+    return balance ? fromWei(String(balance)) : 0
   }
 
   setMaxSell = async () => {
