@@ -7,11 +7,11 @@ import {
   PoolPortal
 } from '../../../../config.js'
 
-import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
+import { fromWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
 import setPending from '../../../../utils/setPending'
 import { toWei, fromWei } from 'web3-utils'
 import getFundFundABIByVersion from '../../../../utils/getFundFundABIByVersion'
-
+import { numStringToBytes32 } from '../../../../utils/numberToFromBytes32'
 
 // Fund recognize ETH by this address
 const ETH = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
@@ -86,10 +86,12 @@ class SellPool extends Component {
       // check fund balance
       const { fundBalanceFromWei } = await this.getFundBalance()
       const isEnoughBalance = fundBalanceFromWei >= this.state.amount ? true : false
+      const ErrorText = !isEnoughBalance ? 'Insufficient Balance' : ''
 
       this.setState({
         connectorsDATA,
         isEnoughBalance,
+        ErrorText,
         isComputed:true
       })
     }
@@ -124,48 +126,59 @@ class SellPool extends Component {
       })
   }
 
+  // return pool params for buyPool
+  // different version of smart fund
+  // require different pool params
+  getPoolParams = async () => {
+    let params
+
+    const commonParams = [
+      toWei(String(this.state.amount)),
+      0,
+      this.props.fromAddress
+    ]
+
+    // V7 and newest
+    if(this.props.version >= 7){
+      // V7 params
+      params = [
+        ...commonParams,
+        [
+          numStringToBytes32(String(this.props.converterVersion)),
+          numStringToBytes32(String(this.props.converterType))
+        ],
+        "0x"
+      ]
+    }
+    else if(this.props.version !== 5 && this.props.version !== 6){
+      params = [...commonParams, []]
+    }else{
+      // 5 and 6 version not support bytes32[] _additionalArgs
+      params = [...commonParams]
+    }
+
+    return params
+  }
+
+  // Sell pool
   sell = async () => {
     if(this.props.fromAddress.length > 0 && this.state.amount > 0){
       const web3 = this.props.web3
-
       // get gas price from local storage
       const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
-
-      // get smart token instance
-      const token = new web3.eth.Contract(ERC20ABI, this.props.fromAddress)
-
       // check fund balance
       const { fundBalanceFromWei } = await this.getFundBalance()
-      const decimals = await token.methods.decimals().call()
-
       // allow sell if fund has enough balance
       if(fundBalanceFromWei >= this.state.amount){
-        // convert amount in wei by smart token decimals
-        const amountInWei = toWeiByDecimalsInput(decimals, this.state.amount)
         // Get ABI according fund version
         const FundABI = getFundFundABIByVersion(this.props.version)
-
-        // Sell
+        // Get smart fund instance
         const fund = new web3.eth.Contract(FundABI, this.props.smartFundAddress)
+        // Get block number
         const block = await web3.eth.getBlockNumber()
-
-        const poolParams = [
-          amountInWei,
-          0,
-          this.props.fromAddress
-        ]
-
-        // add additional params for different version
-        // 5 and 6 version not support bytes32[] _additionalArgs
-        if(this.props.version !== 5 && this.props.version !== 6){
-          poolParams.push([])
-          // version >= 7 require additional bytes data
-          if(this.props.version >= 7)
-            poolParams.push("0x")
-        }
-
-        console.log(poolParams)
-
+        // Get pool params for current fund version
+        const poolParams = await this.getPoolParams()
+        // Sell
         fund.methods.sellPool(...poolParams).send({ from:this.props.accounts[0], gasPrice })
         .on('transactionHash', (hash) => {
         // pending status for spiner
@@ -177,11 +190,15 @@ class SellPool extends Component {
       })
       }
       else{
-      alert('Not enough balance in your fund')
+        this.setState({
+           ErrorText:"Not enough balance in your fund"
+        })
       }
     }
     else{
-      alert('Please fill in all fields')
+      this.setState({
+         ErrorText:"Please fill in all fields"
+      })
     }
   }
 
@@ -216,9 +233,7 @@ class SellPool extends Component {
       {
         this.state.ErrorText.length > 0
         ?
-        <small>
-        {this.ERROR(this.state.ErrorText)}
-        </small>
+        <>{this.ERROR(this.state.ErrorText)}</>
         :null
       }
 
@@ -231,20 +246,8 @@ class SellPool extends Component {
           <Button variant="outline-primary" onClick={() => this.sell()}>Sell</Button>
           </>
         )
-        :
-        (
-          <>
-          {
-            this.state.isComputed
-            ?
-            (
-              <small style={{color:"red"}}>Insufficient Balance</small>
-            ):null
-          }
-          </>
-        )
+        : null
       }
-      <br/>
       <br/>
       {
         this.state.connectorsDATA.length > 0
