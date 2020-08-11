@@ -166,6 +166,55 @@ class BuyPool extends Component {
   }
 
 
+  // return pool params for buyPool
+  // different version of smart fund
+  // require different pool params
+  getPoolParams = async () => {
+    let params
+
+    // get Uni pool exchange
+    const factory = new this.props.web3.eth.Contract(UniswapFactoryABI, UniswapFactory)
+    const poolExchangeAddress = await factory.methods.getExchange(this.props.tokenAddress).call()
+
+    // common params
+    const commonParams = [
+        toWei(String(this.state.ETHAmount)),
+        1,
+        poolExchangeAddress
+      ]
+
+    // V7 and newest
+    if(this.props.version >= 7){
+      // get pool portal instance
+      const poolPortal = new this.props.web3.eth.Contract(PoolPortalABI, PoolPortal)
+      // get connectors address and amount from pool portal by pool amount
+      const {
+        connectorsAddress,
+        connectorsAmount } = await poolPortal.methods.getDataForBuyingPool(
+          poolExchangeAddress, // pool token
+          1, // type Uniswap
+          toWei(String(this.state.ETHAmount)) // pool amount
+        ).call()
+
+      // V7 params
+      params = [
+        ...commonParams,
+        connectorsAddress,
+        connectorsAmount,
+        [],
+        "0x"
+      ]
+    }
+    else if(this.props.version !== 5 && this.props.version !== 6){
+      params = [...commonParams, []]
+    }else{
+      // 5 and 6 version not support bytes32[] _additionalArgs
+      params = [...commonParams]
+    }
+
+    return params
+  }
+
   // Buy Uniswap pool
   buyPool = async () => {
     if(this.state.ETHAmount > 0 && this.props.tokenAddress){
@@ -174,31 +223,16 @@ class BuyPool extends Component {
       const poolExchangeAddress = await factory.methods.getExchange(this.props.tokenAddress).call()
       // Get ABI according fund version
       const FundABI = getFundFundABIByVersion(this.props.version)
-
+      // Get fund contract instance
       const fund = new this.props.web3.eth.Contract(FundABI, this.props.smartFundAddress)
-
       // this function will throw execution with alert warning if there are limit
       await checkTokensLimit(poolExchangeAddress, fund)
-
+      // get block number
       const block = await this.props.web3.eth.getBlockNumber()
-
       // get gas price from local storage
       const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
-
-      const poolParams = [
-        toWei(String(this.state.ETHAmount)),
-        1,
-        poolExchangeAddress
-      ]
-
-      // add additional params for different version
-      // 5 and 6 version not support bytes32[] _additionalArgs
-      if(this.props.version !== 5 && this.props.version !== 6){
-        poolParams.push([])
-        // version >= 7 require additional bytes data
-        if(this.props.version >= 7)
-          poolParams.push("0x")
-      }
+      // get params dependse of smart fund version
+      const poolParams = await this.getPoolParams()
 
       // buy pool
       fund.methods.buyPool(...poolParams)
