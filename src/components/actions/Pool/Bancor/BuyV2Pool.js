@@ -221,47 +221,56 @@ class BuyV2Pool extends PureComponent {
         ) : null
       }
       {
-        this.state.connectors && this.state.connectors.length > 0
+        this.props.version >= 7
         ?
         (
-          <Form>
+          <>
           {
-            this.props.converterType === 1
+            this.state.connectors && this.state.connectors.length > 0
             ?
             (
-              <Form.Label><small>Note: for new Bancor v1 we calculate pool amount by multiple pool conenctors</small></Form.Label>
-            )
-            :
-            (
-              <Form.Label><small>Note: for new Bancor v2 we calculate pool amount by single pool conenctor</small></Form.Label>
-            )
-          }
-          {
-            this.state.connectors.map((item, index) => {
-              return(
-                <Form.Group key={index}>
-                 <Form.Label>Enter amount of { item.symbol }</Form.Label>
-                 <Form.Control
-                 name={item.symbol}
-                 type="number"
-                 min="1"
-                 onChange={(e) => this.updateConnectorAmount(e.target.name, e.target.value)}/>
-               </Form.Group>
-              )
-            })
-          }
-          {
-            this.state.ErrorText.length > 0
-            ?
-            (
-              <Alert variant="danger">{ this.state.ErrorText }</Alert>
+              <Form>
+              {
+                this.props.converterType === 1
+                ?
+                (
+                  <Form.Label><small>Note: for new Bancor v1 we calculate pool amount by multiple pool conenctors</small></Form.Label>
+                )
+                :
+                (
+                  <Form.Label><small>Note: for new Bancor v2 we calculate pool amount by single pool conenctor</small></Form.Label>
+                )
+              }
+              {
+                this.state.connectors.map((item, index) => {
+                  return(
+                    <Form.Group key={index}>
+                     <Form.Label>Enter amount of { item.symbol }</Form.Label>
+                     <Form.Control
+                     name={item.symbol}
+                     type="number"
+                     min="1"
+                     onChange={(e) => this.updateConnectorAmount(e.target.name, e.target.value)}/>
+                   </Form.Group>
+                  )
+                })
+              }
+              {
+                this.state.ErrorText.length > 0
+                ?
+                (
+                  <Alert variant="danger">{ this.state.ErrorText }</Alert>
+                )
+                :null
+              }
+              <Button variant="outline-primary" onClick={() => this.addLiquidity()}>Buy</Button>
+              </Form>
             )
             :null
           }
-          <Button variant="outline-primary" onClick={() => this.addLiquidity()}>Buy</Button>
-          </Form>
-        )
-        :null
+          </>
+        ):
+        <Alert variant="warning">Sorry your curent fund version not support this pool token</Alert>
       }
       </>
     )

@@ -120,50 +120,32 @@ class BancorPool extends Component {
             {
               this.state.symbols.length === 0 ? <small>Loading data from Bancor...</small> : null
             }
-            {
-              this.state.action !== 'Swap'
-              ?
-              (
-                <React.Fragment>
-                <Typeahead
-                   labelKey="symbols"
-                   multiple={false}
-                   id="symbols"
-                   options={this.state.smartTokenSymbols}
-                   onChange={(s) => { if(s[0]) this.updateDataBySymbolSelect(s[0]) } }
-                   placeholder="Choose a symbol"
-                 />
-                 <br/>
-                 <CurrentAction
-                   fromAddress={this.state.fromAddress}
-                   converterAddress={this.state.converterAddress}
-                   web3={this.props.web3}
-                   accounts={this.props.accounts}
-                   smartFundAddress={this.props.smartFundAddress}
-                   pending={this.props.pending}
-                   modalClose={this.props.modalClose}
-                   converterVersion={this.state.converterVersion}
-                   converterType={this.state.converterType}
-                   poolSourceTokenAddress={this.state.poolSourceTokenAddress}
-                 />
-               </React.Fragment>
-              )
-              :
-              (
-                <CurrentAction
-                  tokenData={this.state.tokensObject}
-                  smartTokenSymbols={this.state.smartTokenSymbols}
-                  symbols={this.state.symbols}
-                  findAddressBySymbol={this.findAddressBySymbol}
-                  web3={this.props.web3}
-                  accounts={this.props.accounts}
-                  smartFundAddress={this.props.smartFundAddress}
-                  pending={this.props.pending}
-                  modalClose={this.props.modalClose}
-                  version={this.props.version}
-                />
-              )
-           }
+
+            <Typeahead
+               labelKey="symbols"
+               multiple={false}
+               id="symbols"
+               options={this.state.smartTokenSymbols}
+               onChange={(s) => { if(s[0]) this.updateDataBySymbolSelect(s[0]) } }
+               placeholder="Choose a symbol"
+             />
+             <br/>
+             <CurrentAction
+               tokenData={this.state.tokensObject}
+               fromAddress={this.state.fromAddress}
+               converterAddress={this.state.converterAddress}
+               web3={this.props.web3}
+               accounts={this.props.accounts}
+               smartFundAddress={this.props.smartFundAddress}
+               pending={this.props.pending}
+               modalClose={this.props.modalClose}
+               converterVersion={this.state.converterVersion}
+               converterType={this.state.converterType}
+               poolSourceTokenAddress={this.state.poolSourceTokenAddress}
+               version={this.props.version}
+               findAddressBySymbol={this.findAddressBySymbol}
+               symbols={this.state.symbols}
+             />
       </React.Fragment>
     )
   }

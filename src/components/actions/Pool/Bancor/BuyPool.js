@@ -16,6 +16,7 @@ import Pending from '../../../templates/Spiners/Pending'
 import setPending from '../../../../utils/setPending'
 import checkTokensLimit from '../../../../utils/checkTokensLimit'
 import getFundFundABIByVersion from '../../../../utils/getFundFundABIByVersion'
+import { numStringToBytes32 } from '../../../../utils/numberToFromBytes32'
 
 // Fund recognize ETH by this address
 const ETH = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
@@ -159,36 +160,19 @@ class BuyPool extends Component {
     if(this.state.isEnoughTotalBalanceForBuy){
       const web3 = this.props.web3
       // Get ABI according fund version
-      const FundABI = getFundFundABIByVersion(this.props.version) 
-
+      const FundABI = getFundFundABIByVersion(this.props.version)
+      // get fund contract instance
       const fund = new web3.eth.Contract(FundABI, this.props.smartFundAddress)
-
       // this function will throw execution with alert warning if there are limit
       await checkTokensLimit(this.props.fromAddress, fund)
-
       // get gas price from local storage
       const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
-
+      // get block number
       const block = await web3.eth.getBlockNumber()
-
-      const poolParams = [
-        toWei(String(this.state.amount)),
-        0,
-        this.props.fromAddress
-      ]
-
-      // add additional params for different version
-      // 5 and 6 version not support bytes32[] _additionalArgs
-      if(this.props.version !== 5 && this.props.version !== 6){
-        poolParams.push([])
-        // version >= 7 require additional bytes data
-        if(this.props.version >= 7)
-          poolParams.push("0x")
-      }
-
+      // get pool params
+      const poolParams = await this.getPoolParams()
       // buy pool
       fund.methods.buyPool(...poolParams)
-
       .send({ from:this.props.accounts[0], gasPrice })
       .on('transactionHash', (hash) => {
       // pending status for spiner
@@ -196,13 +180,59 @@ class BuyPool extends Component {
       // pending status for DB
       setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
       })
-
       // close pool modal
       this.props.modalClose()
     }
     else{
       alert('Your smart fund do not have enough reserve')
     }
+  }
+
+  // return pool params for buyPool
+  // different version of smart fund
+  // require different pool params
+  getPoolParams = async () => {
+    let params
+
+    const commonParams = [
+      toWei(String(this.state.amount)),
+      0,
+      this.props.fromAddress
+    ]
+
+    // V7 and newest
+    if(this.props.version >= 7){
+      // get pool portal instance
+      const poolPortal = new this.props.web3.eth.Contract(PoolPortalABI, PoolPortal)
+      // get conenctors address and amount from pool portal by pool amount
+      const {
+        connectorsAddress,
+        connectorsAmount } = await poolPortal.methods.getDataForBuyingPool(
+          this.props.fromAddress, // pool token
+          0, // type Bancor
+          toWei(String(this.state.amount)) // pool amount
+        ).call()
+
+      // V7 params
+      params = [
+        ...commonParams,
+        connectorsAddress,
+        connectorsAmount,
+        [
+          numStringToBytes32(String(this.props.converterVersion)),
+          numStringToBytes32(String(this.props.converterType))
+        ],
+        "0x"
+      ]
+    }
+    else if(this.props.version !== 5 && this.props.version !== 6){
+      params = [...commonParams, []]
+    }else{
+      // 5 and 6 version not support bytes32[] _additionalArgs
+      params = [...commonParams]
+    }
+
+    return params
   }
 
   // param ERC20 token contract instance

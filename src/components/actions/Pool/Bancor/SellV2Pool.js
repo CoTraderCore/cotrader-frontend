@@ -134,24 +134,37 @@ class SellV2Pool extends PureComponent {
   render() {
     return (
       <Form>
-      <Form.Group>
-       <Form.Label><small>Enter amount to sell</small> &nbsp;</Form.Label>
-       <Button variant="outline-secondary" size="sm" onClick={() => this.setMaxSell()}>max</Button>
-       <Form.Control
-       value={this.state.poolAmount}
-       type="number"
-       min="1"
-       onChange={(e) => this.setState({ poolAmount:e.target.value })}/>
-     </Form.Group>
-     {
-       this.state.ErrorText.length > 0
-       ?
-       (
-         <Alert variant="danger">{ this.state.ErrorText }</Alert>
-       )
-       :null
-     }
-     <Button variant="outline-primary" onClick={() => this.removeLiqudity()}>Sell</Button>
+      {
+        this.props.version >= 7
+        ?
+        (
+          <>
+          <Form.Group>
+             <Form.Label><small>Enter amount to sell</small> &nbsp;</Form.Label>
+             <Button variant="outline-secondary" size="sm" onClick={() => this.setMaxSell()}>max</Button>
+             <Form.Control
+             value={this.state.poolAmount}
+             type="number"
+             min="1"
+             onChange={(e) => this.setState({ poolAmount:e.target.value })}/>
+             </Form.Group>
+             {
+             this.state.ErrorText.length > 0
+             ?
+             (
+               <Alert variant="danger">{ this.state.ErrorText }</Alert>
+             )
+             :null
+             }
+            <Button variant="outline-primary" onClick={() => this.removeLiqudity()}>Sell</Button>
+          </>
+        )
+        :
+        (
+          <Alert variant="warning">Sorry your curent fund version not support this pool token</Alert>
+        )
+      }
+
       </Form>
     )
   }
