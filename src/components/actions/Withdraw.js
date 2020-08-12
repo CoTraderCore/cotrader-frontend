@@ -18,7 +18,8 @@ class Withdraw extends Component {
   withdraw = async (address, percent) => {
   if(percent >= 0 && percent <= 100){
     // get corerct ABI for a certain version
-    const contractABI = this.props.version >= 6 ? SmartFundABIV6 : SmartFundABI
+    // version 6 support convert assets
+    const contractABI = this.props.version === 6 ? SmartFundABIV6 : SmartFundABI
     const contract = new this.props.web3.eth.Contract(contractABI, address)
 
     const totalPercentage = await contract.methods.TOTAL_PERCENTAGE().call()
@@ -32,8 +33,8 @@ class Withdraw extends Component {
     let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
     txCount = txCount.data.result
 
-    // get corerct params for a certain version 
-    const params = this.props.version >= 6 ? [curentPercent, this.state.isConvert] : [curentPercent]
+    // get corerct params for a certain version
+    const params = this.props.version === 6 ? [curentPercent, this.state.isConvert] : [curentPercent]
 
     contract.methods.withdraw(...params).send({ from: this.props.accounts[0] })
     .on('transactionHash', (hash) => {
@@ -83,7 +84,7 @@ class Withdraw extends Component {
              onChange={e => this.change(e)}
              />
              {
-               this.props.version >= 6
+               this.props.version === 6
                ?
                (
                  <Form.Check
