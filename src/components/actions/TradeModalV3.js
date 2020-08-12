@@ -103,7 +103,7 @@ class TradeModalV3 extends Component {
       const tokens = [
         {symbol:"NAP", address:"0x2f5Cc2E9353feB3cBe32d3ab1DED9e469fAD88C4", decimals:18},
         {symbol:"ETH", address:"0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", decimals:18},
-        {symbol:"BNT", address:"0xc74bE418ADf788a04dB7d23E3916f332B74A9617", decimals:18}
+        {symbol:"BNT", address:"0x98474564A00d15989F16BFB7c162c782b0e2b336", decimals:18}
       ]
 
       const symbols = ["NAP", "ETH", "BNT"]
