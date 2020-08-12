@@ -21,7 +21,7 @@ class WithdrawManager extends Component {
     this._isMounted = true
     const contract = new this.props.web3.eth.Contract(SmartFundABI, this.props.smartFundAddress)
     let managerCut
-    
+
     try{
       const { fundManagerRemainingCut } = await contract.methods.calculateFundManagerCut().call()
       managerCut = parseFloat(fromWei(String(fundManagerRemainingCut)))
@@ -40,7 +40,8 @@ class WithdrawManager extends Component {
   // take cut action
   withdrawManager = async () => {
     // get correct ABI for a certain version
-    const contractABI = this.props.version >= 6  ? SmartFundABIV6 : SmartFundABI
+    // Only v6 can try convert assets
+    const contractABI = this.props.version === 6 ? SmartFundABIV6 : SmartFundABI
     const contract = new this.props.web3.eth.Contract(contractABI, this.props.smartFundAddress)
     const block = await this.props.web3.eth.getBlockNumber()
 
@@ -49,7 +50,7 @@ class WithdrawManager extends Component {
     txCount = txCount.data.result
 
     // check correct call for a certain version
-    if(this.props.version >= 6){
+    if(this.props.version === 6){
       contract.methods.fundManagerWithdraw(this.state.isConvert).send({ from: this.props.accounts[0]})
       .on('transactionHash', (hash) => {
         this.updatePendingStatus(txCount, block, hash)
@@ -100,7 +101,7 @@ class WithdrawManager extends Component {
               <Form>
                <Form.Group>
                {
-                 this.props.version >= 6
+                 this.props.version === 6
                  ?
                  (
                    <Form.Check
