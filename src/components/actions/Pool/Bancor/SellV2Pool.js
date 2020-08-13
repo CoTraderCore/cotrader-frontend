@@ -56,7 +56,7 @@ class SellV2Pool extends PureComponent {
         :
         this.props.web3.eth.abi.encodeParameters(
           ['address[]', 'uint256'],
-          [connectorsAddress, minReturn]
+          [connectorsAddress, 1]
         )
 
         // sell pool

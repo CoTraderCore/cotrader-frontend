@@ -42,7 +42,7 @@ export const GetBancorData =
 
 
 // // Ropsten
-// export const SmartFundRegistryADDRESS = '0x23505A740c7ab41aA9917Bb47Cfa499b722aF495'
+// export const SmartFundRegistryADDRESS = '0x468aC1B4e3533BB5bfA5f15C85bedE3b86866e61'
 // export const EtherscanLink = 'https://ropsten.etherscan.io/'
 // export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
 // export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'
