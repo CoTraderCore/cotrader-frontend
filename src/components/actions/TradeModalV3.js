@@ -99,7 +99,7 @@ class TradeModalV3 extends Component {
         console.log(e)
       }
     }else{
-      // provide just test few Ropsten tokens
+      // just provide for test few Ropsten tokens
       const tokens = [
         {symbol:"NAP", address:"0x2f5Cc2E9353feB3cBe32d3ab1DED9e469fAD88C4", decimals:18},
         {symbol:"ETH", address:"0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", decimals:18},
@@ -107,7 +107,7 @@ class TradeModalV3 extends Component {
         {symbol:"SC", address:"0xD91c71F3EecaBac231772dEa6dF51e97D4AAA685", decimals:18}
       ]
 
-      const symbols = ["NAP", "ETH", "BNT"]
+      const symbols = ["NAP", "ETH", "BNT", "SC"]
       this.setState({ tokens, symbols })
     }
   }
