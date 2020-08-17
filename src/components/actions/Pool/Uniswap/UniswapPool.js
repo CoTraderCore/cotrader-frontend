@@ -1,14 +1,20 @@
 import React, { Component } from 'react'
 import BuyPool from './BuyPool'
+import BuyV2Pool from './BuyV2Pool'
 import SellPool from './SellPool'
+import SellV2Pool from './SellV2Pool'
 import { Form } from "react-bootstrap"
 import { Typeahead } from 'react-bootstrap-typeahead'
 import { NeworkID, ParaswapApi } from '../../../../config.js'
 import axios from 'axios'
 
-const componentList = {
-  Buy: BuyPool,
-  Sell: SellPool
+const getComponentList = (poolVersion) => {
+  return(
+    {
+      Buy: poolVersion === 'version 2' ? BuyV2Pool : BuyPool,
+      Sell: poolVersion === 'version 2' ? SellV2Pool : SellPool
+    }
+  )
 }
 
 class UniswapPool extends Component {
@@ -18,7 +24,8 @@ class UniswapPool extends Component {
       action: 'Buy',
       symbols: [],
       tokens: [],
-      tokenAddress: ''
+      tokenAddress: '',
+      poolVersion:'version 1'
     }
   }
 
@@ -68,8 +75,10 @@ class UniswapPool extends Component {
   }
 
   render() {
-    // Change component (Buy/Sell/Swap) dynamicly
+    // Change component (Buy or Sell)
     let CurrentAction
+    const componentList = getComponentList(this.state.poolVersion)
+
     if(this.state.action in componentList){
       CurrentAction = componentList[this.state.action]
     }else{
@@ -84,6 +93,24 @@ class UniswapPool extends Component {
         (
           <React.Fragment>
           <Form>
+          { /* This option available only for version 7 and newest */
+            this.props.version >= 7
+            ?
+            (
+              <Form.Group>
+              <Form.Label>Selet Uniswap pool version</Form.Label>
+              <Form.Control
+                as="select"
+                size="sm"
+                name="selectPoolVersion"
+                onChange={(e) => this.setState({ poolVersion:e.target.value})}
+              >
+                <option>version 1</option>
+                <option>version 2</option>
+              </Form.Control>
+              </Form.Group>
+            ):null
+          }
             <Form.Group>
             <Form.Label>Selet action for Uniswap pool</Form.Label>
             <Form.Control

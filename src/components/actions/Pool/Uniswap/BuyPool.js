@@ -277,7 +277,7 @@ class BuyPool extends Component {
     return (
       <Form>
       <Form.Group>
-      <Form.Label><small>Note: for Uniswap pool we calculate amount of pool by ETH amount</small></Form.Label>
+      <Form.Label><small>Note: for Uniswap pool version 1 we calculate amount of pool share by ETH input amount</small></Form.Label>
       <Form.Label><small>Enter amount of ETH for send in pool</small></Form.Label>
       <Form.Control
       type="number"

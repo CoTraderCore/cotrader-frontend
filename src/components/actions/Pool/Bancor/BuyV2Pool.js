@@ -234,11 +234,11 @@ class BuyV2Pool extends PureComponent {
                 this.props.converterType === 1
                 ?
                 (
-                  <Form.Label><small>Note: for new Bancor v1 we calculate pool amount by multiple pool conenctors</small></Form.Label>
+                  <Form.Label><small>Note: for new Bancor type 1 we calculate pool amount by multiple pool conenctors</small></Form.Label>
                 )
                 :
                 (
-                  <Form.Label><small>Note: for new Bancor v2 we calculate pool amount by single pool conenctor</small></Form.Label>
+                  <Form.Label><small>Note: for new Bancor type 2 we calculate pool amount by single pool conenctor</small></Form.Label>
                 )
               }
               {

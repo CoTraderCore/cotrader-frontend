@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Button, Modal, Tabs, Tab } from 'react-bootstrap'
 import BancorPool from './Bancor/BancorPool'
-import Uniswap from './Uniswap/UniswapPool'
+import UniswapPool from './Uniswap/UniswapPool'
 import SetGasPrice from '../../settings/SetGasPrice'
 
 class PoolModal extends Component {
@@ -44,7 +44,7 @@ class PoolModal extends Component {
         </Tab>
         <Tab eventKey="uniswap" title="Uniswap">
         <br/>
-           <Uniswap
+           <UniswapPool
              version={this.props.version}
              web3={this.props.web3}
              accounts={this.props.accounts}
