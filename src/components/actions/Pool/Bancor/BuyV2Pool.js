@@ -61,39 +61,24 @@ class BuyV2Pool extends PureComponent {
       // get block number
       const block = await this.props.web3.eth.getBlockNumber()
 
-      // get params for buying pool according to converter type
-      let params
+      console.log(this.props.converterVersion, this.props.converterType)
 
-      // type 1 multiple connectors case
-      if(this.props.converterType === 1){
-        params = [
-          0, // for Bancor v2 we calculate pool amount by connectors
-          0, // type Bancor
-          this.props.fromAddress, // pool address
-          connectorsAddress,
-          connectorsAmount,
-          [
-            numStringToBytes32(String(this.props.converterVersion)),
-            numStringToBytes32(String(this.props.converterType))
-          ],
-          this.props.web3.eth.abi.encodeParameters(
-            ['uint256'],
-            [1]
-          )
-        ]
-      }
-      // type 2 single connector case
-      else{
-        params = [
-          0, // for Bancor v2 we calculate pool amount by connectors
-          0, // type Bancor
-          this.props.fromAddress, // pool address
-          connectorsAddress,
-          connectorsAmount,
-          [],
-          "0x"
-        ]
-      }
+      // get params for buying pool according to converter type
+      let params = [
+        0, // for Bancor v2 we calculate pool amount by connectors
+        0, // type Bancor
+        this.props.fromAddress, // pool address
+        connectorsAddress,
+        connectorsAmount,
+        [
+          numStringToBytes32(String(this.props.converterVersion)),
+          numStringToBytes32(String(this.props.converterType))
+        ],
+        this.props.web3.eth.abi.encodeParameters(
+          ['uint256'],
+          [1]
+        )
+      ]
 
       // buy pool
       smartFund.methods.buyPool(

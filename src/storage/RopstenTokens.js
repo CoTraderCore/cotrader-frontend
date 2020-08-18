@@ -6,4 +6,4 @@ export const rTokens = [
   {symbol:"BAT", address:"0x443Fd8D5766169416aE42B8E050fE9422f628419", decimals:18}
 ]
 
-export const rSymbols = ["NAP", "ETH", "BNT", "SC"]
+export const rSymbols = ["NAP", "ETH", "BNT", "WBTC", "BAT"]
