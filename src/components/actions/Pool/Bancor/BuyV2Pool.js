@@ -9,6 +9,7 @@ import {
   BancorConverterABI,
   ERC20ABI,
   ERC20Bytes32ABI,
+  BancorSmartTokenABI
 } from '../../../../config.js'
 
 import setPending from '../../../../utils/setPending'
@@ -60,14 +61,18 @@ class BuyV2Pool extends PureComponent {
       const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
       // get block number
       const block = await this.props.web3.eth.getBlockNumber()
+      // get poolToken
+      const poolToken = this.props.converterType === 2
+      ? await this.extractType2PoolToken(connectorsAddress[0], this.props.converterAddress)
+      : this.props.fromAddress
 
-      console.log(this.props.converterVersion, this.props.converterType)
+      console.log("poolToken", poolToken)
 
       // get params for buying pool according to converter type
       let params = [
         0, // for Bancor v2 we calculate pool amount by connectors
         0, // type Bancor
-        this.props.fromAddress, // pool address
+        poolToken,
         connectorsAddress,
         connectorsAmount,
         [
@@ -99,6 +104,13 @@ class BuyV2Pool extends PureComponent {
          ErrorText:"You do not have enough assets in the fund for this operation"
       })
     }
+  }
+
+  // extract pool token
+  // need only for type 2 
+  extractType2PoolToken = async (tokenConnector, converterAddress) => {
+    const converter = new this.props.web3.eth.Contract(BancorConverterABI, converterAddress)
+    return await converter.methods.poolToken(tokenConnector).call()
   }
 
   // get connectors by converter address
