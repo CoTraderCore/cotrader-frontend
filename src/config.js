@@ -11476,3 +11476,116 @@ export const GetBancorDataABI = [
 		"type": "event"
 	}
 ]
+
+export const BancorConverterTypeTWOABI = [
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_reserveToken",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_minReturn",
+				"type": "uint256"
+			}
+		],
+		"name": "addLiquidity",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "connectorTokenCount",
+		"outputs": [
+			{
+				"internalType": "uint16",
+				"name": "",
+				"type": "uint16"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			}
+		],
+		"name": "connectorTokens",
+		"outputs": [
+			{
+				"internalType": "contract IERC20",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_reserveToken",
+				"type": "address"
+			}
+		],
+		"name": "poolToken",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_poolToken",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_minReturn",
+				"type": "uint256"
+			}
+		],
+		"name": "removeLiquidity",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]

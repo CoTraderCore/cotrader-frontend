@@ -9,7 +9,7 @@ import {
   BancorConverterABI,
   ERC20ABI,
   ERC20Bytes32ABI,
-  BancorSmartTokenABI
+  BancorConverterTypeTWOABI
 } from '../../../../config.js'
 
 import setPending from '../../../../utils/setPending'
@@ -107,9 +107,9 @@ class BuyV2Pool extends PureComponent {
   }
 
   // extract pool token
-  // need only for type 2 
+  // need only for type 2
   extractType2PoolToken = async (tokenConnector, converterAddress) => {
-    const converter = new this.props.web3.eth.Contract(BancorConverterABI, converterAddress)
+    const converter = new this.props.web3.eth.Contract(BancorConverterTypeTWOABI, converterAddress)
     return await converter.methods.poolToken(tokenConnector).call()
   }
 
