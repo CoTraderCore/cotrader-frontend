@@ -25,7 +25,8 @@ class UniswapPool extends Component {
       symbols: [],
       tokens: [],
       tokenAddress: '',
-      poolVersion:'version 1'
+      poolVersion:'version 1',
+      selectedSymbol:''
     }
   }
 
@@ -38,7 +39,7 @@ class UniswapPool extends Component {
   initData = async () => {
     let tokens
     let symbols
-    const blackListPool = ["OMG", "ETH", "ELF"]
+    const blackListPool = ["OMG", "ELF"]
 
     if(NeworkID === 1 || NeworkID === 42){
       // get data from Paraswap api
@@ -58,8 +59,11 @@ class UniswapPool extends Component {
       }
     }else{
        // test data for Ropsten
-       symbols = ['NAP']
-       tokens = [{symbol:'NAP', address:'0x2f5cc2e9353feb3cbe32d3ab1ded9e469fad88c4'}]
+       symbols = ['NAP', 'ETH']
+       tokens = [
+         {symbol:'NAP', address:'0x2f5cc2e9353feb3cbe32d3ab1ded9e469fad88c4'},
+         {symbol:'ETH', address:'0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'}
+       ]
     }
 
     this.setState({ tokens, symbols })
@@ -130,7 +134,10 @@ class UniswapPool extends Component {
                multiple={false}
                id="uniswapSymbols"
                options={this.state.symbols}
-               onChange={(s) => this.setState({tokenAddress: this.findAddressBySymbol(s[0])})}
+               onChange={(s) => this.setState({
+                 tokenAddress: this.findAddressBySymbol(s[0]),
+                 selectedSymbol:s[0]
+               })}
                placeholder="Choose a symbol"
              />
              <br/>
@@ -143,6 +150,9 @@ class UniswapPool extends Component {
                pending={this.props.pending}
                modalClose={this.props.modalClose}
                version={this.props.version}
+               symbols={this.state.symbols}
+               findAddressBySymbol={this.findAddressBySymbol}
+               selectedSymbol={this.state.selectedSymbol}
              />
           </React.Fragment>
         )
