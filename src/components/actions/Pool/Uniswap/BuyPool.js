@@ -16,7 +16,7 @@ import { fromWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
 import setPending from '../../../../utils/setPending'
 import checkTokensLimit from '../../../../utils/checkTokensLimit'
 import getFundFundABIByVersion from '../../../../utils/getFundFundABIByVersion'
-
+import { numStringToBytes32 } from '../../../../utils/numberToFromBytes32'
 
 
 class BuyPool extends Component {
@@ -201,7 +201,7 @@ class BuyPool extends Component {
         ...commonParams,
         connectorsAddress,
         connectorsAmount,
-        [],
+        [numStringToBytes32(String(1))],
         "0x"
       ]
     }
