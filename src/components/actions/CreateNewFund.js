@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 
 import {
   APIEnpoint,
-  SmartFundRegistryABIV4,
+  SmartFundRegistryABIV7,
   SmartFundRegistryADDRESS
 } from '../../config.js'
 
@@ -22,29 +22,31 @@ class CreateNewFund extends Component {
       Show: false,
       Percent: 20,  // NOTE: this number should be mul by 100 !!!
       FundAsset: 'ETH',
-      FundName: ''
+      FundName: '',
+      TradeVerification: true
     }
   }
 
   createNewFund = async () =>{
   if(this.state.Percent > 0 && this.state.Percent <= 30){
-  const contract = new this.props.web3.eth.Contract(SmartFundRegistryABIV4, SmartFundRegistryADDRESS)
+  const contract = new this.props.web3.eth.Contract(SmartFundRegistryABIV7, SmartFundRegistryADDRESS)
     if(this.state.FundName !== ''){
       try{
         const isUSDFund = this.state.FundAsset === "USD" ? true : false
         const name = this.state.FundName
         const percent = this.state.Percent * 100 // MUL Percent by 100
+        const verifiacton = this.state.TradeVerification
         const block = await this.props.web3.eth.getBlockNumber()
 
         this.modalClose()
 
-        console.log(name, percent, isUSDFund)
+        console.log(name, percent, isUSDFund, verifiacton)
 
         // get cur tx count
         let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
         txCount = txCount.data.result
 
-        await contract.methods.createSmartFund(name, percent, isUSDFund)
+        await contract.methods.createSmartFund(name, percent, isUSDFund, verifiacton)
         .send({ from: this.props.accounts[0] })
         .on('transactionHash', (hash) => {
         // pending status for DB
@@ -107,6 +109,7 @@ class CreateNewFund extends Component {
           />
           </Form.Group>
 
+          <hr/>
 
           <Form.Group>
           <Form.Label>Performance Fee % <UserInfo  info="This is the % the fund manager earns for the profits earned, relative to ETH. In the near future, we will add an option for relative to USD, or DAI."/></Form.Label>
@@ -132,12 +135,26 @@ class CreateNewFund extends Component {
           />
           </Form.Group>
 
+          <hr/>
+
           <Form.Group controlId="exampleForm.ControlSelect1">
           <Form.Label>Main fund asset % <UserInfo  info="With the help of this asset, investors will invest, calculate fund value ect"/></Form.Label>
           <Form.Control as="select" name="FundAsset" onChange={e => this.change(e)}>
             <option>ETH</option>
             <option>USD</option>
           </Form.Control>
+          </Form.Group>
+
+          <hr/>
+
+          <Form.Label>Trade verifiaction <UserInfo  info="Protect investors from buying shit coins, allow manager buy only from top 200 most popular tokens"/></Form.Label>
+          <Form.Group>
+            <Form.Check
+            type="checkbox"
+            label="Use trade verifiaction"
+            checked={this.state.TradeVerification}
+            onChange={() => this.setState({ TradeVerification:!this.state.TradeVerification })}
+            />
           </Form.Group>
 
            <Button

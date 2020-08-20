@@ -1,76 +1,76 @@
 // switch this to false in production
-const isLocal = true
+const isLocal = false
 
 // maximum available for trade tokens in smart fund
 export const MAX_TOKENS = 20
 
 export const ParaswapApi = 'https://paraswap.io/api'
 
-// // Mainnet
-// // V1
-// // export const SmartFundRegistryADDRESS = '0x9d1a4dac9a35861abc003acfc680bf5ae1b8ed5b'
-// // V2
-// // export const SmartFundRegistryADDRESS = '0x0f1f46239e6ea6b8922bc4ad343100d47e417a4c'
-// // V3
-// // export const SmartFundRegistryADDRESS = '0x16875b1b717b3748b18fbb27b036aa4fbca88ec5'
-// // V4
-// // export const SmartFundRegistryADDRESS = '0x97dc743077611db9a3019023985e180004ce2ace'
-// // V5
-// // export const SmartFundRegistryADDRESS = '0xD990B951F791f58E7548088f9C1D995cA1A39153'
-// // V6
-// export const SmartFundRegistryADDRESS = '0xd81736Eb54D4FbCDF8779E0b488dd1a5f12F2f17'
-//
-// /*  NOTE: don't change this portals address,
-// *   if you need add new version,
-// *   just create new const with new version
-// */
-// export const PoolPortal = '0x3f49fEddB3c63E36552679BC972857312dC8b4b7'
-// export const PoolPortalV6 = '0xd63495461cA711d59e480AC5c3827B7f7C334Fb3'
-// export const ExchangePortalAddress = '0x7Fd65F765932E29F041113777C47CE77ecF4E24A'
-// export const ExchangePortalAddressV6 = '0xa145eCA55AE0E39D7c228ed7A962424a97AC74cB'
-//
-// export const EtherscanLink = 'https://etherscan.io/'
-// export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
-// export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'
-// export const BloxyLink = 'https://bloxy.info/portfolios/'
-// export const NeworkID = 1
-// export const StakeAddress = '0xf0089381815ed89b52fc9531bc2569c4f945079f'
-// export const COTAddress = '0x5c872500c00565505f3624ab435c222e558e9ff8'
-// export const ParaswapPriceFeedAddress = '0xC6A3eC2E62A932B94Bac51B6B9511A4cB623e2E5'
-// export const ParaswapParamsAddress = '0x0595aaa68ad0fbeacdeeaa7b7d78f22717ade957'
-// export const CoTraderBancorEndPoint = !isLocal ? 'https://api-bancor.cotrader.com/' : 'http://localhost:9003/'
-// export const BNTToken = '0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C'
-// export const BNTEther = '0xc0829421C1d260BD3cB3E0F06cfE2D52db2cE315'
-// export const BNTUSDBToken = '0xd1146B08e8104EeDBa44a73B7bda1d102c6ceDC9'
-// export const UniswapFactory = '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95'
-// export const OneInch = '0xC586BeF4a0992C495Cf22e1aeEE4E446CECDee0E'
-// export const GetBancorData =
+// Mainnet
+// V1
+// export const SmartFundRegistryADDRESS = '0x9d1a4dac9a35861abc003acfc680bf5ae1b8ed5b'
+// V2
+// export const SmartFundRegistryADDRESS = '0x0f1f46239e6ea6b8922bc4ad343100d47e417a4c'
+// V3
+// export const SmartFundRegistryADDRESS = '0x16875b1b717b3748b18fbb27b036aa4fbca88ec5'
+// V4
+// export const SmartFundRegistryADDRESS = '0x97dc743077611db9a3019023985e180004ce2ace'
+// V5
+// export const SmartFundRegistryADDRESS = '0xD990B951F791f58E7548088f9C1D995cA1A39153'
+// V6
+export const SmartFundRegistryADDRESS = '0xd81736Eb54D4FbCDF8779E0b488dd1a5f12F2f17'
 
+/*  NOTE: don't change this portals address,
+*   if you need add new version,
+*   just create new const with new version
+*/
+export const PoolPortal = '0x3f49fEddB3c63E36552679BC972857312dC8b4b7'
+export const PoolPortalV6 = '0xd63495461cA711d59e480AC5c3827B7f7C334Fb3'
+export const ExchangePortalAddress = '0x7Fd65F765932E29F041113777C47CE77ecF4E24A'
+export const ExchangePortalAddressV6 = '0xa145eCA55AE0E39D7c228ed7A962424a97AC74cB'
 
-// Ropsten
-export const SmartFundRegistryADDRESS = '0xed48B46862d3B83067Dba7C7adb9549E445f0c54'
-export const EtherscanLink = 'https://ropsten.etherscan.io/'
+export const EtherscanLink = 'https://etherscan.io/'
 export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
 export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'
 export const BloxyLink = 'https://bloxy.info/portfolios/'
-export const NeworkID = 3
-export const StakeAddress = '0x67bb720dfbcf6ee890ad6aa45e7c3e402bf2dc90'
-export const COTAddress = '0xab726e4664d1c28B084d77cD9be4eF18884e858d'
-export const ParaswapPriceFeedAddress = '0x5ca10df04e94ac4a68b1e86facc271a34082293c'
-export const ParaswapParamsAddress = '0x6fa269bba578d3d12e262a85feb15641a7f17ed5'
+export const NeworkID = 1
+export const StakeAddress = '0xf0089381815ed89b52fc9531bc2569c4f945079f'
+export const COTAddress = '0x5c872500c00565505f3624ab435c222e558e9ff8'
+export const ParaswapPriceFeedAddress = '0xC6A3eC2E62A932B94Bac51B6B9511A4cB623e2E5'
+export const ParaswapParamsAddress = '0x0595aaa68ad0fbeacdeeaa7b7d78f22717ade957'
 export const CoTraderBancorEndPoint = !isLocal ? 'https://api-bancor.cotrader.com/' : 'http://localhost:9003/'
-// NOTE: don't change this portals address, if you need add new version, just create new const with new version
-export const PoolPortal = '0xedDF05F60f4ef35b20E6a9Bd7ad7Ecc74ae4e2e9'
-export const PoolPortalV6 = '0xedDF05F60f4ef35b20E6a9Bd7ad7Ecc74ae4e2e9'
-export const ExchangePortalAddress = '0x4065748B397179Dc5A1Acd1E861Cc9186F081141'
-export const ExchangePortalAddressV6 = '0x4065748B397179Dc5A1Acd1E861Cc9186F081141'
+export const BNTToken = '0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C'
+export const BNTEther = '0xc0829421C1d260BD3cB3E0F06cfE2D52db2cE315'
+export const BNTUSDBToken = '0xd1146B08e8104EeDBa44a73B7bda1d102c6ceDC9'
+export const UniswapFactory = '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95'
+export const OneInch = '0xC586BeF4a0992C495Cf22e1aeEE4E446CECDee0E'
+export const GetBancorData = ''
 
-export const BNTToken = '0xc74bE418ADf788a04dB7d23E3916f332B74A9617'
-//export const BNTEther = '0xD368b98d03855835E2923Dc000b3f9c2EBF1b27b'
-export const BNTUSDBToken = ''
-export const UniswapFactory = '0x9c83dCE8CA20E9aAF9D3efc003b2ea62aBC08351'
-export const OneInch = '0xc9536F9cAe60F671f2704C6F4aC3Bf2076137337'
-export const GetBancorData = '0x9D4249D4398b0E7c6459277B58fb470490DE8a0e'
+
+// // Ropsten
+// export const SmartFundRegistryADDRESS = '0xed48B46862d3B83067Dba7C7adb9549E445f0c54'
+// export const EtherscanLink = 'https://ropsten.etherscan.io/'
+// export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
+// export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'
+// export const BloxyLink = 'https://bloxy.info/portfolios/'
+// export const NeworkID = 3
+// export const StakeAddress = '0x67bb720dfbcf6ee890ad6aa45e7c3e402bf2dc90'
+// export const COTAddress = '0xab726e4664d1c28B084d77cD9be4eF18884e858d'
+// export const ParaswapPriceFeedAddress = '0x5ca10df04e94ac4a68b1e86facc271a34082293c'
+// export const ParaswapParamsAddress = '0x6fa269bba578d3d12e262a85feb15641a7f17ed5'
+// export const CoTraderBancorEndPoint = !isLocal ? 'https://api-bancor.cotrader.com/' : 'http://localhost:9003/'
+// // NOTE: don't change this portals address, if you need add new version, just create new const with new version
+// export const PoolPortal = '0xedDF05F60f4ef35b20E6a9Bd7ad7Ecc74ae4e2e9'
+// export const PoolPortalV6 = '0xedDF05F60f4ef35b20E6a9Bd7ad7Ecc74ae4e2e9'
+// export const ExchangePortalAddress = '0x4065748B397179Dc5A1Acd1E861Cc9186F081141'
+// export const ExchangePortalAddressV6 = '0x4065748B397179Dc5A1Acd1E861Cc9186F081141'
+//
+// export const BNTToken = '0xc74bE418ADf788a04dB7d23E3916f332B74A9617'
+// //export const BNTEther = '0xD368b98d03855835E2923Dc000b3f9c2EBF1b27b'
+// export const BNTUSDBToken = ''
+// export const UniswapFactory = '0x9c83dCE8CA20E9aAF9D3efc003b2ea62aBC08351'
+// export const OneInch = '0xc9536F9cAe60F671f2704C6F4aC3Bf2076137337'
+// export const GetBancorData = '0x9D4249D4398b0E7c6459277B58fb470490DE8a0e'
 
 
 export const StakeABI = [
@@ -7316,752 +7316,6 @@ export const UniswapFactoryABI = [
 	}
 ]
 
-export const SmartFundRegistryABI = [
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_name",
-				"type": "string"
-			},
-			{
-				"name": "_successFee",
-				"type": "uint256"
-			}
-		],
-		"name": "createSmartFund",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [],
-		"name": "renounceOwnership",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_newExchangePortalAddress",
-				"type": "address"
-			}
-		],
-		"name": "setExchangePortalAddress",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_maximumSuccessFee",
-				"type": "uint256"
-			}
-		],
-		"name": "setMaximumSuccessFee",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_platformFee",
-				"type": "uint256"
-			}
-		],
-		"name": "setPlatformFee",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_newOwner",
-				"type": "address"
-			}
-		],
-		"name": "transferOwnership",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [],
-		"name": "withdrawEther",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_tokenAddress",
-				"type": "address"
-			}
-		],
-		"name": "withdrawTokens",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"name": "_platformFee",
-				"type": "uint256"
-			},
-			{
-				"name": "_exchangePortalAddress",
-				"type": "address"
-			},
-			{
-				"name": "_permittedExchangesAddress",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"payable": true,
-		"stateMutability": "payable",
-		"type": "fallback"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"name": "smartFundAddress",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"name": "owner",
-				"type": "address"
-			}
-		],
-		"name": "SmartFundAdded",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"name": "previousOwner",
-				"type": "address"
-			}
-		],
-		"name": "OwnershipRenounced",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"name": "previousOwner",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "OwnershipTransferred",
-		"type": "event"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "exchangePortalAddress",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "getAllSmartFundAddresses",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address[]"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "maximumSuccessFee",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "owner",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "permittedExchanges",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "permittedExchangesAddress",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "platformFee",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "smartFunds",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "totalSmartFunds",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	}
-]
-
-export const SmartFundRegistryABIV4 = [
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_platformFee",
-				"type": "uint256"
-			}
-		],
-		"name": "setPlatformFee",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "smartFundETHFactory",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_maximumSuccessFee",
-				"type": "uint256"
-			}
-		],
-		"name": "setMaximumSuccessFee",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "platformFee",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "getAllSmartFundAddresses",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address[]"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "poolPortalAddress",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_poolPortalAddress",
-				"type": "address"
-			}
-		],
-		"name": "setPoolPortalAddress",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_name",
-				"type": "string"
-			},
-			{
-				"name": "_successFee",
-				"type": "uint256"
-			},
-			{
-				"name": "_isStableBasedFund",
-				"type": "bool"
-			}
-		],
-		"name": "createSmartFund",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_tokenAddress",
-				"type": "address"
-			}
-		],
-		"name": "withdrawTokens",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "permittedExchanges",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "exchangePortalAddress",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_newExchangePortalAddress",
-				"type": "address"
-			}
-		],
-		"name": "setExchangePortalAddress",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [],
-		"name": "renounceOwnership",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [],
-		"name": "withdrawEther",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "owner",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "stableCoinAddress",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_stableCoinAddress",
-				"type": "address"
-			}
-		],
-		"name": "changeStableCoinAddress",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "smartFundUSDFactory",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "maximumSuccessFee",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "totalSmartFunds",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "smartFunds",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "permittedPools",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "permittedStabels",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_newOwner",
-				"type": "address"
-			}
-		],
-		"name": "transferOwnership",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"name": "_platformFee",
-				"type": "uint256"
-			},
-			{
-				"name": "_permittedExchangesAddress",
-				"type": "address"
-			},
-			{
-				"name": "_exchangePortalAddress",
-				"type": "address"
-			},
-			{
-				"name": "_permittedPoolAddress",
-				"type": "address"
-			},
-			{
-				"name": "_poolPortalAddress",
-				"type": "address"
-			},
-			{
-				"name": "_permittedStabels",
-				"type": "address"
-			},
-			{
-				"name": "_stableCoinAddress",
-				"type": "address"
-			},
-			{
-				"name": "_smartFundETHFactory",
-				"type": "address"
-			},
-			{
-				"name": "_smartFundUSDFactory",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"payable": true,
-		"stateMutability": "payable",
-		"type": "fallback"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"name": "smartFundAddress",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"name": "owner",
-				"type": "address"
-			}
-		],
-		"name": "SmartFundAdded",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"name": "previousOwner",
-				"type": "address"
-			}
-		],
-		"name": "OwnershipRenounced",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"name": "previousOwner",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "OwnershipTransferred",
-		"type": "event"
-	}
-]
-
 export const KyberInterfaceABI = [
 	{
 		"constant": true,
@@ -11584,6 +10838,37 @@ export const BancorConverterTypeTWOABI = [
 			}
 		],
 		"name": "removeLiquidity",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]
+
+export const SmartFundRegistryABIV7 = [
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_successFee",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "_isStableBasedFund",
+				"type": "bool"
+			},
+			{
+				"internalType": "bool",
+				"name": "_isRequireTradeVerification",
+				"type": "bool"
+			}
+		],
+		"name": "createSmartFund",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
