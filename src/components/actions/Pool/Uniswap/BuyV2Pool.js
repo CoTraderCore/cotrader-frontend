@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import { Typeahead } from 'react-bootstrap-typeahead'
-import { isAddress } from 'web3-utils'
+import { isAddress, fromWei } from 'web3-utils'
 import { Form, Button, Alert } from "react-bootstrap"
 import { toWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
 import {
@@ -19,13 +19,9 @@ class BuyV2Pool extends PureComponent {
       secondConnector:'',
       firstConnectorAmount:0,
       secondConnectorAmount:0,
-      secondConnectorSymbol:''
+      secondConnectorSymbol:'',
+      ErrorText:''
     }
-  }
-
-  // TODO check fund balance function
-  compareBalance = async () => {
-
   }
 
   // Buy pool
@@ -41,33 +37,49 @@ class BuyV2Pool extends PureComponent {
       this.state.secondConnector
     ).call()
 
-    // get smart fund contract instance
-    const fundContract = new this.props.web3.eth.Contract(
-      SmartFundABIV7,
-      this.props.smartFundAddress
-    )
+    // Continue only if such pool exist
+    if(poolTokenAddress !== "0x0000000000000000000000000000000000000000"){
+      // get smart fund contract instance
+      const fundContract = new this.props.web3.eth.Contract(
+        SmartFundABIV7,
+        this.props.smartFundAddress
+      )
 
-    // convert connetors amount to wei by decimals
-    const connectorsAmount = await this.convertPoolConnecorsToWeiByDecimals(
-      [this.props.tokenAddress, this.state.secondConnector],
-      [this.state.firstConnectorAmount, this.state.secondConnectorAmount]
-    )
+      // convert connetors amount to wei by decimals
+      const connectorsAmount = await this.convertPoolConnecorsToWeiByDecimals(
+        [this.props.tokenAddress, this.state.secondConnector],
+        [this.state.firstConnectorAmount, this.state.secondConnectorAmount]
+      )
 
-    console.log("connectorsAmount", connectorsAmount)
+      // compare fund balance
+      const isEnoughBalance = await this.compareFundBalance(
+        [this.props.tokenAddress, this.state.secondConnector],
+        connectorsAmount
+      )
 
-    // buy pool
-    fundContract.buyPool(
-      0, // for v2 we calculate pool amount by connctors
-      1, // type Uniswap
-      poolTokenAddress,
-      [this.props.tokenAddress, this.state.secondConnector],
-      connectorsAmount,
-      [numStringToBytes32(String(2))], // version 2
-      this.props.web3.eth.abi.encodeParameters(
-        ['uint256','uint256'],
-        [1,1]
-      ) // additional data should be min return
-    )
+      // continue only if enough balance
+      if(isEnoughBalance){
+        // buy pool
+        fundContract.buyPool(
+          0, // for v2 we calculate pool amount by connctors
+          1, // type Uniswap
+          poolTokenAddress,
+          [this.props.tokenAddress, this.state.secondConnector],
+          connectorsAmount,
+          [numStringToBytes32(String(2))], // version 2
+          this.props.web3.eth.abi.encodeParameters(
+            ['uint256','uint256'],
+            [1,1]
+          ) // additional data should be min return
+        )
+      }
+      else{
+        this.setState({ ErrorText: "You do not have enough assets in the fund for this operation" })
+      }
+    }
+    else{
+      this.setState({ ErrorText: "Such pool not exist" })
+    }
   }
 
   // convert input connetors tokens in wei by decimals
@@ -90,6 +102,25 @@ class BuyV2Pool extends PureComponent {
     }
 
     return connectorInWEI
+  }
+
+  // return false if fund don't have enough balance for cur connetors input
+  compareFundBalance = async (connectorsAddress, connetorsInputInWEI) => {
+    let isEnough = true
+    for(let i = 0; i < connectorsAddress.length; i++){
+      // get cur token instance
+      const token = new this.props.web3.eth.Contract(
+        ERC20ABI,
+        connectorsAddress[i]
+      )
+      // get fund balance
+      const fundBalance = await token.methods.balanceOf(
+        this.props.smartFundAddress
+      ).call()
+
+      if(Number(fromWei(connetorsInputInWEI[i])) > Number(fromWei(fundBalance)))
+         isNotEnough = false
+    }
   }
 
 
@@ -141,6 +172,15 @@ class BuyV2Pool extends PureComponent {
           Buy
           </Button>
           </Form>
+        )
+        :null
+      }
+
+      { /* Show error msg */
+        this.state.ErrorText.length > 0
+        ?
+        (
+          <Alert variant="danger">{ this.state.ErrorText }</Alert>
         )
         :null
       }
