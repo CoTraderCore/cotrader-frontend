@@ -8,7 +8,8 @@ import {
   BancorFormulaABI,
   GetBancorDataABI,
   GetBancorData,
-  ERC20ABI
+  ERC20ABI,
+  BancorConverterTypeTWOABI
 } from '../../../../config.js'
 
 import { toWei, fromWei } from 'web3-utils'
@@ -33,7 +34,8 @@ class SellV2Pool extends PureComponent {
 
   removeLiqudity = async () => {
     if(this.state.poolAmount > 0){
-      const fundBalance = await this.getFundBalance(this.props.fromAddress)
+      const poolToken = await this.getPoolToken()
+      const fundBalance = await this.getFundBalance(poolToken)
       if(fundBalance >= this.state.poolAmount){
         const connectorsAddress = await this.getConnectors(this.props.converterAddress)
         const reserveMinReturnAmounts = Array(connectorsAddress.length).fill(1)
@@ -63,7 +65,7 @@ class SellV2Pool extends PureComponent {
         smartFund.methods.sellPool(
           toWei(String(this.state.poolAmount)),
           0, // type Bancor
-          this.props.fromAddress, // pool address
+          poolToken,
           [
             numStringToBytes32(String(this.props.converterVersion)),
             numStringToBytes32(String(this.props.converterType))
@@ -122,13 +124,36 @@ class SellV2Pool extends PureComponent {
   }
 
   setMaxSell = async () => {
-    const poolAmountFromWei = await this.getFundBalance(this.props.fromAddress)
+    const poolToken = await this.getPoolToken()
+    const poolAmountFromWei = await this.getFundBalance(poolToken)
+
     this.setState({ poolAmount:poolAmountFromWei })
 
     if(Number(poolAmountFromWei) === 0)
       this.setState({
          ErrorText:"Your balance is empty"
       })
+  }
+
+  // helper for get pool token from pool container for Bancor type 2
+  getPoolToken = async () => {
+    const poolToken = this.props.converterType === 2
+    ? await this.getPoolTokenFromContainer(this.props.fromAddress)
+    : this.props.fromAddress
+
+    return poolToken
+  }
+
+  // extract pool token from pool container
+  // need only for type 2
+  getPoolTokenFromContainer = async (poolContainer) => {
+    if(poolContainer && this.props.tokenData){
+      const tokenObj = this.props.tokenData.filter(obj => obj.smartTokenAddress === poolContainer)
+      const converter = new this.props.web3.eth.Contract(BancorConverterTypeTWOABI, tokenObj[0].converterAddress)
+      return await converter.methods.poolToken(tokenObj[0].tokenAddress).call()
+    }else {
+      return null
+    }
   }
 
   render() {
