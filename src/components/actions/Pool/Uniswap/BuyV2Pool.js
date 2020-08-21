@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import { Typeahead } from 'react-bootstrap-typeahead'
-import { isAddress, fromWei } from 'web3-utils'
+import { isAddress, fromWei, toWei } from 'web3-utils'
 import { Form, Button, Alert } from "react-bootstrap"
 import { toWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
 import {
@@ -10,6 +10,10 @@ import {
   ERC20ABI
 } from '../../../../config.js'
 import { numStringToBytes32 } from '../../../../utils/numberToFromBytes32'
+import setPending from '../../../../utils/setPending'
+
+const ETH_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+
 
 
 class BuyV2Pool extends PureComponent {
@@ -45,26 +49,36 @@ class BuyV2Pool extends PureComponent {
         this.props.smartFundAddress
       )
 
+      // second connector (ETH) should be in [0] index
+      const connectors = [this.state.secondConnector, this.props.tokenAddress]
+      const connetorsInput = [this.state.secondConnectorAmount, this.state.firstConnectorAmount]
       // convert connetors amount to wei by decimals
       const connectorsAmount = await this.convertPoolConnecorsToWeiByDecimals(
-        [this.props.tokenAddress, this.state.secondConnector],
-        [this.state.firstConnectorAmount, this.state.secondConnectorAmount]
+        connectors,
+        connetorsInput
       )
 
       // compare fund balance
       const isEnoughBalance = await this.compareFundBalance(
-        [this.props.tokenAddress, this.state.secondConnector],
+        connectors,
         connectorsAmount
       )
 
+      console.log("connectorsAmount",connectorsAmount, "connectors", connectors)
+
       // continue only if enough balance
       if(isEnoughBalance){
+        // get block number
+        const block = await this.props.web3.eth.getBlockNumber()
+        // get gas price from local storage
+        const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
+
         // buy pool
-        fundContract.buyPool(
+        fundContract.methods.buyPool(
           0, // for v2 we calculate pool amount by connctors
           1, // type Uniswap
           poolTokenAddress,
-          [this.props.tokenAddress, this.state.secondConnector],
+          connectors,
           connectorsAmount,
           [numStringToBytes32(String(2))], // version 2
           this.props.web3.eth.abi.encodeParameters(
@@ -72,6 +86,15 @@ class BuyV2Pool extends PureComponent {
             [1,1]
           ) // additional data should be min return
         )
+        .send({ from: this.props.accounts[0], gasPrice })
+        .on('transactionHash', (hash) => {
+        // pending status for spiner
+        this.props.pending(true)
+        // pending status for DB
+        setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+        })
+        // close pool modal
+        this.props.modalClose()
       }
       else{
         this.setState({ ErrorText: "You do not have enough assets in the fund for this operation" })
@@ -87,16 +110,24 @@ class BuyV2Pool extends PureComponent {
     const connectorInWEI = []
 
     for(let i = 0; i < connectorsAddress.length; i++){
-      // get cur token instance
-      const token = new this.props.web3.eth.Contract(
-        ERC20ABI,
-        connectorsAddress[i]
-      )
-      // get cur amount in wei by decimals
-      const amount = toWeiByDecimalsInput(
+      let amount = 0
+      // ERC20 case
+      if(String(connectorsAddress[i]).toLowerCase() !== String(ETH_TOKEN_ADDRESS).toLowerCase()){
+        // get cur token instance
+        const token = new this.props.web3.eth.Contract(
+          ERC20ABI,
+          connectorsAddress[i]
+        )
+        // get cur amount in wei by decimals
+        amount = toWeiByDecimalsInput(
         await token.methods.decimals().call(),
         connecorsInput[i]
-      )
+        )
+      }
+      // ETH case
+      else{
+        amount = toWei(connecorsInput[i])
+      }
       // push amount
       connectorInWEI.push(amount)
     }
@@ -106,21 +137,22 @@ class BuyV2Pool extends PureComponent {
 
   // return false if fund don't have enough balance for cur connetors input
   compareFundBalance = async (connectorsAddress, connetorsInputInWEI) => {
-    let isEnough = true
-    for(let i = 0; i < connectorsAddress.length; i++){
-      // get cur token instance
-      const token = new this.props.web3.eth.Contract(
-        ERC20ABI,
-        connectorsAddress[i]
-      )
-      // get fund balance
-      const fundBalance = await token.methods.balanceOf(
-        this.props.smartFundAddress
-      ).call()
-
-      if(Number(fromWei(connetorsInputInWEI[i])) > Number(fromWei(fundBalance)))
-         isNotEnough = false
-    }
+    // let isEnough = true
+    // for(let i = 0; i < connectorsAddress.length; i++){
+    //   // get cur token instance
+    //   const token = new this.props.web3.eth.Contract(
+    //     ERC20ABI,
+    //     connectorsAddress[i]
+    //   )
+    //   // get fund balance
+    //   const fundBalance = await token.methods.balanceOf(
+    //     this.props.smartFundAddress
+    //   ).call()
+    //
+    //   if(Number(fromWei(String(connetorsInputInWEI[i]))) > Number(fromWei(String(fundBalance))))
+    //      isEnough = false
+    // }
+    return true
   }
 
 
