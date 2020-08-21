@@ -64,7 +64,7 @@ class BuyV2Pool extends PureComponent {
         connectorsAmount
       )
 
-      console.log("connectorsAmount",connectorsAmount, "connectors", connectors)
+      console.log("connectorsAmount",connectorsAmount, "connectors", connectors, "poolTokenAddress", poolTokenAddress)
 
       // continue only if enough balance
       if(isEnoughBalance){
