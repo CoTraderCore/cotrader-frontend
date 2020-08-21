@@ -13,6 +13,8 @@ import { toWei, fromWei } from 'web3-utils'
 import setPending from '../../../../utils/setPending'
 import { fromWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
 import getFundFundABIByVersion from '../../../../utils/getFundFundABIByVersion'
+import { numStringToBytes32 } from '../../../../utils/numberToFromBytes32'
+
 
 
 class SellPool extends Component {
@@ -128,9 +130,6 @@ class SellPool extends Component {
   // sell pool
   sellPool = async () => {
     if(this.state.UniAmount > 0){
-      // get additional data
-      const factory = new this.props.web3.eth.Contract(UniswapFactoryABI, UniswapFactory)
-      const poolExchangeAddress = await factory.methods.getExchange(this.props.tokenAddress).call()
       const curBalance = await this.getCurBalance()
 
       // get gas price from local storage
@@ -145,16 +144,7 @@ class SellPool extends Component {
         const fund = new this.props.web3.eth.Contract(FundABI, this.props.smartFundAddress)
         const block = await this.props.web3.eth.getBlockNumber()
 
-        const poolParams = [toWei(String(this.state.UniAmount)), 1, poolExchangeAddress]
-
-        // add additional params for different version
-        // 5 and 6 version not support bytes32[] _additionalArgs
-        if(this.props.version !== 5 && this.props.version !== 6){
-          poolParams.push([])
-          // version >= 7 require additional bytes data
-          if(this.props.version >= 7)
-            poolParams.push("0x")
-        }
+        const poolParams = await this.getPoolParams()
 
         fund.methods.sellPool(...poolParams)
         .send({ from: this.props.accounts[0], gasPrice })
@@ -172,6 +162,43 @@ class SellPool extends Component {
     }else{
       alert('Please input amount')
     }
+  }
+
+  // return pool params for buyPool
+  // different version of smart fund
+  // require different pool params
+  getPoolParams = async () => {
+    // get additional data
+    const factory = new this.props.web3.eth.Contract(UniswapFactoryABI, UniswapFactory)
+    const poolExchangeAddress = await factory.methods.getExchange(this.props.tokenAddress).call()
+    
+    let params
+
+    const commonParams = [
+      toWei(String(this.state.UniAmount)),
+      1,
+      poolExchangeAddress
+    ]
+
+    // V7 and newest
+    if(this.props.version >= 7){
+      // V7 params
+      params = [
+        ...commonParams,
+        [
+          numStringToBytes32(String(1)),
+        ],
+        "0x"
+      ]
+    }
+    else if(this.props.version !== 5 && this.props.version !== 6){
+      params = [...commonParams, []]
+    }else{
+      // 5 and 6 version not support bytes32[] _additionalArgs
+      params = [...commonParams]
+    }
+
+    return params
   }
 
   ERROR(errText){
