@@ -45,6 +45,7 @@ export const BNTUSDBToken = '0xd1146B08e8104EeDBa44a73B7bda1d102c6ceDC9'
 export const UniswapFactory = '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95'
 export const OneInch = '0xC586BeF4a0992C495Cf22e1aeEE4E446CECDee0E'
 export const UniswapV2Factory = '0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f'
+export const UniWTH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
 export const GetBancorData = ''
 
 
@@ -73,6 +74,7 @@ export const GetBancorData = ''
 // export const OneInch = '0xc9536F9cAe60F671f2704C6F4aC3Bf2076137337'
 // export const UniswapV2Factory = '0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f'
 // export const GetBancorData = '0x9D4249D4398b0E7c6459277B58fb470490DE8a0e'
+// export const UniWTH = '0xc778417e063141139fce010982780140aa0cd5ab'
 
 
 export const StakeABI = [
