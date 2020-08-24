@@ -49,7 +49,7 @@ export const UniWTH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
 export const GetBancorData = ''
 
 
-// Ropsten
+// // Ropsten
 // export const SmartFundRegistryADDRESS = '0x0E32171fDE2F8B4Ef4b5F3eaf4F18fAfFCE4F6b2'
 // export const EtherscanLink = 'https://ropsten.etherscan.io/'
 // export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
