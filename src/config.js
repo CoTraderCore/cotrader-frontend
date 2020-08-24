@@ -6,7 +6,7 @@ export const MAX_TOKENS = 20
 
 export const ParaswapApi = 'https://paraswap.io/api'
 
-// Mainnet
+// // Mainnet
 // V1
 // export const SmartFundRegistryADDRESS = '0x9d1a4dac9a35861abc003acfc680bf5ae1b8ed5b'
 // V2
@@ -44,11 +44,11 @@ export const BNTEther = '0xc0829421C1d260BD3cB3E0F06cfE2D52db2cE315'
 export const BNTUSDBToken = '0xd1146B08e8104EeDBa44a73B7bda1d102c6ceDC9'
 export const UniswapFactory = '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95'
 export const OneInch = '0xC586BeF4a0992C495Cf22e1aeEE4E446CECDee0E'
-export const UniswapV2Factory = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'
+export const UniswapV2Factory = '0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f'
 export const GetBancorData = ''
 
 
-// // Ropsten
+// Ropsten
 // export const SmartFundRegistryADDRESS = '0xB1A720590Dc912c7c9FB431Fc4AdBc25cE6E510C'
 // export const EtherscanLink = 'https://ropsten.etherscan.io/'
 // export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
@@ -71,7 +71,7 @@ export const GetBancorData = ''
 // export const BNTUSDBToken = ''
 // export const UniswapFactory = '0x9c83dCE8CA20E9aAF9D3efc003b2ea62aBC08351'
 // export const OneInch = '0xc9536F9cAe60F671f2704C6F4aC3Bf2076137337'
-// export const UniswapV2Factory = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'
+// export const UniswapV2Factory = '0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f'
 // export const GetBancorData = '0x9D4249D4398b0E7c6459277B58fb470490DE8a0e'
 
 
