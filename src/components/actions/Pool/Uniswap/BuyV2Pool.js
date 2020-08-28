@@ -1,6 +1,10 @@
 import React, { PureComponent } from 'react'
 import { Typeahead } from 'react-bootstrap-typeahead'
-import { isAddress, fromWei, toWei } from 'web3-utils'
+import {
+  isAddress,
+  // fromWei, 
+  toWei
+} from 'web3-utils'
 import { Form, Button, Alert } from "react-bootstrap"
 import { toWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
 import {

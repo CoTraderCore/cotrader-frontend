@@ -10892,9 +10892,9 @@ export const SmartFundRegistryABIV7 = [
 				"type": "uint256"
 			},
 			{
-				"internalType": "bool",
-				"name": "_isStableBasedFund",
-				"type": "bool"
+				"internalType": "uint256",
+				"name": "_fundType",
+				"type": "uint256"
 			},
 			{
 				"internalType": "bool",

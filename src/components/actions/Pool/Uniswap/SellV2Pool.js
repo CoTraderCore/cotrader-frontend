@@ -1,13 +1,17 @@
 import React, { PureComponent } from 'react'
 import { Typeahead } from 'react-bootstrap-typeahead'
-import { isAddress, fromWei, toWei } from 'web3-utils'
+import {
+  isAddress,
+  // fromWei,
+  toWei
+} from 'web3-utils'
 import { Form, Button, Alert } from "react-bootstrap"
-import { toWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
+// import { toWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
 import {
   IUniswapV2FactoryABI,
   UniswapV2Factory,
   SmartFundABIV7,
-  ERC20ABI,
+  // ERC20ABI,
   UniWTH
 } from '../../../../config.js'
 import { numStringToBytes32 } from '../../../../utils/numberToFromBytes32'

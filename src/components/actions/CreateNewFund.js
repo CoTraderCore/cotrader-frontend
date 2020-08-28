@@ -14,6 +14,8 @@ import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import axios from 'axios'
 
+const fundType = { "ETH":0, "USD":1, "COT":2 }
+
 class CreateNewFund extends Component {
   constructor(props, context) {
     super(props, context);
@@ -32,21 +34,19 @@ class CreateNewFund extends Component {
   const contract = new this.props.web3.eth.Contract(SmartFundRegistryABIV7, SmartFundRegistryADDRESS)
     if(this.state.FundName !== ''){
       try{
-        const isUSDFund = this.state.FundAsset === "USD" ? true : false
         const name = this.state.FundName
         const percent = this.state.Percent * 100 // MUL Percent by 100
         const verifiacton = this.state.TradeVerification
         const block = await this.props.web3.eth.getBlockNumber()
+        const _fundType = this.state.FundAsset
 
-        this.modalClose()
-
-        console.log(name, percent, isUSDFund, verifiacton)
+        console.log(name, percent, fundType[_fundType], verifiacton, _fundType)
 
         // get cur tx count
         let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
         txCount = txCount.data.result
 
-        await contract.methods.createSmartFund(name, percent, isUSDFund, verifiacton)
+        contract.methods.createSmartFund(name, percent, fundType[_fundType], verifiacton)
         .send({ from: this.props.accounts[0] })
         .on('transactionHash', (hash) => {
         // pending status for DB
@@ -56,7 +56,10 @@ class CreateNewFund extends Component {
       }catch(e){
         // for case if user reject transaction
         this.props.pending(false)
+        console.log("Error", e)
       }
+      // close modal
+      this.modalClose()
     }else{
       alert('Please input fund name')
     }
@@ -142,6 +145,7 @@ class CreateNewFund extends Component {
           <Form.Control as="select" name="FundAsset" onChange={e => this.change(e)}>
             <option>ETH</option>
             <option>USD</option>
+            <option>COT</option>
           </Form.Control>
           </Form.Group>
 
