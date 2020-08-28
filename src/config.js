@@ -49,6 +49,33 @@ export const UniWTH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
 export const GetBancorData = ''
 
 
+// Rinkeby
+export const SmartFundRegistryADDRESS = '0xebAa1d367D32258e2EEE0a84fD7F6EDCCFF4BDFc'
+export const EtherscanLink = 'https://rinkeby.etherscan.io/'
+export const KyberAddress = '0xF77eC7Ed5f5B9a5aee4cfa6FFCaC6A4C315BaC76'
+export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'
+export const BloxyLink = 'https://bloxy.info/portfolios/'
+export const NeworkID = 4
+export const StakeAddress = ''
+export const COTAddress = '0xddDA173F4Cf5054BBBD9BE581Cb3c8C1aBfe0E9b'
+export const ParaswapPriceFeedAddress = ''
+export const ParaswapParamsAddress = ''
+export const CoTraderBancorEndPoint = !isLocal ? 'https://api-bancor.cotrader.com/' : 'http://localhost:9003/'
+// NOTE: don't change this portals address, if you need add new version, just create new const with new version
+export const PoolPortal = ''
+export const PoolPortalV6 = '0xDDe31181A88fF502c9c2bF8A8732B56bf718fB49'
+export const ExchangePortalAddress = '0xB3F0790fBD5635fed2A2AEc21565EE0d91B1C18f'
+export const ExchangePortalAddressV6 = '0xB3F0790fBD5635fed2A2AEc21565EE0d91B1C18f'
+
+export const BNTToken = '0x850f56419c669d7363756280f01daC254c0185F3'
+export const BNTUSDBToken = ''
+export const UniswapFactory = '0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36'
+export const OneInch = '0x40c4631687F0A781e1CCE402c1659333A864Ad05'
+export const UniswapV2Factory = '0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f'
+export const GetBancorData = '0xD5fa2378f992491B2C2DA55a2C27073B00e52250'
+export const UniWTH = '0xc778417e063141139fce010982780140aa0cd5ab'
+
+
 // // Ropsten
 // export const SmartFundRegistryADDRESS = '0x0E32171fDE2F8B4Ef4b5F3eaf4F18fAfFCE4F6b2'
 // export const EtherscanLink = 'https://ropsten.etherscan.io/'
@@ -76,6 +103,9 @@ export const GetBancorData = ''
 // export const GetBancorData = '0x9D4249D4398b0E7c6459277B58fb470490DE8a0e'
 // export const UniWTH = '0xc778417e063141139fce010982780140aa0cd5ab'
 
+
+
+/* TODO: MOVE ALL ABI to a separate file ABI.js*/
 
 export const StakeABI = [
 	{
