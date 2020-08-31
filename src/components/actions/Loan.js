@@ -55,8 +55,15 @@ class PoolModal extends Component {
        tokens =  [
          {symbol:'cDAI', address:'0x6ce27497a64fffb5517aa4aee908b1e7eb63b9ff'},
          {symbol:'cETH', address:'0x1d70b01a2c3e3b2e56fcdcefe50d5c5d70109a5d'}]
-    }else{
-      alert('There are no data for Your network')
+    }
+    else if(NeworkID === 4){
+       symbols = ['cDAI', 'cETH']
+       tokens =  [
+         {symbol:'cDAI', address:'0x6d7f0754ffeb405d23c51ce938289d4835be3b14'},
+         {symbol:'cETH', address:'0xd6801a1dffcd0a410336ef88def4320d6df1883e'}]
+    }
+    else{
+      alert('There are no CTokens for your network')
     }
 
     this.setState({ symbols, tokens })

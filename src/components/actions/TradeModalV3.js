@@ -35,7 +35,10 @@ import checkTokensLimit from '../../utils/checkTokensLimit'
 import Pending from '../templates/Spiners/Pending'
 import BigNumber from 'bignumber.js'
 import { Typeahead } from 'react-bootstrap-typeahead'
-import { rTokens, rSymbols } from '../../storage/RopstenTokens'
+import { ropstenTokens, ropstenSymbols } from '../../storage/RopstenTokens'
+import { rinkebyTokens, rinkebySymbols } from '../../storage/RinkebyTokens'
+
+
 
 class TradeModalV3 extends Component {
   constructor(props, context) {
@@ -99,11 +102,21 @@ class TradeModalV3 extends Component {
         alert("Can not get data from api, please try again latter")
         console.log(e)
       }
-    }else{
-      // just provide for test few Ropsten tokens from storage 
-      const tokens = rTokens
-      const symbols = rSymbols
+    }
+    else if (NeworkID === 3){
+      // just provide for test few Ropsten tokens from storage
+      const tokens = ropstenTokens
+      const symbols = ropstenSymbols
       this.setState({ tokens, symbols })
+    }
+    else if (NeworkID === 4){
+      // just provide for test few Ropsten tokens from storage
+      const tokens = rinkebyTokens
+      const symbols = rinkebySymbols
+      this.setState({ tokens, symbols })
+    }
+    else{
+      alert("There are no tokens for your ETH network")
     }
   }
 
