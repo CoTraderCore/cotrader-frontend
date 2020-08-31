@@ -3,6 +3,7 @@
 
 import { NeworkID } from '../config.js'
 
+// TODO GET DATA FROM API for mainnet 
 const whiteListMainnet = []
 
 const whiteListRopsten = [
@@ -17,12 +18,25 @@ const whiteListRopsten = [
   "0x443Fd8D5766169416aE42B8E050fE9422f628419"
 ]
 
+const whiteListRinkeby = [
+  "0x420b89636F9C932C8ab3524483A0AeEc112f3Dbe", // XXX
+  "0x7050C8C5f673bF36637c35c135B47F10593B206C", // YYY
+  "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"  // ETH
+]
+
 let WhiteListedTokens
 
 if(NeworkID === 1){
   WhiteListedTokens = whiteListMainnet
-}else{
+}
+else if(NeworkID === 3){
   WhiteListedTokens = whiteListRopsten
+}
+else if(NeworkID === 4){
+  WhiteListedTokens = whiteListRinkeby
+}
+else{
+  WhiteListedTokens = []
 }
 
 
