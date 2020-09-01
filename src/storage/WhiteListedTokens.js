@@ -3,7 +3,7 @@
 
 import { NeworkID } from '../config.js'
 
-// TODO GET DATA FROM API for mainnet 
+// TODO GET DATA FROM API for mainnet
 const whiteListMainnet = []
 
 const whiteListRopsten = [
@@ -19,9 +19,10 @@ const whiteListRopsten = [
 ]
 
 const whiteListRinkeby = [
-  "0x420b89636F9C932C8ab3524483A0AeEc112f3Dbe", // XXX
-  "0x7050C8C5f673bF36637c35c135B47F10593B206C", // YYY
-  "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"  // ETH
+  "0x420b89636F9C932C8ab3524483A0AeEc112f3Dbe",  // XXX
+  "0x7050C8C5f673bF36637c35c135B47F10593B206C",  // YYY
+  "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",  // ETH
+  "0x850f56419c669d7363756280f01daC254c0185F3"   // BNT
 ]
 
 let WhiteListedTokens
