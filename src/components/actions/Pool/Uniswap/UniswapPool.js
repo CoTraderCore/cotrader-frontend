@@ -41,7 +41,7 @@ class UniswapPool extends Component {
     let symbols
     const blackListPool = ["OMG", "ELF"]
 
-    if(NeworkID === 1 || NeworkID === 42){
+    if(NeworkID === 1){
       // get data from Paraswap api
       try{
          tokens = await axios.get(ParaswapApi + '/tokens')
@@ -57,13 +57,26 @@ class UniswapPool extends Component {
          alert("Can not get data from api, please try again latter")
          console.log(e)
       }
-    }else{
+    }
+    else if(NeworkID === 3){
        // test data for Ropsten
        symbols = ['NAP', 'ETH']
        tokens = [
          {symbol:'NAP', address:'0x2f5cc2e9353feb3cbe32d3ab1ded9e469fad88c4'},
          {symbol:'ETH', address:'0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'}
        ]
+    }
+    else if (NeworkID === 4){
+      // test data for Rinkeby
+      symbols = ['XXX', 'YYY', 'ETH']
+      tokens = [
+        {symbol:'XXX', address:'0x420b89636F9C932C8ab3524483A0AeEc112f3Dbe'},
+        {symbol:'YYY', address:'0x7050C8C5f673bF36637c35c135B47F10593B206C'},
+        {symbol:'ETH', address:'0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'}
+      ]
+    }
+    else {
+      alert("Unknow network for UNI pool tokens")
     }
 
     this.setState({ tokens, symbols })
