@@ -27,7 +27,7 @@ class BalancerPool extends PureComponent {
     console.log(CurrentAction)
 
     return (
-      <>
+     <>
       <Form>
         <Form.Group>
         <Form.Label>Selet action for Balancer pool</Form.Label>
@@ -43,8 +43,19 @@ class BalancerPool extends PureComponent {
          </Form.Group>
       </Form>
 
-      <CurrentAction/>
-      </>
+      <CurrentAction
+        tokenAddress={this.state.tokenAddress}
+        web3={this.props.web3}
+        accounts={this.props.accounts}
+        smartFundAddress={this.props.smartFundAddress}
+        pending={this.props.pending}
+        modalClose={this.props.modalClose}
+        version={this.props.version}
+        symbols={this.state.symbols}
+        findAddressBySymbol={this.findAddressBySymbol}
+        selectedSymbol={this.state.selectedSymbol}
+      />
+     </>
     )
   }
 
