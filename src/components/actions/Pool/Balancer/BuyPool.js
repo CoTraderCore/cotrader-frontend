@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import { Form } from "react-bootstrap"
-
+import Pending from '../../../templates/Spiners/Pending'
 import {
   BalancerPoolABI,
   ERC20ABI,
@@ -19,7 +19,8 @@ class BuyPool extends PureComponent {
     super(props, context);
     this.state = {
       poolAddress: undefined,
-      poolTokens: []
+      poolTokens: [],
+      isPending:false
     }
   }
 
@@ -32,6 +33,8 @@ class BuyPool extends PureComponent {
   updatePoolInfo = async () => {
     if(isAddress(this.state.poolAddress)){
       try{
+        this.setState({ isPending:true })
+
         const BPool = new this.props.web3.eth.Contract(
           BalancerPoolABI,
           this.state.poolAddress)
@@ -47,7 +50,7 @@ class BuyPool extends PureComponent {
           poolTokens.push({ address:poolTokenAddresses[i], ...symbolsAndDecimals })
         }
 
-        this.setState({ poolTokens })
+        this.setState({ poolTokens, isPending:false })
 
       }catch(e){
         alert("Wrong BPool address")
@@ -86,7 +89,7 @@ class BuyPool extends PureComponent {
     return (
       <>
       <Form>
-      <Form.Group>
+        <Form.Group>
         <Form.Label>Balancer pool address</Form.Label>
         <Form.Control
         type="string"
@@ -102,7 +105,13 @@ class BuyPool extends PureComponent {
               {
                 this.state.poolTokens.map((item, key) => {
                   return(
-                    <p key={key}>{item.symbol}</p>
+                    <Form.Group key={key}>
+                    <Form.Label>amount of { item.symbol }</Form.Label>
+                    <Form.Control
+                    type="string"
+                    placeholder={`Enter ${ item.symbol }`}
+                    />
+                    </Form.Group>
                   )
                 })
               }
@@ -111,6 +120,11 @@ class BuyPool extends PureComponent {
           :null
         }
       </Form>
+      {
+        this.state.isPending
+        ?(<Pending/>)
+        :null
+      }
       </>
     )
   }
