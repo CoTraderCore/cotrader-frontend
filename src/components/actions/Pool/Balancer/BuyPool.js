@@ -7,11 +7,12 @@ import {
   ERC20Bytes32ABI
 } from '../../../../config.js'
 
+import { isAddress } from 'web3-utils'
+
 import {
-  isAddress,
-  // fromWei,
-  // toWei
-} from 'web3-utils'
+  toWeiByDecimalsInput,
+  // fromWeiByDecimalsInput
+} from '../../../../utils/weiByDecimals'
 
 
 class BuyPool extends PureComponent {
@@ -85,6 +86,15 @@ class BuyPool extends PureComponent {
     }
   }
 
+  // find a certain connector by symbol and update amount
+  updatePoolTokensAmount = (symbol, amount) => {
+    const searchObj = this.state.poolTokens.filter((item) => {
+    return item.symbol === symbol
+    })
+    // TODO: convert  to wei by decimals
+    searchObj[0].amount = toWeiByDecimalsInput(searchObj[0].decimals, amount)
+  }
+
   render() {
     return (
       <>
@@ -110,7 +120,8 @@ class BuyPool extends PureComponent {
                     <Form.Control
                     type="string"
                     placeholder={`Enter ${ item.symbol }`}
-                    />
+                    name={ item.symbol }
+                    onChange={(e) => this.updatePoolTokensAmount(e.target.name, e.target.value)}/>
                     </Form.Group>
                   )
                 })
