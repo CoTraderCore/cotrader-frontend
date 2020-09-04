@@ -19,13 +19,8 @@ export const ParaswapApi = 'https://paraswap.io/api'
 // // export const SmartFundRegistryADDRESS = '0xD990B951F791f58E7548088f9C1D995cA1A39153'
 // // V6
 // export const SmartFundRegistryADDRESS = '0xd81736Eb54D4FbCDF8779E0b488dd1a5f12F2f17'
-//
-// /*  NOTE: don't change this portals address,
-// *   if you need add new version,
-// *   just create new const with new version
-// */
-// export const PoolPortal = '0x3f49fEddB3c63E36552679BC972857312dC8b4b7'
 // export const PoolPortalV6 = '0xd63495461cA711d59e480AC5c3827B7f7C334Fb3'
+// NOTE: don't change this portals address, if you need add new version, just create new const with new version
 // export const ExchangePortalAddress = '0x7Fd65F765932E29F041113777C47CE77ecF4E24A'
 // export const ExchangePortalAddressV6 = '0xa145eCA55AE0E39D7c228ed7A962424a97AC74cB'
 //
@@ -50,7 +45,7 @@ export const ParaswapApi = 'https://paraswap.io/api'
 
 
 // Rinkeby
-export const SmartFundRegistryADDRESS = '0xF3922272E079196b3703c50836b71b657672dbf6'
+export const SmartFundRegistryADDRESS = '0xd7C7fDf88F5489CF719B3Eb6E7Cc42CaEA7C3894'
 export const EtherscanLink = 'https://rinkeby.etherscan.io/'
 export const KyberAddress = '0xF77eC7Ed5f5B9a5aee4cfa6FFCaC6A4C315BaC76'
 export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'
@@ -61,12 +56,10 @@ export const COTAddress = '0xddDA173F4Cf5054BBBD9BE581Cb3c8C1aBfe0E9b'
 export const ParaswapPriceFeedAddress = ''
 export const ParaswapParamsAddress = ''
 export const CoTraderBancorEndPoint = !isLocal ? 'https://api-bancor.cotrader.com/' : 'http://localhost:9003/'
-// NOTE: don't change this portals address, if you need add new version, just create new const with new version
-export const PoolPortal = ''
 export const PoolPortalV6 = '0xDDe31181A88fF502c9c2bF8A8732B56bf718fB49'
+// NOTE: don't change this portals address, if you need add new version, just create new const with new version
 export const ExchangePortalAddress = '0xB3F0790fBD5635fed2A2AEc21565EE0d91B1C18f'
 export const ExchangePortalAddressV6 = '0xB3F0790fBD5635fed2A2AEc21565EE0d91B1C18f'
-
 export const BNTToken = '0x850f56419c669d7363756280f01daC254c0185F3'
 export const BNTUSDBToken = ''
 export const UniswapFactory = '0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36'
@@ -88,9 +81,8 @@ export const UniWTH = '0xc778417e063141139fce010982780140aa0cd5ab'
 // export const ParaswapPriceFeedAddress = '0x5ca10df04e94ac4a68b1e86facc271a34082293c'
 // export const ParaswapParamsAddress = '0x6fa269bba578d3d12e262a85feb15641a7f17ed5'
 // export const CoTraderBancorEndPoint = !isLocal ? 'https://api-bancor.cotrader.com/' : 'http://localhost:9003/'
-// // NOTE: don't change this portals address, if you need add new version, just create new const with new version
-// export const PoolPortal = '0xedDF05F60f4ef35b20E6a9Bd7ad7Ecc74ae4e2e9'
 // export const PoolPortalV6 = '0xedDF05F60f4ef35b20E6a9Bd7ad7Ecc74ae4e2e9'
+// // NOTE: don't change this portals address, if you need add new version, just create new const with new version
 // export const ExchangePortalAddress = '0x4065748B397179Dc5A1Acd1E861Cc9186F081141'
 // export const ExchangePortalAddressV6 = '0x4065748B397179Dc5A1Acd1E861Cc9186F081141'
 //

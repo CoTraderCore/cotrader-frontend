@@ -4,7 +4,7 @@ import {
   UniswapFactoryABI,
   UniswapFactory,
   PoolPortalABI,
-  PoolPortal,
+  PoolPortalV6,
   ERC20ABI,
   EtherscanLink
 } from '../../../../config.js'
@@ -89,7 +89,7 @@ class BuyPool extends Component {
    this.setState({ isComputed:true })
    try{
      // GET ERC20 info
-     const poolPortal = new this.props.web3.eth.Contract(PoolPortalABI, PoolPortal)
+     const poolPortal = new this.props.web3.eth.Contract(PoolPortalABI, PoolPortalV6)
      const ERCAmount = await poolPortal.methods.getUniswapTokenAmountByETH(
        this.props.tokenAddress, toWei(this.state.ETHAmount)
       ).call()
@@ -186,7 +186,7 @@ class BuyPool extends Component {
     // V7 and newest
     if(this.props.version >= 7){
       // get pool portal instance
-      const poolPortal = new this.props.web3.eth.Contract(PoolPortalABI, PoolPortal)
+      const poolPortal = new this.props.web3.eth.Contract(PoolPortalABI, PoolPortalV6)
       // get connectors address and amount from pool portal by pool amount
       const {
         connectorsAddress,

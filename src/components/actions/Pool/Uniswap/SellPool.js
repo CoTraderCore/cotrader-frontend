@@ -4,7 +4,7 @@ import {
   UniswapFactoryABI,
   UniswapFactory,
   PoolPortalABI,
-  PoolPortal,
+  PoolPortalV6,
   ERC20ABI
 } from '../../../../config.js'
 
@@ -47,7 +47,7 @@ class SellPool extends Component {
         // get core data
         const uniswapFactory = new this.props.web3.eth.Contract(UniswapFactoryABI, UniswapFactory)
         const exchangeAddress = await uniswapFactory.methods.getExchange(this.props.tokenAddress).call()
-        const poolPortal = new this.props.web3.eth.Contract(PoolPortalABI, PoolPortal)
+        const poolPortal = new this.props.web3.eth.Contract(PoolPortalABI, PoolPortalV6)
         const ercToken = new this.props.web3.eth.Contract(ERC20ABI, this.props.tokenAddress)
         const tokenDecimals = await ercToken.methods.decimals().call()
 
@@ -171,7 +171,7 @@ class SellPool extends Component {
     // get additional data
     const factory = new this.props.web3.eth.Contract(UniswapFactoryABI, UniswapFactory)
     const poolExchangeAddress = await factory.methods.getExchange(this.props.tokenAddress).call()
-    
+
     let params
 
     const commonParams = [
