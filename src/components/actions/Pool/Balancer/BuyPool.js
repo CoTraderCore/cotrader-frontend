@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { Form } from "react-bootstrap"
+import { Form, Button } from "react-bootstrap"
 import Pending from '../../../templates/Spiners/Pending'
 import {
   BalancerPoolABI,
@@ -7,7 +7,7 @@ import {
   ERC20Bytes32ABI
 } from '../../../../config.js'
 
-import { isAddress } from 'web3-utils'
+import { isAddress, toWei } from 'web3-utils'
 
 import {
   toWeiByDecimalsInput,
@@ -19,6 +19,7 @@ class BuyPool extends PureComponent {
   constructor(props, context) {
     super(props, context);
     this.state = {
+      poolAmount:0,
       poolAddress: undefined,
       poolTokens: [],
       isPending:false
@@ -28,6 +29,13 @@ class BuyPool extends PureComponent {
   componentDidUpdate(prevProps, prevState){
     if(prevState.poolAddress !== this.state.poolAddress)
       this.updatePoolInfo()
+  }
+
+  // Buy Balancer pool 
+  buyBalancerPool = async () => {
+    const connectorsAddress = this.state.poolTokens.map(item => item.address)
+    const connectorsAmount = this.state.poolTokens.map(item => item.amount)
+    const poolAmount = toWei(this.state.poolAmount)
   }
 
   // get info for all pool connectors by pool token address
@@ -106,9 +114,20 @@ class BuyPool extends PureComponent {
         placeholder="Enter Balancer pool address"
         onChange={(e) => this.setState({ poolAddress:e.target.value })}
         />
+
+        <br/>
+
+        <Form.Label>Amount of pool for buy</Form.Label>
+        <Form.Control
+        type="string"
+        placeholder="Enter Balancer pool amount"
+        onChange={(e) => this.setState({ poolAmount:e.target.value })}/>
         </Form.Group>
+
+        <br/>
+
         {
-          this.state.poolTokens.length > 0
+          this.state.poolTokens.length > 0 && this.state.poolAmount > 0
           ?
           (
             <>
@@ -116,7 +135,7 @@ class BuyPool extends PureComponent {
                 this.state.poolTokens.map((item, key) => {
                   return(
                     <Form.Group key={key}>
-                    <Form.Label>amount of { item.symbol }</Form.Label>
+                    <Form.Label>max amount of { item.symbol }</Form.Label>
                     <Form.Control
                     type="string"
                     placeholder={`Enter ${ item.symbol }`}
@@ -126,6 +145,7 @@ class BuyPool extends PureComponent {
                   )
                 })
               }
+              <Button variant="outline-primary" onClick={() => this.buyBalancerPool()}>Buy</Button>
             </>
           )
           :null
