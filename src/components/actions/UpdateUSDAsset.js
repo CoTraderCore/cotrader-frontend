@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { SmartFundABIV4, EtherscanLink } from '../../config.js'
+import { SmartFundABIV4, SmartFundABIV7, EtherscanLink } from '../../config.js'
 import { Button, Modal, Form, Alert } from "react-bootstrap"
 import { isAddress, fromWei } from 'web3-utils'
 
@@ -45,11 +45,11 @@ class UpdateUSDAsset extends Component {
 
     // get core asset dependse of version
     if(this.props.version >= 6){
-      fundContract = new this.props.web3.eth.Contract(SmartFundABIV7, address)
-      currentUSDTokenAddress = await contract.methods.coreFundAsset().call()
+      fundContract = new this.props.web3.eth.Contract(SmartFundABIV7, this.props.smartFundAddress)
+      currentUSDTokenAddress = await fundContract.methods.coreFundAsset().call()
     }else{
-      fundContract = new this.props.web3.eth.Contract(SmartFundABIV4, address)
-      currentUSDTokenAddress = await contract.methods.stableCoinAddress().call()
+      fundContract = new this.props.web3.eth.Contract(SmartFundABIV4, this.props.smartFundAddress)
+      currentUSDTokenAddress = await fundContract.methods.stableCoinAddress().call()
     }
 
     const totalWeiDepositedInWei = await fundContract.methods.totalWeiDeposited.call()
