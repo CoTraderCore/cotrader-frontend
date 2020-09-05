@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { SmartFundABI, SmartFundABIV4, ERC20ABI, APIEnpoint } from '../../config.js'
+import { SmartFundABI, SmartFundABIV7, ERC20ABI, APIEnpoint } from '../../config.js'
 import { Button, Modal, Form, Alert } from "react-bootstrap"
 import setPending from '../../utils/setPending'
 import { toWeiByDecimalsInput } from '../../utils/weiByDecimals'
@@ -25,7 +25,7 @@ class Deposit extends Component {
       if(this.props.mainAsset === 'ETH'){
         this.depositETH(address, _value)
       }else{
-        this.depositUSD(address, _value)
+        this.depositERC20(address, _value)
       }
     }
   }
@@ -51,9 +51,9 @@ class Deposit extends Component {
   }
 
 
-  depositUSD = async (address, _value) => {
-    const contract = new this.props.web3.eth.Contract(SmartFundABIV4, address)
-    const ercAssetAddress = await contract.methods.stableCoinAddress().call()
+  depositERC20 = async (address, _value) => {
+    const contract = new this.props.web3.eth.Contract(SmartFundABIV7, address)
+    const ercAssetAddress = await contract.methods.coreFundAsset().call()
     const ercAssetContract = new this.props.web3.eth.Contract(ERC20ABI, ercAssetAddress)
     const ercAssetDecimals = await ercAssetContract.methods.decimals().call()
     const amount = toWeiByDecimalsInput(ercAssetDecimals, _value)
