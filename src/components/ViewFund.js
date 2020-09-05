@@ -391,9 +391,11 @@ class ViewFund extends Component {
                ?
                (
                   <UpdateUSDAsset
-                  web3={this.props.web3}
-                  accounts={this.props.accounts}
-                  smartFundAddress={this.state.smartFundAddress} />
+                    web3={this.props.web3}
+                    accounts={this.props.accounts}
+                    smartFundAddress={this.state.smartFundAddress}
+                    version={this.state.version}
+                  />
                )
                : null
              }

@@ -40,10 +40,20 @@ class UpdateUSDAsset extends Component {
   }
 
   initData = async () => {
-    const fundContract = new this.props.web3.eth.Contract(SmartFundABIV4, this.props.smartFundAddress)
+    let fundContract
+    let currentUSDTokenAddress
+
+    // get core asset dependse of version
+    if(this.props.version >= 6){
+      fundContract = new this.props.web3.eth.Contract(SmartFundABIV7, address)
+      currentUSDTokenAddress = await contract.methods.coreFundAsset().call()
+    }else{
+      fundContract = new this.props.web3.eth.Contract(SmartFundABIV4, address)
+      currentUSDTokenAddress = await contract.methods.stableCoinAddress().call()
+    }
+
     const totalWeiDepositedInWei = await fundContract.methods.totalWeiDeposited.call()
     const totalWeiDeposited = Number(fromWei(String(totalWeiDepositedInWei)))
-    const currentUSDTokenAddress = await fundContract.methods.stableCoinAddress().call()
     const currentUSDTokenSymbol = Object.keys(assets).find(
       k => assets[k].toLowerCase() === currentUSDTokenAddress.toLowerCase())
 
