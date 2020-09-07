@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import {
   isAddress,
-  // fromWei, 
+  // fromWei,
   toWei
 } from 'web3-utils'
 import { Form, Button, Alert } from "react-bootstrap"
@@ -11,8 +11,7 @@ import {
   IUniswapV2FactoryABI,
   UniswapV2Factory,
   SmartFundABIV7,
-  ERC20ABI,
-  UniWTH
+  ERC20ABI
 } from '../../../../config.js'
 import { numStringToBytes32 } from '../../../../utils/numberToFromBytes32'
 import setPending from '../../../../utils/setPending'
@@ -40,14 +39,8 @@ class BuyV2Pool extends PureComponent {
       IUniswapV2FactoryABI,
       UniswapV2Factory)
 
-    // Wrap ETH case
-    const tokenA = String(this.props.tokenAddress).toLowerCase() === String(ETH_TOKEN_ADDRESS).toLowerCase()
-    ? UniWTH
-    : this.props.tokenAddress
-
-    const tokenB = String(this.state.secondConnector).toLowerCase() === String(ETH_TOKEN_ADDRESS).toLowerCase()
-    ? UniWTH
-    : this.state.secondConnector
+    const tokenA = this.props.tokenAddress
+    const tokenB = this.state.secondConnector
 
     // get UNI pool contract by token address form Uniswap factory
     const poolTokenAddress = await uniswapFactory.methods.getPair(

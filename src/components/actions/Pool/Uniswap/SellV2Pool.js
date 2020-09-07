@@ -10,14 +10,10 @@ import { Form, Button, Alert } from "react-bootstrap"
 import {
   IUniswapV2FactoryABI,
   UniswapV2Factory,
-  SmartFundABIV7,
-  // ERC20ABI,
-  UniWTH
+  SmartFundABIV7
 } from '../../../../config.js'
 import { numStringToBytes32 } from '../../../../utils/numberToFromBytes32'
 import setPending from '../../../../utils/setPending'
-
-const ETH_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 
 
 
@@ -38,14 +34,8 @@ class SellV2Pool extends PureComponent {
       IUniswapV2FactoryABI,
       UniswapV2Factory)
 
-    // Wrap ETH case
-    const tokenA = String(this.props.tokenAddress).toLowerCase() === String(ETH_TOKEN_ADDRESS).toLowerCase()
-    ? UniWTH
-    : this.props.tokenAddress
-
-    const tokenB = String(this.state.secondConnector).toLowerCase() === String(ETH_TOKEN_ADDRESS).toLowerCase()
-    ? UniWTH
-    : this.state.secondConnector
+    const tokenA = this.props.tokenAddress
+    const tokenB = this.state.secondConnector
 
     // get UNI pool contract by token address form Uniswap factory
     const poolTokenAddress = await uniswapFactory.methods.getPair(
