@@ -45,7 +45,7 @@ export const ParaswapApi = 'https://paraswap.io/api'
 
 
 // Rinkeby
-export const SmartFundRegistryADDRESS = '0x9bE00ee91523644099480196B191CA05025211e0'
+export const SmartFundRegistryADDRESS = '0x5139F0FA0Dca5a6C2D64842b558D87b0eeEA4683'
 export const EtherscanLink = 'https://rinkeby.etherscan.io/'
 export const KyberAddress = '0xF77eC7Ed5f5B9a5aee4cfa6FFCaC6A4C315BaC76'
 export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'
