@@ -63,7 +63,7 @@ class Deposit extends Component {
     let contract
     let ercAssetAddress
 
-    // get core asset dependse of version 
+    // get core asset dependse of version
     if(this.props.version >= 6){
       contract = new this.props.web3.eth.Contract(SmartFundABIV7, address)
       ercAssetAddress = await contract.methods.coreFundAsset().call()
