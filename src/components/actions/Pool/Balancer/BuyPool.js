@@ -4,9 +4,10 @@ import Pending from '../../../templates/Spiners/Pending'
 import {
   BalancerPoolABI,
   ERC20ABI,
-  ERC20Bytes32ABI
+  ERC20Bytes32ABI,
+  SmartFundABIV7
 } from '../../../../config.js'
-
+import setPending from '../../../../utils/setPending'
 import { isAddress, toWei } from 'web3-utils'
 
 import {
@@ -31,11 +32,41 @@ class BuyPool extends PureComponent {
       this.updatePoolInfo()
   }
 
-  // Buy Balancer pool 
+  // Buy Balancer pool
   buyBalancerPool = async () => {
     const connectorsAddress = this.state.poolTokens.map(item => item.address)
     const connectorsAmount = this.state.poolTokens.map(item => item.amount)
     const poolAmount = toWei(this.state.poolAmount)
+
+    const fundContract = new this.props.web3.eth.Contract(
+      SmartFundABIV7,
+      this.props.smartFundAddress
+    )
+
+    // get block number
+    const block = await this.props.web3.eth.getBlockNumber()
+    // get gas price from local storage
+    const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
+
+    // buy pool
+    fundContract.methods.buyPool(
+      poolAmount,
+      2, // type Balancer
+      this.state.poolAddress,
+      connectorsAddress,
+      connectorsAmount,
+      [],
+      "0x"
+    )
+    .send({ from: this.props.accounts[0], gasPrice })
+    .on('transactionHash', (hash) => {
+    // pending status for spiner
+    this.props.pending(true)
+    // pending status for DB
+    setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+    })
+    // close pool modal
+    this.props.modalClose()
   }
 
   // get info for all pool connectors by pool token address
