@@ -68,11 +68,12 @@ class UniswapPool extends Component {
     }
     else if (NeworkID === 4){
       // test data for Rinkeby
-      symbols = ['XXX', 'YYY', 'ETH']
+      symbols = ['XXX', 'YYY', 'ETH', 'BNT']
       tokens = [
         {symbol:'XXX', address:'0x420b89636F9C932C8ab3524483A0AeEc112f3Dbe'},
         {symbol:'YYY', address:'0x7050C8C5f673bF36637c35c135B47F10593B206C'},
-        {symbol:'ETH', address:'0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'}
+        {symbol:'ETH', address:'0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'},
+        {symbol:'BNT', address:'0x850f56419c669d7363756280f01daC254c0185F3'}
       ]
     }
     else {

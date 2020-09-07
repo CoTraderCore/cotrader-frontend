@@ -11,7 +11,8 @@ import {
   IUniswapV2FactoryABI,
   UniswapV2Factory,
   SmartFundABIV7,
-  ERC20ABI
+  ERC20ABI,
+  UniWTH
 } from '../../../../config.js'
 import { numStringToBytes32 } from '../../../../utils/numberToFromBytes32'
 import setPending from '../../../../utils/setPending'
@@ -42,10 +43,19 @@ class BuyV2Pool extends PureComponent {
     const tokenA = this.props.tokenAddress
     const tokenB = this.state.secondConnector
 
+    // Wrap ETH case with UNI WETH
+    const tokenAWrap = String(tokenA).toLowerCase() === String(ETH_TOKEN_ADDRESS).toLowerCase()
+    ? UniWTH
+    : tokenA
+
+    const tokenBWrap = String(tokenB).toLowerCase() === String(ETH_TOKEN_ADDRESS).toLowerCase()
+    ? UniWTH
+    : tokenB
+
     // get UNI pool contract by token address form Uniswap factory
     const poolTokenAddress = await uniswapFactory.methods.getPair(
-      tokenA,
-      tokenB
+      tokenAWrap,
+      tokenBWrap
     ).call()
 
     // Continue only if such pool exist
