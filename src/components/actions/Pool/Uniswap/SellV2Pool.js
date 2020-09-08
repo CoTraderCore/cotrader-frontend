@@ -11,7 +11,9 @@ import {
   IUniswapV2FactoryABI,
   UniswapV2Factory,
   SmartFundABIV7,
-  UniWTH
+  UniWTH,
+  PoolPortalABI,
+  PoolPortalV6
 } from '../../../../config.js'
 import { numStringToBytes32 } from '../../../../utils/numberToFromBytes32'
 import setPending from '../../../../utils/setPending'
@@ -70,6 +72,9 @@ class SellV2Pool extends PureComponent {
       // get gas price from local storage
       const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
 
+      // test
+      this.getConnectorsAmountByPoolAmount(toWei(this.state.poolAmount), poolTokenAddress)
+
       // buy pool
       fundContract.methods.sellPool(
         toWei(this.state.poolAmount),
@@ -94,6 +99,17 @@ class SellV2Pool extends PureComponent {
     else{
       this.setState({ ErrorText: "Such pool not exist" })
     }
+  }
+
+
+  getConnectorsAmountByPoolAmount = async (poolAmount, poolToken) => {
+    const poolPortal = new this.props.web3.eth.Contract(PoolPortalABI, PoolPortalV6)
+    const data = await poolPortal.methods.getUniswapV2ConnectorsAmountByPoolAmount(
+      poolAmount,
+      poolToken
+    ).call()
+
+    console.log("data getConnectorsAmountByPoolAmount", data)
   }
 
 

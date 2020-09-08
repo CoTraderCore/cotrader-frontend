@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import {
   isAddress,
-  // fromWei,
+  fromWei,
   toWei
 } from 'web3-utils'
 import { Form, Button, Alert } from "react-bootstrap"
@@ -12,13 +12,14 @@ import {
   UniswapV2Factory,
   SmartFundABIV7,
   ERC20ABI,
-  UniWTH
+  UniWTH,
+  IUniswapV2PairABI
 } from '../../../../config.js'
 import { numStringToBytes32 } from '../../../../utils/numberToFromBytes32'
 import setPending from '../../../../utils/setPending'
+import BigNumber from 'bignumber.js'
 
 const ETH_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-
 
 
 class BuyV2Pool extends PureComponent {
@@ -65,7 +66,6 @@ class BuyV2Pool extends PureComponent {
         SmartFundABIV7,
         this.props.smartFundAddress
       )
-
       // second connector (ETH) should be in [0] index
       const connectors = [this.state.secondConnector, this.props.tokenAddress]
       const connetorsInput = [this.state.secondConnectorAmount, this.state.firstConnectorAmount]
@@ -74,12 +74,13 @@ class BuyV2Pool extends PureComponent {
         connectors,
         connetorsInput
       )
-
       // compare fund balance
       const isEnoughBalance = await this.compareFundBalance(
         connectors,
         connectorsAmount
       )
+
+      this.calculateReceivePoolAmount(poolTokenAddress, connectorsAmount)
 
       // continue only if enough balance
       if(isEnoughBalance){
@@ -87,7 +88,6 @@ class BuyV2Pool extends PureComponent {
         const block = await this.props.web3.eth.getBlockNumber()
         // get gas price from local storage
         const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
-
         // buy pool
         fundContract.methods.buyPool(
           0, // for v2 we calculate pool amount by connctors
@@ -119,6 +119,39 @@ class BuyV2Pool extends PureComponent {
       this.setState({ ErrorText: "Such pool not exist" })
     }
   }
+
+
+  // get
+  calculateReceivePoolAmount = async (poolAddress, connectorsAmount) => {
+    const UniPair = this.props.web3.eth.Contract(IUniswapV2PairABI, poolAddress)
+    const Reserves = await UniPair.methods.getReserves().call()
+
+    const amount0 = connectorsAmount[0]
+    const amount1 = connectorsAmount[1]
+
+    console.log("amount0, amount1", fromWei(String(amount0)), fromWei(String(amount1)))
+
+    const poolToken = this.props.web3.eth.Contract(ERC20ABI, poolAddress)
+    const totalSupply = await poolToken.methods.totalSupply().call()
+
+    console.log("totalSupply", fromWei(String(totalSupply)))
+
+    let liquidityAmount = 0
+
+    if(fromWei(String(totalSupply)) === 0){
+      const MINIMUM_LIQUIDITY = 10**3
+      liquidityAmount = Math.sqrt(BigNumber(amount0).multipliedBy(amount1).minus(MINIMUM_LIQUIDITY))
+    }
+    else{
+      liquidityAmount = Math.min(
+        BigNumber(amount0).multipliedBy(totalSupply).dividedBy(Reserves[0]),
+        BigNumber(amount1).multipliedBy(totalSupply).dividedBy(Reserves[1])
+      )
+    }
+
+    console.log("liquidityAmount", fromWei(String(liquidityAmount)), liquidityAmount)
+  }
+
 
   // convert input connetors tokens in wei by decimals
   convertPoolConnecorsToWeiByDecimals = async (connectorsAddress, connecorsInput) => {
