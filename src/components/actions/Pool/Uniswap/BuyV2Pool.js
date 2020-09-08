@@ -125,16 +125,10 @@ class BuyV2Pool extends PureComponent {
   calculateReceivePoolAmount = async (poolAddress, connectorsAmount) => {
     const UniPair = this.props.web3.eth.Contract(IUniswapV2PairABI, poolAddress)
     const Reserves = await UniPair.methods.getReserves().call()
-
-    const amount0 = connectorsAmount[0]
-    const amount1 = connectorsAmount[1]
-
-    console.log("amount0, amount1", fromWei(String(amount0)), fromWei(String(amount1)))
-
+    const amount0 = connectorsAmount[1]
+    const amount1 = connectorsAmount[0]
     const poolToken = this.props.web3.eth.Contract(ERC20ABI, poolAddress)
     const totalSupply = await poolToken.methods.totalSupply().call()
-
-    console.log("totalSupply", fromWei(String(totalSupply)))
 
     let liquidityAmount = 0
 
