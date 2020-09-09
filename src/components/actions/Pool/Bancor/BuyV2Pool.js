@@ -8,12 +8,11 @@ import {
   SmartFundABIV7,
   BancorConverterABI,
   ERC20ABI,
-  ERC20Bytes32ABI,
   BancorConverterTypeTWOABI
 } from '../../../../config.js'
 
 import setPending from '../../../../utils/setPending'
-
+import getTokenSymbolAndDecimals from '../../../../utils/getTokenSymbolAndDecimals'
 import {
   toWeiByDecimalsInput,
   fromWeiByDecimalsInput
@@ -126,7 +125,7 @@ class BuyV2Pool extends PureComponent {
 
           for(let i = 0; i < connectorsCount; i++){
             const address = await converter.methods.connectorTokens(i).call()
-            const { symbol, decimals } = await this.getTokenSymbolAndDecimals(address)
+            const { symbol, decimals } = await getTokenSymbolAndDecimals(address, this.props.web3)
             connectors.push({ symbol, address, amount:0, decimals })
           }
         }
@@ -136,7 +135,7 @@ class BuyV2Pool extends PureComponent {
         if(this.props.poolSourceTokenAddress){
           console.log("this.props.poolSourceTokenAddress", this.props.poolSourceTokenAddress)
           const address = this.props.poolSourceTokenAddress
-          const { symbol, decimals } = await this.getTokenSymbolAndDecimals(address)
+          const { symbol, decimals } = await getTokenSymbolAndDecimals(address, this.props.web3)
           connectors.push({ symbol, address, amount:0, decimals })
         }
       }
@@ -153,29 +152,6 @@ class BuyV2Pool extends PureComponent {
     })
     // TODO: convert  to wei by decimals
     searchObj[0].amount = toWeiByDecimalsInput(searchObj[0].decimals, amount)
-  }
-
-  getTokenSymbolAndDecimals = async (address) => {
-    // ETH case
-    if(String(address).toLowerCase() === String('0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE').toLowerCase()){
-      return { symbol: 'ETH', decimals: 18}
-    }
-    else{
-      // ERC20 String return case
-      try{
-        const token = new this.props.web3.eth.Contract(ERC20ABI, address)
-        const symbol = await token.methods.symbol().call()
-        const decimals = await token.methods.decimals().call()
-        return { symbol, decimals }
-      }
-      // EC20 Bytes32 return case
-      catch(e){
-        const token = new this.props.web3.eth.Contract(ERC20Bytes32ABI, address)
-        const symbol = await this.props.web3.utils.toUtf8(token.methods.symbol().call())
-        const decimals = await token.methods.decimals().call()
-        return { symbol, decimals }
-      }
-    }
   }
 
   // return false if not enough balance on fund for a some certain token
