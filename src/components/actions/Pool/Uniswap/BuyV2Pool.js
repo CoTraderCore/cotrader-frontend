@@ -5,7 +5,7 @@ import {
   fromWei,
   toWei
 } from 'web3-utils'
-import { Form, Button, Alert } from "react-bootstrap"
+import { Form, Button, Alert, Table } from "react-bootstrap"
 import { toWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
 import {
   IUniswapV2FactoryABI,
@@ -18,6 +18,7 @@ import {
 import { numStringToBytes32 } from '../../../../utils/numberToFromBytes32'
 import setPending from '../../../../utils/setPending'
 import BigNumber from 'bignumber.js'
+import Pending from '../../../templates/Spiners/Pending'
 
 const ETH_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 
@@ -30,34 +31,36 @@ class BuyV2Pool extends PureComponent {
       firstConnectorAmount:0,
       secondConnectorAmount:0,
       secondConnectorSymbol:'',
+      connectors:[],
+      connectorsAmount:[],
+      poolTokenAddress:[],
+      poolTotalSupply:0,
+      poolAmountGet:0,
+      fundCurrentPoolSharePercent:0,
+      fundRecievePoolSharePercent:0,
+      fundNewPoolSharePercent:0,
+      showPending:false,
       ErrorText:''
+    }
+  }
+
+  componentDidUpdate = async (prevProps, prevState) => {
+    if(prevProps.tokenAddress !== this.props.tokenAddress
+       ||
+       prevState.secondConnector !== this.state.secondConnector
+       ||
+       prevState.firstConnectorAmount !== this.state.firstConnectorAmount
+       ||
+       prevState.secondConnectorAmount !== this.state.secondConnectorAmount)
+    {
+      await this.updateInfoByOnChange()
     }
   }
 
   // Buy pool
   addLiquidity = async () => {
-    // get Uniswap factory instance
-    const uniswapFactory = new this.props.web3.eth.Contract(
-      IUniswapV2FactoryABI,
-      UniswapV2Factory)
-
-    const tokenA = this.props.tokenAddress
-    const tokenB = this.state.secondConnector
-
-    // Wrap ETH case with UNI WETH
-    const tokenAWrap = String(tokenA).toLowerCase() === String(ETH_TOKEN_ADDRESS).toLowerCase()
-    ? UniWTH
-    : tokenA
-
-    const tokenBWrap = String(tokenB).toLowerCase() === String(ETH_TOKEN_ADDRESS).toLowerCase()
-    ? UniWTH
-    : tokenB
-
     // get UNI pool contract by token address form Uniswap factory
-    const poolTokenAddress = await uniswapFactory.methods.getPair(
-      tokenAWrap,
-      tokenBWrap
-    ).call()
+    const poolTokenAddress = this.state.poolTokenAddress
 
     // Continue only if such pool exist
     if(poolTokenAddress !== "0x0000000000000000000000000000000000000000"){
@@ -66,21 +69,15 @@ class BuyV2Pool extends PureComponent {
         SmartFundABIV7,
         this.props.smartFundAddress
       )
-      // second connector (ETH) should be in [0] index
-      const connectors = [this.state.secondConnector, this.props.tokenAddress]
-      const connetorsInput = [this.state.secondConnectorAmount, this.state.firstConnectorAmount]
+
+      const connectors = this.state.connectors
       // convert connetors amount to wei by decimals
-      const connectorsAmount = await this.convertPoolConnecorsToWeiByDecimals(
-        connectors,
-        connetorsInput
-      )
+      const connectorsAmount = this.state.connectorsAmount
       // compare fund balance
       const isEnoughBalance = await this.compareFundBalance(
         connectors,
         connectorsAmount
       )
-
-      this.calculateReceivePoolAmount(poolTokenAddress, connectorsAmount)
 
       // continue only if enough balance
       if(isEnoughBalance){
@@ -120,9 +117,90 @@ class BuyV2Pool extends PureComponent {
     }
   }
 
+  // update states by onChange
+  updateInfoByOnChange = async () => {
+    if(isAddress(this.props.tokenAddress)
+       &&
+       isAddress(this.state.secondConnector)
+       &&
+       this.state.firstConnectorAmount > 0
+       &&
+       this.state.secondConnectorAmount > 0)
+    {
+      this.setState({ showPending:true })
+      // get data
+      const {
+        connectors,
+        connectorsAmount,
+        poolTokenAddress
+      } = await this.getPoolInfo()
 
-  // get
-  calculateReceivePoolAmount = async (poolAddress, connectorsAmount) => {
+      const {
+        poolTotalSupply,
+        poolAmountGet,
+        fundCurrentPoolSharePercent,
+        fundRecievePoolSharePercent,
+        fundNewPoolSharePercent
+      } = await this.calculatePoolShare(poolTokenAddress, connectorsAmount)
+
+      // Update states
+      this.setState({
+        connectors,
+        connectorsAmount,
+        poolTokenAddress,
+        poolTotalSupply,
+        poolAmountGet,
+        fundCurrentPoolSharePercent,
+        fundRecievePoolSharePercent,
+        fundNewPoolSharePercent,
+        showPending:false
+      })
+    }
+  }
+
+  // helper for get pool token and convert connectors to wei
+  // return connectors, connectorsAmount, poolTokenAddress
+  getPoolInfo = async () => {
+    // get Uniswap factory instance
+    const uniswapFactory = new this.props.web3.eth.Contract(
+      IUniswapV2FactoryABI,
+      UniswapV2Factory)
+
+    const tokenA = this.props.tokenAddress
+    const tokenB = this.state.secondConnector
+
+    // Wrap ETH case with UNI WETH
+    const tokenAWrap = String(tokenA).toLowerCase() === String(ETH_TOKEN_ADDRESS).toLowerCase()
+    ? UniWTH
+    : tokenA
+
+    const tokenBWrap = String(tokenB).toLowerCase() === String(ETH_TOKEN_ADDRESS).toLowerCase()
+    ? UniWTH
+    : tokenB
+
+    // second connector (ETH) should be in [0] index
+    const connectors = [this.state.secondConnector, this.props.tokenAddress]
+    const connetorsInput = [this.state.secondConnectorAmount, this.state.firstConnectorAmount]
+
+    const connectorsAmount = await this.convertPoolConnecorsToWeiByDecimals(
+      connectors,
+      connetorsInput
+    )
+
+    // get UNI pool contract by token address form Uniswap factory
+    const poolTokenAddress = await uniswapFactory.methods.getPair(
+      tokenAWrap,
+      tokenBWrap
+    ).call()
+
+    return { connectors, connectorsAmount, poolTokenAddress }
+  }
+
+
+  // helper for calculate user pool share by connectors input
+  // return poolTotalSupply, poolAmountGet, fundCurrentPoolSharePercent,
+  // fundRecievePoolSharePercent, fundNewPoolSharePercent
+  calculatePoolShare = async (poolAddress, connectorsAmount) => {
     const UniPair = this.props.web3.eth.Contract(IUniswapV2PairABI, poolAddress)
     const Reserves = await UniPair.methods.getReserves().call()
     const amount0 = connectorsAmount[1]
@@ -143,7 +221,29 @@ class BuyV2Pool extends PureComponent {
       )
     }
 
-    console.log("liquidityAmount", fromWei(String(liquidityAmount)), liquidityAmount)
+    // calculate shares
+    const poolTotalSupply = fromWei(String(totalSupply))
+    const poolAmountGet = fromWei(String(liquidityAmount))
+    // get current shares in %
+    const curPoolBalance = await poolToken.methods.balanceOf(this.props.smartFundAddress).call()
+    const fundCurrentPoolSharePercent = 1 / ((parseFloat(poolTotalSupply) / 100)
+    / parseFloat(fromWei(String(curPoolBalance))))
+
+    // get received shares in %
+    const poolOnePercent = (parseFloat(poolTotalSupply) + parseFloat(poolAmountGet)) / 100
+    const fundRecievePoolSharePercent = 1 / (poolOnePercent / parseFloat(poolAmountGet))
+
+    // get new shares
+    const fundNewPoolSharePercent = fundCurrentPoolSharePercent + fundRecievePoolSharePercent
+
+    // return result
+    return {
+      poolTotalSupply,
+      poolAmountGet,
+      fundCurrentPoolSharePercent,
+      fundRecievePoolSharePercent,
+      fundNewPoolSharePercent
+    }
   }
 
 
@@ -178,6 +278,7 @@ class BuyV2Pool extends PureComponent {
   }
 
   // return false if fund don't have enough balance for cur connetors input
+  // TODO wrap ETH with WETH
   compareFundBalance = async (connectorsAddress, connetorsInputInWEI) => {
     // let isEnough = true
     // for(let i = 0; i < connectorsAddress.length; i++){
@@ -248,6 +349,62 @@ class BuyV2Pool extends PureComponent {
           </Form>
         )
         :null
+      }
+
+      { /* Show spinner */
+        this.state.showPending
+        ?
+        (
+          <Pending/>
+        ):null
+      }
+
+      { /* Show pool share info */
+        this.state.poolAmountGet > 0
+        ?
+        (
+          <>
+          <br/>
+          <small>
+          <Table striped bordered hover size="sm">
+          <thead>
+           <tr>
+             <th>You will get</th>
+           </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Pool amount</td>
+              <td>
+              {Number(this.state.poolAmountGet).toFixed(4)}
+              &#160;from total supply &#160;
+              {Number(this.state.poolTotalSupply).toFixed(4)}
+              </td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr>
+              <td>Share now</td>
+              <td>{Number(this.state.fundCurrentPoolSharePercent).toFixed(4)} %</td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr>
+              <td>Share gain</td>
+              <td>{Number(this.state.fundRecievePoolSharePercent).toFixed(4)} %</td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr>
+              <td>Share new</td>
+              <td>{Number(this.state.fundNewPoolSharePercent).toFixed(4)} %</td>
+            </tr>
+          </tbody>
+          </Table>
+          </small>
+          </>
+        ):null
+
       }
 
       { /* Show error msg */
