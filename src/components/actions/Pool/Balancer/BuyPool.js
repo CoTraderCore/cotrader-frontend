@@ -14,7 +14,7 @@ import {
   toWeiByDecimalsInput,
   // fromWeiByDecimalsInput
 } from '../../../../utils/weiByDecimals'
-
+import getTokenSymbolAndDecimals from '../../../../utils/getTokenSymbolAndDecimals'
 
 class BuyPool extends PureComponent {
   constructor(props, context) {
@@ -83,8 +83,9 @@ class BuyPool extends PureComponent {
         const poolTokens = []
 
         for(let i = 0; i < poolTokenAddresses.length; i++){
-          const symbolsAndDecimals = await this.getTokenSymbolAndDecimals(
-            poolTokenAddresses[i]
+          const symbolsAndDecimals = await getTokenSymbolAndDecimals(
+            poolTokenAddresses[i],
+            this.props.web3
           )
 
           poolTokens.push({ address:poolTokenAddresses[i], ...symbolsAndDecimals })
@@ -98,30 +99,6 @@ class BuyPool extends PureComponent {
       }
     }else{
       this.setState({ poolTokens:[] })
-    }
-  }
-
-  // return object with symbol and decimals
-  getTokenSymbolAndDecimals = async (address) => {
-    // ETH case
-    if(String(address).toLowerCase() === String('0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE').toLowerCase()){
-      return { symbol: 'ETH', decimals: 18}
-    }
-    else{
-      // ERC20 String return case
-      try{
-        const token = new this.props.web3.eth.Contract(ERC20ABI, address)
-        const symbol = await token.methods.symbol().call()
-        const decimals = await token.methods.decimals().call()
-        return { symbol, decimals }
-      }
-      // EC20 Bytes32 return case
-      catch(e){
-        const token = new this.props.web3.eth.Contract(ERC20Bytes32ABI, address)
-        const symbol = await this.props.web3.utils.toUtf8(token.methods.symbol().call())
-        const decimals = await token.methods.decimals().call()
-        return { symbol, decimals }
-      }
     }
   }
 
