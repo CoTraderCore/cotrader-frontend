@@ -4,12 +4,11 @@ import Pending from '../../../templates/Spiners/Pending'
 import {
   BalancerPoolABI,
   ERC20ABI,
-  ERC20Bytes32ABI,
   SmartFundABIV7
 } from '../../../../config.js'
 import setPending from '../../../../utils/setPending'
 import { isAddress, toWei } from 'web3-utils'
-
+import BigNumber from 'bignumber.js'
 import {
   toWeiByDecimalsInput,
   // fromWeiByDecimalsInput
@@ -35,7 +34,14 @@ class BuyPool extends PureComponent {
   // Buy Balancer pool
   buyBalancerPool = async () => {
     const connectorsAddress = this.state.poolTokens.map(item => item.address)
-    const connectorsAmount = this.state.poolTokens.map(item => item.amount)
+    const connectorsAmount = [] // this.state.poolTokens.map(item => item.amount)
+
+    for(let i = 0; i < connectorsAddress.length; i++){
+      const amount = await this.calculateMaxConnectorsAmount(connectorsAddress[i])
+      // console.log("Amount ", fromWei(String(amount)))
+      connectorsAmount.push(amount)
+    }
+
     const poolAmount = toWei(this.state.poolAmount)
 
     const fundContract = new this.props.web3.eth.Contract(
@@ -67,6 +73,26 @@ class BuyPool extends PureComponent {
     })
     // close pool modal
     this.props.modalClose()
+  }
+
+
+  // helper for get max connector amount for send to pool by pool amount
+  // maxAmountsIn[token] = (poolAmountOut / totalPoolSupply) * tokenBalanceInsidePool * (1 + buffer),
+  // where buffer can be e.g. 0% or 5%. the higher the buffer,
+  // the less likely join will fail due to price changes
+  calculateMaxConnectorsAmount = async (tokenAddress) => {
+    const poolAmount = toWei(this.state.poolAmount)
+    const poolToken = new this.props.web3.eth.Contract(ERC20ABI, this.state.poolAddress)
+    const totalPoolSupply = await poolToken.methods.totalSupply().call()
+    const connectorToken = new this.props.web3.eth.Contract(ERC20ABI, tokenAddress)
+    const tokenBalanceInsidePool = await connectorToken.methods.balanceOf(this.state.poolAddress).call()
+
+    const buffer = 1 + 0.5
+    const result = BigNumber(poolAmount)
+                   .dividedBy(totalPoolSupply)
+                   .multipliedBy(tokenBalanceInsidePool)
+                   .multipliedBy(buffer)
+    return String(Math.trunc(result))
   }
 
   // get info for all pool connectors by pool token address
@@ -102,15 +128,6 @@ class BuyPool extends PureComponent {
     }
   }
 
-  // find a certain connector by symbol and update amount
-  updatePoolTokensAmount = (symbol, amount) => {
-    const searchObj = this.state.poolTokens.filter((item) => {
-    return item.symbol === symbol
-    })
-    // TODO: convert  to wei by decimals
-    searchObj[0].amount = toWeiByDecimalsInput(searchObj[0].decimals, amount)
-  }
-
   render() {
     return (
       <>
@@ -131,33 +148,7 @@ class BuyPool extends PureComponent {
         placeholder="Enter Balancer pool amount"
         onChange={(e) => this.setState({ poolAmount:e.target.value })}/>
         </Form.Group>
-
-        <br/>
-
-        {
-          this.state.poolTokens.length > 0 && this.state.poolAmount > 0
-          ?
-          (
-            <>
-              {
-                this.state.poolTokens.map((item, key) => {
-                  return(
-                    <Form.Group key={key}>
-                    <Form.Label>max amount of { item.symbol }</Form.Label>
-                    <Form.Control
-                    type="string"
-                    placeholder={`Enter ${ item.symbol }`}
-                    name={ item.symbol }
-                    onChange={(e) => this.updatePoolTokensAmount(e.target.name, e.target.value)}/>
-                    </Form.Group>
-                  )
-                })
-              }
-              <Button variant="outline-primary" onClick={() => this.buyBalancerPool()}>Buy</Button>
-            </>
-          )
-          :null
-        }
+        <Button variant="outline-primary" onClick={() => this.buyBalancerPool()}>Buy</Button>
       </Form>
       {
         this.state.isPending
