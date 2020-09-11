@@ -377,7 +377,7 @@ class BuyV2Pool extends PureComponent {
               <td>Pool amount</td>
               <td>
               {Number(this.state.poolAmountGet).toFixed(4)}
-              &#160;from total supply &#160;
+              &#160;, current total supply &#160;
               {Number(this.state.poolTotalSupply).toFixed(4)}
               </td>
             </tr>

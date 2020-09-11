@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { Form, Button } from "react-bootstrap"
+import { Form, Button, Alert, Table } from "react-bootstrap"
 import Pending from '../../../templates/Spiners/Pending'
 import {
   BalancerPoolABI,
@@ -7,12 +7,11 @@ import {
   SmartFundABIV7
 } from '../../../../config.js'
 import setPending from '../../../../utils/setPending'
-import { isAddress, toWei } from 'web3-utils'
+import { isAddress, toWei, fromWei } from 'web3-utils'
 import BigNumber from 'bignumber.js'
-import {
-  toWeiByDecimalsInput,
-  // fromWeiByDecimalsInput
-} from '../../../../utils/weiByDecimals'
+
+import { fromWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
+
 import getTokenSymbolAndDecimals from '../../../../utils/getTokenSymbolAndDecimals'
 
 class BuyPool extends PureComponent {
@@ -22,26 +21,23 @@ class BuyPool extends PureComponent {
       poolAmount:0,
       poolAddress: undefined,
       poolTokens: [],
-      isPending:false
+      isPending:false,
+      totalPoolSupply:0,
+      fundCurrentPoolShare:0,
+      fundNewPoolShare:0,
+      fundTotalNewShare:0
     }
   }
 
   componentDidUpdate(prevProps, prevState){
-    if(prevState.poolAddress !== this.state.poolAddress)
+    if(prevState.poolAddress !== this.state.poolAddress || prevState.poolAmount !== this.state.poolAmount)
       this.updatePoolInfo()
   }
 
   // Buy Balancer pool
   buyBalancerPool = async () => {
     const connectorsAddress = this.state.poolTokens.map(item => item.address)
-    const connectorsAmount = [] // this.state.poolTokens.map(item => item.amount)
-
-    for(let i = 0; i < connectorsAddress.length; i++){
-      const amount = await this.calculateMaxConnectorsAmount(connectorsAddress[i])
-      // console.log("Amount ", fromWei(String(amount)))
-      connectorsAmount.push(amount)
-    }
-
+    const connectorsAmount = this.state.poolTokens.map(item => item.amount)
     const poolAmount = toWei(this.state.poolAmount)
 
     const fundContract = new this.props.web3.eth.Contract(
@@ -95,36 +91,67 @@ class BuyPool extends PureComponent {
     return String(Math.trunc(result))
   }
 
-  // get info for all pool connectors by pool token address
+  // get info by pool token address and amount
   updatePoolInfo = async () => {
-    if(isAddress(this.state.poolAddress)){
-      try{
-        this.setState({ isPending:true })
+    if(isAddress(this.state.poolAddress) && this.state.poolAmount > 0){
+      this.setState({ isPending:true })
 
+      try{
+        // get pool instance
         const BPool = new this.props.web3.eth.Contract(
           BalancerPoolABI,
           this.state.poolAddress)
 
+        // get data for all pool connectors
         const poolTokenAddresses = await BPool.methods.getCurrentTokens().call()
         const poolTokens = []
 
+        // loop and parse all connectors
         for(let i = 0; i < poolTokenAddresses.length; i++){
-          const symbolsAndDecimals = await getTokenSymbolAndDecimals(
+          const { symbol, decimals } = await getTokenSymbolAndDecimals(
             poolTokenAddresses[i],
             this.props.web3
           )
 
-          poolTokens.push({ address:poolTokenAddresses[i], ...symbolsAndDecimals })
+          const amount = await this.calculateMaxConnectorsAmount(poolTokenAddresses[i])
+          const amountFromWei = fromWeiByDecimalsInput(decimals, amount)
+
+          poolTokens.push({
+            address:poolTokenAddresses[i],
+            amountFromWei,
+            amount,
+            symbol,
+            decimals
+          })
         }
 
-        this.setState({ poolTokens, isPending:false })
+        // get pool share info
+        const totalPoolSupply = fromWei(String(await BPool.methods.totalSupply().call()))
+        const curFundPoolBalance = fromWei(String(await BPool.methods.balanceOf(this.props.smartFundAddress).call()))
+        // get current shares
+        const fundCurrentPoolShare = 1 / ((parseFloat(totalPoolSupply) / 100) / parseFloat(curFundPoolBalance))
+        // get receive share
+        const poolOnePercent = (parseFloat(totalPoolSupply) + parseFloat(this.state.poolAmount)) / 100
+        const fundNewPoolShare = 1 / (poolOnePercent / parseFloat(this.state.poolAmount))
+        const fundTotalNewShare = fundCurrentPoolShare + fundNewPoolShare
 
-      }catch(e){
+        // update states
+        this.setState({
+          poolTokens,
+          totalPoolSupply,
+          fundCurrentPoolShare,
+          fundNewPoolShare,
+          fundTotalNewShare,
+          isPending:false
+        })
+      }
+      catch(e){
         alert("Wrong BPool address")
         console.log("err: ", e)
       }
-    }else{
-      this.setState({ poolTokens:[] })
+    }
+    else{
+      this.setState({ poolTokens:[], isPending:false })
     }
   }
 
@@ -150,7 +177,78 @@ class BuyPool extends PureComponent {
         </Form.Group>
         <Button variant="outline-primary" onClick={() => this.buyBalancerPool()}>Buy</Button>
       </Form>
-      {
+
+      <br/>
+
+      { /* Show pool share info */
+        this.state.fundNewPoolShare > 0
+        ?
+        (
+          <>
+          <small>
+          <Table striped bordered hover size="sm">
+          <thead>
+           <tr>
+             <th>You will get</th>
+           </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Pool amount</td>
+              <td>
+              {this.state.poolAmount}
+              &#160;, current total supply &#160;
+              {parseFloat(this.state.totalPoolSupply).toFixed(4)}
+              </td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr>
+              <td>Share now</td>
+              <td>{parseFloat(this.state.fundCurrentPoolShare).toFixed(4)} %</td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr>
+              <td>Share gain</td>
+              <td>{parseFloat(this.state.fundNewPoolShare).toFixed(4)} % </td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr>
+              <td>Share new</td>
+              <td>{parseFloat(this.state.fundTotalNewShare).toFixed(4)} % </td>
+            </tr>
+          </tbody>
+          </Table>
+          </small>
+          </>
+        ):null
+      }
+
+      <br/>
+
+      { /* Show connectors additional info */
+        this.state.poolTokens.length > 0
+        ?
+        (
+          <Alert variant="warning">
+          <div align="center">Max amount to send</div>
+          <hr/>
+          {
+            this.state.poolTokens.map((item, key) => {
+              return (
+                <strong key={key}>
+                &ensp; {item.symbol} &ensp; : &ensp; {item.amountFromWei} &ensp;
+                </strong>
+              )
+            })
+          }
+          </Alert>
+        ):null
+      }
+
+      { /* Show spinner */
         this.state.isPending
         ?(<Pending/>)
         :null
