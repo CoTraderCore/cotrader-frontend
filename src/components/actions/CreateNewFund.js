@@ -25,7 +25,8 @@ class CreateNewFund extends Component {
       Percent: 20,  // NOTE: this number should be mul by 100 !!!
       FundAsset: 'ETH',
       FundName: '',
-      TradeVerification: true
+      TradeVerification: true,
+      FundType:'Full'
     }
   }
 
@@ -46,14 +47,30 @@ class CreateNewFund extends Component {
         let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
         txCount = txCount.data.result
 
-        contract.methods.createSmartFund(name, percent, fundType[_fundType], verifiacton)
-        .send({ from: this.props.accounts[0] })
-        .on('transactionHash', (hash) => {
-        // pending status for DB
-        setPending(null, 1, this.props.accounts[0], block, hash, "SmartFundCreated")
-        this.props.pending(true, txCount+1)
-        })
-      }catch(e){
+        // create full fund
+        if(this.state.FundType === 'Full'){
+          contract.methods.createSmartFund(name, percent, fundType[_fundType], verifiacton)
+          .send({ from: this.props.accounts[0] })
+          .on('transactionHash', (hash) => {
+          // pending status for DB
+          setPending(null, 1, this.props.accounts[0], block, hash, "SmartFundCreated")
+          this.props.pending(true, txCount+1)
+          })
+        }
+        // create light fund
+        else if(this.state.FundType === 'Light'){
+          contract.methods.createSmartFundLight(name, percent, fundType[_fundType], verifiacton)
+          .send({ from: this.props.accounts[0] })
+          .on('transactionHash', (hash) => {
+          // pending status for DB
+          setPending(null, 1, this.props.accounts[0], block, hash, "SmartFundCreated")
+          this.props.pending(true, txCount+1)
+          })
+        }else{
+          alert("Unknown fund type")
+        }
+      }
+      catch(e){
         // for case if user reject transaction
         this.props.pending(false)
         console.log("Error", e)
@@ -76,7 +93,7 @@ class CreateNewFund extends Component {
   }
 
   modalClose = () => {
-    this.setState({ Show: false, Percent: 20, FundAsset: 'ETH', FundName: '' })
+    this.setState({ Show: false, Percent: 20, FundAsset: 'ETH', FundName: '', FundType:'Full' })
   }
 
   render() {
@@ -146,6 +163,16 @@ class CreateNewFund extends Component {
             <option>ETH</option>
             <option>USD</option>
             <option>COT</option>
+          </Form.Control>
+          </Form.Group>
+
+          <hr/>
+
+          <Form.Group controlId="exampleForm.ControlSelect1">
+          <Form.Label>Fund type <UserInfo  info="Full funds - supports trade, pools and another defi protocols, light - only trade"/></Form.Label>
+          <Form.Control as="select" name="FundType" onChange={e => this.change(e)}>
+            <option>Full</option>
+            <option>Light</option>
           </Form.Control>
           </Form.Group>
 

@@ -1,12 +1,12 @@
 // switch this to false in production
-const isLocal = true
+const isLocal = false
 
 // maximum available for trade tokens in smart fund
 export const MAX_TOKENS = 20
 
 export const ParaswapApi = 'https://paraswap.io/api'
 
-// // Mainnet
+// Mainnet
 // V1
 // export const SmartFundRegistryADDRESS = '0x9d1a4dac9a35861abc003acfc680bf5ae1b8ed5b'
 // V2
@@ -45,7 +45,7 @@ export const GetBancorData = ''
 
 
 // // Rinkeby
-// export const SmartFundRegistryADDRESS = '0xa8DD4c29afd61fCdD52cb572107079684DEc1107'
+// export const SmartFundRegistryADDRESS = '0x4835E6CFc4754aD9694972B320b1fa2908724206'
 // export const EtherscanLink = 'https://rinkeby.etherscan.io/'
 // export const KyberAddress = '0xF77eC7Ed5f5B9a5aee4cfa6FFCaC6A4C315BaC76'
 // export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'
@@ -10528,6 +10528,117 @@ export const SmartFundRegistryABIV7 = [
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "_exchangePortalAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_poolPortalAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_stableCoinAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_COTCoinAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_smartFundETHFactory",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_smartFundERC20Factory",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_smartFundETHLightFactory",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_smartFundERC20LightFactory",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_defiPortalAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_permittedAddresses",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "previousOwner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "OwnershipTransferred",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "smartFundAddress",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			}
+		],
+		"name": "SmartFundAdded",
+		"type": "event"
+	},
+	{
+		"stateMutability": "payable",
+		"type": "fallback"
+	},
+	{
+		"inputs": [],
+		"name": "COTCoinAddress",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "string",
 				"name": "_name",
 				"type": "string"
@@ -10549,6 +10660,379 @@ export const SmartFundRegistryABIV7 = [
 			}
 		],
 		"name": "createSmartFund",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_successFee",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_fundType",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "_isRequireTradeVerification",
+				"type": "bool"
+			}
+		],
+		"name": "createSmartFundLight",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "defiPortalAddress",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "exchangePortalAddress",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getAllSmartFundAddresses",
+		"outputs": [
+			{
+				"internalType": "address[]",
+				"name": "",
+				"type": "address[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "maximumSuccessFee",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "permittedAddresses",
+		"outputs": [
+			{
+				"internalType": "contract PermittedAddressesInterface",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "poolPortalAddress",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "renounceOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_newDefiPortalAddress",
+				"type": "address"
+			}
+		],
+		"name": "setDefiPortal",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_newExchangePortalAddress",
+				"type": "address"
+			}
+		],
+		"name": "setExchangePortalAddress",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_maximumSuccessFee",
+				"type": "uint256"
+			}
+		],
+		"name": "setMaximumSuccessFee",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_smartFundERC20Factory",
+				"type": "address"
+			}
+		],
+		"name": "setNewSmartFundERC20Factory",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_smartFundERC20LightFactory",
+				"type": "address"
+			}
+		],
+		"name": "setNewSmartFundERC20LightFactory",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_smartFundETHFactory",
+				"type": "address"
+			}
+		],
+		"name": "setNewSmartFundETHFactory",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_smartFundETHLightFactory",
+				"type": "address"
+			}
+		],
+		"name": "setNewSmartFundETHLightFactory",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_poolPortalAddress",
+				"type": "address"
+			}
+		],
+		"name": "setPoolPortalAddress",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_stableCoinAddress",
+				"type": "address"
+			}
+		],
+		"name": "setStableCoinAddress",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "smartFundERC20Factory",
+		"outputs": [
+			{
+				"internalType": "contract SmartFundERC20FactoryInterface",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "smartFundERC20LightFactory",
+		"outputs": [
+			{
+				"internalType": "contract SmartFundERC20LightFactoryInterface",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "smartFundETHFactory",
+		"outputs": [
+			{
+				"internalType": "contract SmartFundETHFactoryInterface",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "smartFundETHLightFactory",
+		"outputs": [
+			{
+				"internalType": "contract SmartFundETHLightFactoryInterface",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "smartFunds",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "stableCoinAddress",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "totalSmartFunds",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "withdrawEther",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_tokenAddress",
+				"type": "address"
+			}
+		],
+		"name": "withdrawTokens",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
