@@ -18,7 +18,9 @@ export const ParaswapApi = 'https://paraswap.io/api'
 // V5
 // export const SmartFundRegistryADDRESS = '0xD990B951F791f58E7548088f9C1D995cA1A39153'
 // V6
-export const SmartFundRegistryADDRESS = '0xd81736Eb54D4FbCDF8779E0b488dd1a5f12F2f17'
+// export const SmartFundRegistryADDRESS = '0xd81736Eb54D4FbCDF8779E0b488dd1a5f12F2f17'
+
+export const SmartFundRegistryADDRESS = '0xEEce063BB21E231B2b9981Ca254B19b651aDb021'
 export const PoolPortalV6 = '0xd63495461cA711d59e480AC5c3827B7f7C334Fb3'
 // NOTE: don't change this portals address, if you need add new version, just create new const with new version
 export const ExchangePortalAddress = '0x7Fd65F765932E29F041113777C47CE77ecF4E24A'
@@ -41,7 +43,7 @@ export const UniswapFactory = '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95'
 export const OneInch = '0xC586BeF4a0992C495Cf22e1aeEE4E446CECDee0E'
 export const UniswapV2Factory = '0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f'
 export const UniWTH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
-export const GetBancorData = ''
+export const GetBancorData = '0x3aE392A4c6a99FcB991E208f9D74618fff513834'
 
 
 // // Rinkeby
