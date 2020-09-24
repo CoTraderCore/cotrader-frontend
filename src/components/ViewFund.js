@@ -20,7 +20,7 @@ import ChartsButton from './actions/ChartsButton'
 import Withdraw from './actions/Withdraw'
 import Deposit from './actions/Deposit'
 import UserHoldings from './actions/UserHoldings'
-import Loan from './actions/Loan'
+import CompoundLoan from './actions/CompoundLoan'
 import UpdateUSDAsset from './actions/UpdateUSDAsset'
 
 import Loading from './templates/Spiners/Loading'
@@ -353,12 +353,22 @@ class ViewFund extends Component {
                ?
                (
                  <li>
-                 <Loan
-                 web3={this.props.web3}
-                 accounts={this.props.accounts}
-                 smartFundAddress={this.state.smartFundAddress}
-                 pending={this.pending}
-                 version={this.state.version}/>
+                 {
+                   this.state.version === 6
+                   ?
+                   (
+                     <CompoundLoan
+                     web3={this.props.web3}
+                     accounts={this.props.accounts}
+                     smartFundAddress={this.state.smartFundAddress}
+                     pending={this.pending}
+                     version={this.state.version}/>
+                   )
+                   :
+                   (
+                     <FakeButton buttonName={"Loan"} info={"Soon we will implement Yearn finance here"}/>
+                   )
+                 }
                  </li>
                )
                :

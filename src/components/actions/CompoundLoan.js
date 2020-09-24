@@ -9,7 +9,7 @@ import { toWei } from 'web3-utils'
 import SetGasPrice from '../settings/SetGasPrice'
 
 
-class PoolModal extends Component {
+class CompoundLoan extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -285,4 +285,4 @@ class PoolModal extends Component {
   }
 }
 
-export default PoolModal
+export default CompoundLoan
