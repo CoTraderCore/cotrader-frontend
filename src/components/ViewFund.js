@@ -56,7 +56,8 @@ class ViewFund extends Component {
      shares: [],
      version:0,
      txCount:0,
-     mainAsset:''
+     mainAsset:'',
+     fundSizeType:'full'
     }
 }
 
@@ -128,7 +129,8 @@ class ViewFund extends Component {
       shares: fund.data.result.shares,
       isDataLoad:true,
       version:Number(fund.data.result.version),
-      mainAsset: fund.data.result.mainAsset
+      mainAsset: fund.data.result.mainAsset,
+      fundSizeType: fund.data.result.fundType
      });
     }
  }
@@ -328,7 +330,7 @@ class ViewFund extends Component {
              }
 
              {
-               this.state.version >= 3
+               this.state.version >= 3 && this.state.fundSizeType === 'full'
                ?
                (
                  <li>
@@ -343,13 +345,13 @@ class ViewFund extends Component {
                :
                (
                  <li>
-                 <FakeButton buttonName={"Pool"} info={"This version of smart fund does not support this feature"}/>
+                 <FakeButton buttonName={"Pool"} info={"This version or type of smart fund does not support this feature"}/>
                  </li>
                )
              }
 
              {
-               this.state.version >= 5
+               this.state.version >= 5 && this.state.fundSizeType === 'full'
                ?
                (
                  <li>
@@ -374,7 +376,7 @@ class ViewFund extends Component {
                :
                (
                  <li>
-                 <FakeButton buttonName={"Loan"} info={"This version of smart fund does not support this feature"}/>
+                 <FakeButton buttonName={"Loan"} info={"This version or type of smart fund does not support this feature"}/>
                  </li>
                )
              }
