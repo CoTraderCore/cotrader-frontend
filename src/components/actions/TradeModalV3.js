@@ -11,7 +11,7 @@ import {
   APIEnpoint,
   ExchangePortalAddressV6,
   ExchangePortalABIV6,
-  OneInch,
+  OneInchProto,
   OneInchABI
 } from '../../config.js'
 
@@ -238,7 +238,7 @@ class TradeModalV3 extends Component {
   // trade via 1 inch
   tradeViaOneInch = async () => {
     try{
-      const oneInchContract = new this.props.web3.eth.Contract(OneInchABI, OneInch)
+      const oneInchContract = new this.props.web3.eth.Contract(OneInchABI, OneInchProto)
       const smartFund = new this.props.web3.eth.Contract(SmartFundABIV7, this.props.smartFundAddress)
       const block = await this.props.web3.eth.getBlockNumber()
       // get cur tx count
@@ -337,20 +337,43 @@ class TradeModalV3 extends Component {
     }
   }
 
-  // get ratio from 1inch or Paraswap (dependse of selected type)
-  getRate = async (from, to, amount, decimalsFrom, decimalsTo) => {
-    if(amount > 0 && from !== to){
+
+  gitRateByNetworkId = async (from, to, amount, decimalsFrom, decimalsTo) => {
+    // get value from 1 inch proto
+    if(NeworkID === 1){
+      const src = toWeiByDecimalsInput(decimalsFrom, amount.toString())
+      const srcBN = new BigNumber(src)
+      const oneInchContract = new this.props.web3.eth.Contract(OneInchABI, OneInchProto)
+
+      // get 1 inch additional data
+      const { returnAmount } = await oneInchContract.methods.getExpectedReturn(
+        from,
+        to,
+        String(srcBN.toFixed()),
+        10,
+        0
+      ).call()
+
+      return returnAmount
+    }
+    // from test net get value from Bancor via old portal v
+    else{
       const portal = new this.props.web3.eth.Contract(ExchangePortalABIV6, ExchangePortalAddressV6)
       const src = toWeiByDecimalsInput(decimalsFrom, amount.toString())
       const srcBN = new BigNumber(src)
 
-      let value = await portal.methods.getValueViaOneInch(
+      return await portal.methods.getValueViaOneInch(
         from,
         to,
-        srcBN.toFixed()
+        String(srcBN.toFixed()),
       ).call()
+    }
+  }
 
-      return value
+  // get ratio from 1inch or Paraswap (dependse of selected type)
+  getRate = async (from, to, amount, decimalsFrom, decimalsTo) => {
+    if(amount > 0 && from !== to){
+      return await this.gitRateByNetworkId(from, to, amount, decimalsFrom, decimalsTo)
     }
   }
 
@@ -415,6 +438,7 @@ class TradeModalV3 extends Component {
   })
 
   render() {
+    console.log("Trade modal v3")
    return (
       <div>
         <Button variant="outline-primary" onClick={() => this.setState({ ShowModal: true })}>

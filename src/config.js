@@ -44,6 +44,7 @@ export const OneInch = '0xC586BeF4a0992C495Cf22e1aeEE4E446CECDee0E'
 export const UniswapV2Factory = '0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f'
 export const UniWTH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
 export const GetBancorData = '0x3aE392A4c6a99FcB991E208f9D74618fff513834'
+export const OneInchProto = '0x50FDA034C0Ce7a8f7EFDAebDA7Aa7cA21CC1267e'
 
 
 // // Rinkeby
@@ -69,6 +70,7 @@ export const GetBancorData = '0x3aE392A4c6a99FcB991E208f9D74618fff513834'
 // export const UniswapV2Factory = '0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f'
 // export const GetBancorData = '0xD5fa2378f992491B2C2DA55a2C27073B00e52250'
 // export const UniWTH = '0xc778417e063141139fce010982780140aa0cd5ab'
+// export const OneInchProto = ''
 
 
 // // Ropsten
@@ -96,7 +98,7 @@ export const GetBancorData = '0x3aE392A4c6a99FcB991E208f9D74618fff513834'
 // export const UniswapV2Factory = '0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f'
 // export const GetBancorData = '0x9D4249D4398b0E7c6459277B58fb470490DE8a0e'
 // export const UniWTH = '0xc778417e063141139fce010982780140aa0cd5ab'
-
+// export const OneInchProto = ''
 
 
 /* TODO: MOVE ALL ABI to a separate file ABI.js*/
