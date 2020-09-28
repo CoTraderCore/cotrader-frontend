@@ -32,54 +32,56 @@ class Stake extends Component{
 
   _isMounted = false
 
-  componentDidMount = async () => {
+  componentDidMount = () => {
     this._isMounted = true
 
-    let web3 = this.props.MobXStorage.web3
-    const account = this.props.MobXStorage.account
+    setTimeout(async () => {
+      let web3
+      const account = this.props.MobXStorage.account
 
-    if(this.props.MobXStorage.web3 !== null){
-      web3 = this.props.MobXStorage.web3
-      this.setState({ isClientWeb3Connected:true })
-    }else{
-      web3 = defaultWeb3
-    }
+      if(this.props.MobXStorage.web3 !== null){
+        web3 = this.props.MobXStorage.web3
+        this.setState({ isClientWeb3Connected:true })
+      }else{
+        web3 = defaultWeb3
+      }
 
-    if(web3 !== null){
-      const stakeContract = web3.eth.Contract(StakeABI, StakeAddress)
-      let reserve = await stakeContract.methods.reserve().call()
-      reserve = Number(web3.utils.fromWei(web3.utils.hexToNumberString(reserve._hex)))
+      if(web3 !== null){
+        const stakeContract = web3.eth.Contract(StakeABI, StakeAddress)
+        let reserve = await stakeContract.methods.reserve().call()
+        reserve = Number(web3.utils.fromWei(web3.utils.hexToNumberString(reserve._hex)))
 
-      let debt = await stakeContract.methods.debt().call()
-      debt = Number(web3.utils.fromWei(web3.utils.hexToNumberString(debt._hex)))
+        let debt = await stakeContract.methods.debt().call()
+        debt = Number(web3.utils.fromWei(web3.utils.hexToNumberString(debt._hex)))
 
-      let contribution = await stakeContract.methods.contribution().call()
-      contribution = Number(web3.utils.fromWei(web3.utils.hexToNumberString(contribution._hex)))
+        let contribution = await stakeContract.methods.contribution().call()
+        contribution = Number(web3.utils.fromWei(web3.utils.hexToNumberString(contribution._hex)))
 
-      let payout = await stakeContract.methods.payout().call()
-      payout = Number(web3.utils.fromWei(web3.utils.hexToNumberString(payout._hex)))
+        let payout = await stakeContract.methods.payout().call()
+        payout = Number(web3.utils.fromWei(web3.utils.hexToNumberString(payout._hex)))
 
-      let freeReserve = await stakeContract.methods.calculateFreeReserve().call()
-      freeReserve = Number(web3.utils.fromWei(web3.utils.hexToNumberString(freeReserve._hex)))
+        let freeReserve = await stakeContract.methods.calculateFreeReserve().call()
+        freeReserve = Number(web3.utils.fromWei(web3.utils.hexToNumberString(freeReserve._hex)))
 
-      const tokenContract = web3.eth.Contract(ERC20ABI, COTAddress)
-      const isMobileSize = isMobile()
+        const tokenContract = web3.eth.Contract(ERC20ABI, COTAddress)
+        const isMobileSize = isMobile()
 
-      if(this._isMounted)
-      this.setState({
-        web3,
-        reserve,
-        freeReserve,
-        debt,
-        account,
-        contribution,
-        payout,
-        stakeContract,
-        tokenContract,
-        isMobileSize,
-        isDataLoad:true
-      })
-    }
+        if(this._isMounted)
+        this.setState({
+          web3,
+          reserve,
+          freeReserve,
+          debt,
+          account,
+          contribution,
+          payout,
+          stakeContract,
+          tokenContract,
+          isMobileSize,
+          isDataLoad:true
+        })
+      }
+    }, 1000)
   }
 
   componentWillUnmount(){
