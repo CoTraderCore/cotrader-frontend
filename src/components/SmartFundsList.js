@@ -229,7 +229,8 @@ class SmartFundsList extends Component{
          <Badge variant="ligth">Fund name: {item.name}</Badge>
          <br/>
          <small>
-         type : {item.mainAsset} based fund,
+         type: {item.fundType},
+         core asset : {item.mainAsset} ,
          version: {String(item.version)},
          manager fee: {Number(item.managerFee/100).toFixed(2)} %,
          assets:
