@@ -69,6 +69,8 @@ class CreateNewFund extends Component {
         }else{
           alert("Unknown fund type")
         }
+        // close modal
+        this.modalClose()
       }
       catch(e){
         // for case if user reject transaction
@@ -76,8 +78,6 @@ class CreateNewFund extends Component {
         alert('Can not verify transaction data, please try again in a minute')
         console.log("Error", e)
       }
-      // close modal
-      this.modalClose()
     }else{
       alert('Please input fund name')
     }

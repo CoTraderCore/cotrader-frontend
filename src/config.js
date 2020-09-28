@@ -70,7 +70,7 @@ export const OneInchProto = '0x50FDA034C0Ce7a8f7EFDAebDA7Aa7cA21CC1267e'
 // export const UniswapV2Factory = '0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f'
 // export const GetBancorData = '0xD5fa2378f992491B2C2DA55a2C27073B00e52250'
 // export const UniWTH = '0xc778417e063141139fce010982780140aa0cd5ab'
-// export const OneInchProto = ''
+// export const OneInchProto = '0x40c4631687F0A781e1CCE402c1659333A864Ad05'
 
 
 // // Ropsten
@@ -98,7 +98,7 @@ export const OneInchProto = '0x50FDA034C0Ce7a8f7EFDAebDA7Aa7cA21CC1267e'
 // export const UniswapV2Factory = '0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f'
 // export const GetBancorData = '0x9D4249D4398b0E7c6459277B58fb470490DE8a0e'
 // export const UniWTH = '0xc778417e063141139fce010982780140aa0cd5ab'
-// export const OneInchProto = ''
+// export const OneInchProto = '0xc9536F9cAe60F671f2704C6F4aC3Bf2076137337'
 
 
 /* TODO: MOVE ALL ABI to a separate file ABI.js*/
