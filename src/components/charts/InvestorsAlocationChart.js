@@ -17,7 +17,9 @@ class InvestorsAlocationChart extends React.Component{
 
   componentDidMount = async() => {
     this._isMounted = true
-    await this.updateInvestorsData()
+    setTimeout(async () => {
+      await this.updateInvestorsData()
+    }, 1000)
   }
 
   componentWillUnmount(){

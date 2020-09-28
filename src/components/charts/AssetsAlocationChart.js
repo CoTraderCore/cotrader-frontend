@@ -20,9 +20,12 @@ class AssetsAlocationChart extends React.Component{
 
   _isMounted = false
 
-  componentDidMount = async () => {
+  componentDidMount = () => {
     this._isMounted = true
-    await this.updateAssetsData()
+    setTimeout(async () => {
+      await this.updateAssetsData()
+    }, 1000)
+
   }
 
   componentWillUnmount(){
@@ -43,9 +46,10 @@ class AssetsAlocationChart extends React.Component{
       return item["balance"] > 0 && item["symbol"]
     })
 
-    let balance = await Promise.all(AssetsData.map(item => {
-      return item["balance"] > 0 && this.RateToETH(item["address"], fromWei(String(item["balance"])))
+    let balance = await Promise.all(AssetsData.map(async (item) => {
+      return item["balance"] > 0 && await this.RateToETH(item["address"], fromWei(String(item["balance"])))
     }))
+
 
     labels = labels.filter(function (el) {
     return el;
