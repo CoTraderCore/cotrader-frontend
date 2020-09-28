@@ -7,7 +7,7 @@ import {
   ERC20ABI,
   APIEnpoint
 } from '../../config.js'
-
+import { fromWei } from 'web3-utils'
 import { Button, Modal, Form, Alert } from "react-bootstrap"
 import setPending from '../../utils/setPending'
 import { toWeiByDecimalsInput } from '../../utils/weiByDecimals'
@@ -43,20 +43,27 @@ class Deposit extends Component {
     try{
       const contract = new this.props.web3.eth.Contract(SmartFundABI, address)
       const amount = this.props.web3.utils.toWei(_value, 'ether')
-      // get cur tx count
-      let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
-      txCount = txCount.data.result
+      const userWalletBalance = await this.props.web3.eth.getBalance(this.props.accounts[0])
 
-      this.modalClose()
-      let block = await this.props.web3.eth.getBlockNumber()
+      if(parseFloat(fromWei(String(userWalletBalance))) >= parseFloat(fromWei(String(amount)))){
+        // get cur tx count
+        let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
+        txCount = txCount.data.result
 
-      contract.methods.deposit().send({ from: this.props.accounts[0], value:amount})
-      .on('transactionHash', (hash) => {
-      // pending status for spiner
-      this.props.pending(true, txCount+1)
-      // pending status for DB
-      setPending(address, 1, this.props.accounts[0], block, hash, "Deposit")
-      })
+        this.modalClose()
+        let block = await this.props.web3.eth.getBlockNumber()
+
+        contract.methods.deposit().send({ from: this.props.accounts[0], value:amount})
+        .on('transactionHash', (hash) => {
+        // pending status for spiner
+        this.props.pending(true, txCount+1)
+        // pending status for DB
+        setPending(address, 1, this.props.accounts[0], block, hash, "Deposit")
+        })
+      }
+      else{
+        alert('Not enough balance for deposit')
+      }
     }catch(e){
       alert("Can not verify transaction data, please try again in a minute")
     }
@@ -81,59 +88,62 @@ class Deposit extends Component {
         ercAssetAddress = await contract.methods.stableCoinAddress().call()
       }
 
-      console.log("ercAssetAddress", ercAssetAddress)
-
       const ercAssetContract = new this.props.web3.eth.Contract(ERC20ABI, ercAssetAddress)
       const ercAssetDecimals = await ercAssetContract.methods.decimals().call()
+      const userWalletBalance = await ercAssetContract.methods.balanceOf(this.props.accounts[0]).call()
       const amount = toWeiByDecimalsInput(ercAssetDecimals, _value)
 
-      // get cur tx count
-      let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
-      txCount = txCount.data.result
+      if(parseFloat(fromWei(String(userWalletBalance))) >= parseFloat(fromWei(String(amount)))){
+        // get cur tx count
+        let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
+        txCount = txCount.data.result
 
-      let block = await this.props.web3.eth.getBlockNumber()
+        let block = await this.props.web3.eth.getBlockNumber()
 
-      // Approve ERC to smart fund
-      const approveData = ercAssetContract.methods.approve(
-        address,
-        amount
-      ).encodeABI({from: this.props.accounts[0]})
+        // Approve ERC to smart fund
+        const approveData = ercAssetContract.methods.approve(
+          address,
+          amount
+        ).encodeABI({from: this.props.accounts[0]})
 
-      const approveTx = {
-        "from": this.props.accounts[0],
-        "to": ercAssetAddress,
-        "value": "0x0",
-        "data": approveData,
-        "gasPrice": this.props.web3.eth.utils.toHex(5000000000),
-        "gas": this.props.web3.eth.utils.toHex(85000),
-      }
+        const approveTx = {
+          "from": this.props.accounts[0],
+          "to": ercAssetAddress,
+          "value": "0x0",
+          "data": approveData,
+          "gasPrice": this.props.web3.eth.utils.toHex(5000000000),
+          "gas": this.props.web3.eth.utils.toHex(85000),
+        }
 
-      // Deposit
-      const depositData = contract.methods.deposit(amount)
-      .encodeABI({from: this.props.accounts[0]})
+        // Deposit
+        const depositData = contract.methods.deposit(amount)
+        .encodeABI({from: this.props.accounts[0]})
 
-      const depositTx = {
-        "from": this.props.accounts[0],
-        "to": address,
-        "value": "0x0",
-        "data": depositData,
-        "gasPrice": this.props.web3.eth.utils.toHex(5000000000),
-        "gas": this.props.web3.eth.utils.toHex(285000),
-      }
+        const depositTx = {
+          "from": this.props.accounts[0],
+          "to": address,
+          "value": "0x0",
+          "data": depositData,
+          "gasPrice": this.props.web3.eth.utils.toHex(5000000000),
+          "gas": this.props.web3.eth.utils.toHex(285000),
+        }
 
-      // Craete Batch request
-      let batch = new this.props.web3.BatchRequest()
-      batch.add(this.props.web3.eth.sendTransaction.request(approveTx, () => console.log("Approve")))
-      batch.add(this.props.web3.eth.sendTransaction.request(depositTx, (status, hash) => {
+        // Craete Batch request
+        let batch = new this.props.web3.BatchRequest()
+        batch.add(this.props.web3.eth.sendTransaction.request(approveTx, () => console.log("Approve")))
+        batch.add(this.props.web3.eth.sendTransaction.request(depositTx, (status, hash) => {
         // pending status for spiner
         this.props.pending(true, txCount+2)
         // pending status for DB
         setPending(address, 1, this.props.accounts[0], block, hash, "Deposit")
-      }))
+        }))
 
-      batch.execute()
+        batch.execute()
 
-      this.modalClose()
+        this.modalClose()
+      }else{
+        alert('Not enough balance for deposit')
+      }
     }
     catch(e){
     alert("Can not verify transaction data, please try again in a minute")
