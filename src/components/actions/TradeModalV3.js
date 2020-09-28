@@ -292,7 +292,7 @@ class TradeModalV3 extends Component {
 
       this.closeModal()
     }catch(e){
-      this.setState({ ERRORText:'An error occurred while trying to get data from server, please try again in few secconds' })
+      this.setState({ ERRORText:'Can not verify transaction data, please try again in a minute' })
       console.log("error: ",e)
     }
   }

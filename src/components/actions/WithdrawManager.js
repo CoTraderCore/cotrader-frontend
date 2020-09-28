@@ -39,27 +39,32 @@ class WithdrawManager extends Component {
 
   // take cut action
   withdrawManager = async () => {
-    // get correct ABI for a certain version
-    // Only v6 can try convert assets
-    const contractABI = this.props.version === 6 ? SmartFundABIV6 : SmartFundABI
-    const contract = new this.props.web3.eth.Contract(contractABI, this.props.smartFundAddress)
-    const block = await this.props.web3.eth.getBlockNumber()
+    try{
+      // get correct ABI for a certain version
+      // Only v6 can try convert assets
+      const contractABI = this.props.version === 6 ? SmartFundABIV6 : SmartFundABI
+      const contract = new this.props.web3.eth.Contract(contractABI, this.props.smartFundAddress)
+      const block = await this.props.web3.eth.getBlockNumber()
 
-    // get cur tx count
-    let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
-    txCount = txCount.data.result
+      // get cur tx count
+      let txCount = await axios.get(APIEnpoint + 'api/user-pending-count/' + this.props.accounts[0])
+      txCount = txCount.data.result
 
-    // check correct call for a certain version
-    if(this.props.version === 6){
-      contract.methods.fundManagerWithdraw(this.state.isConvert).send({ from: this.props.accounts[0]})
-      .on('transactionHash', (hash) => {
-        this.updatePendingStatus(txCount, block, hash)
-      })
-    }else{
-      contract.methods.fundManagerWithdraw().send({ from: this.props.accounts[0]})
-      .on('transactionHash', (hash) => {
-        this.updatePendingStatus(txCount, block, hash)
-      })
+      // check correct call for a certain version
+      if(this.props.version === 6){
+        contract.methods.fundManagerWithdraw(this.state.isConvert).send({ from: this.props.accounts[0]})
+        .on('transactionHash', (hash) => {
+          this.updatePendingStatus(txCount, block, hash)
+        })
+      }else{
+        contract.methods.fundManagerWithdraw().send({ from: this.props.accounts[0]})
+        .on('transactionHash', (hash) => {
+          this.updatePendingStatus(txCount, block, hash)
+        })
+      }
+    }
+    catch(e){
+     alert('Can not verify transaction data, please try again in a minute')
     }
   }
 

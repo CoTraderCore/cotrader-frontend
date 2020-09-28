@@ -218,33 +218,38 @@ class BuyPool extends Component {
   // Buy Uniswap pool
   buyPool = async () => {
     if(this.state.ETHAmount > 0 && this.props.tokenAddress){
-      // get contracts and data
-      const factory = new this.props.web3.eth.Contract(UniswapFactoryABI, UniswapFactory)
-      const poolExchangeAddress = await factory.methods.getExchange(this.props.tokenAddress).call()
-      // Get ABI according fund version
-      const FundABI = getFundFundABIByVersion(this.props.version)
-      // Get fund contract instance
-      const fund = new this.props.web3.eth.Contract(FundABI, this.props.smartFundAddress)
-      // this function will throw execution with alert warning if there are limit
-      await checkTokensLimit(poolExchangeAddress, fund)
-      // get block number
-      const block = await this.props.web3.eth.getBlockNumber()
-      // get gas price from local storage
-      const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
-      // get params dependse of smart fund version
-      const poolParams = await this.getPoolParams()
+      try{
+        // get contracts and data
+        const factory = new this.props.web3.eth.Contract(UniswapFactoryABI, UniswapFactory)
+        const poolExchangeAddress = await factory.methods.getExchange(this.props.tokenAddress).call()
+        // Get ABI according fund version
+        const FundABI = getFundFundABIByVersion(this.props.version)
+        // Get fund contract instance
+        const fund = new this.props.web3.eth.Contract(FundABI, this.props.smartFundAddress)
+        // this function will throw execution with alert warning if there are limit
+        await checkTokensLimit(poolExchangeAddress, fund)
+        // get block number
+        const block = await this.props.web3.eth.getBlockNumber()
+        // get gas price from local storage
+        const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
+        // get params dependse of smart fund version
+        const poolParams = await this.getPoolParams()
 
-      // buy pool
-      fund.methods.buyPool(...poolParams)
-      .send({ from: this.props.accounts[0], gasPrice })
-      .on('transactionHash', (hash) => {
-      // pending status for spiner
-      this.props.pending(true)
-      // pending status for DB
-      setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
-      })
-      // close pool modal
-      this.props.modalClose()
+        // buy pool
+        fund.methods.buyPool(...poolParams)
+        .send({ from: this.props.accounts[0], gasPrice })
+        .on('transactionHash', (hash) => {
+        // pending status for spiner
+        this.props.pending(true)
+        // pending status for DB
+        setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+        })
+        // close pool modal
+        this.props.modalClose()
+      }
+      catch(e){
+        alert('Can not verify transaction data, please try again in a minute')
+      }
     }else{
       alert('Please fill all fields')
     }

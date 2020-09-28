@@ -114,28 +114,34 @@ class CompoundLoan extends Component {
     if(this.state.amount > 0 && this.state.cTokenAddress){
       const curBalance = await this.getFundBalanceForLoan()
       if(curBalance >= this.state.amount){
-        const fund = new this.props.web3.eth.Contract(SmartFundABIV6, this.props.smartFundAddress)
-        const block = await this.props.web3.eth.getBlockNumber()
-        const weiInput = await this.getCETHUnderlyingWeiByDecimals()
+        try{
+          const fund = new this.props.web3.eth.Contract(SmartFundABIV6, this.props.smartFundAddress)
+          const block = await this.props.web3.eth.getBlockNumber()
+          const weiInput = await this.getCETHUnderlyingWeiByDecimals()
 
-        // get gas price from local storage
-        const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
+          // get gas price from local storage
+          const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
 
-        // this function will throw execution with alert warning if there are limit
-        await checkTokensLimit(this.state.cTokenAddress, fund)
+          // this function will throw execution with alert warning if there are limit
+          await checkTokensLimit(this.state.cTokenAddress, fund)
 
-        // Mint
-        fund.methods.compoundMint(Number(weiInput).toFixed(), this.state.cTokenAddress)
-        .send({ from:this.props.accounts[0], gasPrice })
-        .on('transactionHash', (hash) => {
-        // pending status for spiner
-        this.props.pending(true)
-        // pending status for DB
-        setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
-        })
-        // close pool modal
-        this.modalClose()
-      }else{
+          // Mint
+          fund.methods.compoundMint(Number(weiInput).toFixed(), this.state.cTokenAddress)
+          .send({ from:this.props.accounts[0], gasPrice })
+          .on('transactionHash', (hash) => {
+          // pending status for spiner
+          this.props.pending(true)
+          // pending status for DB
+          setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+          })
+          // close pool modal
+          this.modalClose()
+        }
+        catch(e){
+          alert('Can not verify transaction data, please try again in a minute')
+        }
+      }
+      else{
         alert('Your fund not have enough balance')
       }
     }else{

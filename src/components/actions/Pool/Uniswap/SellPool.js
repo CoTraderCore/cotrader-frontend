@@ -130,36 +130,43 @@ class SellPool extends Component {
   // sell pool
   sellPool = async () => {
     if(this.state.UniAmount > 0){
-      const curBalance = await this.getCurBalance()
+      try{
+        const curBalance = await this.getCurBalance()
 
-      // get gas price from local storage
-      const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
+        // get gas price from local storage
+        const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
 
-      // check fund balance
-      if(fromWei(String(curBalance)) >= this.state.UniAmount){
-        // Get ABI according fund version
-        const FundABI = getFundFundABIByVersion(this.props.version)
+        // check fund balance
+        if(fromWei(String(curBalance)) >= this.state.UniAmount){
+          // Get ABI according fund version
+          const FundABI = getFundFundABIByVersion(this.props.version)
 
-        // sell pool
-        const fund = new this.props.web3.eth.Contract(FundABI, this.props.smartFundAddress)
-        const block = await this.props.web3.eth.getBlockNumber()
+          // sell pool
+          const fund = new this.props.web3.eth.Contract(FundABI, this.props.smartFundAddress)
+          const block = await this.props.web3.eth.getBlockNumber()
 
-        const poolParams = await this.getPoolParams()
+          const poolParams = await this.getPoolParams()
 
-        fund.methods.sellPool(...poolParams)
-        .send({ from: this.props.accounts[0], gasPrice })
-        .on('transactionHash', (hash) => {
-        // pending status for spiner
-        this.props.pending(true)
-        // pending status for DB
-        setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
-        })
-        // close pool modal
-        this.props.modalClose()
-      }else{
-        alert('Not enough balance in your fund')
+          fund.methods.sellPool(...poolParams)
+          .send({ from: this.props.accounts[0], gasPrice })
+          .on('transactionHash', (hash) => {
+          // pending status for spiner
+          this.props.pending(true)
+          // pending status for DB
+          setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+          })
+          // close pool modal
+          this.props.modalClose()
+        }
+        else{
+          alert('Not enough balance in your fund')
+        }
       }
-    }else{
+      catch(e){
+        alert('Can not verify transaction data, please try again in a minute')
+      }
+    }
+    else{
       alert('Please input amount')
     }
   }

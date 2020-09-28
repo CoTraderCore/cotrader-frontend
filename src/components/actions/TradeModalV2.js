@@ -99,7 +99,7 @@ class TradeModalV2 extends Component {
         }
       }
     }catch(e){
-      alert("Can not get data from api, please try again latter")
+      alert("Can not verify transaction data, please try again in a minute")
       console.log(e)
     }
   }

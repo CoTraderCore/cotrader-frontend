@@ -25,50 +25,55 @@ class SellPool extends PureComponent {
       alert("Wrong pool amount")
     }
     else {
-      // prapare params data
-      const poolAmount = toWei(this.state.poolAmount)
-      
-      const fundContract = new this.props.web3.eth.Contract(
-        SmartFundABIV7,
-        this.props.smartFundAddress
-      )
+      try{
+        // prapare params data
+        const poolAmount = toWei(this.state.poolAmount)
 
-      const BPool = new this.props.web3.eth.Contract(
-        BalancerPoolABI,
-        this.state.poolAddress
-      )
+        const fundContract = new this.props.web3.eth.Contract(
+          SmartFundABIV7,
+          this.props.smartFundAddress
+        )
 
-      const poolConnectors = await BPool.methods.getCurrentTokens().call()
+        const BPool = new this.props.web3.eth.Contract(
+          BalancerPoolABI,
+          this.state.poolAddress
+        )
 
-      const additionalData = this.props.web3.eth.abi.encodeParameters(
-        ['uint256[]','uint256[]'],
-        [poolConnectors, [1,1]]
-      )
+        const poolConnectors = await BPool.methods.getCurrentTokens().call()
 
-      // get block number
-      const block = await this.props.web3.eth.getBlockNumber()
-      // get gas price from local storage
-      const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
+        const additionalData = this.props.web3.eth.abi.encodeParameters(
+          ['uint256[]','uint256[]'],
+          [poolConnectors, [1,1]]
+        )
+
+        // get block number
+        const block = await this.props.web3.eth.getBlockNumber()
+        // get gas price from local storage
+        const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
 
 
 
-      // sell pool
-      fundContract.methods.sellPool(
-        poolAmount,
-        2, // type Balancer
-        this.state.poolAddress,
-        [],
-        additionalData
-      )
-      .send({ from: this.props.accounts[0], gasPrice })
-      .on('transactionHash', (hash) => {
-      // pending status for spiner
-      this.props.pending(true)
-      // pending status for DB
-      setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
-      })
-      // close pool modal
-      this.props.modalClose()
+        // sell pool
+        fundContract.methods.sellPool(
+          poolAmount,
+          2, // type Balancer
+          this.state.poolAddress,
+          [],
+          additionalData
+        )
+        .send({ from: this.props.accounts[0], gasPrice })
+        .on('transactionHash', (hash) => {
+        // pending status for spiner
+        this.props.pending(true)
+        // pending status for DB
+        setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+        })
+        // close pool modal
+        this.props.modalClose()
+      }
+      catch(e){
+        alert('Can not verify transaction data, please try again in a minute')
+      }
     }
   }
 

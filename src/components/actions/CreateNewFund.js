@@ -73,6 +73,7 @@ class CreateNewFund extends Component {
       catch(e){
         // for case if user reject transaction
         this.props.pending(false)
+        alert('Can not verify transaction data, please try again in a minute')
         console.log("Error", e)
       }
       // close modal

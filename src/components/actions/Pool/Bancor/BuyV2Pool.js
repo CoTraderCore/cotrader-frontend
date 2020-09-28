@@ -51,53 +51,58 @@ class BuyV2Pool extends PureComponent {
     // check if enough balance
     const isEnoughBalance = await this.checkInputBalance(this.state.connectors)
     if(isEnoughBalance){
-      // get connectors addresses and amount
-      const connectorsAddress = this.state.connectors.map(item => item.address)
-      const connectorsAmount = this.state.connectors.map(item => item.amount)
-      // get smart fund contract
-      const smartFund = new this.props.web3.eth.Contract(SmartFundABIV7, this.props.smartFundAddress)
-      // get gas price from local storage
-      const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
-      // get block number
-      const block = await this.props.web3.eth.getBlockNumber()
-      // get poolToken
-      const poolToken = this.props.converterType === 2
-      ? await this.extractType2PoolToken(connectorsAddress[0], this.props.converterAddress)
-      : this.props.fromAddress
+      try{
+        // get connectors addresses and amount
+        const connectorsAddress = this.state.connectors.map(item => item.address)
+        const connectorsAmount = this.state.connectors.map(item => item.amount)
+        // get smart fund contract
+        const smartFund = new this.props.web3.eth.Contract(SmartFundABIV7, this.props.smartFundAddress)
+        // get gas price from local storage
+        const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
+        // get block number
+        const block = await this.props.web3.eth.getBlockNumber()
+        // get poolToken
+        const poolToken = this.props.converterType === 2
+        ? await this.extractType2PoolToken(connectorsAddress[0], this.props.converterAddress)
+        : this.props.fromAddress
 
-      console.log("poolToken", poolToken)
+        console.log("poolToken", poolToken)
 
-      // get params for buying pool according to converter type
-      let params = [
-        0, // for Bancor v2 we calculate pool amount by connectors
-        0, // type Bancor
-        poolToken,
-        connectorsAddress,
-        connectorsAmount,
-        [
-          numStringToBytes32(String(this.props.converterVersion)),
-          numStringToBytes32(String(this.props.converterType))
-        ],
-        this.props.web3.eth.abi.encodeParameters(
-          ['uint256'],
-          [1]
+        // get params for buying pool according to converter type
+        let params = [
+          0, // for Bancor v2 we calculate pool amount by connectors
+          0, // type Bancor
+          poolToken,
+          connectorsAddress,
+          connectorsAmount,
+          [
+            numStringToBytes32(String(this.props.converterVersion)),
+            numStringToBytes32(String(this.props.converterType))
+          ],
+          this.props.web3.eth.abi.encodeParameters(
+            ['uint256'],
+            [1]
+          )
+        ]
+
+        // buy pool
+        smartFund.methods.buyPool(
+          ...params
         )
-      ]
+        .send({ from:this.props.accounts[0], gasPrice })
+        .on('transactionHash', (hash) => {
+        // pending status for spiner
+        this.props.pending(true)
+        // pending status for DB
+        setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+        })
 
-      // buy pool
-      smartFund.methods.buyPool(
-        ...params
-      )
-      .send({ from:this.props.accounts[0], gasPrice })
-      .on('transactionHash', (hash) => {
-      // pending status for spiner
-      this.props.pending(true)
-      // pending status for DB
-      setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
-      })
-
-      // close pool modal
-      this.props.modalClose()
+        // close pool modal
+        this.props.modalClose()
+      }
+      catch(e){
+        alert('Can not verify transaction data, please try again in a minute')
+      }
     }else{
       this.setState({
          ErrorText:"You do not have enough assets in the fund for this operation"

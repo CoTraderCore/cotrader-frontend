@@ -163,36 +163,41 @@ class SellPool extends Component {
   // Sell pool
   sell = async () => {
     if(this.props.fromAddress.length > 0 && this.state.amount > 0){
-      const web3 = this.props.web3
-      // get gas price from local storage
-      const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
-      // check fund balance
-      const { fundBalanceFromWei } = await this.getFundBalance()
-      // allow sell if fund has enough balance
-      if(fundBalanceFromWei >= this.state.amount){
-        // Get ABI according fund version
-        const FundABI = getFundFundABIByVersion(this.props.version)
-        // Get smart fund instance
-        const fund = new web3.eth.Contract(FundABI, this.props.smartFundAddress)
-        // Get block number
-        const block = await web3.eth.getBlockNumber()
-        // Get pool params for current fund version
-        const poolParams = await this.getPoolParams()
-        // Sell
-        fund.methods.sellPool(...poolParams).send({ from:this.props.accounts[0], gasPrice })
-        .on('transactionHash', (hash) => {
-        // pending status for spiner
-        this.props.pending(true)
-        // pending status for DB
-        setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
-        // close pool modal
-        this.props.modalClose()
-      })
+      try{
+        const web3 = this.props.web3
+        // get gas price from local storage
+        const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
+        // check fund balance
+        const { fundBalanceFromWei } = await this.getFundBalance()
+        // allow sell if fund has enough balance
+        if(fundBalanceFromWei >= this.state.amount){
+          // Get ABI according fund version
+          const FundABI = getFundFundABIByVersion(this.props.version)
+          // Get smart fund instance
+          const fund = new web3.eth.Contract(FundABI, this.props.smartFundAddress)
+          // Get block number
+          const block = await web3.eth.getBlockNumber()
+          // Get pool params for current fund version
+          const poolParams = await this.getPoolParams()
+          // Sell
+          fund.methods.sellPool(...poolParams).send({ from:this.props.accounts[0], gasPrice })
+          .on('transactionHash', (hash) => {
+          // pending status for spiner
+          this.props.pending(true)
+          // pending status for DB
+          setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+          // close pool modal
+          this.props.modalClose()
+          })
+        }
+        else{
+          this.setState({
+             ErrorText:"Not enough balance in your fund"
+          })
+        }
       }
-      else{
-        this.setState({
-           ErrorText:"Not enough balance in your fund"
-        })
+      catch(e){
+        alert('Can not verify transaction data, please try again in a minute')
       }
     }
     else{

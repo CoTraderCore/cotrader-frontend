@@ -64,52 +64,57 @@ class BuyV2Pool extends PureComponent {
 
     // Continue only if such pool exist
     if(poolTokenAddress !== "0x0000000000000000000000000000000000000000"){
-      // get smart fund contract instance
-      const fundContract = new this.props.web3.eth.Contract(
-        SmartFundABIV7,
-        this.props.smartFundAddress
-      )
-
-      const connectors = this.state.connectors
-      // convert connetors amount to wei by decimals
-      const connectorsAmount = this.state.connectorsAmount
-      // compare fund balance
-      const isEnoughBalance = await this.compareFundBalance(
-        connectors,
-        connectorsAmount
-      )
-
-      // continue only if enough balance
-      if(isEnoughBalance){
-        // get block number
-        const block = await this.props.web3.eth.getBlockNumber()
-        // get gas price from local storage
-        const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
-        // buy pool
-        fundContract.methods.buyPool(
-          0, // for v2 we calculate pool amount by connctors
-          1, // type Uniswap
-          poolTokenAddress,
-          connectors,
-          connectorsAmount,
-          [numStringToBytes32(String(2))], // version 2
-          this.props.web3.eth.abi.encodeParameters(
-            ['uint256','uint256'],
-            [1,1]
-          ) // additional data should be min return
+      try{
+        // get smart fund contract instance
+        const fundContract = new this.props.web3.eth.Contract(
+          SmartFundABIV7,
+          this.props.smartFundAddress
         )
-        .send({ from: this.props.accounts[0], gasPrice })
-        .on('transactionHash', (hash) => {
-        // pending status for spiner
-        this.props.pending(true)
-        // pending status for DB
-        setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
-        })
-        // close pool modal
-        this.props.modalClose()
+
+        const connectors = this.state.connectors
+        // convert connetors amount to wei by decimals
+        const connectorsAmount = this.state.connectorsAmount
+        // compare fund balance
+        const isEnoughBalance = await this.compareFundBalance(
+          connectors,
+          connectorsAmount
+        )
+
+        // continue only if enough balance
+        if(isEnoughBalance){
+          // get block number
+          const block = await this.props.web3.eth.getBlockNumber()
+          // get gas price from local storage
+          const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
+          // buy pool
+          fundContract.methods.buyPool(
+            0, // for v2 we calculate pool amount by connctors
+            1, // type Uniswap
+            poolTokenAddress,
+            connectors,
+            connectorsAmount,
+            [numStringToBytes32(String(2))], // version 2
+            this.props.web3.eth.abi.encodeParameters(
+              ['uint256','uint256'],
+              [1,1]
+            ) // additional data should be min return
+          )
+          .send({ from: this.props.accounts[0], gasPrice })
+          .on('transactionHash', (hash) => {
+          // pending status for spiner
+          this.props.pending(true)
+          // pending status for DB
+          setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+          })
+          // close pool modal
+          this.props.modalClose()
+        }
+        else{
+          this.setState({ ErrorText: "You do not have enough assets in the fund for this operation" })
+        }
       }
-      else{
-        this.setState({ ErrorText: "You do not have enough assets in the fund for this operation" })
+      catch(e){
+        alert('Can not verify transaction data, please try again in a minute')
       }
     }
     else{

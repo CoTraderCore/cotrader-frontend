@@ -55,40 +55,45 @@ class SellV2Pool extends PureComponent {
     const poolTokenAddress = this.state.poolTokenAddress
     // Continue only if such pool exist
     if(poolTokenAddress !== "0x0000000000000000000000000000000000000000"){
-      // get smart fund contract instance
-      const fundContract = new this.props.web3.eth.Contract(
-        SmartFundABIV7,
-        this.props.smartFundAddress
-      )
+      try{
+        // get smart fund contract instance
+        const fundContract = new this.props.web3.eth.Contract(
+          SmartFundABIV7,
+          this.props.smartFundAddress
+        )
 
-      // second connector (ETH) should be in [0] index
-      const connectors = [this.state.secondConnector, this.props.tokenAddress]
+        // second connector (ETH) should be in [0] index
+        const connectors = [this.state.secondConnector, this.props.tokenAddress]
 
-      // get block number
-      const block = await this.props.web3.eth.getBlockNumber()
-      // get gas price from local storage
-      const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
+        // get block number
+        const block = await this.props.web3.eth.getBlockNumber()
+        // get gas price from local storage
+        const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
 
-      // buy pool
-      fundContract.methods.sellPool(
-        toWei(this.state.poolAmount),
-        1, // type Uniswap
-        poolTokenAddress,
-        [numStringToBytes32(String(2))], // version 2
-        this.props.web3.eth.abi.encodeParameters(
-          ['address[]','uint256','uint256'],
-          [connectors,1,1]
-        ) // additional data should be min return
-      )
-      .send({ from: this.props.accounts[0], gasPrice })
-      .on('transactionHash', (hash) => {
-      // pending status for spiner
-      this.props.pending(true)
-      // pending status for DB
-      setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
-      })
-      // close pool modal
-      this.props.modalClose()
+        // buy pool
+        fundContract.methods.sellPool(
+          toWei(this.state.poolAmount),
+          1, // type Uniswap
+          poolTokenAddress,
+          [numStringToBytes32(String(2))], // version 2
+          this.props.web3.eth.abi.encodeParameters(
+            ['address[]','uint256','uint256'],
+            [connectors,1,1]
+          ) // additional data should be min return
+        )
+        .send({ from: this.props.accounts[0], gasPrice })
+        .on('transactionHash', (hash) => {
+        // pending status for spiner
+        this.props.pending(true)
+        // pending status for DB
+        setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+        })
+        // close pool modal
+        this.props.modalClose()
+      }
+      catch(e){
+        alert('Can not verify transaction data, please try again in a minute')
+      }
     }
     else{
       this.setState({ ErrorText: "Such pool not exist" })

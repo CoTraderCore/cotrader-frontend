@@ -36,39 +36,44 @@ class BuyPool extends PureComponent {
 
   // Buy Balancer pool
   buyBalancerPool = async () => {
-    const connectorsAddress = this.state.poolTokens.map(item => item.address)
-    const connectorsAmount = this.state.poolTokens.map(item => item.amount)
-    const poolAmount = toWei(this.state.poolAmount)
+    try{
+      const connectorsAddress = this.state.poolTokens.map(item => item.address)
+      const connectorsAmount = this.state.poolTokens.map(item => item.amount)
+      const poolAmount = toWei(this.state.poolAmount)
 
-    const fundContract = new this.props.web3.eth.Contract(
-      SmartFundABIV7,
-      this.props.smartFundAddress
-    )
+      const fundContract = new this.props.web3.eth.Contract(
+        SmartFundABIV7,
+        this.props.smartFundAddress
+      )
 
-    // get block number
-    const block = await this.props.web3.eth.getBlockNumber()
-    // get gas price from local storage
-    const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
+      // get block number
+      const block = await this.props.web3.eth.getBlockNumber()
+      // get gas price from local storage
+      const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
 
-    // buy pool
-    fundContract.methods.buyPool(
-      poolAmount,
-      2, // type Balancer
-      this.state.poolAddress,
-      connectorsAddress,
-      connectorsAmount,
-      [],
-      "0x"
-    )
-    .send({ from: this.props.accounts[0], gasPrice })
-    .on('transactionHash', (hash) => {
-    // pending status for spiner
-    this.props.pending(true)
-    // pending status for DB
-    setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
-    })
-    // close pool modal
-    this.props.modalClose()
+      // buy pool
+      fundContract.methods.buyPool(
+        poolAmount,
+        2, // type Balancer
+        this.state.poolAddress,
+        connectorsAddress,
+        connectorsAmount,
+        [],
+        "0x"
+      )
+      .send({ from: this.props.accounts[0], gasPrice })
+      .on('transactionHash', (hash) => {
+      // pending status for spiner
+      this.props.pending(true)
+      // pending status for DB
+      setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+      })
+      // close pool modal
+      this.props.modalClose()
+    }
+    catch(e){
+      alert('Can not verify transaction data, please try again in a minute')
+    }
   }
 
 

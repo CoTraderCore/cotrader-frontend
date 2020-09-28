@@ -158,30 +158,34 @@ class BuyPool extends Component {
   // Buy Bancor Pool
   buy = async () => {
     if(this.state.isEnoughTotalBalanceForBuy){
-      const web3 = this.props.web3
-      // Get ABI according fund version
-      const FundABI = getFundFundABIByVersion(this.props.version)
-      // get fund contract instance
-      const fund = new web3.eth.Contract(FundABI, this.props.smartFundAddress)
-      // this function will throw execution with alert warning if there are limit
-      await checkTokensLimit(this.props.fromAddress, fund)
-      // get gas price from local storage
-      const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
-      // get block number
-      const block = await web3.eth.getBlockNumber()
-      // get pool params
-      const poolParams = await this.getPoolParams()
-      // buy pool
-      fund.methods.buyPool(...poolParams)
-      .send({ from:this.props.accounts[0], gasPrice })
-      .on('transactionHash', (hash) => {
-      // pending status for spiner
-      this.props.pending(true)
-      // pending status for DB
-      setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
-      })
-      // close pool modal
-      this.props.modalClose()
+      try{
+        const web3 = this.props.web3
+        // Get ABI according fund version
+        const FundABI = getFundFundABIByVersion(this.props.version)
+        // get fund contract instance
+        const fund = new web3.eth.Contract(FundABI, this.props.smartFundAddress)
+        // this function will throw execution with alert warning if there are limit
+        await checkTokensLimit(this.props.fromAddress, fund)
+        // get gas price from local storage
+        const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
+        // get block number
+        const block = await web3.eth.getBlockNumber()
+        // get pool params
+        const poolParams = await this.getPoolParams()
+        // buy pool
+        fund.methods.buyPool(...poolParams)
+        .send({ from:this.props.accounts[0], gasPrice })
+        .on('transactionHash', (hash) => {
+        // pending status for spiner
+        this.props.pending(true)
+        // pending status for DB
+        setPending(this.props.smartFundAddress, 1, this.props.accounts[0], block, hash, "Trade")
+        })
+        // close pool modal
+        this.props.modalClose()
+      }catch(e){
+        alert('Can not verify transaction data, please try again in a minute')
+      }
     }
     else{
       alert('Your smart fund do not have enough reserve')
