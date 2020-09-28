@@ -397,7 +397,7 @@ class TradeModalV3 extends Component {
       const difference = realRatio.minus(expectedRatio)
 
       const slippage = difference.dividedBy(expectedRatio.dividedBy(100))
-      return slippage.toFixed(6)
+      return slippage.dividedBy(2).toFixed(6)
     }catch(e){
       return 0
     }
