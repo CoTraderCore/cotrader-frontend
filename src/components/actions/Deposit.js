@@ -131,6 +131,7 @@ class Deposit extends Component {
     }
     catch(e){
     alert("Can not verify transaction data, please try again in a minute")
+    console.log("err: ",e)
     }
  }
 

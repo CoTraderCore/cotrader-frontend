@@ -5841,6 +5841,43 @@ export const SmartFundABIV7 = [
 		"anonymous": false,
 		"inputs": [
 			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "eventType",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "address[]",
+				"name": "tokensToSend",
+				"type": "address[]"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256[]",
+				"name": "amountsToSend",
+				"type": "uint256[]"
+			},
+			{
+				"indexed": false,
+				"internalType": "address[]",
+				"name": "tokensToReceive",
+				"type": "address[]"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256[]",
+				"name": "amountsToReceive",
+				"type": "uint256[]"
+			}
+		],
+		"name": "DefiCall",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
 				"indexed": true,
 				"internalType": "address",
 				"name": "user",
@@ -5872,37 +5909,6 @@ export const SmartFundABIV7 = [
 		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "tokenAddress",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "tokenAmount",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "underlyingAddress",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "underlyingAmount",
-				"type": "uint256"
-			}
-		],
-		"name": "Loan",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
 				"indexed": true,
 				"internalType": "address",
 				"name": "previousOwner",
@@ -5916,37 +5922,6 @@ export const SmartFundABIV7 = [
 			}
 		],
 		"name": "OwnershipTransferred",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "tokenAddress",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "tokenAmount",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "underlyingAddress",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "underlyingAmount",
-				"type": "uint256"
-			}
-		],
-		"name": "Redeem",
 		"type": "event"
 	},
 	{
@@ -6144,48 +6119,40 @@ export const SmartFundABIV7 = [
 	{
 		"inputs": [
 			{
+				"internalType": "address[]",
+				"name": "tokensToSend",
+				"type": "address[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "amountsToSend",
+				"type": "uint256[]"
+			},
+			{
+				"internalType": "bytes32[]",
+				"name": "_additionalArgs",
+				"type": "bytes32[]"
+			},
+			{
+				"internalType": "bytes",
+				"name": "_additionalData",
+				"type": "bytes"
+			}
+		],
+		"name": "callDefiPortal",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "address",
 				"name": "_coinAddress",
 				"type": "address"
 			}
 		],
 		"name": "changeStableCoinAddress",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_amount",
-				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "_cToken",
-				"type": "address"
-			}
-		],
-		"name": "compoundMint",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_percent",
-				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "_cToken",
-				"type": "address"
-			}
-		],
-		"name": "compoundRedeemByPercent",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -6301,6 +6268,19 @@ export const SmartFundABIV7 = [
 			}
 		],
 		"name": "sellPool",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_newDefiPortalAddress",
+				"type": "address"
+			}
+		],
+		"name": "setNewDefiPortal",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -6511,11 +6491,6 @@ export const SmartFundABIV7 = [
 				"type": "uint256"
 			},
 			{
-				"internalType": "uint256",
-				"name": "_platformFee",
-				"type": "uint256"
-			},
-			{
 				"internalType": "address",
 				"name": "_platformAddress",
 				"type": "address"
@@ -6527,32 +6502,22 @@ export const SmartFundABIV7 = [
 			},
 			{
 				"internalType": "address",
-				"name": "_permittedExchangesAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "_permittedPoolsAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "_permittedStables",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
 				"name": "_poolPortalAddress",
 				"type": "address"
 			},
 			{
 				"internalType": "address",
-				"name": "_coinAddress",
+				"name": "_defiPortal",
 				"type": "address"
 			},
 			{
 				"internalType": "address",
-				"name": "_cEther",
+				"name": "_permittedAddresses",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_coinAddress",
 				"type": "address"
 			},
 			{
@@ -6753,32 +6718,6 @@ export const SmartFundABIV7 = [
 	},
 	{
 		"inputs": [],
-		"name": "cEther",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "coinAddress",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
 		"name": "coreFundAsset",
 		"outputs": [
 			{
@@ -6798,6 +6737,19 @@ export const SmartFundABIV7 = [
 				"internalType": "uint8",
 				"name": "",
 				"type": "uint8"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "defiPortal",
+		"outputs": [
+			{
+				"internalType": "contract DefiPortalInterface",
+				"name": "",
+				"type": "address"
 			}
 		],
 		"stateMutability": "view",
@@ -6862,39 +6814,6 @@ export const SmartFundABIV7 = [
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "getSmartFundData",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "_owner",
-				"type": "address"
-			},
-			{
-				"internalType": "string",
-				"name": "_name",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_totalShares",
-				"type": "uint256"
-			},
-			{
-				"internalType": "address[]",
-				"name": "_tokenAddresses",
-				"type": "address[]"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_successFee",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"inputs": [
 			{
 				"internalType": "contract IERC20",
@@ -6908,6 +6827,19 @@ export const SmartFundABIV7 = [
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "isLightFund",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
 			}
 		],
 		"stateMutability": "view",
@@ -6993,36 +6925,10 @@ export const SmartFundABIV7 = [
 	},
 	{
 		"inputs": [],
-		"name": "permittedExchanges",
+		"name": "permittedAddresses",
 		"outputs": [
 			{
-				"internalType": "contract PermittedExchangesInterface",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "permittedPools",
-		"outputs": [
-			{
-				"internalType": "contract PermittedPoolsInterface",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "permittedStables",
-		"outputs": [
-			{
-				"internalType": "contract PermittedStablesInterface",
+				"internalType": "contract PermittedAddressesInterface",
 				"name": "",
 				"type": "address"
 			}
