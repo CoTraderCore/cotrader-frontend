@@ -6,6 +6,7 @@ import {
   SmartFundABIV2,
   SmartFundABIV6,
   ParaswapApi,
+  OneInchApi,
   NeworkID,
   ParaswapParamsABI,
   ParaswapParamsAddress,
@@ -86,18 +87,21 @@ class TradeModalV2 extends Component {
   initData = async () => {
     // get tokens
     try{
-      let tokens = await axios.get(ParaswapApi + '/tokens')
-      tokens = tokens.data.tokens
-      let symbols = []
-      for(let i = 0; i< tokens.length; i++){
-        symbols.push(tokens[i].symbol)
+      let data = await axios.get(OneInchApi + 'tokens')
+      const tokens = []
+      const symbols = []
+
+      for (const [, value] of Object.entries(data.data)) {
+        symbols.push(value.symbol)
+        tokens.push({
+          symbol:value.symbol,
+          address:value.address,
+          decimals:value.decimals
+        })
       }
-      if(this._isMounted){
+
+      if(this._isMounted)
         this.setState({ tokens, symbols })
-        if(NeworkID !== 1 && NeworkID !== 42){
-          console.log("WARNING v2 Paraswap trade avilable only for Mainnet and Kovan")
-        }
-      }
     }catch(e){
       alert("Can not verify transaction data, please try again in a minute")
       console.log(e)
@@ -124,7 +128,7 @@ class TradeModalV2 extends Component {
     let fundBalance
     let result = false
 
-    if(this.state.sendFrom === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'){
+    if(String(this.state.sendFrom).toLowerCase() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'){
       fundBalance = await this.props.web3.eth.getBalance(this.props.smartFundAddress)
       fundBalance = this.props.web3.utils.fromWei(fundBalance)
     }
@@ -668,11 +672,17 @@ class TradeModalV2 extends Component {
                 </Badge>
                 </OverlayTrigger>
 
+               {
+                 /*
+                 Use only 1 inch for now
+                 
+                 <Form.Control as="select" onChange={(e) => this.setState({ dexAggregator:e.target.value })}>
+                   <option>1inch</option>
+                   <option>Paraswap</option>
+                 </Form.Control>
 
-                <Form.Control as="select" onChange={(e) => this.setState({ dexAggregator:e.target.value })}>
-                  <option>1inch</option>
-                  <option>Paraswap</option>
-                </Form.Control>
+                 */
+               }
               </Form.Group>
             )
             :null

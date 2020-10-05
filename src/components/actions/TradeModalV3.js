@@ -5,7 +5,7 @@
 import React, { Component } from 'react'
 import {
   SmartFundABIV7,
-  ParaswapApi,
+  OneInchApi,
   NeworkID,
   ERC20ABI,
   APIEnpoint,
@@ -90,12 +90,19 @@ class TradeModalV3 extends Component {
     if(NeworkID === 1){
       // get tokens from api
       try{
-        let tokens = await axios.get(ParaswapApi + '/tokens')
-        tokens = tokens.data.tokens
-        let symbols = []
-        for(let i = 0; i< tokens.length; i++){
-          symbols.push(tokens[i].symbol)
+        let data = await axios.get(OneInchApi + 'tokens')
+        const tokens = []
+        const symbols = []
+
+        for (const [, value] of Object.entries(data.data)) {
+          symbols.push(value.symbol)
+          tokens.push({
+            symbol:value.symbol,
+            address:value.address,
+            decimals:value.decimals
+          })
         }
+
         if(this._isMounted)
           this.setState({ tokens, symbols })
       }catch(e){
@@ -140,14 +147,14 @@ class TradeModalV3 extends Component {
     let fundBalance
     let result = false
 
-    if(this.state.sendFrom === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'){
+    if(String(this.state.sendFrom).toLowerCase() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'){
       fundBalance = await this.props.web3.eth.getBalance(this.props.smartFundAddress)
       fundBalance = this.props.web3.utils.fromWei(fundBalance)
     }
     else{
       const ERC20 = new this.props.web3.eth.Contract(ERC20ABI, this.state.sendFrom)
       fundBalance = await ERC20.methods.balanceOf(this.props.smartFundAddress).call()
-      fundBalance = fromWeiByDecimalsInput(this.state.decimalsFrom, this.props.web3.utils.hexToNumberString(fundBalance._hex))
+      fundBalance = fromWeiByDecimalsInput(this.state.decimalsFrom, fundBalance)
     }
     if(parseFloat(fundBalance) >= parseFloat(this.state.AmountSend))
       result = true

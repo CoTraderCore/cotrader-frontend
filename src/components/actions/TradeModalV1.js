@@ -166,7 +166,7 @@ class TradeModalV1 extends Component {
     const contract = new this.props.web3.eth.Contract(KyberInterfaceABI, KyberAddress)
     // convert src to wei by decimals
     let src
-    if(from === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'){
+    if(String(from).toLowerCase() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'){
       src = toWeiByDecimalsInput(18, amount)
     }else{
       const decimals = await this.getDecimals(from)
@@ -178,7 +178,7 @@ class TradeModalV1 extends Component {
     if(rate){
       // convert expected rate from wei
       let rateFromWei
-      if(from === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'){
+      if(String(from).toLowerCase() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'){
         rateFromWei = fromWeiByDecimalsInput(18, this.props.web3.utils.hexToNumberString(rate.expectedRate._hex))
       }else{
         const decimals = await this.getDecimals(from)
