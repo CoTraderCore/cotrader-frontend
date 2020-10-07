@@ -131,7 +131,7 @@ class TradeModalV3 extends Component {
     const exchangePortalVersion = Number(
       await this.getExchangePortalVersion(this.props.smartFundAddress)
     )
-    
+
     this.setState({ exchangePortalVersion })
   }
 
@@ -366,16 +366,8 @@ class TradeModalV3 extends Component {
     if(NeworkID === 1){
       const src = toWeiByDecimalsInput(decimalsFrom, amount.toString())
       const srcBN = new BigNumber(src)
-      const oneInchContract = new this.props.web3.eth.Contract(OneInchABI, OneInchProto)
 
-      // get 1 inch additional data
-      const { returnAmount } = await oneInchContract.methods.getExpectedReturn(
-        from,
-        to,
-        String(srcBN.toFixed()),
-        10,
-        0
-      ).call()
+      const returnAmount = await this.getRateFrom1inchOnchain (from, to, srcBN)
 
       return returnAmount
     }
@@ -398,6 +390,24 @@ class TradeModalV3 extends Component {
     if(amount > 0 && from !== to){
       return await this.gitRateByNetworkId(from, to, amount, decimalsFrom, decimalsTo)
     }
+  }
+
+  // get rate from contracts
+  getRateFrom1inchOnchain = async (from, to, srcBN) => {
+    const oneInchContract = new this.props.web3.eth.Contract(OneInchABI, OneInchProto)
+    const { returnAmount } = await oneInchContract.methods.getExpectedReturn(
+      from,
+      to,
+      String(srcBN.toFixed()),
+      10,
+      0
+    ).call()
+
+    return returnAmount
+  }
+
+  getRateFrom1inchApi = async (srcBN) => {
+
   }
 
   // get slippage percent
