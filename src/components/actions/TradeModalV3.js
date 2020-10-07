@@ -366,8 +366,16 @@ class TradeModalV3 extends Component {
     if(NeworkID === 1){
       const src = toWeiByDecimalsInput(decimalsFrom, amount.toString())
       const srcBN = new BigNumber(src)
+      let returnAmount
 
-      const returnAmount = await this.getRateFrom1inchOnchain (from, to, srcBN)
+      // get data from api
+      if(this.state.exchangePortalVersion > 4){
+        returnAmount = await this.getRateFrom1inchApi(srcBN)
+      }
+      // get data from blockchain
+      else {
+        returnAmount = await this.getRateFrom1inchOnchain (from, to, srcBN)
+      }
 
       return returnAmount
     }
@@ -406,8 +414,11 @@ class TradeModalV3 extends Component {
     return returnAmount
   }
 
+  // get rate from api
   getRateFrom1inchApi = async (srcBN) => {
-
+    const route = `quote?fromTokenSymbol=${this.state.Send}&toTokenSymbol=${this.state.Recive}&amount=${srcBN}`
+    const response = await axios.get(OneInchApi + route)
+    return response.data.toTokenAmount
   }
 
   // get slippage percent
