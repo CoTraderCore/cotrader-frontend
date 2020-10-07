@@ -62,7 +62,8 @@ class TradeModalV3 extends Component {
       decimalsTo:18,
       prepareData:false,
       shouldUpdatePrice:false,
-      exchangePortalVersion:0
+      exchangePortalVersion:0,
+      exchangePortalAddress:''
     }
   }
 
@@ -128,11 +129,13 @@ class TradeModalV3 extends Component {
       alert("There are no tokens for your ETH network")
     }
 
-    const exchangePortalVersion = Number(
-      await this.getExchangePortalVersion(this.props.smartFundAddress)
-    )
+    const {
+      exchangePortalAddress,
+      exchangePortalVersion
+    } = await this.getExchangePortalVersion(this.props.smartFundAddress)
 
-    this.setState({ exchangePortalVersion })
+
+    this.setState({ exchangePortalAddress, exchangePortalVersion })
   }
 
   // Show err msg if there are some msg
@@ -153,7 +156,8 @@ class TradeModalV3 extends Component {
     const smartFund = new this.props.web3.eth.Contract(SmartFundABIV7, fundAddress)
     const exchangePortalAddress = await smartFund.methods.exchangePortal().call()
     const exchangePortal = new this.props.web3.eth.Contract(ExchangePortalABIV6, exchangePortalAddress)
-    return await exchangePortal.methods.version().call()
+    const exchangePortalVersion = Number(await exchangePortal.methods.version().call())
+    return { exchangePortalAddress, exchangePortalVersion }
   }
 
 
@@ -286,6 +290,8 @@ class TradeModalV3 extends Component {
         this.state.exchangePortalVersion
       )
 
+      console.log("additionalData", additionalData)
+
       // get exchnage type 1inch proto or 1inch eth
       const exchangeType = this.state.exchangePortalVersion > 4 ? 3 : 2
 
@@ -319,15 +325,17 @@ class TradeModalV3 extends Component {
   // dependse of exchange portal version
   getTradeBytesParamsByVersion = async (version) => {
     let additionalData
+    const amountInWei = toWeiByDecimalsInput(this.state.decimalsFrom, this.state.AmountSend)
 
     // get calldata from api
     if(version > 4){
+      const route = `swap?fromTokenSymbol=${this.state.Send}&toTokenSymbol=${this.state.Recive}&amount=${amountInWei}&fromAddress=${this.state.exchangePortalAddress}&slippage=1&disableEstimate=true`
+      const response = await axios.get(OneInchApi + route)
       // todo get data from api
-      additionalData = "0x"
+      additionalData = response.data.data
     }
     // get additional data for onchain trade
     else{
-      const amountInWei = toWeiByDecimalsInput(this.state.decimalsFrom, this.state.AmountSend)
       const oneInchContract = new this.props.web3.eth.Contract(OneInchABI, OneInchProto)
       // get 1 inch additional data
       const { distribution } = await oneInchContract.methods.getExpectedReturn(
