@@ -517,7 +517,7 @@ class TradeModalV2 extends Component {
       const difference = realRatio.minus(expectedRatio)
 
       const slippage = difference.dividedBy(expectedRatio.dividedBy(100))
-      return slippage.toFixed(6)
+      return slippage.dividedBy(2).toFixed(6)
     }catch(e){
       return 0
     }
@@ -675,7 +675,7 @@ class TradeModalV2 extends Component {
                {
                  /*
                  Use only 1 inch for now
-                 
+
                  <Form.Control as="select" onChange={(e) => this.setState({ dexAggregator:e.target.value })}>
                    <option>1inch</option>
                    <option>Paraswap</option>
