@@ -261,7 +261,6 @@ class TradeModalV3 extends Component {
   // trade via 1 inch
   tradeViaOneInch = async () => {
     try{
-      const oneInchContract = new this.props.web3.eth.Contract(OneInchABI, OneInchProto)
       const smartFund = new this.props.web3.eth.Contract(SmartFundABIV7, this.props.smartFundAddress)
       const block = await this.props.web3.eth.getBlockNumber()
       // get cur tx count
@@ -282,24 +281,20 @@ class TradeModalV3 extends Component {
       // get merkle tree data
       const { proof, positions } = getMerkleTreeData(this.state.sendTo)
 
-      // get 1 inch additional data
-      const { distribution } = await oneInchContract.methods.getExpectedReturn(
-        this.state.sendFrom,
-        this.state.sendTo,
-        amountInWei,
-        10,
-        0
-      ).call()
+      // get additional data dependse of version
+      const additionalData = await this.getTradeBytesParamsByVersion(
+        this.state.exchangePortalVersion
+      )
 
-      const additionalData = this.props.web3.eth.abi.encodeParameters(
-        ['uint256', 'uint256[]'],
-        [10, distribution])
+      // get exchnage type 1inch proto or 1inch eth
+      const exchangeType = this.state.exchangePortalVersion > 4 ? 3 : 2
 
+      // trade
       smartFund.methods.trade(
           this.state.sendFrom,
           amountInWei,
           this.state.sendTo,
-          2,
+          exchangeType,
           proof,
           positions,
           additionalData,
@@ -319,6 +314,38 @@ class TradeModalV3 extends Component {
       console.log("error: ",e)
     }
   }
+
+  // get additional trade params
+  // dependse of exchange portal version
+  getTradeBytesParamsByVersion = async (version) => {
+    let additionalData
+
+    // get calldata from api
+    if(version > 4){
+      // todo get data from api
+      additionalData = "0x"
+    }
+    // get additional data for onchain trade
+    else{
+      const amountInWei = toWeiByDecimalsInput(this.state.decimalsFrom, this.state.AmountSend)
+      const oneInchContract = new this.props.web3.eth.Contract(OneInchABI, OneInchProto)
+      // get 1 inch additional data
+      const { distribution } = await oneInchContract.methods.getExpectedReturn(
+        this.state.sendFrom,
+        this.state.sendTo,
+        amountInWei,
+        10,
+        0
+      ).call()
+
+      additionalData = this.props.web3.eth.abi.encodeParameters(
+        ['uint256', 'uint256[]'],
+        [10, distribution])
+     }
+
+     return additionalData
+  }
+
 
 
   // Validation input and smart fund balance
