@@ -1,5 +1,6 @@
-// this trade modal work only with 1 inch with lovest price by pass additional params offchain
-// also this modal work with merkle tree tokens white list
+// this trade modal work only with 1 INCH PROTO (fully onchain) and 1 INCH ETH (calldata from api)
+// with lovest price
+// also this modal work with merkle tree tokens white list verification
 // support only for versions >= 7
 
 import React, { Component } from 'react'
@@ -61,6 +62,7 @@ class TradeModalV3 extends Component {
       decimalsTo:18,
       prepareData:false,
       shouldUpdatePrice:false,
+      exchangePortalVersion:0
     }
   }
 
@@ -125,6 +127,12 @@ class TradeModalV3 extends Component {
     else{
       alert("There are no tokens for your ETH network")
     }
+
+    const exchangePortalVersion = Number(
+      await this.getExchangePortalVersion(this.props.smartFundAddress)
+    )
+    
+    this.setState({ exchangePortalVersion })
   }
 
   // Show err msg if there are some msg
@@ -138,6 +146,14 @@ class TradeModalV3 extends Component {
     }else {
       return null
     }
+  }
+
+  // return version of fund Exchange portal
+  getExchangePortalVersion = async (fundAddress) => {
+    const smartFund = new this.props.web3.eth.Contract(SmartFundABIV7, fundAddress)
+    const exchangePortalAddress = await smartFund.methods.exchangePortal().call()
+    const exchangePortal = new this.props.web3.eth.Contract(ExchangePortalABIV6, exchangePortalAddress)
+    return await exchangePortal.methods.version().call()
   }
 
 
@@ -445,7 +461,7 @@ class TradeModalV3 extends Component {
   })
 
   render() {
-    console.log("Trade modal v3")
+    console.log("Trade modal v3, portal version :", this.state.exchangePortalVersion)
    return (
       <div>
         <Button variant="outline-primary" onClick={() => this.setState({ ShowModal: true })}>
