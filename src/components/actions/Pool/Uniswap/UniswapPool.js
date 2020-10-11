@@ -5,7 +5,7 @@ import SellPool from './SellPool'
 import SellV2Pool from './SellV2Pool'
 import { Form } from "react-bootstrap"
 import { Typeahead } from 'react-bootstrap-typeahead'
-import { NeworkID, ParaswapApi } from '../../../../config.js'
+import { NeworkID, OneInchApi } from '../../../../config.js'
 import axios from 'axios'
 
 const getComponentList = (poolVersion) => {
@@ -37,20 +37,23 @@ class UniswapPool extends Component {
 
   // get tokens addresses and symbols from paraswap api
   initData = async () => {
-    let tokens
-    let symbols
+    let tokens = []
+    let symbols = []
     const blackListPool = ["OMG", "ELF"]
 
     if(NeworkID === 1){
       // get data from Paraswap api
       try{
-         tokens = await axios.get(ParaswapApi + '/tokens')
-         tokens = tokens.data.tokens
-         symbols = []
-         for(let i = 0; i< tokens.length; i++){
-            symbols.push(tokens[i].symbol)
-         }
-
+        let data = await axios.get(OneInchApi + 'tokens')
+        console.log(data)
+        for (const [, value] of Object.entries(data.data)) {
+          symbols.push(value.symbol)
+          tokens.push({
+            symbol:value.symbol,
+            address:value.address,
+            decimals:value.decimals
+          })
+        }
          // filter black listed pool
          symbols = symbols.filter((item) => !blackListPool.includes(item))
        }catch(e){

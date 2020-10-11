@@ -49,7 +49,7 @@ export const OneInchProto = '0x50FDA034C0Ce7a8f7EFDAebDA7Aa7cA21CC1267e'
 
 
 // // Rinkeby
-// export const SmartFundRegistryADDRESS = '0x4835E6CFc4754aD9694972B320b1fa2908724206'
+// export const SmartFundRegistryADDRESS = '0x980d1e000Aa0C3F0cB898b693Ae742221052267f'
 // export const EtherscanLink = 'https://rinkeby.etherscan.io/'
 // export const KyberAddress = '0xF77eC7Ed5f5B9a5aee4cfa6FFCaC6A4C315BaC76'
 // export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'
