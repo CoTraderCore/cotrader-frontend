@@ -89,7 +89,7 @@ class UniswapPool extends Component {
   findAddressBySymbol = (symbol) => {
     const tokenObj = this.state.tokens.find((item) => item.symbol && item.symbol === symbol)
     if(tokenObj){
-      return tokenObj.address
+      return String(tokenObj.address).toLowerCase()
     }else{
       return null
     }
@@ -156,6 +156,13 @@ class UniswapPool extends Component {
                  selectedSymbol:s[0]
                })}
                placeholder="Choose a symbol"
+               renderMenuItemChildren={(options, props) => (
+                 <div>
+                   <img style={{height: "35px", width: "35px"}}src={`http://1inch.exchange/assets/tokens/${this.findAddressBySymbol(options)}.png`} alt="Logo" />
+                   &nbsp; &nbsp;
+                   {options}
+                 </div>
+               )}
              />
              <br/>
              {/* Render current action */}

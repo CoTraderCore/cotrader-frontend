@@ -318,6 +318,13 @@ class BuyV2Pool extends PureComponent {
           secondConnectorSymbol:s[0]
           })}
         placeholder="Choose a second connector symbol"
+        renderMenuItemChildren={(options, props) => (
+          <div>
+            <img style={{height: "35px", width: "35px"}}src={`http://1inch.exchange/assets/tokens/${this.props.findAddressBySymbol(options)}.png`} alt="Logo" />
+            &nbsp; &nbsp;
+            {options}
+          </div>
+        )}
       />
 
       { /* If addresses correct, show input form */ }

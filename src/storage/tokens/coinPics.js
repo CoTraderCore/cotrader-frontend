@@ -1,3 +1,3 @@
 const coinPics = symbol => `/img/coins/${symbol}.png`
 
-export { coinPics }
+export default coinPics

@@ -545,6 +545,12 @@ class TradeModalV2 extends Component {
     },1000)
   }
 
+  // extract address from global tokens obj by symbol
+  getTokenAddressBySymbol = (symbol) => {
+    const From = this.state.tokens.filter(item => item.symbol === symbol)
+    return String(From[0].address).toLowerCase()
+  }
+
   // reset states after close modal
   closeModal = () => this.setState({
     ShowModal: false,
@@ -595,6 +601,13 @@ class TradeModalV2 extends Component {
               options={this.state.symbols}
               onChange={(s) => this.changeByClick("Send", s[0])}
               placeholder={this.state.Send}
+              renderMenuItemChildren={(options, props) => (
+                <div>
+                  <img style={{height: "35px", width: "35px"}}src={`http://1inch.exchange/assets/tokens/${this.getTokenAddressBySymbol(options)}.png`} alt="Logo" />
+                  &nbsp; &nbsp;
+                  {options}
+                </div>
+              )}
             />
           </InputGroup.Text>
           </InputGroup.Prepend>
@@ -632,6 +645,13 @@ class TradeModalV2 extends Component {
               options={this.state.symbols}
               onChange={(s) => this.changeByClick("Recive", s[0])}
               placeholder={this.state.Recive}
+              renderMenuItemChildren={(options, props) => (
+                <div>
+                  <img style={{height: "35px", width: "35px"}}src={`http://1inch.exchange/assets/tokens/${this.getTokenAddressBySymbol(options)}.png`} alt="Logo" />
+                  &nbsp; &nbsp;
+                  {options}
+                </div>
+              )}
             />
           </InputGroup.Text>
           </InputGroup.Prepend>

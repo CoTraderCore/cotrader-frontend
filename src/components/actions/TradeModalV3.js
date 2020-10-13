@@ -40,7 +40,6 @@ import { ropstenTokens, ropstenSymbols } from '../../storage/RopstenTokens'
 import { rinkebyTokens, rinkebySymbols } from '../../storage/RinkebyTokens'
 
 
-
 class TradeModalV3 extends Component {
   constructor(props, context) {
     super(props, context);
@@ -437,7 +436,13 @@ class TradeModalV3 extends Component {
 
   // get rate from contracts
   getRateFrom1inchOnchain = async (from, to, srcBN) => {
+    console.log("Get rate onchain")
     const oneInchContract = new this.props.web3.eth.Contract(OneInchABI, OneInchProto)
+    console.log(from,
+    to,
+    String(srcBN.toFixed()),
+    10,
+    0)
     const { returnAmount } = await oneInchContract.methods.getExpectedReturn(
       from,
       to,
@@ -445,6 +450,7 @@ class TradeModalV3 extends Component {
       10,
       0
     ).call()
+    console.log(returnAmount)
 
     return returnAmount
   }
@@ -504,6 +510,12 @@ class TradeModalV3 extends Component {
     },1000)
   }
 
+  // extract address from global tokens obj by symbol
+  getTokenAddressBySymbol = (symbol) => {
+    const From = this.state.tokens.filter(item => item.symbol === symbol)
+    return String(From[0].address).toLowerCase()
+  }
+
   // reset states after close modal
   closeModal = () => this.setState({
     ShowModal: false,
@@ -517,7 +529,6 @@ class TradeModalV3 extends Component {
   })
 
   render() {
-    console.log("Trade modal v3, portal version :", this.state.exchangePortalVersion)
    return (
       <div>
         <Button variant="outline-primary" onClick={() => this.setState({ ShowModal: true })}>
@@ -554,6 +565,13 @@ class TradeModalV3 extends Component {
               options={this.state.symbols}
               onChange={(s) => this.changeByClick("Send", s[0])}
               placeholder={this.state.Send}
+              renderMenuItemChildren={(options, props) => (
+                <div>
+                  <img style={{height: "35px", width: "35px"}}src={`http://1inch.exchange/assets/tokens/${this.getTokenAddressBySymbol(options)}.png`} alt="Logo" />
+                  &nbsp; &nbsp;
+                  {options}
+                </div>
+              )}
             />
           </InputGroup.Text>
           </InputGroup.Prepend>
@@ -591,6 +609,13 @@ class TradeModalV3 extends Component {
               options={this.state.symbols}
               onChange={(s) => this.changeByClick("Recive", s[0])}
               placeholder={this.state.Recive}
+              renderMenuItemChildren={(options, props) => (
+                <div>
+                  <img style={{height: "35px", width: "35px"}}src={`http://1inch.exchange/assets/tokens/${this.getTokenAddressBySymbol(options)}.png`} alt="Logo" />
+                  &nbsp; &nbsp;
+                  {options}
+                </div>
+              )}
             />
           </InputGroup.Text>
           </InputGroup.Prepend>

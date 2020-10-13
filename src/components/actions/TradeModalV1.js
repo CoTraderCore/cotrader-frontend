@@ -9,7 +9,7 @@ import { Typeahead } from 'react-bootstrap-typeahead'
 import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../utils/weiByDecimals'
 import checkTokensLimit from '../../utils/checkTokensLimit'
 import SetGasPrice from '../settings/SetGasPrice'
-
+import coinPics from '../../storage/tokens/coinPics'
 
 class TradeModalV1 extends Component {
   constructor(props, context) {
@@ -254,6 +254,13 @@ class TradeModalV1 extends Component {
                options={this.state.symbols}
                onChange={(s) => this.changeByClick("Send", s[0])}
                placeholder={this.state.Send}
+               renderMenuItemChildren={(options, props) => (
+                 <div>
+                   <img style={{height: "35px", width: "35px"}}src={`${coinPics(options)}`} alt="Logo" />
+                   &nbsp; &nbsp;
+                   {options}
+                 </div>
+               )}
              />
            </InputGroup.Text>
           </InputGroup.Prepend>
@@ -279,6 +286,13 @@ class TradeModalV1 extends Component {
                options={this.state.symbols}
                onChange={(s) => this.changeByClick("Recive", s[0])}
                placeholder={this.state.Recive}
+               renderMenuItemChildren={(options, props) => (
+                 <div>
+                   <img style={{height: "35px", width: "35px"}}src={`${coinPics(options)}`} alt="Logo" />
+                   &nbsp; &nbsp;
+                   {options}
+                 </div>
+               )}
              />
            </InputGroup.Text>
           </InputGroup.Prepend>
