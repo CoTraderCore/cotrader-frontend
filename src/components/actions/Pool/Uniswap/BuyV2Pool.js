@@ -127,7 +127,8 @@ class BuyV2Pool extends PureComponent {
     }
     // update input immediately
     this.setState({
-      [evt.target.name]:evt.target.value
+      [evt.target.name]:evt.target.value,
+      showPending:true
     })
 
     // compute and update data with delay
@@ -140,57 +141,61 @@ class BuyV2Pool extends PureComponent {
   // update amount of connector 0 by amount of connector 1
   // and vice versa
   updateConnectorByConnector = async (isFirstConnector, _amount) => {
-    // for avoid e+ or e- scientific notation
-    // convert input to full number string
-    const amount = (parseFloat(_amount)).toLocaleString('fullwide', {useGrouping:false})
+    try{
+      // for avoid e+ or e- scientific notation
+      // convert input to full number string
+      const amount = (parseFloat(_amount)).toLocaleString('fullwide', {useGrouping:false})
 
-    if(amount > 0){
-      const {
-        tokenAWrap,
-        tokenBWrap,
-        poolTokenAddress
-      } = await this.getPoolDirection()
+      if(amount > 0){
+        const {
+          tokenAWrap,
+          tokenBWrap,
+          poolTokenAddress
+        } = await this.getPoolDirection()
 
-      const router = new this.props.web3.eth.Contract(UniswapV2Router02ABI, UniswapV2Router02)
-      const pair = new this.props.web3.eth.Contract(IUniswapV2PairABI, poolTokenAddress)
+        const router = new this.props.web3.eth.Contract(UniswapV2Router02ABI, UniswapV2Router02)
+        const pair = new this.props.web3.eth.Contract(IUniswapV2PairABI, poolTokenAddress)
 
-      const fromAddress = isFirstConnector ? tokenAWrap : tokenBWrap
-      const toAddress = isFirstConnector ? tokenBWrap : tokenAWrap
-      const fromAmount = await toWeiByDecimalsDetect(fromAddress, amount, this.props.web3)
+        const fromAddress = isFirstConnector ? tokenAWrap : tokenBWrap
+        const toAddress = isFirstConnector ? tokenBWrap : tokenAWrap
+        const fromAmount = await toWeiByDecimalsDetect(fromAddress, amount, this.props.web3)
 
-      // get rate of to by from
-      const reservesData = await pair.methods.getReserves().call()
-      const path = isFirstConnector ? [reservesData[1], reservesData[0]] : [reservesData[0], reservesData[1]]
-      const toAmount = await router.methods.quote(fromAmount, ...path).call()
-      const toFromWei = await fromWeiByDecimalsDetect(toAddress, toAmount, this.props.web3)
+        // get rate of to by from
+        const reservesData = await pair.methods.getReserves().call()
+        const path = isFirstConnector ? [reservesData[1], reservesData[0]] : [reservesData[0], reservesData[1]]
+        const toAmount = await router.methods.quote(fromAmount, ...path).call()
+        const toFromWei = await fromWeiByDecimalsDetect(toAddress, toAmount, this.props.web3)
 
-      const connectorsAmount = [fromAmount, toAmount]
+        const connectorsAmount = [fromAmount, toAmount]
 
-      // update states
-      if(isFirstConnector){
-        this.setState({
-          secondConnectorAmount:toFromWei,
-          firstConnectorAmount:amount,
-          connectorsAmount
-        })
-      }else{
-        this.setState({
-          firstConnectorAmount:toFromWei,
-          secondConnectorAmount:amount,
-          connectorsAmount
-        })
+        // update states
+        if(isFirstConnector){
+          this.setState({
+            secondConnectorAmount:toFromWei,
+            firstConnectorAmount:amount,
+            connectorsAmount
+          })
+        }else{
+          this.setState({
+            firstConnectorAmount:toFromWei,
+            secondConnectorAmount:amount,
+            connectorsAmount
+          })
+        }
+        //
+        // update info
+        await this.updateInfoByOnChange(isFirstConnector)
       }
-      //
-      // update info
-      await this.updateInfoByOnChange(isFirstConnector)
+    }catch(e){
+      alert("such pool pair not exist, or try another amount")
+      console.log("Error", e)
     }
+
   }
 
   // update states by onChange
   updateInfoByOnChange = async (isFirstConnector) => {
     if(isAddress(this.props.tokenAddress) && isAddress(this.state.secondConnector)){
-      this.setState({ showPending:true })
-
       // get data
       const {
         poolTokenAddress

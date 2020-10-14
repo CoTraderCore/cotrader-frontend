@@ -20,7 +20,7 @@ import setPending from '../../../../utils/setPending'
 import getTokenSymbolAndDecimals from '../../../../utils/getTokenSymbolAndDecimals'
 import Pending from '../../../templates/Spiners/Pending'
 
-const ETH_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+const ETH_TOKEN_ADDRESS = String('0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE').toLowerCase()
 
 
 class SellV2Pool extends PureComponent {
@@ -62,8 +62,14 @@ class SellV2Pool extends PureComponent {
           this.props.smartFundAddress
         )
 
-        // second connector (ETH) should be in [0] index
-        const connectors = [this.state.secondConnector, this.props.tokenAddress]
+        // prepare pool path
+        // WARNING
+        // ETH case should be in [0] index
+        // because we detect ETH by [0] on contract Uniswap method side
+        const connectorsOriginalAddresses = [this.props.tokenAddress, this.state.secondConnector]
+        const connectors = String(this.state.secondConnector).toLowerCase() === ETH_TOKEN_ADDRESS
+        ? connectorsOriginalAddresses.reverse()
+        : connectorsOriginalAddresses
 
         // get block number
         const block = await this.props.web3.eth.getBlockNumber()
