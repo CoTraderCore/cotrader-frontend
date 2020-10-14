@@ -21,7 +21,7 @@ import setPending from '../../../../utils/setPending'
 import BigNumber from 'bignumber.js'
 import Pending from '../../../templates/Spiners/Pending'
 
-const ETH_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+const ETH_TOKEN_ADDRESS = String('0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE').toLowerCase()
 
 
 class BuyV2Pool extends PureComponent {
@@ -59,9 +59,19 @@ class BuyV2Pool extends PureComponent {
           this.props.smartFundAddress
         )
 
-        const connectors = this.state.connectors
-        // convert connetors amount to wei by decimals
-        const connectorsAmount = this.state.connectorsAmount
+        // prepare pool path
+        // WARNING
+        // ETH case should be in [0] index
+        // because we detect ETH by [0] on contract Uniswap method side
+        const connectorsOriginalAddresses = [this.props.tokenAddress, this.state.secondConnector]
+        const connectors = String(this.state.secondConnector).toLowerCase() === ETH_TOKEN_ADDRESS
+        ? connectorsOriginalAddresses.reverse()
+        : connectorsOriginalAddresses
+
+        const connectorsAmount = String(this.state.secondConnector).toLowerCase() === ETH_TOKEN_ADDRESS
+        ? this.state.connectorsAmount.reverse()
+        : this.state.connectorsAmount
+
         // compare fund balance
         const isEnoughBalance = await this.compareFundBalance(
           connectors,
@@ -183,12 +193,8 @@ class BuyV2Pool extends PureComponent {
 
       // get data
       const {
-        tokenAWrap,
-        tokenBWrap,
         poolTokenAddress
       } = await this.getPoolDirection()
-
-      const connectors = [tokenAWrap, tokenBWrap]
 
       const {
         poolTotalSupply,
@@ -200,7 +206,6 @@ class BuyV2Pool extends PureComponent {
 
       // Update states
       this.setState({
-        connectors,
         poolTokenAddress,
         poolTotalSupply,
         poolAmountGet,
