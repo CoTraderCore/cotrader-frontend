@@ -155,12 +155,12 @@ class BuyV2Pool extends PureComponent {
       }
       //
       // update info
-      await this.updateInfoByOnChange()
+      await this.updateInfoByOnChange(isFirstConnector)
     }
   }
 
   // update states by onChange
-  updateInfoByOnChange = async () => {
+  updateInfoByOnChange = async (isFirstConnector) => {
     if(isAddress(this.props.tokenAddress) && isAddress(this.state.secondConnector)){
       this.setState({ showPending:true })
 
@@ -179,7 +179,7 @@ class BuyV2Pool extends PureComponent {
         fundCurrentPoolSharePercent,
         fundRecievePoolSharePercent,
         fundNewPoolSharePercent
-      } = await this.calculatePoolShare(poolTokenAddress, this.state.connectorsAmount)
+      } = await this.calculatePoolShare(poolTokenAddress, this.state.connectorsAmount, isFirstConnector)
 
       // Update states
       this.setState({
@@ -227,11 +227,11 @@ class BuyV2Pool extends PureComponent {
   // helper for calculate user pool share by connectors input
   // return poolTotalSupply, poolAmountGet, fundCurrentPoolSharePercent,
   // fundRecievePoolSharePercent, fundNewPoolSharePercent
-  calculatePoolShare = async (poolAddress, connectorsAmount) => {
+  calculatePoolShare = async (poolAddress, connectorsAmount, isFirstConnector) => {
     const UniPair = new this.props.web3.eth.Contract(IUniswapV2PairABI, poolAddress)
     const Reserves = await UniPair.methods.getReserves().call()
-    const amount0 = connectorsAmount[1]
-    const amount1 = connectorsAmount[0]
+    const amount0 = isFirstConnector ? connectorsAmount[1] : connectorsAmount[0]
+    const amount1 = isFirstConnector ? connectorsAmount[0] : connectorsAmount[1]
     const poolToken = this.props.web3.eth.Contract(ERC20ABI, poolAddress)
     const totalSupply = await poolToken.methods.totalSupply().call()
 
@@ -250,7 +250,7 @@ class BuyV2Pool extends PureComponent {
 
     // calculate shares
     const poolTotalSupply = fromWei(String(totalSupply))
-    const poolAmountGet = fromWei((liquidityAmount).toLocaleString('fullwide', {useGrouping:false}) )
+    const poolAmountGet = fromWei((Math.floor(liquidityAmount)).toLocaleString('fullwide', {useGrouping:false}) )
     // get current shares in %
     const curPoolBalance = await poolToken.methods.balanceOf(this.props.smartFundAddress).call()
     const fundCurrentPoolSharePercent = 1 / ((parseFloat(poolTotalSupply) / 100)
