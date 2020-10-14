@@ -187,6 +187,7 @@ class BuyV2Pool extends PureComponent {
         await this.updateInfoByOnChange(isFirstConnector)
       }
     }catch(e){
+      this.setState({ showPending:false })
       alert("such pool pair not exist, or try another amount")
       console.log("Error", e)
     }
