@@ -45,7 +45,6 @@ class UniswapPool extends Component {
       // get data from Paraswap api
       try{
         let data = await axios.get(OneInchApi + 'tokens')
-        console.log(data)
         for (const [, value] of Object.entries(data.data)) {
           symbols.push(value.symbol)
           tokens.push({

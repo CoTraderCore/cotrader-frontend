@@ -2,18 +2,19 @@ import React, { PureComponent } from 'react'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import {
   isAddress,
-  fromWei,
-  toWei
+  fromWei
 } from 'web3-utils'
 import { Form, Button, Alert, Table } from "react-bootstrap"
-import { toWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
+import { toWeiByDecimalsDetect, fromWeiByDecimalsDetect } from '../../../../utils/weiByDecimals'
 import {
   IUniswapV2FactoryABI,
   UniswapV2Factory,
   SmartFundABIV7,
   ERC20ABI,
   UniWTH,
-  IUniswapV2PairABI
+  IUniswapV2PairABI,
+  UniswapV2Router02,
+  UniswapV2Router02ABI
 } from '../../../../config.js'
 import { numStringToBytes32 } from '../../../../utils/numberToFromBytes32'
 import setPending from '../../../../utils/setPending'
@@ -41,19 +42,6 @@ class BuyV2Pool extends PureComponent {
       fundNewPoolSharePercent:0,
       showPending:false,
       ErrorText:''
-    }
-  }
-
-  componentDidUpdate = async (prevProps, prevState) => {
-    if(prevProps.tokenAddress !== this.props.tokenAddress
-       ||
-       prevState.secondConnector !== this.state.secondConnector
-       ||
-       prevState.firstConnectorAmount !== this.state.firstConnectorAmount
-       ||
-       prevState.secondConnectorAmount !== this.state.secondConnectorAmount)
-    {
-      await this.updateInfoByOnChange()
     }
   }
 
@@ -122,23 +110,68 @@ class BuyV2Pool extends PureComponent {
     }
   }
 
+  // update amount of connector 0 by amount of connector 1
+  // and vice versa
+  updateConnectorByConnector = async (isFirstConnector, _amount) => {
+    // for avoid e+ or e- scientific notation
+    // convert input to full number string
+    const amount = (parseFloat(_amount)).toLocaleString('fullwide', {useGrouping:false})
+
+    if(amount > 0){
+      const {
+        tokenAWrap,
+        tokenBWrap,
+        poolTokenAddress
+      } = await this.getPoolDirection()
+
+      const router = new this.props.web3.eth.Contract(UniswapV2Router02ABI, UniswapV2Router02)
+      const pair = new this.props.web3.eth.Contract(IUniswapV2PairABI, poolTokenAddress)
+
+      const fromAddress = isFirstConnector ? tokenAWrap : tokenBWrap
+      const toAddress = isFirstConnector ? tokenBWrap : tokenAWrap
+      const fromAmount = await toWeiByDecimalsDetect(fromAddress, amount, this.props.web3)
+
+      // get rate of to by from
+      const reservesData = await pair.methods.getReserves().call()
+      const path = isFirstConnector ? [reservesData[1], reservesData[0]] : [reservesData[0], reservesData[1]]
+      const toAmount = await router.methods.quote(fromAmount, ...path).call()
+      const toFromWei = await fromWeiByDecimalsDetect(toAddress, toAmount, this.props.web3)
+
+      const connectorsAmount = [fromAmount, toAmount]
+
+      // update states
+      if(isFirstConnector){
+        this.setState({
+          secondConnectorAmount:toFromWei,
+          firstConnectorAmount:amount,
+          connectorsAmount
+        })
+      }else{
+        this.setState({
+          firstConnectorAmount:toFromWei,
+          secondConnectorAmount:amount,
+          connectorsAmount
+        })
+      }
+      //
+      // update info
+      await this.updateInfoByOnChange()
+    }
+  }
+
   // update states by onChange
   updateInfoByOnChange = async () => {
-    if(isAddress(this.props.tokenAddress)
-       &&
-       isAddress(this.state.secondConnector)
-       &&
-       this.state.firstConnectorAmount > 0
-       &&
-       this.state.secondConnectorAmount > 0)
-    {
+    if(isAddress(this.props.tokenAddress) && isAddress(this.state.secondConnector)){
       this.setState({ showPending:true })
+
       // get data
       const {
-        connectors,
-        connectorsAmount,
+        tokenAWrap,
+        tokenBWrap,
         poolTokenAddress
-      } = await this.getPoolInfo()
+      } = await this.getPoolDirection()
+
+      const connectors = [tokenAWrap, tokenBWrap]
 
       const {
         poolTotalSupply,
@@ -146,12 +179,11 @@ class BuyV2Pool extends PureComponent {
         fundCurrentPoolSharePercent,
         fundRecievePoolSharePercent,
         fundNewPoolSharePercent
-      } = await this.calculatePoolShare(poolTokenAddress, connectorsAmount)
+      } = await this.calculatePoolShare(poolTokenAddress, this.state.connectorsAmount)
 
       // Update states
       this.setState({
         connectors,
-        connectorsAmount,
         poolTokenAddress,
         poolTotalSupply,
         poolAmountGet,
@@ -163,9 +195,8 @@ class BuyV2Pool extends PureComponent {
     }
   }
 
-  // helper for get pool token and convert connectors to wei
-  // return connectors, connectorsAmount, poolTokenAddress
-  getPoolInfo = async () => {
+  // helper for get pool address and wrap connectors for ETH case
+  getPoolDirection = async () => {
     // get Uniswap factory instance
     const uniswapFactory = new this.props.web3.eth.Contract(
       IUniswapV2FactoryABI,
@@ -183,22 +214,13 @@ class BuyV2Pool extends PureComponent {
     ? UniWTH
     : tokenB
 
-    // second connector (ETH) should be in [0] index
-    const connectors = [this.state.secondConnector, this.props.tokenAddress]
-    const connetorsInput = [this.state.secondConnectorAmount, this.state.firstConnectorAmount]
-
-    const connectorsAmount = await this.convertPoolConnecorsToWeiByDecimals(
-      connectors,
-      connetorsInput
-    )
-
     // get UNI pool contract by token address form Uniswap factory
     const poolTokenAddress = await uniswapFactory.methods.getPair(
       tokenAWrap,
       tokenBWrap
     ).call()
 
-    return { connectors, connectorsAmount, poolTokenAddress }
+    return { tokenAWrap, tokenBWrap, poolTokenAddress }
   }
 
 
@@ -206,7 +228,7 @@ class BuyV2Pool extends PureComponent {
   // return poolTotalSupply, poolAmountGet, fundCurrentPoolSharePercent,
   // fundRecievePoolSharePercent, fundNewPoolSharePercent
   calculatePoolShare = async (poolAddress, connectorsAmount) => {
-    const UniPair = this.props.web3.eth.Contract(IUniswapV2PairABI, poolAddress)
+    const UniPair = new this.props.web3.eth.Contract(IUniswapV2PairABI, poolAddress)
     const Reserves = await UniPair.methods.getReserves().call()
     const amount0 = connectorsAmount[1]
     const amount1 = connectorsAmount[0]
@@ -228,7 +250,7 @@ class BuyV2Pool extends PureComponent {
 
     // calculate shares
     const poolTotalSupply = fromWei(String(totalSupply))
-    const poolAmountGet = fromWei(String(liquidityAmount))
+    const poolAmountGet = fromWei((liquidityAmount).toLocaleString('fullwide', {useGrouping:false}) )
     // get current shares in %
     const curPoolBalance = await poolToken.methods.balanceOf(this.props.smartFundAddress).call()
     const fundCurrentPoolSharePercent = 1 / ((parseFloat(poolTotalSupply) / 100)
@@ -249,37 +271,6 @@ class BuyV2Pool extends PureComponent {
       fundRecievePoolSharePercent,
       fundNewPoolSharePercent
     }
-  }
-
-
-  // convert input connetors tokens in wei by decimals
-  convertPoolConnecorsToWeiByDecimals = async (connectorsAddress, connecorsInput) => {
-    const connectorInWEI = []
-
-    for(let i = 0; i < connectorsAddress.length; i++){
-      let amount = 0
-      // ERC20 case
-      if(String(connectorsAddress[i]).toLowerCase() !== String(ETH_TOKEN_ADDRESS).toLowerCase()){
-        // get cur token instance
-        const token = new this.props.web3.eth.Contract(
-          ERC20ABI,
-          connectorsAddress[i]
-        )
-        // get cur amount in wei by decimals
-        amount = toWeiByDecimalsInput(
-        await token.methods.decimals().call(),
-        connecorsInput[i]
-        )
-      }
-      // ETH case
-      else{
-        amount = toWei(connecorsInput[i])
-      }
-      // push amount
-      connectorInWEI.push(amount)
-    }
-
-    return connectorInWEI
   }
 
   // return false if fund don't have enough balance for cur connetors input
@@ -337,16 +328,16 @@ class BuyV2Pool extends PureComponent {
           <Form.Group>
           <Form.Control
           type="number"
-          min="0"
-          onChange={(e) => this.setState({ firstConnectorAmount:e.target.value })}
+          value={this.state.firstConnectorAmount}
+          onChange={(e) => this.updateConnectorByConnector(true, e.target.value)}
           placeholder={`Enter ${this.props.selectedSymbol} amount`}
           />
           </Form.Group>
           <Form.Group>
           <Form.Control
           type="number"
-          min="0"
-          onChange={(e) => this.setState({ secondConnectorAmount:e.target.value })}
+          value={this.state.secondConnectorAmount}
+          onChange={(e) => this.updateConnectorByConnector(false, e.target.value)}
           placeholder={`Enter ${this.state.secondConnectorSymbol} amount`}
           />
           </Form.Group>
