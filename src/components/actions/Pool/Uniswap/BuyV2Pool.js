@@ -110,6 +110,23 @@ class BuyV2Pool extends PureComponent {
     }
   }
 
+  // update state only when user stop typing
+  delayChange(evt, isFirstConnector, _amount) {
+    if(this._timeout){ //if there is already a timeout in process cancel it
+        clearTimeout(this._timeout)
+    }
+    // update input immediately
+    this.setState({
+      [evt.target.name]:evt.target.value
+    })
+
+    // compute and update data with delay
+    this._timeout = setTimeout(()=>{
+       this._timeout = null
+       this.updateConnectorByConnector(isFirstConnector, _amount)
+    },1000)
+  }
+
   // update amount of connector 0 by amount of connector 1
   // and vice versa
   updateConnectorByConnector = async (isFirstConnector, _amount) => {
@@ -328,16 +345,18 @@ class BuyV2Pool extends PureComponent {
           <Form.Group>
           <Form.Control
           type="number"
+          name="firstConnectorAmount"
           value={this.state.firstConnectorAmount}
-          onChange={(e) => this.updateConnectorByConnector(true, e.target.value)}
+          onChange={(e) => this.delayChange(e, true, e.target.value)}
           placeholder={`Enter ${this.props.selectedSymbol} amount`}
           />
           </Form.Group>
           <Form.Group>
           <Form.Control
           type="number"
+          name="secondConnectorAmount"
           value={this.state.secondConnectorAmount}
-          onChange={(e) => this.updateConnectorByConnector(false, e.target.value)}
+          onChange={(e) => this.delayChange(e, false, e.target.value)}
           placeholder={`Enter ${this.state.secondConnectorSymbol} amount`}
           />
           </Form.Group>
@@ -377,7 +396,7 @@ class BuyV2Pool extends PureComponent {
           </thead>
           <tbody>
             <tr>
-              <td>Pool amount</td>
+              <td>Pool tokens</td>
               <td>
               {Number(this.state.poolAmountGet).toFixed(4)}
               &#160;, current total supply &#160;
