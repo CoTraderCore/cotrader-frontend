@@ -48,6 +48,7 @@ export const GetBancorData = '0x3aE392A4c6a99FcB991E208f9D74618fff513834'
 export const OneInchProto = '0x50FDA034C0Ce7a8f7EFDAebDA7Aa7cA21CC1267e'
 export const UniswapV2Router02 = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
 
+
 // // Rinkeby
 // export const SmartFundRegistryADDRESS = '0xE912C042Ea733BA2909Ec4D6dc30df3F925957a0'
 // export const EtherscanLink = 'https://rinkeby.etherscan.io/'

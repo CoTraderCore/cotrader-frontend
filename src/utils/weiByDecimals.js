@@ -24,8 +24,8 @@ export const fromWeiByDecimalsInput = (decimals, amount) => {
      amount = new BigNumber(amount)
      amount = amount.dividedBy(factor)
      // for avoid e+ or e- scientific notation or decimals
-     // parse result 
-     return String(parseFloat(parseFloat(amount).toLocaleString('fullwide', {useGrouping:false})).toFixed(8))
+     // parse result
+     return String(amount.toPrecision())
 }
 
 // convert connector to wei by decimals

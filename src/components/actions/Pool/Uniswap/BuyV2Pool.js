@@ -127,8 +127,7 @@ class BuyV2Pool extends PureComponent {
     }
     // update input immediately
     this.setState({
-      [evt.target.name]:evt.target.value,
-      showPending:true
+      [evt.target.name]:evt.target.value
     })
 
     // compute and update data with delay
@@ -143,10 +142,11 @@ class BuyV2Pool extends PureComponent {
   updateConnectorByConnector = async (isFirstConnector, _amount) => {
     try{
       // for avoid e+ or e- scientific notation
-      // convert input to full number string
-      const amount = (parseFloat(_amount)).toLocaleString('fullwide', {useGrouping:false})
-
+      const amount =  BigNumber(_amount).toPrecision()
       if(amount > 0){
+        // set pending
+        this.setState({ showPending:true })
+
         const {
           tokenAWrap,
           tokenBWrap,
