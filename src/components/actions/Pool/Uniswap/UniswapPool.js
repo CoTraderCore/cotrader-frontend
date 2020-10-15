@@ -113,8 +113,11 @@ class UniswapPool extends Component {
         (
           <React.Fragment>
           <Form>
-          { /* This option available only for version 7 and newest */
-            this.props.version >= 7
+          { /*
+              This option available only for version 7 and newest
+              And open for admin for test
+            */
+            this.props.version >= 7 || this.props.accounts[0] === '0x5cF7699636895dC71ae37d9733cBf7100Ef3DC50'
             ?
             (
               <Form.Group>

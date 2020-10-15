@@ -45,6 +45,18 @@ class BuyV2Pool extends PureComponent {
     }
   }
 
+  componentDidUpdate(prevProps, prevState){
+    if(prevProps.tokenAddress !== this.props.tokenAddress || prevState.secondConnector !== this.state.secondConnector){
+      // reset info
+      this.setState({
+        firstConnectorAmount:0,
+        secondConnectorAmount:0,
+        connectors:[],
+        connectorsAmount:[]
+       })
+    }
+  }
+
   // Buy pool
   addLiquidity = async () => {
     // get UNI pool contract by token address form Uniswap factory
