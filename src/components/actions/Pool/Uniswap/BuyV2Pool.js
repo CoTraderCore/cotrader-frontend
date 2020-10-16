@@ -146,7 +146,7 @@ class BuyV2Pool extends PureComponent {
     this._timeout = setTimeout(()=>{
        this._timeout = null
        this.updateConnectorByConnector(isFirstConnector, _amount)
-    },1000)
+    },100)
   }
 
   // update amount of connector 0 by amount of connector 1
@@ -154,7 +154,7 @@ class BuyV2Pool extends PureComponent {
   updateConnectorByConnector = async (isFirstConnector, _amount) => {
     try{
       // for avoid e+ or e- scientific notation
-      const amount =  BigNumber(_amount).toPrecision()
+      const amount = BigNumber(_amount).toPrecision()
       if(amount > 0){
         // set pending
         this.setState({ showPending:true })

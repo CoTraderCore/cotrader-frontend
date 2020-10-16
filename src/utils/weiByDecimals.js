@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { toWei, fromWei, toHex } from 'web3-utils'
+import { toWei, fromWei } from 'web3-utils'
 import { ERC20ABI } from '../config.js'
 
 const ETH_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
@@ -11,9 +11,7 @@ export const toWeiByDecimalsInput = (decimals, amount) => {
     const factor = 10 ** decimals
     amount = new BigNumber(amount)
     amount = amount.multipliedBy(factor)
-    // for avoid e+ or e- scientific notation
-    // convert toHex
-    return toHex(amount)
+    return amount.toString(10)
 }
 
 export const fromWeiByDecimalsInput = (decimals, amount) => {
@@ -24,7 +22,6 @@ export const fromWeiByDecimalsInput = (decimals, amount) => {
      amount = new BigNumber(amount)
      amount = amount.dividedBy(factor)
      // for avoid e+ or e- scientific notation or decimals
-     // parse result
      return String(amount.toPrecision())
 }
 
