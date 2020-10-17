@@ -180,13 +180,20 @@ class BuyPool extends PureComponent {
         placeholder="Enter Balancer pool amount"
         onChange={(e) => this.setState({ poolAmount:e.target.value })}/>
         </Form.Group>
-        <Button variant="outline-primary" onClick={() => this.buyBalancerPool()}>Buy</Button>
+        {
+          this.state.poolTokens.length > 0 && this.state.poolAmount > 0
+          ?
+          (
+            <Button variant="outline-primary" onClick={() => this.buyBalancerPool()}>Buy</Button>
+          )
+          :null
+        }
       </Form>
 
       <br/>
 
       { /* Show pool share info */
-        this.state.fundNewPoolShare > 0
+        this.state.fundNewPoolShare > 0 && this.state.poolAmount > 0
         ?
         (
           <>
@@ -239,13 +246,16 @@ class BuyPool extends PureComponent {
         (
           <Alert variant="warning">
           <div align="center">Max amount to send</div>
-          <hr/>
+          <br/>
           {
             this.state.poolTokens.map((item, key) => {
               return (
-                <strong key={key}>
+                <div key={key}>
+                <hr/>
+                <strong>
                 &ensp; {item.symbol} &ensp; : &ensp; {item.amountFromWei} &ensp;
                 </strong>
+                </div>
               )
             })
           }
