@@ -23,6 +23,7 @@ export const OneInchApi = 'https://api.1inch.exchange/v1.1/'
 
 export const SmartFundRegistryADDRESS = '0xEEce063BB21E231B2b9981Ca254B19b651aDb021'
 export const PoolPortalV6 = '0xd63495461cA711d59e480AC5c3827B7f7C334Fb3'
+export const PoolPortalV7 = '0x6F553184C04a4aD0b3551A4ff60FB73BB6E90408'
 // NOTE: don't change this portals address, if you need add new version, just create new const with new version
 export const ExchangePortalAddress = '0x7Fd65F765932E29F041113777C47CE77ecF4E24A'
 export const ExchangePortalAddressV6 = '0xa145eCA55AE0E39D7c228ed7A962424a97AC74cB'
@@ -62,6 +63,7 @@ export const UniswapV2Router02 = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
 // export const ParaswapParamsAddress = ''
 // export const CoTraderBancorEndPoint = !isLocal ? 'https://api-bancor.cotrader.com/' : 'http://localhost:9003/'
 // export const PoolPortalV6 = '0xC9d742f23b4F10A3dA83821481D1B4ED8a596109'
+// export const PoolPortalV7 = '0xC9d742f23b4F10A3dA83821481D1B4ED8a596109'
 // // NOTE: don't change this portals address, if you need add new version, just create new const with new version
 // export const ExchangePortalAddress = '0xB3F0790fBD5635fed2A2AEc21565EE0d91B1C18f'
 // export const ExchangePortalAddressV6 = '0xB3F0790fBD5635fed2A2AEc21565EE0d91B1C18f'
@@ -89,6 +91,7 @@ export const UniswapV2Router02 = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
 // export const ParaswapParamsAddress = '0x6fa269bba578d3d12e262a85feb15641a7f17ed5'
 // export const CoTraderBancorEndPoint = !isLocal ? 'https://api-bancor.cotrader.com/' : 'http://localhost:9003/'
 // export const PoolPortalV6 = '0xedDF05F60f4ef35b20E6a9Bd7ad7Ecc74ae4e2e9'
+// export const PoolPortalV7 = '0xedDF05F60f4ef35b20E6a9Bd7ad7Ecc74ae4e2e9'
 // // NOTE: don't change this portals address, if you need add new version, just create new const with new version
 // export const ExchangePortalAddress = '0x4065748B397179Dc5A1Acd1E861Cc9186F081141'
 // export const ExchangePortalAddressV6 = '0x4065748B397179Dc5A1Acd1E861Cc9186F081141'

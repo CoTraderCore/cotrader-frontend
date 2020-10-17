@@ -5,7 +5,7 @@ import { Form, Button, Alert, Table } from "react-bootstrap"
 
 import {
   PoolPortalABI,
-  PoolPortalV6,
+  PoolPortalV7,
   ERC20ABI,
   EtherscanLink
 } from '../../../../config.js'
@@ -54,7 +54,7 @@ class BuyPool extends Component {
      const web3 = this.props.web3
 
      // get current reserve amount for pool
-     const poolPortal = new web3.eth.Contract(PoolPortalABI, PoolPortalV6)
+     const poolPortal = new web3.eth.Contract(PoolPortalABI, PoolPortalV7)
 
      // get connectors address
      const connectors = await poolPortal.methods.getBancorConnectorsByRelay(
@@ -207,7 +207,7 @@ class BuyPool extends Component {
     // V7 and newest
     if(this.props.version >= 7){
       // get pool portal instance
-      const poolPortal = new this.props.web3.eth.Contract(PoolPortalABI, PoolPortalV6)
+      const poolPortal = new this.props.web3.eth.Contract(PoolPortalABI, PoolPortalV7)
       // get conenctors address and amount from pool portal by pool amount
       const {
         connectorsAddress,
