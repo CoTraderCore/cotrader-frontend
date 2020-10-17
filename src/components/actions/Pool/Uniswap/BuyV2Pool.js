@@ -52,7 +52,13 @@ class BuyV2Pool extends PureComponent {
         firstConnectorAmount:0,
         secondConnectorAmount:0,
         connectors:[],
-        connectorsAmount:[]
+        connectorsAmount:[],
+        poolTokenAddress:[],
+        poolTotalSupply:0,
+        poolAmountGet:0,
+        fundCurrentPoolSharePercent:0,
+        fundRecievePoolSharePercent:0,
+        fundNewPoolSharePercent:0,
        })
     }
   }
@@ -165,16 +171,25 @@ class BuyV2Pool extends PureComponent {
           poolTokenAddress
         } = await this.getPoolDirection()
 
+
+
         const router = new this.props.web3.eth.Contract(UniswapV2Router02ABI, UniswapV2Router02)
         const pair = new this.props.web3.eth.Contract(IUniswapV2PairABI, poolTokenAddress)
 
         const fromAddress = isFirstConnector ? tokenAWrap : tokenBWrap
         const toAddress = isFirstConnector ? tokenBWrap : tokenAWrap
         const fromAmount = await toWeiByDecimalsDetect(fromAddress, amount, this.props.web3)
+        const token0 =  await pair.methods.token0.call()
 
         // get rate of to by from
         const reservesData = await pair.methods.getReserves().call()
-        const path = isFirstConnector ? [reservesData[1], reservesData[0]] : [reservesData[0], reservesData[1]]
+
+        // get corerct path dependse of input direction
+        const path = String(token0).toLowerCase() === String(fromAddress).toLowerCase()
+        ? [reservesData[0], reservesData[1]]
+        : [reservesData[1], reservesData[0]]
+
+        // get rate 
         const toAmount = await router.methods.quote(fromAmount, ...path).call()
         const toFromWei = await fromWeiByDecimalsDetect(toAddress, toAmount, this.props.web3)
 
