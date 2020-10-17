@@ -41,24 +41,19 @@ class BuyV2Pool extends PureComponent {
       fundRecievePoolSharePercent:0,
       fundNewPoolSharePercent:0,
       showPending:false,
-      ErrorText:''
+      ErrorText:'',
+      latestBlockNumber:0,
+      intervalID:0
     }
   }
 
   componentDidUpdate(prevProps, prevState){
     if(prevProps.tokenAddress !== this.props.tokenAddress || prevState.secondConnector !== this.state.secondConnector){
-      // reset info
+      this.clearIntervalUpdateByEachNewBlock()
+      // reset states
       this.setState({
         firstConnectorAmount:0,
-        secondConnectorAmount:0,
-        connectors:[],
-        connectorsAmount:[],
-        poolTokenAddress:[],
-        poolTotalSupply:0,
-        poolAmountGet:0,
-        fundCurrentPoolSharePercent:0,
-        fundRecievePoolSharePercent:0,
-        fundNewPoolSharePercent:0,
+        secondConnectorAmount:0
        })
     }
   }
@@ -140,7 +135,8 @@ class BuyV2Pool extends PureComponent {
 
   // update state only when user stop typing
   delayChange(evt, isFirstConnector, _amount) {
-    if(this._timeout){ //if there is already a timeout in process cancel it
+    //if there is already a timeout in process cancel it
+    if(this._timeout){
         clearTimeout(this._timeout)
     }
     // update input immediately
@@ -148,7 +144,10 @@ class BuyV2Pool extends PureComponent {
       [evt.target.name]:evt.target.value
     })
 
-    // compute and update data with delay
+    // reset update by each new block interval
+    this.clearIntervalUpdateByEachNewBlock()
+
+    // compute and update new data with delay
     this._timeout = setTimeout(()=>{
        this._timeout = null
        this.updateConnectorByConnector(isFirstConnector, _amount)
@@ -189,36 +188,63 @@ class BuyV2Pool extends PureComponent {
         ? [reservesData[0], reservesData[1]]
         : [reservesData[1], reservesData[0]]
 
-        // get rate 
+        // get rate
         const toAmount = await router.methods.quote(fromAmount, ...path).call()
         const toFromWei = await fromWeiByDecimalsDetect(toAddress, toAmount, this.props.web3)
 
         const connectorsAmount = [fromAmount, toAmount]
 
-        // update states
+        const latestBlockNumber = await this.props.web3.eth.getBlockNumber()
+
+        // update states dependse of input direction
         if(isFirstConnector){
           this.setState({
             secondConnectorAmount:toFromWei,
             firstConnectorAmount:amount,
-            connectorsAmount
+            connectorsAmount,
+            latestBlockNumber
           })
         }else{
           this.setState({
             firstConnectorAmount:toFromWei,
             secondConnectorAmount:amount,
-            connectorsAmount
+            connectorsAmount,
+            latestBlockNumber
           })
         }
         //
         // update info
         await this.updateInfoByOnChange(isFirstConnector)
+        // run update by each new block
+        await this.setIntervalUpdateByEachNewBlock(isFirstConnector, _amount)
       }
     }catch(e){
       this.setState({ showPending:false })
       alert("such pool pair not exist, or try another amount")
       console.log("Error", e)
     }
+  }
 
+  // call updateConnectorByConnector each new block
+  setIntervalUpdateByEachNewBlock = async (isFirstConnector, _amount) => {
+    const currentBlockNumber = await this.props.web3.eth.getBlockNumber()
+
+    if(currentBlockNumber !== this.state.latestBlockNumber){
+      await this.updateConnectorByConnector(isFirstConnector, _amount)
+      this.setState({ latestBlockNumber:currentBlockNumber })
+    }
+
+    const intervalID = setTimeout(this.setIntervalUpdateByEachNewBlock, 3000, isFirstConnector, _amount)
+    this.setState({ intervalID })
+
+  }
+
+  // clear setIntervalUpdateByEachNewBlock
+  clearIntervalUpdateByEachNewBlock(){
+    if(this.state.intervalID !== 0){
+      clearTimeout(this.state.intervalID)
+      this.setState({ intervalID:0 })
+    }
   }
 
   // update states by onChange
