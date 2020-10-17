@@ -139,13 +139,13 @@ class BuyV2Pool extends PureComponent {
     if(this._timeout){
         clearTimeout(this._timeout)
     }
+    // reset update by each new block interval
+    this.clearIntervalUpdateByEachNewBlock()
+
     // update input immediately
     this.setState({
       [evt.target.name]:evt.target.value
     })
-
-    // reset update by each new block interval
-    this.clearIntervalUpdateByEachNewBlock()
 
     // compute and update new data with delay
     this._timeout = setTimeout(()=>{
