@@ -58,6 +58,10 @@ class BuyV2Pool extends PureComponent {
     }
   }
 
+  componentWillUnmount(){
+    this.clearIntervalUpdateByEachNewBlock()
+  }
+
   // Buy pool
   addLiquidity = async () => {
     // get UNI pool contract by token address form Uniswap factory
@@ -151,7 +155,7 @@ class BuyV2Pool extends PureComponent {
     this._timeout = setTimeout(()=>{
        this._timeout = null
        this.updateConnectorByConnector(isFirstConnector, _amount)
-    },100)
+    }, 300)
   }
 
   // update amount of connector 0 by amount of connector 1
@@ -228,13 +232,17 @@ class BuyV2Pool extends PureComponent {
   // call updateConnectorByConnector each new block
   setIntervalUpdateByEachNewBlock = async (isFirstConnector, _amount) => {
     const currentBlockNumber = await this.props.web3.eth.getBlockNumber()
+    console.log("cur block", currentBlockNumber)
 
     if(currentBlockNumber !== this.state.latestBlockNumber){
       await this.updateConnectorByConnector(isFirstConnector, _amount)
       this.setState({ latestBlockNumber:currentBlockNumber })
+      console.log("new block", currentBlockNumber)
     }
 
-    const intervalID = setTimeout(this.setIntervalUpdateByEachNewBlock, 3000, isFirstConnector, _amount)
+    clearTimeout(this.state.intervalID) // clear prev interval
+    // set new 
+    const intervalID = setTimeout(this.setIntervalUpdateByEachNewBlock, 4000, isFirstConnector, _amount)
     this.setState({ intervalID })
 
   }

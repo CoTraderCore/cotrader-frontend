@@ -23,9 +23,6 @@ class BalancerPool extends PureComponent {
 
   render() {
     const CurrentAction = this.getCurrentAction(this.state.action)
-
-    console.log(CurrentAction)
-
     return (
      <>
       <Form>
