@@ -2,16 +2,10 @@ import React, { Component } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { EtherscanLink }  from '../../config.js'
 import "react-toastify/dist/ReactToastify.css"
-import { isAddress } from 'web3-utils'
 
 // {EtherscanLink+"/tx/"+props.txHash}
 const HashLink = (props) => {
- let link = ''
- if(isAddress){
-   link = EtherscanLink+ "/address/" +props.txHash
- }else{
-   link = EtherscanLink+ "/tx/" +props.txHash
- }
+ const link = EtherscanLink+ "tx/" +props.txHash
 
  return (
    <React.Fragment>
