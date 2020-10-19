@@ -95,6 +95,20 @@ class BuyV2Pool extends PureComponent {
           connectorsAmount
         )
 
+        console.log(
+          "Pool PARAMS",
+          0, // for v2 we calculate pool amount by connctors
+          1, // type Uniswap
+          poolTokenAddress,
+          connectors,
+          connectorsAmount,
+          [numStringToBytes32(String(2))], // version 2
+          this.props.web3.eth.abi.encodeParameters(
+            ['uint256','uint256'],
+            [1,1]
+          )
+        )
+
         // continue only if enough balance
         if(isEnoughBalance){
           // get block number
@@ -365,22 +379,30 @@ class BuyV2Pool extends PureComponent {
   // return false if fund don't have enough balance for cur connetors input
   // TODO wrap ETH with WETH
   compareFundBalance = async (connectorsAddress, connetorsInputInWEI) => {
-    // let isEnough = true
-    // for(let i = 0; i < connectorsAddress.length; i++){
-    //   // get cur token instance
-    //   const token = new this.props.web3.eth.Contract(
-    //     ERC20ABI,
-    //     connectorsAddress[i]
-    //   )
-    //   // get fund balance
-    //   const fundBalance = await token.methods.balanceOf(
-    //     this.props.smartFundAddress
-    //   ).call()
-    //
-    //   if(Number(fromWei(String(connetorsInputInWEI[i]))) > Number(fromWei(String(fundBalance))))
-    //      isEnough = false
-    // }
-    return true
+    let isEnough = true
+    let balance = 0
+    for(let i = 0; i < connectorsAddress.length; i++){
+      // ETH case
+      if(String(connectorsAddress[i]).toLowerCase() === ETH_TOKEN_ADDRESS){
+        balance = await this.props.web3.eth.getBalance(this.props.smartFundAddress)
+      }
+      // ERC20 case
+      else{
+        // get cur token instance
+        const token = new this.props.web3.eth.Contract(
+          ERC20ABI,
+          connectorsAddress[i]
+        )
+        // get fund balance of cur token
+        balance = await token.methods.balanceOf(
+          this.props.smartFundAddress
+        ).call()
+      }
+
+      if(Number(fromWei(String(connetorsInputInWEI[i]))) > Number(fromWei(String(balance))))
+         isEnough = false
+    }
+    return isEnough
   }
 
 
