@@ -27,6 +27,7 @@ export const PoolPortalV7 = '0x6F553184C04a4aD0b3551A4ff60FB73BB6E90408'
 // NOTE: don't change this portals address, if you need add new version, just create new const with new version
 export const ExchangePortalAddress = '0x7Fd65F765932E29F041113777C47CE77ecF4E24A'
 export const ExchangePortalAddressV6 = '0xa145eCA55AE0E39D7c228ed7A962424a97AC74cB'
+export const ExchangePortalAddressV7 = '0x3e3C06d526b38F67D7a897Bba20906f36D2793A3'
 
 export const EtherscanLink = 'https://etherscan.io/'
 export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
@@ -67,6 +68,7 @@ export const UniswapV2Router02 = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
 // // NOTE: don't change this portals address, if you need add new version, just create new const with new version
 // export const ExchangePortalAddress = '0xB3F0790fBD5635fed2A2AEc21565EE0d91B1C18f'
 // export const ExchangePortalAddressV6 = '0xB3F0790fBD5635fed2A2AEc21565EE0d91B1C18f'
+// export const ExchangePortalAddressV7 = '0xB3F0790fBD5635fed2A2AEc21565EE0d91B1C18f'
 // export const BNTToken = '0x850f56419c669d7363756280f01daC254c0185F3'
 // export const BNTUSDBToken = ''
 // export const UniswapFactory = '0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36'
@@ -95,6 +97,7 @@ export const UniswapV2Router02 = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
 // // NOTE: don't change this portals address, if you need add new version, just create new const with new version
 // export const ExchangePortalAddress = '0x4065748B397179Dc5A1Acd1E861Cc9186F081141'
 // export const ExchangePortalAddressV6 = '0x4065748B397179Dc5A1Acd1E861Cc9186F081141'
+// export const ExchangePortalAddressV7 = '0x4065748B397179Dc5A1Acd1E861Cc9186F081141'
 //
 // export const BNTToken = '0xc74bE418ADf788a04dB7d23E3916f332B74A9617'
 // //export const BNTEther = '0xD368b98d03855835E2923Dc000b3f9c2EBF1b27b'

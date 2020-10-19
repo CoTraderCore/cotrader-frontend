@@ -2,7 +2,7 @@ import React from 'react'
 import { Pie } from 'react-chartjs-2'
 import { fromWei, toWei } from 'web3-utils'
 import { Badge } from "react-bootstrap"
-import { IExchangePortalABI, ExchangePortalAddressV6 } from '../../config.js'
+import { IExchangePortalABI, ExchangePortalAddressV7 } from '../../config.js'
 import { inject } from 'mobx-react'
 import defaultWeb3 from '../../utils/defaultWeb3'
 
@@ -125,7 +125,7 @@ class AssetsAlocationChart extends React.Component{
       return amount
     }
     else{
-      const contract = new web3.eth.Contract(IExchangePortalABI, ExchangePortalAddressV6)
+      const contract = new web3.eth.Contract(IExchangePortalABI, ExchangePortalAddressV7)
       const src = toWei(String(amount), 'ether')
       const value = await contract.methods.getValue(from, this.state.eth_token, src).call()
       return value > 0 ? fromWei(String(value)) : 0
