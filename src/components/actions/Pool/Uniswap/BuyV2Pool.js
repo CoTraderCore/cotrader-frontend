@@ -210,7 +210,7 @@ class BuyV2Pool extends PureComponent {
         const toAmount = await router.methods.quote(fromAmount, ...path).call()
         const toFromWei = await fromWeiByDecimalsDetect(toAddress, toAmount, this.props.web3)
 
-        const connectorsAmount = [fromAmount, toAmount]
+        const connectorsAmount = [BigNumber(fromAmount).toString(10), BigNumber(toAmount).toString(10)]
 
         const latestBlockNumber = await this.props.web3.eth.getBlockNumber()
 
