@@ -241,7 +241,7 @@ class BuyV2Pool extends PureComponent {
     }
 
     clearTimeout(this.state.intervalID) // clear prev interval
-    // set new 
+    // set new
     const intervalID = setTimeout(this.setIntervalUpdateByEachNewBlock, 4000, isFirstConnector, _amount)
     this.setState({ intervalID })
 
