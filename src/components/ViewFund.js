@@ -262,7 +262,16 @@ class ViewFund extends Component {
         (
           this.state.balance.map((item, key) =>
           <ListGroup.Item key={key}>
-          {item["symbol"]}: &nbsp; {fromWeiByDecimalsInput(item["decimals"], item["balance"].toString())}
+          {<img
+            style={{height: "20px", width: "20px"}}
+            src={`http://1inch.exchange/assets/tokens/${String(item["address"]).toLowerCase()}.png`}
+            alt="Logo"
+            onError={(e)=>{e.target.onerror = null; e.target.src="https://etherscan.io/images/main/empty-token.png"}}/>}
+          &nbsp;
+          {<a href={EtherscanLink + "token/" + item["address"]} target="_blank" rel="noopener noreferrer">{item["symbol"]}</a>}
+          &nbsp;
+          :
+          &nbsp; {fromWeiByDecimalsInput(item["decimals"], item["balance"].toString())}
           </ListGroup.Item>
         )
         ):

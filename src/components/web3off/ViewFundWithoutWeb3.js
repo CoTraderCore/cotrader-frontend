@@ -4,7 +4,7 @@ import getFundData from '../../utils/getFundData'
 import { Card, Row, Col, ListGroup, Badge, Alert } from "react-bootstrap"
 import { fromWei } from 'web3-utils'
 import { fromWeiByDecimalsInput } from '../../utils/weiByDecimals'
-import _ from 'lodash'
+// import _ from 'lodash'
 
 
 // Components
@@ -13,7 +13,7 @@ import FakeButton from '../templates/FakeButton'
 import ChartsButton from '../actions/ChartsButton'
 import ViewPageCharts from '../charts/ViewPageCharts'
 import InvestorsAlocationChart from '../charts/InvestorsAlocationChart'
-import AssetsAlocationChart from '../charts/AssetsAlocationChart'
+// import AssetsAlocationChart from '../charts/AssetsAlocationChart'
 
 import Loading from '../templates/Spiners/Loading'
 
@@ -124,14 +124,6 @@ class ViewFundWithoutWeb3 extends Component {
         <div className="fund-page-charts">
           <div>
             <InvestorsAlocationChart Data={this.state.shares}/>
-            {
-              NeworkID === 1 && !_.isEmpty(this.state.balance)
-              ?
-              (
-                <AssetsAlocationChart AssetsData={this.state.balance} version={this.state.version}/>
-              )
-              :null
-            }
           </div>
         </div>
 
@@ -144,8 +136,17 @@ class ViewFundWithoutWeb3 extends Component {
           this.state.balance.length > 0 ?
           (
             this.state.balance.map((item, key) =>
-            <ListGroup.Item key={key + Math.random()}>
-            {item["symbol"]}: &nbsp; {fromWeiByDecimalsInput(item["decimals"], item["balance"].toString())}
+            <ListGroup.Item key={key}>
+            {<img
+              style={{height: "20px", width: "20px"}}
+              src={`http://1inch.exchange/assets/tokens/${String(item["address"]).toLowerCase()}.png`}
+              alt="Logo"
+              onError={(e)=>{e.target.onerror = null; e.target.src="https://etherscan.io/images/main/empty-token.png"}}/>}
+            &nbsp;
+            {<a href={EtherscanLink + "token/" + item["address"]} target="_blank" rel="noopener noreferrer">{item["symbol"]}</a>}
+            &nbsp;
+            :
+            &nbsp; {fromWeiByDecimalsInput(item["decimals"], item["balance"].toString())}
             </ListGroup.Item>
           )
           ):

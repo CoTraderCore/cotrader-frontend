@@ -92,15 +92,16 @@ class App extends Component {
       this.props.MobXStorage.initWeb3AndAccounts(web3, accounts)
     } catch (error) {
       // Catch any errors for any of the above operations.
-      alert(
-        `Failed to load web3, accounts, or contract. Check console for details.`,
-      )
+      // alert(
+      //   `Failed to load web3, accounts, or contract. Check console for details.`,
+      // )
       console.error(error)
     }
 
     this.initData()
 
     // Get network ID
+    if(this.state.web3)
     this.state.web3.eth.net.getId().then(netId => {
       this.setState({
         network:netId,
