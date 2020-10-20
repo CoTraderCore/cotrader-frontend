@@ -25,7 +25,7 @@ class CreateNewFund extends Component {
       Percent: 20,  // NOTE: this number should be mul by 100 !!!
       FundAsset: 'ETH',
       FundName: '',
-      TradeVerification: true,
+      TradeVerification: false,
       FundType:'Full'
     }
   }
@@ -94,7 +94,7 @@ class CreateNewFund extends Component {
   }
 
   modalClose = () => {
-    this.setState({ Show: false, Percent: 20, FundAsset: 'ETH', FundName: '', FundType:'Full' })
+    this.setState({ Show: false, Percent: 20, FundAsset: 'ETH', FundName: '', FundType:'Full', TradeVerification: false })
   }
 
   render() {
