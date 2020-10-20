@@ -13,7 +13,7 @@ import {
   SmartFundABIV7,
   UniWTH,
   PoolPortalABI,
-  PoolPortalV6
+  PoolPortalV7
 } from '../../../../config.js'
 import { numStringToBytes32 } from '../../../../utils/numberToFromBytes32'
 import setPending from '../../../../utils/setPending'
@@ -114,57 +114,62 @@ class SellV2Pool extends PureComponent {
        &&
        this.state.poolAmount > 0)
     {
-      this.setState({ showPending:true })
-      // Get data
-      // get Uniswap factory instance
-      const uniswapFactory = new this.props.web3.eth.Contract(
-        IUniswapV2FactoryABI,
-        UniswapV2Factory)
+      try{
+        this.setState({ showPending:true })
+        // Get data
+        // get Uniswap factory instance
+        const uniswapFactory = new this.props.web3.eth.Contract(
+          IUniswapV2FactoryABI,
+          UniswapV2Factory)
 
-      const tokenA = this.props.tokenAddress
-      const tokenB = this.state.secondConnector
+        const tokenA = this.props.tokenAddress
+        const tokenB = this.state.secondConnector
 
-      // Wrap ETH case with UNI WETH
-      const tokenAWrap = String(tokenA).toLowerCase() === String(ETH_TOKEN_ADDRESS).toLowerCase()
-      ? UniWTH
-      : tokenA
+        // Wrap ETH case with UNI WETH
+        const tokenAWrap = String(tokenA).toLowerCase() === String(ETH_TOKEN_ADDRESS).toLowerCase()
+        ? UniWTH
+        : tokenA
 
-      const tokenBWrap = String(tokenB).toLowerCase() === String(ETH_TOKEN_ADDRESS).toLowerCase()
-      ? UniWTH
-      : tokenB
+        const tokenBWrap = String(tokenB).toLowerCase() === String(ETH_TOKEN_ADDRESS).toLowerCase()
+        ? UniWTH
+        : tokenB
 
-      // get UNI pool contract by token address form Uniswap factory
-      const poolTokenAddress = await uniswapFactory.methods.getPair(
-        tokenAWrap,
-        tokenBWrap
-      ).call()
+        // get UNI pool contract by token address form Uniswap factory
+        const poolTokenAddress = await uniswapFactory.methods.getPair(
+          tokenAWrap,
+          tokenBWrap
+        ).call()
 
-      // Get connectors info
-      const {
-        tokenAmountFromWei0,
-        tokenSymbol0,
-        tokenAmountFromWei1,
-        tokenSymbol1
-      } = await this.getConnectorsAmountByPoolAmount(
-        toWei(this.state.poolAmount),
-        poolTokenAddress
-      )
+        // Get connectors info
+        const {
+          tokenAmountFromWei0,
+          tokenSymbol0,
+          tokenAmountFromWei1,
+          tokenSymbol1
+        } = await this.getConnectorsAmountByPoolAmount(
+          toWei(this.state.poolAmount),
+          poolTokenAddress
+        )
 
-      // Update states
-      this.setState({
-        poolTokenAddress,
-        tokenAmountFromWei0,
-        tokenSymbol0,
-        tokenAmountFromWei1,
-        tokenSymbol1,
-        showPending:false
-      })
+        // Update states
+        this.setState({
+          poolTokenAddress,
+          tokenAmountFromWei0,
+          tokenSymbol0,
+          tokenAmountFromWei1,
+          tokenSymbol1,
+          showPending:false
+        })
+      }catch(e){
+        alert("Pool pair not exist")
+        console.log(e)
+      }
     }
   }
 
 
   getConnectorsAmountByPoolAmount = async (poolAmount, poolToken) => {
-    const poolPortal = new this.props.web3.eth.Contract(PoolPortalABI, PoolPortalV6)
+    const poolPortal = new this.props.web3.eth.Contract(PoolPortalABI, PoolPortalV7)
     const data = await poolPortal.methods.getUniswapV2ConnectorsAmountByPoolAmount(
       poolAmount,
       poolToken
@@ -204,6 +209,13 @@ class SellV2Pool extends PureComponent {
         options={this.props.symbols}
         onChange={(s) => this.setState({secondConnector: this.props.findAddressBySymbol(s[0])})}
         placeholder="Choose a second connector symbol"
+        renderMenuItemChildren={(options, props) => (
+          <div>
+            <img style={{height: "35px", width: "35px"}}src={`http://1inch.exchange/assets/tokens/${this.props.findAddressBySymbol(options)}.png`} alt="Logo" />
+            &nbsp; &nbsp;
+            {options}
+          </div>
+        )}
       />
 
       { /* If addresses correct, show input form */ }
