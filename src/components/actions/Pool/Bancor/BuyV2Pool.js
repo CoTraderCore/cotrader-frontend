@@ -102,6 +102,7 @@ class BuyV2Pool extends PureComponent {
       }
       catch(e){
         alert('Can not verify transaction data, please try again in a minute')
+        console.log(e)
       }
     }else{
       this.setState({

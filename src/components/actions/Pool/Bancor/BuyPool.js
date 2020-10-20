@@ -185,6 +185,7 @@ class BuyPool extends Component {
         this.props.modalClose()
       }catch(e){
         alert('Can not verify transaction data, please try again in a minute')
+        console.log(e)
       }
     }
     else{
