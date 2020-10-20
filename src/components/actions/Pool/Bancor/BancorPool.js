@@ -63,8 +63,8 @@ class BancorPool extends Component {
   updateDataBySymbolSelect = (symbol) => {
     const fromAddress = this.findAddressBySymbol(symbol)
     const tokenData = this.state.tokensObject.filter(item => item['smartTokenAddress'] === fromAddress)
-    const converterVersion = Number(tokenData[0].converterVersion)
-    const converterType = Number(tokenData[0].converterType)
+    const converterVersion = Number(tokenData[0].converterVersion).toFixed()
+    const converterType = Number(tokenData[0].converterType).toFixed()
     const poolSourceTokenAddress = tokenData[0].tokenAddress
     const converterAddress = tokenData[0].converterAddress
 

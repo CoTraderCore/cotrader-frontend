@@ -268,6 +268,7 @@ class BuyPool extends Component {
   }
 
   render() {
+    console.log("type and version", this.props.converterVersion, this.props.converterType)
     return (
       <React.Fragment>
       <Form.Label><small>Note: for Bancor old version of pools we calculate pool amount by Bancor pool token</small></Form.Label>
