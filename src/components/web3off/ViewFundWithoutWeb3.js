@@ -13,6 +13,7 @@ import FakeButton from '../templates/FakeButton'
 import ChartsButton from '../actions/ChartsButton'
 import ViewPageCharts from '../charts/ViewPageCharts'
 import InvestorsAlocationChart from '../charts/InvestorsAlocationChart'
+import UserInfo from '../templates/UserInfo'
 // import AssetsAlocationChart from '../charts/AssetsAlocationChart'
 
 import Loading from '../templates/Spiners/Loading'
@@ -68,7 +69,15 @@ class ViewFundWithoutWeb3 extends Component {
     if(nextProps.web3){
       window.location = "/"
     }
-  }
+ }
+
+ // helper for parse pool connectors data
+ parsePoolConnectors = (data) => {
+   const poolConnectors = data.map((item) => item.symbol)
+   return(
+    <UserInfo  info={`Pool tokens : ${poolConnectors}`}/>
+   )
+ }
 
  render() {
   return (
@@ -146,7 +155,18 @@ class ViewFundWithoutWeb3 extends Component {
             {<a href={EtherscanLink + "token/" + item["address"]} target="_blank" rel="noopener noreferrer">{item["symbol"]}</a>}
             &nbsp;
             :
-            &nbsp; {fromWeiByDecimalsInput(item["decimals"], item["balance"].toString())}
+            &nbsp;
+            {fromWeiByDecimalsInput(item["decimals"], item["balance"].toString())}
+            &nbsp;
+            {
+              item["tokensAdditionalData"].length > 0
+              ?
+              (
+                <>
+                {this.parsePoolConnectors(item["tokensAdditionalData"])}
+                </>
+              ):null
+            }
             </ListGroup.Item>
           )
           ):

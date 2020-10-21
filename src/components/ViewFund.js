@@ -28,7 +28,7 @@ import Pending from './templates/Spiners/Pending'
 import PopupMsg from './templates/PopupMsg'
 import ViewPageCharts from './charts/ViewPageCharts'
 import InvestorsAlocationChart from './charts/InvestorsAlocationChart'
-
+import UserInfo from './templates/UserInfo'
 import AssetsAlocationChart from './charts/AssetsAlocationChart'
 
 class ViewFund extends Component {
@@ -170,6 +170,14 @@ class ViewFund extends Component {
    }
  }
 
+ // helper for parse pool connectors data
+ parsePoolConnectors = (data) => {
+   const poolConnectors = data.map((item) => item.symbol)
+   return(
+    <UserInfo  info={`Pool tokens : ${poolConnectors}`}/>
+   )
+ }
+
  // show toast info
  showPopup() {
    if(this._popupChild.current)
@@ -262,16 +270,29 @@ class ViewFund extends Component {
         (
           this.state.balance.map((item, key) =>
           <ListGroup.Item key={key}>
-          {<img
+          {
+            <img
             style={{height: "20px", width: "20px"}}
             src={`http://1inch.exchange/assets/tokens/${String(item["address"]).toLowerCase()}.png`}
             alt="Logo"
-            onError={(e)=>{e.target.onerror = null; e.target.src="https://etherscan.io/images/main/empty-token.png"}}/>}
+            onError={(e)=>{e.target.onerror = null; e.target.src="https://etherscan.io/images/main/empty-token.png"}}/>
+          }
           &nbsp;
           {<a href={EtherscanLink + "token/" + item["address"]} target="_blank" rel="noopener noreferrer">{item["symbol"]}</a>}
           &nbsp;
           :
-          &nbsp; {fromWeiByDecimalsInput(item["decimals"], item["balance"].toString())}
+          &nbsp;
+          {fromWeiByDecimalsInput(item["decimals"], item["balance"].toString())}
+          &nbsp;
+          {
+            item["tokensAdditionalData"].length > 0
+            ?
+            (
+              <>
+              {this.parsePoolConnectors(item["tokensAdditionalData"])}
+              </>
+            ):null
+          }
           </ListGroup.Item>
         )
         ):
