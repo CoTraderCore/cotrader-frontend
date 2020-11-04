@@ -52,7 +52,7 @@ export const UniswapV2Router02 = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
 
 
 // // Rinkeby
-// export const SmartFundRegistryADDRESS = '0xE912C042Ea733BA2909Ec4D6dc30df3F925957a0'
+// export const SmartFundRegistryADDRESS = '0xb7579beF8B3764908DF71A8ec50701A299eb848b'
 // export const EtherscanLink = 'https://rinkeby.etherscan.io/'
 // export const KyberAddress = '0xF77eC7Ed5f5B9a5aee4cfa6FFCaC6A4C315BaC76'
 // export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'
