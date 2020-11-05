@@ -4,6 +4,8 @@ import setPending from '../../utils/setPending'
 import axios from 'axios'
 import { Button, Modal, Form } from "react-bootstrap"
 import { fromWei } from 'web3-utils'
+import checkDWFrezeeTime from '../../utils/checkDWFrezeeTime'
+
 
 class WithdrawManager extends Component {
   constructor(props, context) {
@@ -11,7 +13,10 @@ class WithdrawManager extends Component {
     this.state = {
       Show: false,
       isConvert: false,
-      managerCut:0
+      managerCut: 0,
+      DWFrezee: false,
+      DWDate: null,
+      DWUpdated: false
     }
   }
 
@@ -35,6 +40,24 @@ class WithdrawManager extends Component {
 
   componentWillUnmount(){
     this._isMounted = false
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    if(this.state.Show && !this.state.DWUpdated)
+      this.checkDWFrezeeTime()
+  }
+
+  // for version 8 and newest
+  checkDWFrezeeTime = async () => {
+    setTimeout(async () => {
+      if(this.props.version > 7){
+        const {
+          DWFrezee,
+          DWDate
+        } = await checkDWFrezeeTime(this.props.smartFundAddress, this.props.web3)
+        this.setState({ DWFrezee, DWDate, DWUpdated:true })
+      }
+    },100)
   }
 
   // take cut action
@@ -79,7 +102,7 @@ class WithdrawManager extends Component {
   }
 
   // close modal
-  modalClose = () => this.setState({ Show: false, isConvert: false, managerCut:0 })
+  modalClose = () => this.setState({ Show: false, isConvert: false, managerCut:0, DWUpdated:false })
 
   render() {
     return (
@@ -98,9 +121,16 @@ class WithdrawManager extends Component {
           </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-          <p>Your current cut : {this.state.managerCut}</p>
           {
-            parseFloat(this.state.managerCut) > 0
+            this.props.version < 8
+            ?
+            <p>Your current cut : {this.state.managerCut}</p>
+            :
+            <p>Please update fund value</p>
+          }
+
+          {
+            parseFloat(this.state.managerCut) > 0 || this.props.version > 7
             ?
             (
               <Form>
@@ -119,13 +149,25 @@ class WithdrawManager extends Component {
                  :null
                }
                </Form.Group>
-               <Button
-               variant="outline-primary"
-               type="button"
-               onClick={() => this.withdrawManager()}
-               >
-               Take cut
-               </Button>
+               {
+                 !this.state.DWFrezee
+                 ?
+                 (
+                   <Button
+                   variant="outline-primary"
+                   type="button"
+                   onClick={() => this.withdrawManager()}
+                   >
+                   Take cut
+                   </Button>
+                 )
+                 :
+                 <>
+                 <small>Next withdraw will be able </small>
+                 { this.state.DWDate }
+                 </>
+               }
+
               </Form>
             )
             :null

@@ -11,7 +11,9 @@ import { fromWei } from 'web3-utils'
 import { Button, Modal, Form, Alert } from "react-bootstrap"
 import setPending from '../../utils/setPending'
 import { toWeiByDecimalsInput } from '../../utils/weiByDecimals'
+import checkDWFrezeeTime from '../../utils/checkDWFrezeeTime'
 import axios from 'axios'
+
 
 class Deposit extends Component {
   constructor(props, context) {
@@ -21,8 +23,29 @@ class Deposit extends Component {
       Show: false,
       Agree: false,
       DepositValue:0,
-      ValueError: false
+      ValueError: false,
+      DWFrezee:false,
+      DWDate:null,
+      DWUpdated:false
     }
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    if(this.state.Show && !this.state.DWUpdated)
+      this.checkDWFrezeeTime()
+  }
+
+  // for version 8 and newest
+  checkDWFrezeeTime = async () => {
+    setTimeout(async () => {
+      if(this.props.version > 7){
+        const {
+          DWFrezee,
+          DWDate
+        } = await checkDWFrezeeTime(this.props.address, this.props.web3)
+        this.setState({ DWFrezee, DWDate, DWUpdated:true })
+      }
+    },100)
   }
 
   validation(address, _value){
@@ -151,7 +174,7 @@ class Deposit extends Component {
     }
  }
 
- modalClose = () => this.setState({ Show: false, Agree: false });
+ modalClose = () => this.setState({ Show: false, Agree: false, DWUpdated:false });
 
  render() {
     return (
@@ -199,13 +222,24 @@ class Deposit extends Component {
                 ) : (null)
               }
               </Form.Group>
-              <Button
-              variant="outline-primary"
-              type="button"
-              onClick={() => this.validation(this.props.address, this.state.DepositValue)}
-              >
-              Deposit
-              </Button>
+              {
+                !this.state.DWFrezee
+                ?
+                (
+                  <Button
+                  variant="outline-primary"
+                  type="button"
+                  onClick={() => this.validation(this.props.address, this.state.DepositValue)}
+                  >
+                  Deposit
+                  </Button>
+                )
+                :
+                <>
+                <small>Next deposit will be able </small>
+                { this.state.DWDate }
+                </>
+              }
               </Form>
               </div>
             ) : (null)
