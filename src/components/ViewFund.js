@@ -14,11 +14,14 @@ import TradeModalV1 from './actions/TradeModalV1'
 import TradeModalV2 from './actions/TradeModalV2'
 import TradeModalV3 from './actions/TradeModalV3'
 import WithdrawManager from './actions/WithdrawManager'
+import WithdrawManagerV2 from './actions/WithdrawManager'
 import WhiteList from './actions/WhiteList'
 import FakeButton from './templates/FakeButton'
 import ChartsButton from './actions/ChartsButton'
 import Withdraw from './actions/Withdraw'
+import WithdrawV2 from './actions/Withdraw'
 import Deposit from './actions/Deposit'
+import DepositV2 from './actions/DepositV2'
 import UserHoldings from './actions/UserHoldings'
 import CompoundLoan from './actions/CompoundLoan'
 import UpdateUSDAsset from './actions/UpdateUSDAsset'
@@ -232,8 +235,60 @@ class ViewFund extends Component {
         <div align="center"><strong>Investor actions</strong></div>
           <ul>
             <li><ChartsButton address={this.state.smartFundAddress}/></li>
-            <li><Deposit web3={this.props.web3} address={this.state.smartFundAddress} accounts={this.props.accounts} mainAsset={this.state.mainAsset} pending={this.pending} version={this.state.version}/></li>
-            <li><Withdraw web3={this.props.web3} address={this.state.smartFundAddress} accounts={this.props.accounts} pending={this.pending} version={this.state.version} mainAsset={this.state.mainAsset}/></li>
+            <li>
+            {
+              this.state.version > 7
+              ?
+              (
+                <DepositV2
+                  web3={this.props.web3}
+                  address={this.state.smartFundAddress}
+                  accounts={this.props.accounts}
+                  mainAsset={this.state.mainAsset}
+                  pending={this.pending}
+                  version={this.state.version}
+                />
+              )
+              :
+              (
+                <Deposit
+                  web3={this.props.web3}
+                  address={this.state.smartFundAddress}
+                  accounts={this.props.accounts}
+                  mainAsset={this.state.mainAsset}
+                  pending={this.pending}
+                  version={this.state.version}
+                />
+              )
+            }
+            </li>
+            <li>
+            {
+              this.state.version > 7
+              ?
+              (
+                <WithdrawV2
+                  web3={this.props.web3}
+                  address={this.state.smartFundAddress}
+                  accounts={this.props.accounts}
+                  pending={this.pending}
+                  version={this.state.version}
+                  mainAsset={this.state.mainAsset}
+                />
+              )
+              :
+              (
+                <Withdraw
+                  web3={this.props.web3}
+                  address={this.state.smartFundAddress}
+                  accounts={this.props.accounts}
+                  pending={this.pending}
+                  version={this.state.version}
+                  mainAsset={this.state.mainAsset}
+                />
+              )
+            }
+            </li>
             <li><UserHoldings web3={this.props.web3} address={this.state.smartFundAddress} accounts={this.props.accounts} pending={this.pending}/></li>
           </ul>
        </div>
@@ -411,13 +466,31 @@ class ViewFund extends Component {
                )
              }
              <li>
-             <WithdrawManager
-             web3={this.props.web3}
-             accounts={this.props.accounts}
-             smartFundAddress={this.state.smartFundAddress}
-             owner={this.state.owner}
-             pending={this.pending}
-             version={this.state.version}/>
+             {
+               this.state.version > 7
+               ?
+               (
+                 <WithdrawManagerV2
+                   web3={this.props.web3}
+                   accounts={this.props.accounts}
+                   smartFundAddress={this.state.smartFundAddress}
+                   owner={this.state.owner}
+                   pending={this.pending}
+                   version={this.state.version}
+                 />
+               )
+               :
+               (
+                 <WithdrawManager
+                   web3={this.props.web3}
+                   accounts={this.props.accounts}
+                   smartFundAddress={this.state.smartFundAddress}
+                   owner={this.state.owner}
+                   pending={this.pending}
+                   version={this.state.version}
+                 />
+               )
+             }
              </li>
 
              <li>

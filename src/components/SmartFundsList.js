@@ -13,7 +13,9 @@ import io from "socket.io-client"
 
 import UpgradableCard from './UpgradableCard'
 import Withdraw from './actions/Withdraw'
+import WithdrawV2 from './actions/WithdrawV2'
 import Deposit from './actions/Deposit'
+import DepositV2 from './actions/DepositV2'
 import CreateNewFund from './actions/CreateNewFund'
 import ChartsButton from './actions/ChartsButton'
 import FakeButton from './templates/FakeButton'
@@ -292,8 +294,56 @@ class SmartFundsList extends Component{
           <Col className="col-lg-12 col-sm-12">
           <ButtonGroup horizontal="true">
           <NavLink to={"/fund/"+item.address}><Button variant="outline-primary" className="buttonsAdditional">Fund page</Button></NavLink>
-          <Deposit web3={this.props.web3} address={item.address} accounts={this.props.accounts} mainAsset={item.mainAsset} pending={this.pending} version={item.version}/>
-          <Withdraw web3={this.props.web3} address={item.address} accounts={this.props.accounts} pending={this.pending} version={item.version} mainAsset={item.mainAsset}/>
+          {
+            item.version > 7
+            ?
+            (
+              <DepositV2
+                web3={this.props.web3}
+                address={item.address}
+                accounts={this.props.accounts}
+                mainAsset={item.mainAsset}
+                pending={this.pending}
+                version={item.version}
+              />
+            )
+            :
+            (
+              <Deposit
+                web3={this.props.web3}
+                address={item.address}
+                accounts={this.props.accounts}
+                mainAsset={item.mainAsset}
+                pending={this.pending}
+                version={item.version}
+              />
+            )
+          }
+          {
+            item.version > 7
+            ?
+            (
+              <WithdrawV2
+                web3={this.props.web3}
+                address={item.address}
+                accounts={this.props.accounts}
+                pending={this.pending}
+                version={item.version}
+                mainAsset={item.mainAsset}
+              />
+            )
+            :
+            (
+              <Withdraw
+                web3={this.props.web3}
+                address={item.address}
+                accounts={this.props.accounts}
+                pending={this.pending}
+                version={item.version}
+                mainAsset={item.mainAsset}
+              />
+            )
+          }
           <UserHoldings web3={this.props.web3} address={item.address} accounts={this.props.accounts}/>
           {
             NeworkID === 1 ?
