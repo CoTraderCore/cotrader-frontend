@@ -79,6 +79,8 @@ export const UniWTH = '0xc778417e063141139fce010982780140aa0cd5ab'
 export const OneInchProto = '0x40c4631687F0A781e1CCE402c1659333A864Ad05'
 export const UniswapV2Router02 = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
 export const CoTraderConfig = '0xF3FdB16D1Bf5312026F937e043749E29d3E95Dd2'
+export const LinkToken = '0x01BE23585060835E02B77ef475b0Cc51aA1e0709'
+export const LinkFee = '100000000000000000'
 
 
 // // Ropsten

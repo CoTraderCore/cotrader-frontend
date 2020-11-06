@@ -1,4 +1,4 @@
-// For fully onchain based funds
+// For Oracle based funds
 
 import React, { Component } from 'react'
 import { SmartFundABI, SmartFundABIV6, APIEnpoint } from '../../config.js'
@@ -6,6 +6,7 @@ import setPending from '../../utils/setPending'
 import axios from 'axios'
 import { Button, Modal, Form } from "react-bootstrap"
 import { fromWei } from 'web3-utils'
+import checkDWFrezeeTime from '../../utils/checkDWFrezeeTime'
 
 
 class WithdrawManager extends Component {
@@ -14,30 +15,28 @@ class WithdrawManager extends Component {
     this.state = {
       Show: false,
       isConvert: false,
-      managerCut: 0
+      DWFrezee: false,
+      DWDate: null,
+      DWUpdated: false
     }
   }
 
-  _isMounted = false
-
-  componentDidMount = async () => {
-    this._isMounted = true
-    const contract = new this.props.web3.eth.Contract(SmartFundABI, this.props.smartFundAddress)
-    let managerCut
-
-    try{
-      const { fundManagerRemainingCut } = await contract.methods.calculateFundManagerCut().call()
-      managerCut = parseFloat(fromWei(String(fundManagerRemainingCut)))
-    }catch(e){
-      managerCut = 0
-    }
-
-    if(this._isMounted)
-      this.setState({ managerCut })
+  componentDidUpdate(prevProps, prevState){
+    if(this.state.Show && !this.state.DWUpdated)
+      this.checkDWFrezeeTime()
   }
 
-  componentWillUnmount(){
-    this._isMounted = false
+  // for version 8 and newest
+  checkDWFrezeeTime = async () => {
+    setTimeout(async () => {
+      if(this.props.version > 7){
+        const {
+          DWFrezee,
+          DWDate
+        } = await checkDWFrezeeTime(this.props.smartFundAddress, this.props.web3)
+        this.setState({ DWFrezee, DWDate, DWUpdated:true })
+      }
+    },100)
   }
 
   // take cut action
@@ -82,7 +81,7 @@ class WithdrawManager extends Component {
   }
 
   // close modal
-  modalClose = () => this.setState({ Show: false, isConvert: false, managerCut:0 })
+  modalClose = () => this.setState({ Show: false, isConvert: false, DWUpdated:false })
 
   render() {
     return (
@@ -101,27 +100,14 @@ class WithdrawManager extends Component {
           </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-          <p>Your current cut : {this.state.managerCut}</p>
-          {
-            parseFloat(this.state.managerCut) > 0 || this.props.version > 7
-            ?
-            (
-              <Form>
-               <Form.Group>
-               {
-                 this.props.version === 6
-                 ?
-                 (
-                   <Form.Check
-                    type="checkbox"
-                    onChange={() => this.setState({ isConvert: !this.state.isConvert })}
-                    checked={this.state.isConvert}
-                    label={`Try convert assets to ${this.props.mainAsset}`}
-                    />
-                 )
-                 :null
-               }
-               </Form.Group>
+          <p>Please update fund value</p>
+
+          <Form>
+           <Form.Group>
+           {
+             !this.state.DWFrezee
+             ?
+             (
                <Button
                variant="outline-primary"
                type="button"
@@ -129,10 +115,15 @@ class WithdrawManager extends Component {
                >
                Take cut
                </Button>
-              </Form>
-            )
-            :null
-          }
+             )
+             :
+             <>
+             <small>Next withdraw will be able </small>
+             { this.state.DWDate }
+             </>
+           }
+           </Form.Group>
+          </Form>
           </Modal.Body>
         </Modal>
 

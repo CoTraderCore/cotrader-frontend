@@ -1,10 +1,11 @@
-// For fully-onchain based funds
+// For Oracle based funds 
 
 import React, { Component } from 'react'
 import { SmartFundABI, SmartFundABIV6, APIEnpoint } from '../../config.js'
 import { Button, Modal, Form } from "react-bootstrap"
 import axios from 'axios'
 import setPending from '../../utils/setPending'
+import checkDWFrezeeTime from '../../utils/checkDWFrezeeTime'
 
 
 class Withdraw extends Component {
@@ -13,8 +14,29 @@ class Withdraw extends Component {
     this.state = {
       Show: false,
       Percent: 50,
-      isConvert:false
+      isConvert:false,
+      DWFrezee:false,
+      DWDate:null,
+      DWUpdated:false
     }
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    if(this.state.Show && !this.state.DWUpdated)
+      this.checkDWFrezeeTime()
+  }
+
+  // for version 8 and newest
+  checkDWFrezeeTime = async () => {
+    setTimeout(async () => {
+      if(this.props.version > 7){
+        const {
+          DWFrezee,
+          DWDate
+        } = await checkDWFrezeeTime(this.props.address, this.props.web3)
+        this.setState({ DWFrezee, DWDate, DWUpdated:true })
+      }
+    },100)
   }
 
   withdraw = async (address, percent) => {
@@ -60,7 +82,7 @@ class Withdraw extends Component {
   }
 
   render() {
-    let modalClose = () => this.setState({ Show: false });
+    let modalClose = () => this.setState({ Show: false, DWUpdated:false  });
 
     return (
       <div>
@@ -104,13 +126,24 @@ class Withdraw extends Component {
                :null
              }
            </Form.Group>
-           <Button
-           variant="outline-primary"
-           type="button"
-           onClick={() => this.withdraw(this.props.address, this.state.Percent)}
-           >
-           Withdraw
-           </Button>
+           {
+             !this.state.DWFrezee
+             ?
+             (
+               <Button
+               variant="outline-primary"
+               type="button"
+               onClick={() => this.withdraw(this.props.address, this.state.Percent)}
+               >
+               Withdraw
+               </Button>
+             )
+             :
+             <>
+             <small>Next withdraw will be able </small>
+             { this.state.DWDate }
+             </>
+           }
           </Form>
           </Modal.Body>
         </Modal>

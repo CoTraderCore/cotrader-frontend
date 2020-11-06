@@ -1,4 +1,4 @@
-// For fully-onchain based funds
+// For Oracle based funds
 
 import React, { Component } from 'react'
 
@@ -13,8 +13,9 @@ import { fromWei } from 'web3-utils'
 import { Button, Modal, Form, Alert } from "react-bootstrap"
 import setPending from '../../utils/setPending'
 import { toWeiByDecimalsInput } from '../../utils/weiByDecimals'
+import checkDWFrezeeTime from '../../utils/checkDWFrezeeTime'
 import axios from 'axios'
-
+import UpdateOracleValue from './UpdateOracleValue'
 
 
 class Deposit extends Component {
@@ -25,8 +26,37 @@ class Deposit extends Component {
       Show: false,
       Agree: false,
       DepositValue:0,
-      ValueError: false
+      ValueError: false,
+      DWFrezee:false,
+      DWDate:null,
+      DWUpdated:false,
+      LatestOracleCaller:undefined
     }
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    if(this.state.Show && !this.state.DWUpdated)
+      this.checkDWFrezeeTime()
+  }
+
+  // for version 8 and newest Oracle based funds
+  checkDWFrezeeTime = async () => {
+    setTimeout(async () => {
+        // get data
+        const {
+          DWFrezee,
+          DWDate,
+          LatestOracleCaller
+        } = await checkDWFrezeeTime(this.props.address, this.props.web3)
+
+        // update states
+        this.setState({
+          DWFrezee,
+          DWDate,
+          LatestOracleCaller,
+          DWUpdated:true
+        })
+    },100)
   }
 
   validation(address, _value){
@@ -155,9 +185,10 @@ class Deposit extends Component {
     }
  }
 
- modalClose = () => this.setState({ Show: false, Agree: false });
+ modalClose = () => this.setState({ Show: false, Agree: false, DWUpdated:false });
 
  render() {
+   console.log(this.state.LatestOracleCaller)
     return (
       <div>
         <Button variant="outline-primary" className="buttonsAdditional" onClick={() => this.setState({ Show: true })}>
@@ -203,13 +234,32 @@ class Deposit extends Component {
                 ) : (null)
               }
               </Form.Group>
-              <Button
-                variant="outline-primary"
-                type="button"
-                onClick={() => this.validation(this.props.address, this.state.DepositValue)}
-              >
-              Deposit
-              </Button>
+              {
+                !this.state.DWFrezee || String(this.state.LatestOracleCaller).toLowerCase() === String(this.props.accounts[0]).toLowerCase()
+                ?
+                (
+                  <>
+                  <UpdateOracleValue
+                    accounts={this.props.accounts}
+                    web3={this.props.web3}
+                    address={this.props.address}
+                  />
+
+                  <Button
+                    variant="outline-primary"
+                    type="button"
+                    onClick={() => this.validation(this.props.address, this.state.DepositValue)}
+                  >
+                  Deposit
+                  </Button>
+                  </>
+                )
+                :
+                <>
+                <small>Next deposit will be able </small>
+                { this.state.DWDate }
+                </>
+              }
               </Form>
               </div>
             ) : (null)
