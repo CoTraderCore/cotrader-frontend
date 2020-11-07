@@ -6,6 +6,8 @@ import setPending from '../../utils/setPending'
 import axios from 'axios'
 import { Button, Modal, Form } from "react-bootstrap"
 import { fromWei } from 'web3-utils'
+import DWOracleWrapper from './DWOracleWrapper'
+
 
 
 class WithdrawManager extends Component {
@@ -132,13 +134,35 @@ class WithdrawManager extends Component {
                  :null
                }
                </Form.Group>
-               <Button
-               variant="outline-primary"
-               type="button"
-               onClick={() => this.withdrawManager()}
-               >
-               Take cut
-               </Button>
+               {
+                 this.props.version > 7
+                 ?
+                 (
+                   <DWOracleWrapper
+                     accounts={this.props.accounts}
+                     web3={this.props.web3}
+                     address={this.props.smartFundAddress}
+                     action={
+                       <Button
+                       variant="outline-primary"
+                       type="button"
+                       onClick={() => this.withdrawManager()}
+                       >
+                       Take cut
+                       </Button>}
+                    />
+                 )
+                 :
+                 (
+                   <Button
+                   variant="outline-primary"
+                   type="button"
+                   onClick={() => this.withdrawManager()}
+                   >
+                   Take cut
+                   </Button>
+                 )
+               }
               </Form>
             )
             :null

@@ -5,6 +5,7 @@ import { SmartFundABI, SmartFundABIV6, APIEnpoint } from '../../config.js'
 import { Button, Modal, Form } from "react-bootstrap"
 import axios from 'axios'
 import setPending from '../../utils/setPending'
+import DWOracleWrapper from './DWOracleWrapper'
 
 
 class Withdraw extends Component {
@@ -104,13 +105,35 @@ class Withdraw extends Component {
                :null
              }
            </Form.Group>
-           <Button
-           variant="outline-primary"
-           type="button"
-           onClick={() => this.withdraw(this.props.address, this.state.Percent)}
-           >
-           Withdraw
-           </Button>
+           {
+             this.props.version > 7
+             ?
+             (
+               <DWOracleWrapper
+                 accounts={this.props.accounts}
+                 web3={this.props.web3}
+                 address={this.props.address}
+                 action={
+                   <Button
+                   variant="outline-primary"
+                   type="button"
+                   onClick={() => this.withdraw(this.props.address, this.state.Percent)}
+                   >
+                   Withdraw
+                   </Button>}
+                />
+             )
+             :
+             (
+               <Button
+               variant="outline-primary"
+               type="button"
+               onClick={() => this.withdraw(this.props.address, this.state.Percent)}
+               >
+               Withdraw
+               </Button>
+             )
+           }
           </Form>
           </Modal.Body>
         </Modal>
