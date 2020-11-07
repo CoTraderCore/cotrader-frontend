@@ -203,17 +203,7 @@ class Deposit extends Component {
                 ) : (null)
               }
               </Form.Group>
-              <DWOracleWrapper
-                accounts={this.props.accounts}
-                web3={this.props.web3}
-                address={this.props.address}
-                action={<Button
-                        variant="outline-primary"
-                        type="button"
-                        onClick={() => this.validation(this.props.address, this.state.DepositValue)}>
-                         Deposit
-                        </Button>}
-              />
+
               </Form>
               </div>
             ) : (null)

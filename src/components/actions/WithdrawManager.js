@@ -101,7 +101,17 @@ class WithdrawManager extends Component {
           </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-          <p>Your current cut : {this.state.managerCut}</p>
+          {
+            this.props.version > 7
+            ?
+            (
+              <p>Please update fund value</p>
+            )
+            :
+            (
+              <p>Your current cut : {this.state.managerCut}</p>
+            )
+          }
           {
             parseFloat(this.state.managerCut) > 0 || this.props.version > 7
             ?

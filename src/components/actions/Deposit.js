@@ -14,7 +14,7 @@ import { Button, Modal, Form, Alert } from "react-bootstrap"
 import setPending from '../../utils/setPending'
 import { toWeiByDecimalsInput } from '../../utils/weiByDecimals'
 import axios from 'axios'
-
+import DWOracleWrapper from './DWOracleWrapper'
 
 
 class Deposit extends Component {
@@ -203,13 +203,35 @@ class Deposit extends Component {
                 ) : (null)
               }
               </Form.Group>
-              <Button
-                variant="outline-primary"
-                type="button"
-                onClick={() => this.validation(this.props.address, this.state.DepositValue)}
-              >
-              Deposit
-              </Button>
+
+              {
+                this.props.version > 7
+                ?
+                (
+                  <DWOracleWrapper
+                    accounts={this.props.accounts}
+                    web3={this.props.web3}
+                    address={this.props.address}
+                    action={
+                      <Button
+                      variant="outline-primary"
+                      type="button"
+                      onClick={() => this.validation(this.props.address, this.state.DepositValue)}>
+                       Deposit
+                      </Button>}
+                   />
+                )
+                :
+                (
+                  <Button
+                    variant="outline-primary"
+                    type="button"
+                    onClick={() => this.validation(this.props.address, this.state.DepositValue)}
+                  >
+                  Deposit
+                  </Button>
+                )
+              }
               </Form>
               </div>
             ) : (null)
