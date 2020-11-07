@@ -24,7 +24,8 @@ class DWOracleWrapper extends PureComponent {
       LatestOracleCaller:undefined,
       latestOracleCallOnTime:0,
       pending:false,
-      isDataLoaded:false
+      isDataLoaded:false,
+      isEmptySharesFund:false
     }
   }
 
@@ -36,7 +37,8 @@ class DWOracleWrapper extends PureComponent {
           DWDate,
           DWOpen,
           LatestOracleCaller,
-          latestOracleCallOnTime
+          latestOracleCallOnTime,
+          isEmptySharesFund
         } = await this.getFundData()
 
         // update states
@@ -46,6 +48,7 @@ class DWOracleWrapper extends PureComponent {
           DWOpen,
           LatestOracleCaller,
           latestOracleCallOnTime,
+          isEmptySharesFund,
           isDataLoaded:true
         })
     },100)
@@ -73,13 +76,25 @@ class DWOracleWrapper extends PureComponent {
     const DWFrezee = latestOracleCallOnTime + DW_FREEZE_TIME >= now ? true : false
     const DWOpen = latestOracleCallOnTime + TRADE_FREEZE_TIME >= now ? true : false
     const DWDate = new Date((latestOracleCallOnTime + DW_FREEZE_TIME) * 1000).toLocaleString()
+    const totalShares = await fund.methods.totalShares().call()
+    const isEmptySharesFund = totalShares > 0 ? false : true
+
+    console.log(
+      DWFrezee,
+      DWDate,
+      DWOpen,
+      LatestOracleCaller,
+      latestOracleCallOnTime,
+      isEmptySharesFund
+    )
 
     return {
       DWFrezee,
       DWDate,
       DWOpen,
       LatestOracleCaller,
-      latestOracleCallOnTime
+      latestOracleCallOnTime,
+      isEmptySharesFund
     }
   }
 
@@ -102,7 +117,8 @@ class DWOracleWrapper extends PureComponent {
     const {
       DWOpen,
       LatestOracleCaller,
-      latestOracleCallOnTime
+      latestOracleCallOnTime,
+      isEmptySharesFund
     } = await this.getFundData()
 
     if(latestOracleCallOnTime === this.state.latestOracleCallOnTime){
@@ -111,7 +127,12 @@ class DWOracleWrapper extends PureComponent {
       this.setState({ intervalID })
     }else{
       // update states
-      this.setState({ LatestOracleCaller, DWOpen, pending:false })
+      this.setState({
+        LatestOracleCaller,
+        DWOpen,
+        isEmptySharesFund,
+        pending:false
+      })
     }
   }
 
@@ -124,46 +145,19 @@ class DWOracleWrapper extends PureComponent {
         (
           <>
           {
-            String(this.state.LatestOracleCaller).toLowerCase() === String(this.props.accounts[0]).toLowerCase()
+            this.state.isEmptySharesFund || this.state.DWOpen
             ?
             (
               <>
               {
-                this.state.DWOpen
+                String(this.state.LatestOracleCaller).toLowerCase() === String(this.props.accounts[0]).toLowerCase()
                 ?
                 (
                   <>
-                  {
+                  { // open deposit button if not freeze or shrares === 0
                     this.props.action
                   }
                   </>
-                )
-                :
-                (
-                  <>
-                  <p>Time expired please update again</p>
-                    <Button
-                      variant="outline-primary"
-                      onClick={() => this.updateOracle()}>
-                      Calculate my share
-                    </Button>
-                  </>
-                )
-              }
-              </>
-            )
-            :
-            (
-              <>
-              {
-                !this.state.DWFrezee
-                ?
-                (
-                  <Button
-                    variant="outline-primary"
-                    onClick={() => this.updateOracle()}>
-                    Calculate my share
-                  </Button>
                 )
                 :
                 (
@@ -175,11 +169,35 @@ class DWOracleWrapper extends PureComponent {
               }
               </>
             )
+            :
+            (
+              <>
+              {
+                this.state.DWFrezee
+                ?
+                (
+                  <>
+                  <small>Next deposit will be able </small>
+                  { this.state.DWDate }
+                  </>
+                )
+                :
+                (
+                  <>
+                    <Button
+                      variant="outline-primary"
+                      onClick={() => this.updateOracle()}>
+                      Calculate my share
+                    </Button>
+                  </>
+                )
+              }
+              </>
+            )
           }
           </>
         )
-        :
-        null
+        : null
       }
 
 
