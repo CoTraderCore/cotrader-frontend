@@ -26,7 +26,8 @@ class DWOracleWrapper extends PureComponent {
       DWUpdated:false,
       LatestOracleCaller:undefined,
       latestOracleCallOnTime:0,
-      pending:false,
+      DWPending:false,
+      AllowncePending:false,
       isDataLoaded:false,
       isEmptySharesFund:false
     }
@@ -34,44 +35,45 @@ class DWOracleWrapper extends PureComponent {
 
   componentDidMount(prevProps, prevState){
     setTimeout(async () => {
-       // check link balance and allowance
-       const {
-          isEnoughLinkBalance,
-          isEnoughLinkAllowance
-        } = await this.checkLinkPayment()
+      // check link balance and allowance
+      const {
+        isEnoughLinkBalance,
+        isEnoughLinkAllowance
+      } = await this.checkLinkPayment()
 
-        // get DW data
-        const {
-          DWFrezee,
-          DWDate,
-          DWOpen,
-          LatestOracleCaller,
-          latestOracleCallOnTime,
-          isEmptySharesFund
-        } = await this.getFundData()
+      // get DW data
+      const {
+        DWFrezee,
+        DWDate,
+        DWOpen,
+        LatestOracleCaller,
+        latestOracleCallOnTime,
+        isEmptySharesFund
+      } = await this.getFundData()
 
-        // update states
-        this.setState({
-          DWFrezee,
-          DWDate,
-          DWOpen,
-          LatestOracleCaller,
-          latestOracleCallOnTime,
-          isEmptySharesFund,
-          isEnoughLinkBalance,
-          isEnoughLinkAllowance,
-          isDataLoaded:true
-        })
+      // update states
+      this.setState({
+        DWFrezee,
+        DWDate,
+        DWOpen,
+        LatestOracleCaller,
+        latestOracleCallOnTime,
+        isEmptySharesFund,
+        isEnoughLinkBalance,
+        isEnoughLinkAllowance,
+        isDataLoaded:true
+      })
     },100)
   }
 
   componentWillUnmount(){
     if(this.state.intervalID !== 0){
       clearTimeout(this.state.intervalID)
-      this.setState({ pending:false })
+      this.setState({ DWPending:false, AllowncePending:false })
     }
   }
 
+  // Get Oracle fund data
   getFundData = async() => {
     const fund = new this.props.web3.eth.Contract(SmartFundABIV8, this.props.address)
     const config = new this.props.web3.eth.Contract(CoTraderConfigABI, CoTraderConfig)
@@ -99,6 +101,7 @@ class DWOracleWrapper extends PureComponent {
     }
   }
 
+  // Check if user can pay Link commision
   checkLinkPayment = async () => {
     const LinkContract = new this.props.web3.eth.Contract(ERC20ABI, LinkToken)
     const UserLinkBalance = await LinkContract.methods.balanceOf(this.props.accounts[0]).call()
@@ -111,16 +114,18 @@ class DWOracleWrapper extends PureComponent {
   }
 
 
+ // Get Oracle data
   updateOracle = async () => {
     const fund = new this.props.web3.eth.Contract(SmartFundABIV8, this.props.address)
     // TODO get fee dynamicly
     fund.methods.updateFundValueFromOracle(LinkToken, LinkFee).send({ from:this.props.accounts[0] })
     .on('transactionHash', (hash) => {
-      this.setState({ pending:true })
+      this.setState({ DWPending:true })
       this.runSenderCheckerInterval()
     })
   }
 
+ // Oracle uppdate checker
   runSenderCheckerInterval = async () => {
     // clear prev interval
     if(this.state.intervalID !== 0)
@@ -143,11 +148,48 @@ class DWOracleWrapper extends PureComponent {
         LatestOracleCaller,
         DWOpen,
         isEmptySharesFund,
-        pending:false
+        DWPending:false
       })
     }
   }
 
+ // allowance checker
+ runApproveCheckerInterval = async () => {
+    // clear prev interval
+    if(this.state.intervalID !== 0)
+       clearTimeout(this.state.intervalID)
+
+    const {
+      isEnoughLinkAllowance
+    } = await this.checkLinkPayment()
+
+    console.log(isEnoughLinkAllowance)
+
+    if(!isEnoughLinkAllowance){
+      // set new interval
+      const intervalID = setTimeout(this.runApproveCheckerInterval, 4000)
+      this.setState({ intervalID })
+    }
+    else{
+      // update states
+      this.setState({
+        isEnoughLinkAllowance,
+        AllowncePending:false
+      })
+    }
+  }
+
+ // approve Link commision to fund
+ approveLink = () => {
+    const LinkContract = new this.props.web3.eth.Contract(ERC20ABI, LinkToken)
+    LinkContract.methods.approve(this.props.address, LinkFee).send({ from:this.props.accounts[0] })
+    .on('transactionHash', (hash) => {
+      this.setState({ AllowncePending:true })
+      this.runApproveCheckerInterval()
+    })
+  }
+
+  // Render a certain action dependse of DW freeze time, oracle sender, Link balance and allowance
   renderAction(){
     if(this.state.isEmptySharesFund){
       return(
@@ -203,7 +245,7 @@ class DWOracleWrapper extends PureComponent {
             ?
             (
               <>
-              Please buy - { fromWei(String(LinkFee)) } 
+              Please buy - { fromWei(String(LinkFee)) }
               <a href={EtherscanLink + "token/" + LinkToken} target="_blank" rel="noopener noreferrer">Link token</a>
               </>
             )
@@ -214,7 +256,13 @@ class DWOracleWrapper extends PureComponent {
                 !this.state.isEnoughLinkAllowance
                 ?
                 (
-                  <>Please unlock Link</>
+                  <>
+                    <Button
+                      variant="outline-primary"
+                      onClick={() => this.approveLink()}>
+                      Unlock Link
+                    </Button>
+                  </>
                 )
                 : null
               }
@@ -227,6 +275,8 @@ class DWOracleWrapper extends PureComponent {
     }
   }
 
+
+  // Html
   render() {
     return (
       <>
@@ -247,11 +297,23 @@ class DWOracleWrapper extends PureComponent {
       <br/>
 
       {
-        this.state.pending
+        this.state.DWPending
         ?
         (
           <>
           <small>Update shares, please wait and don't close page</small>
+          <Pending/>
+          </>
+        )
+        : null
+      }
+
+      {
+        this.state.AllowncePending
+        ?
+        (
+          <>
+          <small>Approving Link, please wait and don't close page</small>
           <Pending/>
           </>
         )
