@@ -9,7 +9,8 @@ import {
   LinkFee,
   CoTraderConfigABI,
   CoTraderConfig,
-  ERC20ABI
+  ERC20ABI,
+  EtherscanLink
 } from '../../config.js'
 import Pending from '../templates/Spiners/Pending'
 import { fromWei } from 'web3-utils'
@@ -201,18 +202,24 @@ class DWOracleWrapper extends PureComponent {
             !this.state.isEnoughLinkBalance
             ?
             (
-              <>Please buy Link</>
+              <>
+              Please buy - { fromWei(String(LinkFee)) } 
+              <a href={EtherscanLink + "token/" + LinkToken} target="_blank" rel="noopener noreferrer">Link token</a>
+              </>
             )
-            :null
-          }
-          <br/>
-          {
-            !this.state.isEnoughLinkAllowance
-            ?
+            :
             (
-              <>Please approve Link</>
+              <>
+              {
+                !this.state.isEnoughLinkAllowance
+                ?
+                (
+                  <>Please unlock Link</>
+                )
+                : null
+              }
+              </>
             )
-            : null
           }
           </>
         )
@@ -233,7 +240,7 @@ class DWOracleWrapper extends PureComponent {
           }
           </>
         )
-        : null
+        : <Pending/>
       }
 
 
