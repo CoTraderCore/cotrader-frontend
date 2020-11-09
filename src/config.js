@@ -49,7 +49,9 @@ export const OneInchApi = 'https://api.1inch.exchange/v1.1/'
 // export const GetBancorData = '0x3aE392A4c6a99FcB991E208f9D74618fff513834'
 // export const OneInchProto = '0x50FDA034C0Ce7a8f7EFDAebDA7Aa7cA21CC1267e'
 // export const UniswapV2Router02 = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
-
+// export const CoTraderConfig = '0x9c990064EC31a531752adD55283B560Fb191dE2B'
+// export const LinkToken = '0x514910771AF9Ca656af840dff83E8264EcF986CA'
+// export const LinkFee = '100000000000000000'
 
 // Rinkeby
 export const SmartFundRegistryADDRESS = '0xB3B3dCEAEB266EF23338B6584315e3411641e23C'
@@ -112,6 +114,9 @@ export const LinkFee = '100000000000000000'
 // export const UniWTH = '0xc778417e063141139fce010982780140aa0cd5ab'
 // export const OneInchProto = '0xc9536F9cAe60F671f2704C6F4aC3Bf2076137337'
 // export const UniswapV2Router02 = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
+// export const CoTraderConfig = ''
+// export const LinkToken = ''
+// export const LinkFee = '100000000000000000'
 
 
 /* TODO: MOVE ALL ABI to a separate file ABI.js*/

@@ -8,9 +8,11 @@ import {
   LinkToken,
   LinkFee,
   CoTraderConfigABI,
-  CoTraderConfig
+  CoTraderConfig,
+  ERC20ABI
 } from '../../config.js'
 import Pending from '../templates/Spiners/Pending'
+import { fromWei } from 'web3-utils'
 
 
 class DWOracleWrapper extends PureComponent {
@@ -31,7 +33,13 @@ class DWOracleWrapper extends PureComponent {
 
   componentDidMount(prevProps, prevState){
     setTimeout(async () => {
-        // get data
+       // check link balance and allowance
+       const {
+          isEnoughLinkBalance,
+          isEnoughLinkAllowance
+        } = await this.checkLinkPayment()
+
+        // get DW data
         const {
           DWFrezee,
           DWDate,
@@ -49,6 +57,8 @@ class DWOracleWrapper extends PureComponent {
           LatestOracleCaller,
           latestOracleCallOnTime,
           isEmptySharesFund,
+          isEnoughLinkBalance,
+          isEnoughLinkAllowance,
           isDataLoaded:true
         })
     },100)
@@ -59,7 +69,6 @@ class DWOracleWrapper extends PureComponent {
       clearTimeout(this.state.intervalID)
       this.setState({ pending:false })
     }
-
   }
 
   getFundData = async() => {
@@ -79,15 +88,6 @@ class DWOracleWrapper extends PureComponent {
     const totalShares = await fund.methods.totalShares().call()
     const isEmptySharesFund = totalShares > 0 ? false : true
 
-    console.log(
-      DWFrezee,
-      DWDate,
-      DWOpen,
-      LatestOracleCaller,
-      latestOracleCallOnTime,
-      isEmptySharesFund
-    )
-
     return {
       DWFrezee,
       DWDate,
@@ -96,6 +96,17 @@ class DWOracleWrapper extends PureComponent {
       latestOracleCallOnTime,
       isEmptySharesFund
     }
+  }
+
+  checkLinkPayment = async () => {
+    const LinkContract = new this.props.web3.eth.Contract(ERC20ABI, LinkToken)
+    const UserLinkBalance = await LinkContract.methods.balanceOf(this.props.accounts[0]).call()
+    const UserLinkAllowance = await LinkContract.methods.allowance(this.props.accounts[0], this.props.address).call()
+
+    const isEnoughLinkBalance = parseFloat(fromWei(String(UserLinkBalance))) >= parseFloat(fromWei(String(LinkFee)))
+    const isEnoughLinkAllowance = parseFloat(fromWei(String(UserLinkAllowance))) >= parseFloat(fromWei(String(LinkFee)))
+
+    return { isEnoughLinkBalance, isEnoughLinkAllowance }
   }
 
 
@@ -136,6 +147,79 @@ class DWOracleWrapper extends PureComponent {
     }
   }
 
+  renderAction(){
+    if(this.state.isEmptySharesFund){
+      return(
+        <>
+        {
+          this.props.action
+        }
+        </>
+      )
+    }
+    else if(this.state.DWOpen){
+      if(String(this.state.LatestOracleCaller).toLowerCase() === String(this.props.accounts[0]).toLowerCase()){
+        return(
+          <>
+          {
+            this.props.action
+          }
+          </>
+        )
+      }else{
+        return(
+          <>
+          <small>Next deposit will be able </small>
+          { this.state.DWDate }
+          </>
+        )
+      }
+    }
+    else if(this.state.DWFrezee){
+      return(
+        <>
+        <small>Next deposit will be able </small>
+        { this.state.DWDate }
+        </>
+      )
+    }
+    else{
+      if(this.state.isEnoughLinkBalance && this.state.isEnoughLinkAllowance){
+        return(
+          <>
+            <Button
+              variant="outline-primary"
+              onClick={() => this.updateOracle()}>
+              Calculate my share
+            </Button>
+          </>
+        )
+      }else{
+        return(
+          <>
+          {
+            !this.state.isEnoughLinkBalance
+            ?
+            (
+              <>Please buy Link</>
+            )
+            :null
+          }
+          <br/>
+          {
+            !this.state.isEnoughLinkAllowance
+            ?
+            (
+              <>Please approve Link</>
+            )
+            : null
+          }
+          </>
+        )
+      }
+    }
+  }
+
   render() {
     return (
       <>
@@ -145,55 +229,7 @@ class DWOracleWrapper extends PureComponent {
         (
           <>
           {
-            this.state.isEmptySharesFund || this.state.DWOpen
-            ?
-            (
-              <>
-              {
-                String(this.state.LatestOracleCaller).toLowerCase() === String(this.props.accounts[0]).toLowerCase()
-                ?
-                (
-                  <>
-                  { // open deposit button if not freeze or shrares === 0
-                    this.props.action
-                  }
-                  </>
-                )
-                :
-                (
-                  <>
-                  <small>Next deposit will be able </small>
-                  { this.state.DWDate }
-                  </>
-                )
-              }
-              </>
-            )
-            :
-            (
-              <>
-              {
-                this.state.DWFrezee
-                ?
-                (
-                  <>
-                  <small>Next deposit will be able </small>
-                  { this.state.DWDate }
-                  </>
-                )
-                :
-                (
-                  <>
-                    <Button
-                      variant="outline-primary"
-                      onClick={() => this.updateOracle()}>
-                      Calculate my share
-                    </Button>
-                  </>
-                )
-              }
-              </>
-            )
+            this.renderAction()
           }
           </>
         )
