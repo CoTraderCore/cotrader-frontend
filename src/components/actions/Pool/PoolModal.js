@@ -4,6 +4,7 @@ import BancorPool from './Bancor/BancorPool'
 import UniswapPool from './Uniswap/UniswapPool'
 import BalancerPool from './Balancer/BalancerPool'
 import SetGasPrice from '../../settings/SetGasPrice'
+import TradeFreezeWarning from '../TradeFreezeWarning'
 
 
 class PoolModal extends Component {
@@ -73,6 +74,19 @@ class PoolModal extends Component {
         <br />
         {
           this.props.web3 ? <SetGasPrice web3={this.props.web3}/> : null
+        }
+
+        { /* Freeze checker for v8 and newest */ }
+        {
+          this.props.version > 7
+          ?
+          (
+            <TradeFreezeWarning
+              web3={this.props.web3}
+              smartFundAddress={this.props.smartFundAddress}
+            />
+          )
+          :null
         }
       </Modal.Body>
       </Modal>

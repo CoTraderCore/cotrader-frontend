@@ -38,7 +38,7 @@ import BigNumber from 'bignumber.js'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import { ropstenTokens, ropstenSymbols } from '../../storage/RopstenTokens'
 import { rinkebyTokens, rinkebySymbols } from '../../storage/RinkebyTokens'
-
+import TradeFreezeWarning from './TradeFreezeWarning'
 
 class TradeModalV3 extends Component {
   constructor(props, context) {
@@ -677,6 +677,17 @@ class TradeModalV3 extends Component {
           )
           :
           (<p>Load data...</p>)
+          }
+          {
+            this.props.version > 7
+            ?
+            (
+              <TradeFreezeWarning
+                web3={this.props.web3}
+                smartFundAddress={this.props.smartFundAddress}
+              />
+            )
+            :null
           }
           </Modal.Body>
         </Modal>
