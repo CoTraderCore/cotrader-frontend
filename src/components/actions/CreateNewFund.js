@@ -3,7 +3,8 @@ import React, { Component } from 'react'
 import {
   APIEnpoint,
   SmartFundRegistryABIV7,
-  SmartFundRegistryADDRESS
+  SmartFundRegistryADDRESS,
+  SmartFundRegistryOracleBasedADDRESS
 } from '../../config.js'
 
 import { Modal, Form } from "react-bootstrap"
@@ -26,13 +27,21 @@ class CreateNewFund extends Component {
       FundAsset: 'ETH',
       FundName: '',
       TradeVerification: false,
-      FundType:'Full'
+      FundType:'Full',
+      PriceSource:"Oracle"
     }
   }
 
   createNewFund = async () =>{
+  console.log("this.state.PriceSource", this.state.PriceSource)
   if(this.state.Percent > 0 && this.state.Percent <= 30){
-  const contract = new this.props.web3.eth.Contract(SmartFundRegistryABIV7, SmartFundRegistryADDRESS)
+
+  // select registry address (v7 or v8)
+  const registryAddress = this.state.PriceSource === "Oracle"
+  ? SmartFundRegistryOracleBasedADDRESS
+  : SmartFundRegistryADDRESS
+
+  const contract = new this.props.web3.eth.Contract(SmartFundRegistryABIV7, registryAddress)
     if(this.state.FundName !== ''){
       try{
         const name = this.state.FundName
@@ -169,11 +178,19 @@ class CreateNewFund extends Component {
 
           <hr/>
 
-          <Form.Group controlId="exampleForm.ControlSelect1">
+          <Form.Group controlId="FundType">
           <Form.Label>Fund type <UserInfo  info="Full funds - supports trade, pools and another defi protocols, light - only trade"/></Form.Label>
           <Form.Control as="select" name="FundType" onChange={e => this.change(e)}>
             <option>Full</option>
             <option>Light</option>
+          </Form.Control>
+          </Form.Group>
+
+          <Form.Group controlId="PriceSource">
+          <Form.Label>Price source <UserInfo  info="Fully onchain based funds get price source from DEXs, Oracle get price from CEXs + DEXs. Fully onchain funds completely decentralized, but can not provide best price, and this affects the manager's profit"/></Form.Label>
+          <Form.Control as="select" name="PriceSource" onChange={e => this.change(e)}>
+            <option>Oracle</option>
+            <option>Onchain</option>
           </Form.Control>
           </Form.Group>
 

@@ -184,7 +184,7 @@ class App extends Component {
           <Alert variant="danger">
           Wrong network ID, please make sure You use &nbsp;
           {
-            NeworkID === 1 ?("Mainnet"):("Ropsten")
+            NeworkID === 1 ? ("Mainnet"): (<>{`Test net with id ${NeworkID}`}</>)
           }
           </Alert>
         ):
