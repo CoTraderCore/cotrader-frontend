@@ -254,20 +254,29 @@ export default function PersistentDrawerLeft(props) {
           <Collapse in={submenu} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
 
-            <ListItem button component="a" key="Hotbit" href="https://www.hotbit.io/" target="_blank" className={classes.nested}>
+            <ListItem>
+            <small>Recomended</small>
+            </ListItem>
+
+            <ListItem button component="a" key="1inch" href="https://1inch.exchange/#/ETH/COT" target="_blank" className={classes.nested}>
+              <ListItemIcon><ArrowRight /></ListItemIcon>
+              <ListItemText primary="1inch DEXs aggregator" />
+            </ListItem>
+
+            <ListItem>
+            <small>Centralized exchanges</small>
+            </ListItem>
+
+            <ListItem button component="a" key="Hotbit" href="https://www.hotbit.io/exchange?symbol=COT_ETH" target="_blank" className={classes.nested}>
               <ListItemIcon><ArrowRight /></ListItemIcon>
               <ListItemText primary="Hotbit" />
             </ListItem>
 
-            <ListItem button component="a" key="Bancor" href="https://www.bancor.network/" target="_blank" className={classes.nested}>
+            <ListItem button component="a" key="Hoo" href="https://hoo.com/spot/cot-eth" target="_blank" className={classes.nested}>
               <ListItemIcon><ArrowRight /></ListItemIcon>
-              <ListItemText primary="Bancor" />
+              <ListItemText primary="Hoo" />
             </ListItem>
-
-            <ListItem button component="a" key="Idex" href="https://idex.market/eth/idex" target="_blank" className={classes.nested}>
-              <ListItemIcon><ArrowRight /></ListItemIcon>
-              <ListItemText primary="Idex" />
-            </ListItem>
+            
             </List>
           </Collapse>
 
