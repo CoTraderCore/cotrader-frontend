@@ -22,6 +22,7 @@ export const OneInchApi = 'https://api.1inch.exchange/v1.1/'
 // export const SmartFundRegistryADDRESS = '0xd81736Eb54D4FbCDF8779E0b488dd1a5f12F2f17'
 
 export const SmartFundRegistryADDRESS = '0xEEce063BB21E231B2b9981Ca254B19b651aDb021'
+export const SmartFundRegistryOracleBasedADDRESS = '0x71A4e124dd95f917AAe3E27f9EA2D0516EE1826F'
 export const PoolPortalV6 = '0xd63495461cA711d59e480AC5c3827B7f7C334Fb3'
 export const PoolPortalV7 = '0x6F553184C04a4aD0b3551A4ff60FB73BB6E90408'
 // NOTE: don't change this portals address, if you need add new version, just create new const with new version
@@ -55,7 +56,8 @@ export const LinkFee = '100000000000000000'
 
 
 // // Rinkeby
-// export const SmartFundRegistryADDRESS = '0xB3B3dCEAEB266EF23338B6584315e3411641e23C'
+// export const SmartFundRegistryADDRESS = '0x4835E6CFc4754aD9694972B320b1fa2908724206'
+// export const SmartFundRegistryOracleBasedADDRESS = '0xB3B3dCEAEB266EF23338B6584315e3411641e23C'
 // export const EtherscanLink = 'https://rinkeby.etherscan.io/'
 // export const KyberAddress = '0xF77eC7Ed5f5B9a5aee4cfa6FFCaC6A4C315BaC76'
 // export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'
@@ -88,6 +90,7 @@ export const LinkFee = '100000000000000000'
 
 // // Ropsten
 // export const SmartFundRegistryADDRESS = '0x0E32171fDE2F8B4Ef4b5F3eaf4F18fAfFCE4F6b2'
+// export const SmartFundRegistryOracleBasedADDRESS = ''
 // export const EtherscanLink = 'https://ropsten.etherscan.io/'
 // export const KyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755'
 // export const APIEnpoint = !isLocal ? 'https://api2.cotrader.com/' : 'http://localhost:9000/'
