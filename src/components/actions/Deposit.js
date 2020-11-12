@@ -236,6 +236,16 @@ class Deposit extends Component {
               </div>
             ) : (null)
           }
+          {
+            this.props.version < 7
+            ?
+            (
+              <>
+              <br/>
+              <Alert variant="warning">{`We recommend depositing only to funds version 7 and higher, version of this fund is ${this.props.version}`}</Alert>
+              </>
+            ):null
+          }
           </Modal.Body>
         </Modal>
 
