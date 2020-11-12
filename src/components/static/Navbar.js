@@ -13,7 +13,6 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import SwapHoriz from '@material-ui/icons/SwapHoriz';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -28,15 +27,15 @@ import Telegram from '@material-ui/icons/Telegram';
 //import Fullscreen from '@material-ui/icons/CropFree';
 import Desktop from '@material-ui/icons/DesktopMac';
 import Laptop from '@material-ui/icons/LaptopMac';
+import Web from '@material-ui/icons/Web';
+import Code from '@material-ui/icons/Code';
 import Tablet from '@material-ui/icons/Tablet';
 import { Link } from 'react-router-dom';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
 import Container from '@material-ui/core/Container';
-
-/*Temporary*/
-import KyberExplainModal from './KyberExplainModal'
+import DEXExplanation from './DEXExplanation'
 
 const drawerWidth = 240;
 
@@ -114,10 +113,9 @@ export default function PersistentDrawerLeft(props) {
   const theme = useTheme()
   const [open, setOpen] = React.useState(false)
   const [submenu, setsubmenu] = React.useState(false)
-  const [submenuDex, setsubmenuDex] = React.useState(false)
 
   /*Temporary*/
-  const [showKyberModal, setKyberModal] = React.useState(false)
+  const [showDEXModal, setDEXModal] = React.useState(false)
 
   function handleDrawerOpen() {
     setOpen(true);
@@ -169,7 +167,7 @@ export default function PersistentDrawerLeft(props) {
       <CssBaseline />
 
       {/*Temporary*/}
-      <KyberExplainModal show={showKyberModal} setKyberModal={setKyberModal}/>
+      <DEXExplanation show={showDEXModal} setDEXModal={setDEXModal}/>
 
       <AppBar
         position="fixed"
@@ -273,30 +271,17 @@ export default function PersistentDrawerLeft(props) {
             </List>
           </Collapse>
 
-
-          <ListItem button onClick={() => setsubmenuDex(!submenuDex)}>
-            <ListItemIcon>
-              <SwapHoriz />
-            </ListItemIcon>
-            <ListItemText primary="DEX" />
-            {submenuDex ? <ExpandLess /> : <ExpandMore />}
+          <ListItem button component="a" key="DEXs" primary="DEXs" onClick={() => setDEXModal(true)} className={classes.nested}>
+            <ListItemIcon><Code/></ListItemIcon>
+            <ListItemText primary="DEXs" />
           </ListItem>
-          <Collapse in={submenuDex} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
 
-            <ListItem button component="a" key="Bancor" href="https://bancor.cotrader.com/" target="_blank" className={classes.nested}>
-              <ListItemIcon><ArrowRight /></ListItemIcon>
-              <ListItemText primary="Bancor Portal" />
-            </ListItem>
 
-            <ListItem className={classes.nested}>
-              <ListItemIcon><ArrowRight /></ListItemIcon>
-              <ListItemText primary="Kyber/Paraswap" onClick={() => setKyberModal(true)}/>
-            </ListItem>
+          <ListItem button component="a" key="Bancor-portal" href="https://bancor.cotrader.com/#/" target="_blank" className={classes.nested}>
+            <ListItemIcon><Web/></ListItemIcon>
+            <ListItemText primary="Bancor-portal" />
+          </ListItem>
 
-            </List>
-          </Collapse>
-          <Divider />
 
           <ListItem button component="a" key="Telegram" href="https://t.me/cotrader" target="_blank" className={classes.nested}>
             <ListItemIcon><Telegram /></ListItemIcon>
