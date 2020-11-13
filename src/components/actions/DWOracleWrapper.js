@@ -2,7 +2,8 @@
 // before Deposit or withdarw
 
 import React, { PureComponent } from 'react'
-import { Button } from "react-bootstrap"
+import Countdown from 'react-countdown'
+import { Button, Alert } from "react-bootstrap"
 import {
   SmartFundABIV8,
   LinkToken,
@@ -164,7 +165,7 @@ class DWOracleWrapper extends PureComponent {
         oracleConfirmation:false
         })
         clearTimeout(interval)
-      }, 20000)
+      }, 30000)
     }
   }
 
@@ -257,10 +258,13 @@ class DWOracleWrapper extends PureComponent {
             !this.state.isEnoughLinkBalance
             ?
             (
-              <>
+              <Alert variant="warning">
               Please buy - { fromWei(String(LinkFee)) }
+              &nbsp;
               <a href={EtherscanLink + "token/" + LinkToken} target="_blank" rel="noopener noreferrer">Link token</a>
-              </>
+              &nbsp;
+              for Oracle request commision
+              </Alert>
             )
             :
             (
@@ -338,8 +342,15 @@ class DWOracleWrapper extends PureComponent {
         ?
         (
           <>
-          <small>Transaction complete, wait for update shares, please don't close page</small>
-          <Pending/>
+          <small>
+           Transaction complete, the function for the Deposit will be opened in
+           &nbsp;
+           <strong><Countdown date={Date.now() + 30000} renderer={({seconds}) => seconds}/></strong>
+           &nbsp;
+           seconds
+          </small>
+          <br/>
+          <small>Please make sure that you are using a high gas price!</small>
           </>
         )
         : null
