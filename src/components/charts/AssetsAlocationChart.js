@@ -23,7 +23,7 @@ class AssetsAlocationChart extends React.Component{
   componentDidMount = () => {
     this._isMounted = true
     setTimeout(async () => {
-      await this.updateAssetsData()
+      this.updateAssetsData()
     }, 1000)
 
   }
@@ -34,7 +34,7 @@ class AssetsAlocationChart extends React.Component{
 
   componentDidUpdate = async (nextProps) => {
   if(nextProps.AssetsData !== this.props.AssetsData){
-    await this.updateAssetsData()
+      this.updateAssetsData()
     }
   }
 

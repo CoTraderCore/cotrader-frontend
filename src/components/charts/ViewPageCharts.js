@@ -55,7 +55,7 @@ class ViewPageCharts extends React.Component {
 
   componentDidMount = async () => {
     this._isMounted = true
-    await this.updateChartsData()
+    this.updateChartsData()
   }
 
   componentWillUnmount(){
@@ -64,7 +64,7 @@ class ViewPageCharts extends React.Component {
 
   componentDidUpdate = async (nextProps) => {
   if(nextProps.Data !== this.props.Data){
-    await this.updateChartsData()
+      this.updateChartsData()
     }
   }
 

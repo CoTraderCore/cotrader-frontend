@@ -35,7 +35,14 @@ class MainPageCharts extends React.Component {
 
   componentDidMount = async () => {
     this._isMounted = true
+    this.initData()
+  }
 
+  componentWillUnmount(){
+    this._isMounted = false
+  }
+
+  initData(){
     axios.get(BloxyChartsLink + this.props.address).then((data) => {
     data = data.data.map((v) => v)
     // remove wrong day
@@ -156,19 +163,16 @@ class MainPageCharts extends React.Component {
       ]
     }
 
-    if(this._isMounted)
-    this.setState({
-      DWdata: parsedDWdata,
-      ROIdata: parsedROIdata,
-      PROFITdata: parsedPROFITdata,
-      DAILYVALUEdata: parsedDAILYVALUEdata,
-      isDataLoad: true
-    })
-  })
-  }
-
-  componentWillUnmount(){
-    this._isMounted = false
+    if(this._isMounted){
+      this.setState({
+        DWdata: parsedDWdata,
+        ROIdata: parsedROIdata,
+        PROFITdata: parsedPROFITdata,
+        DAILYVALUEdata: parsedDAILYVALUEdata,
+        isDataLoad: true
+      })
+    }
+   })
   }
 
   render(){
