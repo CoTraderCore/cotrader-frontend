@@ -29,7 +29,8 @@ class DWOracleWrapper extends PureComponent {
       DWPending:false,
       AllowncePending:false,
       isDataLoaded:false,
-      isEmptySharesFund:false
+      isEmptySharesFund:false,
+      oracleConfirmation:false
     }
   }
 
@@ -69,7 +70,11 @@ class DWOracleWrapper extends PureComponent {
   componentWillUnmount(){
     if(this.state.intervalID !== 0){
       clearTimeout(this.state.intervalID)
-      this.setState({ DWPending:false, AllowncePending:false })
+      this.setState({
+        DWPending:false,
+        AllowncePending:false,
+        oracleConfirmation:false
+      })
     }
   }
 
@@ -144,12 +149,22 @@ class DWOracleWrapper extends PureComponent {
       this.setState({ intervalID })
     }else{
       // update states
+
       this.setState({
+        oracleConfirmation:true,
+        DWPending:false
+      })
+
+      // make 20 seconds delay for inject DATA from Oracle
+      const interval = setTimeout(() => {
+        this.setState({
         LatestOracleCaller,
         DWOpen,
         isEmptySharesFund,
-        DWPending:false
-      })
+        oracleConfirmation:false
+        })
+        clearTimeout(interval)
+      }, 20000)
     }
   }
 
@@ -162,8 +177,6 @@ class DWOracleWrapper extends PureComponent {
     const {
       isEnoughLinkAllowance
     } = await this.checkLinkPayment()
-
-    console.log(isEnoughLinkAllowance)
 
     if(!isEnoughLinkAllowance){
       // set new interval
@@ -297,11 +310,11 @@ class DWOracleWrapper extends PureComponent {
       <br/>
 
       {
-        this.state.DWPending
+        this.state.AllowncePending
         ?
         (
           <>
-          <small>Update shares, please wait and don't close page</small>
+          <small>Approving Link, please wait and don't close page</small>
           <Pending/>
           </>
         )
@@ -309,11 +322,23 @@ class DWOracleWrapper extends PureComponent {
       }
 
       {
-        this.state.AllowncePending
+        this.state.DWPending
         ?
         (
           <>
-          <small>Approving Link, please wait and don't close page</small>
+          <small>Send request to Oracle, please wait and don't close page</small>
+          <Pending/>
+          </>
+        )
+        : null
+      }
+
+      {
+        this.state.oracleConfirmation
+        ?
+        (
+          <>
+          <small>Transaction complete, wait for update shares, please don't close page</small>
           <Pending/>
           </>
         )
