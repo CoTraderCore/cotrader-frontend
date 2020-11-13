@@ -28,18 +28,19 @@ class CreateNewFund extends Component {
       FundName: '',
       TradeVerification: false,
       FundType:'Full',
-      PriceSource:"Oracle"
+      FundVersion:"V8(Oracle support)"
     }
   }
 
   createNewFund = async () =>{
-  console.log("this.state.PriceSource", this.state.PriceSource)
   if(this.state.Percent > 0 && this.state.Percent <= 30){
 
   // select registry address (v7 or v8)
-  const registryAddress = this.state.PriceSource === "Oracle"
+  const registryAddress = this.state.FundVersion === "V8(Oracle support)"
   ? SmartFundRegistryOracleBasedADDRESS
   : SmartFundRegistryADDRESS
+
+  console.log("this.state.FundVersion", this.state.FundVersion, "registryAddress", registryAddress)
 
   const contract = new this.props.web3.eth.Contract(SmartFundRegistryABIV7, registryAddress)
     if(this.state.FundName !== ''){
@@ -186,11 +187,11 @@ class CreateNewFund extends Component {
           </Form.Control>
           </Form.Group>
 
-          <Form.Group controlId="PriceSource">
-          <Form.Label>Price source <UserInfo  info="Fully onchain based funds get price source from DEXs, Oracle get price from CEXs + DEXs. Fully onchain funds completely decentralized, but can not provide best price, and this affects the manager's profit"/></Form.Label>
-          <Form.Control as="select" name="PriceSource" onChange={e => this.change(e)}>
-            <option>Oracle</option>
-            <option>Onchain</option>
+          <Form.Group controlId="FundVersion">
+          <Form.Label>Fund version <UserInfo  info="V7 gets prices using dex aggregators’ onchain methods only. V8 can get much better prices from these using oracles by default."/></Form.Label>
+          <Form.Control as="select" name="FundVersion" onChange={e => this.change(e)}>
+            <option>V8(Oracle support)</option>
+            <option>V7(Onchain only)</option>
           </Form.Control>
           </Form.Group>
 
