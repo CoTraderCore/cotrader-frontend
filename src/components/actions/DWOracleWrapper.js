@@ -343,7 +343,7 @@ class DWOracleWrapper extends PureComponent {
         (
           <>
           <small>
-           Transaction complete, the function for the Deposit will be opened in
+           Transaction complete, the final transaction will be opened in
            &nbsp;
            <strong><Countdown date={Date.now() + 30000} renderer={({seconds}) => seconds}/></strong>
            &nbsp;
