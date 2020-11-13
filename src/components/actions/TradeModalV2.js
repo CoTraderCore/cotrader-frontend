@@ -603,7 +603,7 @@ class TradeModalV2 extends Component {
               placeholder={this.state.Send}
               renderMenuItemChildren={(options, props) => (
                 <div>
-                  <img style={{height: "35px", width: "35px"}}src={`http://1inch.exchange/assets/tokens/${this.getTokenAddressBySymbol(options)}.png`} alt="Logo" />
+                  <img style={{height: "35px", width: "35px"}}src={`https://tokens.1inch.exchange/${this.getTokenAddressBySymbol(options)}.png`} alt="Logo" />
                   &nbsp; &nbsp;
                   {options}
                 </div>
@@ -647,7 +647,7 @@ class TradeModalV2 extends Component {
               placeholder={this.state.Recive}
               renderMenuItemChildren={(options, props) => (
                 <div>
-                  <img style={{height: "35px", width: "35px"}}src={`http://1inch.exchange/assets/tokens/${this.getTokenAddressBySymbol(options)}.png`} alt="Logo" />
+                  <img style={{height: "35px", width: "35px"}}src={`https://tokens.1inch.exchange/${this.getTokenAddressBySymbol(options)}.png`} alt="Logo" />
                   &nbsp; &nbsp;
                   {options}
                 </div>
