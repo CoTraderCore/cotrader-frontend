@@ -104,7 +104,15 @@ class CreateNewFund extends Component {
   }
 
   modalClose = () => {
-    this.setState({ Show: false, Percent: 20, FundAsset: 'ETH', FundName: '', FundType:'Full', TradeVerification: false })
+    this.setState({
+      Show: false,
+      Percent: 20,
+      FundAsset: 'ETH',
+      FundName: '',
+      FundType:'Full',
+      FundVersion:"V7(Onchain only)",
+      TradeVerification: false
+    })
   }
 
   render() {
