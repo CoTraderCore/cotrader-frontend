@@ -11,7 +11,7 @@ export const toWeiByDecimalsInput = (decimals, amount) => {
     const factor = 10 ** decimals
     amount = new BigNumber(amount)
     amount = amount.multipliedBy(factor)
-    return amount.toString(10)
+    return String(BigNumber(BigNumber(amount).toString(10)).integerValue())
 }
 
 export const fromWeiByDecimalsInput = (decimals, amount) => {
