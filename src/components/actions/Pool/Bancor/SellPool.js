@@ -4,7 +4,7 @@ import { Alert, Form, Button } from "react-bootstrap"
 import {
   ERC20ABI,
   PoolPortalABI,
-  PoolPortalV6
+  PoolPortalV7
 } from '../../../../config.js'
 
 import { fromWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
@@ -42,7 +42,7 @@ class SellPool extends Component {
       const poolAddress = this.props.fromAddress
 
       // get current reserve amount for pool
-      const poolPortal = new web3.eth.Contract(PoolPortalABI, PoolPortalV6)
+      const poolPortal = new web3.eth.Contract(PoolPortalABI, PoolPortalV7)
 
       // get connectors address
       const connectors = await poolPortal.methods.getBancorConnectorsByRelay(
