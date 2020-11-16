@@ -21,10 +21,7 @@ import {
   Modal,
   Form,
   Alert,
-  InputGroup,
-  Tooltip,
-  OverlayTrigger,
-  Badge
+  InputGroup
 } from "react-bootstrap"
 
 import SetGasPrice from '../settings/SetGasPrice'
@@ -638,27 +635,6 @@ class TradeModalV3 extends Component {
 
           {/* Display error */}
           {this.ErrorMsg()}
-
-          {/* Select DEX aggregator for version >= 6 */}
-          {
-            this.props.version >= 6
-            ?
-            (
-              <Form.Group>
-                <Form.Label><small>Select dex aggregator :</small></Form.Label>
-
-                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">
-                Transaction execution prices, and rates may be different in Paraswap and 1inch,
-                so we have included two aggregators, for more convenient trading.
-                </Tooltip>}>
-                <Badge variant="info">
-                <small>? info</small>
-                </Badge>
-                </OverlayTrigger>
-              </Form.Group>
-            )
-            :null
-          }
 
           {/* Trigger tarde */}
           <br />
