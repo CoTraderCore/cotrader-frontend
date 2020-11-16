@@ -490,8 +490,7 @@ class TradeModalV3 extends Component {
   getMinReturn(){
     const amountReceive = toWeiByDecimalsInput(this.state.decimalsTo, this.state.AmountRecive)
     const result = new BigNumber(String(amountReceive)).multipliedBy(95).dividedBy(100)
-
-    return new BigNumber(String(Math.floor(result))).toString()
+    return BigNumber(BigNumber(result).integerValue()).toString(10)
   }
 
   // update state only when user stop typing

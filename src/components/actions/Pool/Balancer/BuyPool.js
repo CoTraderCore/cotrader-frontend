@@ -93,7 +93,7 @@ class BuyPool extends PureComponent {
                    .dividedBy(totalPoolSupply)
                    .multipliedBy(tokenBalanceInsidePool)
                    .multipliedBy(buffer)
-    return result.toString(10)
+    return BigNumber(BigNumber(result).integerValue()).toString(10)
   }
 
   // get info by pool token address and amount
