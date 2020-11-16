@@ -28,7 +28,7 @@ class CreateNewFund extends Component {
       FundName: '',
       TradeVerification: false,
       FundType:'Full',
-      FundVersion:"V8(Oracle support)"
+      FundVersion:"V7(Onchain only)"
     }
   }
 
@@ -188,10 +188,10 @@ class CreateNewFund extends Component {
           </Form.Group>
 
           <Form.Group controlId="FundVersion">
-          <Form.Label>Fund version <UserInfo  info="V7 gets prices using dex aggregators’ onchain methods only. V8 can get much better prices from these using oracles by default."/></Form.Label>
+          <Form.Label>Fund version <UserInfo  info="V7: most robust, fully onchain, no oracles. V8: good for buying tokens whose liquidity is spread significantly across multiple swap DEXs. Uses chainlink with 1inch but requires eg 10 minute timeout when a user deposits or withdraws. Lower gas fees for trades. Can support much more than V7 ~20 tokens per fund."/></Form.Label>
           <Form.Control as="select" name="FundVersion" onChange={e => this.change(e)}>
-            <option>V8(Oracle support)</option>
             <option>V7(Onchain only)</option>
+            <option>V8(Oracle support)</option>
           </Form.Control>
           </Form.Group>
 
