@@ -25,7 +25,7 @@ class UniswapPool extends Component {
       symbols: [],
       tokens: [],
       tokenAddress: '',
-      poolVersion:'version 1',
+      poolVersion:'version 2',
       selectedSymbol:''
     }
   }
@@ -128,8 +128,8 @@ class UniswapPool extends Component {
                 name="selectPoolVersion"
                 onChange={(e) => this.setState({ poolVersion:e.target.value})}
               >
-                <option>version 1</option>
                 <option>version 2</option>
+                <option>version 1</option>
               </Form.Control>
               </Form.Group>
             ):null
