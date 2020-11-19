@@ -7,6 +7,7 @@ import React, { Component } from 'react'
 import {
   SmartFundABIV7,
   OneInchApi,
+  OneInchApiTWO,
   NeworkID,
   ERC20ABI,
   APIEnpoint,
@@ -325,10 +326,11 @@ class TradeModalV3 extends Component {
 
     // get calldata from api
     if(version > 4){
-      const route = `swap?fromTokenSymbol=${this.state.Send}&toTokenSymbol=${this.state.Recive}&amount=${amountInWei}&fromAddress=${this.state.exchangePortalAddress}&slippage=1&disableEstimate=true`
-      const response = await axios.get(OneInchApi + route)
+      const route = `swap?fromTokenAddress=${this.state.sendFrom}&toTokenAddress=${this.state.sendTo}&amount=${amountInWei}&fromAddress=${this.state.exchangePortalAddress}&slippage=1&disableEstimate=true`
+      console.log(OneInchApiTWO + route)
+      const response = await axios.get(OneInchApiTWO + route)
       // todo get data from api
-      additionalData = response.data.data
+      additionalData = response.data.tx.data
     }
     // get additional data for onchain trade
     else{
@@ -401,7 +403,7 @@ class TradeModalV3 extends Component {
 
       // get data from api
       if(this.state.exchangePortalVersion > 4){
-        returnAmount = await this.getRateFrom1inchApi(srcBN)
+        returnAmount = await this.getRateFrom1inchApi(from, to, srcBN)
       }
       // get data from blockchain
       else {
@@ -453,9 +455,9 @@ class TradeModalV3 extends Component {
   }
 
   // get rate from api
-  getRateFrom1inchApi = async (srcBN) => {
-    const route = `quote?fromTokenSymbol=${this.state.Send}&toTokenSymbol=${this.state.Recive}&amount=${srcBN}`
-    const response = await axios.get(OneInchApi + route)
+  getRateFrom1inchApi = async (from, to, srcBN) => {
+    const route = `quote?fromTokenAddress=${from}&toTokenAddress=${to}&amount=${srcBN}`
+    const response = await axios.get(OneInchApiTWO + route)
     return response.data.toTokenAmount
   }
 
