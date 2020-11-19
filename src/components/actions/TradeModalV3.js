@@ -449,7 +449,6 @@ class TradeModalV3 extends Component {
       10,
       0
     ).call()
-    console.log(returnAmount)
 
     return returnAmount
   }
@@ -512,6 +511,14 @@ class TradeModalV3 extends Component {
   getTokenAddressBySymbol = (symbol) => {
     const From = this.state.tokens.filter(item => item.symbol === symbol)
     return String(From[0].address).toLowerCase()
+  }
+
+  // provide to fund latest version of trade portal
+  updateTradePortal(){
+    const smartFund = new this.props.web3.eth.Contract(SmartFundABIV7, this.props.smartFundAddress)
+    smartFund.methods.setNewExchangePortal("0xD3B6933A448fF602711390f96E15c0B9cab5fF11")
+    .send({ from:this.props.accounts[0] })
+    this.closeModal()
   }
 
   // reset states after close modal
@@ -665,6 +672,25 @@ class TradeModalV3 extends Component {
               />
             )
             :null
+          }
+
+          {
+            this.props.version >= 7 && this.state.exchangePortalVersion < 5
+            ?
+            (
+              <Alert variant="warning">
+              <small>Your trade portal version is outdated, we recommend updating to trade with the best options</small>
+              &nbsp;
+              <Button
+              variant="outline-dark"
+              size="sm"
+              onClick={() => this.updateTradePortal()}
+              >
+              Update
+              </Button>
+              </Alert>
+            )
+            : null
           }
           </Modal.Body>
         </Modal>
