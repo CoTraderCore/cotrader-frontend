@@ -382,7 +382,7 @@ class BuyPool extends Component {
             (
               <Alert variant="danger">
               <small>
-              You don't have enough balance,
+              insufficient,
               your balance is
 
               <hr/>

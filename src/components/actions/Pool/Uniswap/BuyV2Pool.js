@@ -139,7 +139,7 @@ class BuyV2Pool extends PureComponent {
           this.props.modalClose()
         }
         else{
-          this.setState({ ErrorText: "You do not have enough assets in the fund for this operation" })
+          this.setState({ ErrorText: "insufficient balance" })
         }
       }
       catch(e){
