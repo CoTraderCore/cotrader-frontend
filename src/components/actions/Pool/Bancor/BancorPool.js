@@ -11,10 +11,10 @@ import SellV2Pool from './SellV2Pool'
 
 // Select v1 or v2 dependse of smart fund and converter versions
 // Note smart funds version < 7 not support Bancor v2
-const getComponentList = (converterVersion) => {
+const getComponentList = (converterType) => {
   return {
-    Buy: converterVersion ? converterVersion >= 28 ? BuyV2Pool : BuyPool : BuyPool,
-    Sell: converterVersion? converterVersion >= 28 ? SellV2Pool : SellPool : SellPool,
+    Buy: converterType ? converterType === 2 ? BuyV2Pool : BuyPool : BuyPool,
+    Sell: converterType ? converterType === 2 ? SellV2Pool : SellPool : SellPool,
   }
 }
 
@@ -89,10 +89,20 @@ class BancorPool extends Component {
   }
 
 
+
+  findTokenAddressBySmartTokenSymbol = (symbol) => {
+    const tokenObj = this.state.tokensObject.find((item) => item.smartTokenSymbol && item.smartTokenSymbol === symbol)
+    if(tokenObj){
+      return String(tokenObj.tokenAddress).toLowerCase()
+    }else{
+      return null
+    }
+  }
+
   render() {
     // Change component (Buy/Sell/Swap) dynamicly
     let CurrentAction
-    const componentList = getComponentList(this.state.converterVersion)
+    const componentList = getComponentList(this.state.converterType)
 
     if(this.state.action in componentList){
       CurrentAction = componentList[this.state.action]
@@ -128,6 +138,18 @@ class BancorPool extends Component {
                options={this.state.smartTokenSymbols}
                onChange={(s) => { if(s[0]) this.updateDataBySymbolSelect(s[0]) } }
                placeholder="Choose a symbol"
+               renderMenuItemChildren={(options, props) => (
+                 <div>
+                   <img
+                   style={{height: "35px", width: "35px"}}
+                   src={`https://tokens.1inch.exchange/${this.findTokenAddressBySmartTokenSymbol(options)}.png`}
+                   alt="Logo"
+                   onError={(e)=>{e.target.onerror = null; e.target.src="https://etherscan.io/images/main/empty-token.png"}}
+                   />
+                   &nbsp; &nbsp;
+                   {options}
+                 </div>
+               )}
              />
              <br/>
              <CurrentAction

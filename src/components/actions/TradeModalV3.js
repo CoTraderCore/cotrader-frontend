@@ -287,8 +287,6 @@ class TradeModalV3 extends Component {
         this.state.exchangePortalVersion
       )
 
-      console.log("additionalData", additionalData)
-
       // get exchnage type 1inch proto or 1inch eth
       const exchangeType = this.state.exchangePortalVersion > 4 ? 3 : 2
 
@@ -327,7 +325,7 @@ class TradeModalV3 extends Component {
     // get calldata from api
     if(version > 4){
       const route = `swap?fromTokenAddress=${this.state.sendFrom}&toTokenAddress=${this.state.sendTo}&amount=${amountInWei}&fromAddress=${this.state.exchangePortalAddress}&slippage=1&disableEstimate=true`
-      console.log(OneInchApiTWO + route)
+
       const response = await axios.get(OneInchApiTWO + route)
       // todo get data from api
       additionalData = response.data.tx.data
@@ -435,13 +433,7 @@ class TradeModalV3 extends Component {
 
   // get rate from contracts
   getRateFrom1inchOnchain = async (from, to, srcBN) => {
-    console.log("Get rate onchain")
     const oneInchContract = new this.props.web3.eth.Contract(OneInchABI, OneInchProto)
-    console.log(from,
-    to,
-    String(srcBN.toFixed()),
-    10,
-    0)
     const { returnAmount } = await oneInchContract.methods.getExpectedReturn(
       from,
       to,

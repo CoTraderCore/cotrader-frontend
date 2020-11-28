@@ -4,7 +4,8 @@ import { Alert, Form, Button } from "react-bootstrap"
 import {
   ERC20ABI,
   PoolPortalABI,
-  PoolPortalV7
+  PoolPortalV7,
+  BancorConverterABI
 } from '../../../../config.js'
 
 import { fromWeiByDecimalsInput } from '../../../../utils/weiByDecimals'
@@ -97,6 +98,21 @@ class SellPool extends Component {
     }
   }
 
+  getConnectors = async (converterAddress) => {
+    if(converterAddress){
+      const converter = new this.props.web3.eth.Contract(BancorConverterABI, converterAddress)
+      const connectorsCount = await converter.methods.connectorTokenCount().call()
+      const connectors = []
+
+      for(let i = 0; i < connectorsCount; i++){
+        const address = await converter.methods.connectorTokens(i).call()
+        connectors.push(address)
+      }
+
+      return connectors
+    }
+  }
+
   resetInfo(){
     this.setState({
       connectorsDATA:[],
@@ -140,6 +156,9 @@ class SellPool extends Component {
 
     // V7 and newest
     if(this.props.version >= 7){
+      const connectorsAddress = await this.getConnectors(this.props.converterAddress)
+      const reserveMinReturnAmounts = Array(connectorsAddress.length).fill(1)
+
       // V7 params
       params = [
         ...commonParams,
@@ -147,7 +166,10 @@ class SellPool extends Component {
           numStringToBytes32(String(this.props.converterVersion)),
           numStringToBytes32(String(this.props.converterType))
         ],
-        "0x"
+        this.props.web3.eth.abi.encodeParameters(
+          ['address[]', 'uint256[]'],
+          [connectorsAddress, reserveMinReturnAmounts]
+        )
       ]
     }
     else if(this.props.version !== 5 && this.props.version !== 6){

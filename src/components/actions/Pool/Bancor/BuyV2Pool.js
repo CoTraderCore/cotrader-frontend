@@ -1,12 +1,10 @@
-// Buy pool by connectors amount
-// This componnent support both new Bancor converter type 1 and 2
+// Buy pool by connectors amount for converter type 2
 
 import React, { PureComponent } from 'react'
 import { Form, Button, Alert } from "react-bootstrap"
 
 import {
   SmartFundABIV7,
-  BancorConverterABI,
   ERC20ABI,
   BancorConverterTypeTWOABI
 } from '../../../../config.js'
@@ -62,9 +60,7 @@ class BuyV2Pool extends PureComponent {
         // get block number
         const block = await this.props.web3.eth.getBlockNumber()
         // get poolToken
-        const poolToken = this.props.converterType === 2
-        ? await this.extractType2PoolToken(connectorsAddress[0], this.props.converterAddress)
-        : this.props.fromAddress
+        const poolToken = await this.extractType2PoolToken(connectorsAddress[0], this.props.converterAddress)
 
         console.log("poolToken", poolToken)
 
@@ -123,29 +119,9 @@ class BuyV2Pool extends PureComponent {
       this.setState({ showSpinner:true })
       const connectors = []
 
-      // multiple connectots case
-      if(this.props.converterType === 1){
-        if(this.props.converterAddress){
-          const converter = new this.props.web3.eth.Contract(BancorConverterABI, this.props.converterAddress)
-          const connectorsCount = await converter.methods.connectorTokenCount().call()
-
-          for(let i = 0; i < connectorsCount; i++){
-            const address = await converter.methods.connectorTokens(i).call()
-            const { symbol, decimals } = await getTokenSymbolAndDecimals(address, this.props.web3)
-            connectors.push({ symbol, address, amount:0, decimals })
-          }
-        }
-      }
-      // single conenctor case
-      else{
-        if(this.props.poolSourceTokenAddress){
-          console.log("this.props.poolSourceTokenAddress", this.props.poolSourceTokenAddress)
-          const address = this.props.poolSourceTokenAddress
-          const { symbol, decimals } = await getTokenSymbolAndDecimals(address, this.props.web3)
-          connectors.push({ symbol, address, amount:0, decimals })
-        }
-      }
-
+      const address = this.props.poolSourceTokenAddress
+      const { symbol, decimals } = await getTokenSymbolAndDecimals(address, this.props.web3)
+      connectors.push({ symbol, address, amount:0, decimals })
 
       this.setState({ connectors, showSpinner:false })
 
@@ -209,17 +185,7 @@ class BuyV2Pool extends PureComponent {
             ?
             (
               <Form>
-              {
-                this.props.converterType === 1
-                ?
-                (
-                  <Form.Label><small>Note: for new Bancor type 1 we calculate pool amount by multiple pool conenctors</small></Form.Label>
-                )
-                :
-                (
-                  <Form.Label><small>Note: for new Bancor type 2 we calculate pool amount by single pool conenctor</small></Form.Label>
-                )
-              }
+              <Form.Label><small>Note: for new Bancor type 2 we calculate pool amount by single pool conenctor</small></Form.Label>
               {
                 this.state.connectors.map((item, index) => {
                   return(
@@ -242,7 +208,7 @@ class BuyV2Pool extends PureComponent {
                 )
                 :null
               }
-              <Button variant="outline-primary" onClick={() => this.addLiquidity()}>Buy</Button>
+              <Button variant="outline-primary" onClick={() => this.addLiquidity()}>Buy v2</Button>
               </Form>
             )
             :null

@@ -1,3 +1,5 @@
+// for bancor type 2
+
 import React, { PureComponent } from 'react'
 import { Form, Button, Alert } from "react-bootstrap"
 import setPending from '../../../../utils/setPending'
@@ -50,17 +52,11 @@ class SellV2Pool extends PureComponent {
 
           // encode additional data in bytes
           // dependse of converterType
-          const additionalData = this.props.converterType === 1
-          ?
-          this.props.web3.eth.abi.encodeParameters(
-            ['address[]', 'uint256[]'],
-            [connectorsAddress, reserveMinReturnAmounts]
-          )
-          :
-          this.props.web3.eth.abi.encodeParameters(
+          const additionalData = this.props.web3.eth.abi.encodeParameters(
             ['address[]', 'uint256'],
             [connectorsAddress, 1]
           )
+
 
           // sell pool
           smartFund.methods.sellPool(
@@ -143,10 +139,7 @@ class SellV2Pool extends PureComponent {
 
   // helper for get pool token from pool container for Bancor type 2
   getPoolToken = async () => {
-    const poolToken = this.props.converterType === 2
-    ? await this.getPoolTokenFromContainer(this.props.fromAddress)
-    : this.props.fromAddress
-
+    const poolToken = await this.getPoolTokenFromContainer(this.props.fromAddress)
     return poolToken
   }
 

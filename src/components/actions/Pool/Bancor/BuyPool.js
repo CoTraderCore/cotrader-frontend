@@ -227,7 +227,10 @@ class BuyPool extends Component {
           numStringToBytes32(String(this.props.converterVersion)),
           numStringToBytes32(String(this.props.converterType))
         ],
-        "0x"
+        this.props.web3.eth.abi.encodeParameters(
+          ['uint256'],
+          [1]
+        )
       ]
     }
     else if(this.props.version !== 5 && this.props.version !== 6){
