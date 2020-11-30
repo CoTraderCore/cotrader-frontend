@@ -25,7 +25,7 @@ class FundModal extends Component {
     return (
       <div>
         <Button style={{minWidth: "200px", maxWidth: "200px"}} variant="outline-primary" onClick={() => this.setState({ Show: true })}>
-          Fund: <Identicon size='10' string={this.state.smartFundAddress} />&ensp;
+          Fund: <Identicon size='10' string={this.props.address} />&ensp;
           <small><strong>{ String(this.props.address).replace(String(this.props.address).substring(4,38), "...") }</strong></small>
         </Button>
 
