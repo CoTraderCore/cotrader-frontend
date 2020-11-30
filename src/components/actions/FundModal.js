@@ -3,7 +3,7 @@ import { Button, Modal } from "react-bootstrap"
 import { EtherscanLink }  from '../../config.js'
 import { NavLink } from 'react-router-dom'
 import { inject, observer } from 'mobx-react'
-
+import Identicon from 'react-identicons'
 
 class FundModal extends Component {
   constructor(props, context) {
@@ -25,7 +25,8 @@ class FundModal extends Component {
     return (
       <div>
         <Button style={{minWidth: "200px", maxWidth: "200px"}} variant="outline-primary" onClick={() => this.setState({ Show: true })}>
-          Fund: { this.props.address.slice(0, -29) }
+          Fund: <Identicon size='10' string={this.state.smartFundAddress} />&ensp;
+          <small><strong>{ String(this.props.address).replace(String(this.props.address).substring(4,38), "...") }</strong></small>
         </Button>
 
         <Modal

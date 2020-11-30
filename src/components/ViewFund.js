@@ -523,7 +523,6 @@ class ViewFund extends Component {
          Owner: <Identicon size='10' string={this.state.owner} />&nbsp;
          <a href={EtherscanLink + "address/" + this.state.owner} target="_blank" rel="noopener noreferrer">{String(this.state.owner).replace(String(this.state.owner).substring(6,36), "...")}</a>
          </Col>
-
         </Row>
         </Card.Footer>
         </Card>
