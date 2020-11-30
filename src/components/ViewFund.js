@@ -315,7 +315,11 @@ class ViewFund extends Component {
           &nbsp;
           :
           &nbsp;
-          {fromWeiByDecimalsInput(item["decimals"], item["balance"].toString())}
+          {Number(fromWeiByDecimalsInput(item["decimals"], item["balance"].toString())).toFixed(4)}
+          &nbsp;
+          <small style={{'color':"#808080"}}>{ item["percentInETH"] > 0 ? Number(item["percentInETH"]).toFixed(4) : 0 } % from fund value </small>
+          &nbsp;
+          <small style={{'color':"#808080"}}>{ item["assetValueInETHFromWei"] > 0 ? Number(item["assetValueInETHFromWei"]).toFixed(6) : 0 } value in ETH </small>
           &nbsp;
           {
             item["tokensAdditionalData"].length > 0

@@ -40,20 +40,11 @@ class AssetsAlocationChart extends React.Component{
 
     if(AssetsData){
     let labels = AssetsData.map(item => {
-      return item["balance"] > 0 && item["symbol"]
+      return item.symbol
     })
 
-    let balance = await Promise.all(AssetsData.map(async (item) => {
-      return item["assetValueInETHFromWei"]
-    }))
-
-
-    labels = labels.filter(function (el) {
-    return el;
-    })
-
-    balance = balance.filter(function (el) {
-    return el;
+    let balance = AssetsData.map((item) => {
+      return item.assetValueInETHFromWei
     })
 
     if(this._isMounted)
