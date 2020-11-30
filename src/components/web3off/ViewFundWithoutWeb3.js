@@ -4,7 +4,7 @@ import getFundData from '../../utils/getFundData'
 import { Card, Row, Col, ListGroup, Badge, Alert } from "react-bootstrap"
 import { fromWei } from 'web3-utils'
 import { fromWeiByDecimalsInput } from '../../utils/weiByDecimals'
-// import _ from 'lodash'
+import _ from 'lodash'
 
 
 // Components
@@ -15,7 +15,7 @@ import ViewPageCharts from '../charts/ViewPageCharts'
 import InvestorsAlocationChart from '../charts/InvestorsAlocationChart'
 import UserInfo from '../templates/UserInfo'
 import Identicon from 'react-identicons'
-// import AssetsAlocationChart from '../charts/AssetsAlocationChart'
+import AssetsAlocationChart from '../charts/AssetsAlocationChart'
 
 import Loading from '../templates/Spiners/Loading'
 
@@ -134,6 +134,15 @@ class ViewFundWithoutWeb3 extends Component {
         <div className="fund-page-charts">
           <div>
             <InvestorsAlocationChart Data={this.state.shares}/>
+            <br/>
+            {
+              NeworkID === 1 && !_.isEmpty(this.state.balance)
+              ?
+              (
+                <AssetsAlocationChart AssetsData={this.state.balance} version={this.state.version}/>
+              )
+              :null
+            }
           </div>
         </div>
 
