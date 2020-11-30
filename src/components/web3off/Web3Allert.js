@@ -3,7 +3,7 @@ import { Alert } from "react-bootstrap"
 
 const Web3Allert = () => (
   <Alert variant="primary">
-  Please connect to web3 <a href="https://metamask.io/" target="_blank" rel="noopener noreferrer">MetaMask</a> for laptop or <a href="https://trustwallet.com/" target="_blank" rel="noopener noreferrer">TrustWallet</a> for mobile
+  Please connect <a href="https://metamask.io/" target="_blank" rel="noopener noreferrer">MetaMask</a> for laptop or Android, or <a href="https://wallet.coinbase.com/" target="_blank" rel="noopener noreferrer">Coinbase Wallet</a> for iPhone
   </Alert>
 )
 
