@@ -35,7 +35,7 @@ class WalletInfo extends Component {
           }
           &nbsp;
           &nbsp;
-          <Identicon size='10' string={this.props.accounts[0]} /> <small> <strong>{this.props.accounts[0]} </strong></small>
+          <Identicon size='10' string={this.props.accounts[0]} /> <small> <strong>{String(this.props.accounts[0]).replace(String(this.props.accounts[0]).substring(6,36), "...")} </strong></small>
           </div>
         )
         : null

@@ -14,6 +14,7 @@ import ChartsButton from '../actions/ChartsButton'
 import ViewPageCharts from '../charts/ViewPageCharts'
 import InvestorsAlocationChart from '../charts/InvestorsAlocationChart'
 import UserInfo from '../templates/UserInfo'
+import Identicon from 'react-identicons'
 // import AssetsAlocationChart from '../charts/AssetsAlocationChart'
 
 import Loading from '../templates/Spiners/Loading'
@@ -206,8 +207,13 @@ class ViewFundWithoutWeb3 extends Component {
         </Card.Body>
         <Card.Footer className="text-muted cardsAdditional">
         <Row>
-         <Col>Smart fund: <a href={EtherscanLink + "address/" + this.state.smartFundAddress} target="_blank" rel="noopener noreferrer">{this.state.smartFundAddress}</a></Col>
-         <Col>Owner: <a href={EtherscanLink + "address/" + this.state.owner}target="_blank" rel="noopener noreferrer"> {this.state.owner}</a></Col>
+         <Col>Smart fund: <Identicon size='10' string={this.state.smartFundAddress} />&nbsp;
+         <a href={EtherscanLink + "address/" + this.state.smartFundAddress} target="_blank" rel="noopener noreferrer"> {String(this.state.smartFundAddress).replace(String(this.state.smartFundAddress).substring(6,36), "...")}</a>
+         </Col>
+         <Col>
+         Owner: <Identicon size='10' string={this.state.owner} />&nbsp;
+         <a href={EtherscanLink + "address/" + this.state.owner} target="_blank" rel="noopener noreferrer">{String(this.state.owner).replace(String(this.state.owner).substring(6,36), "...")}</a>
+         </Col>
         </Row>
         </Card.Footer>
         </Card>
