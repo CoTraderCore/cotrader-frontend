@@ -1,10 +1,7 @@
 import React from 'react'
 import { Pie } from 'react-chartjs-2'
-import { fromWei, toWei } from 'web3-utils'
 import { Badge } from "react-bootstrap"
-import { IExchangePortalABI, ExchangePortalAddressV7 } from '../../config.js'
 import { inject } from 'mobx-react'
-import defaultWeb3 from '../../utils/defaultWeb3'
 
 class AssetsAlocationChart extends React.Component{
   constructor(props, context) {
@@ -47,7 +44,7 @@ class AssetsAlocationChart extends React.Component{
     })
 
     let balance = await Promise.all(AssetsData.map(async (item) => {
-      return item["balance"] > 0 && await this.RateToETH(item["address"], fromWei(String(item["balance"])))
+      return item["assetValueInETHFromWei"]
     }))
 
 
@@ -116,19 +113,6 @@ class AssetsAlocationChart extends React.Component{
 	    }]
       }
      })
-    }
-  }
-
-  RateToETH = async (from, amount) => {
-    const web3 = this.props.MobXStorage.web3 ? this.props.MobXStorage.web3 : defaultWeb3
-    if(from === this.state.eth_token){
-      return amount
-    }
-    else{
-      const contract = new web3.eth.Contract(IExchangePortalABI, ExchangePortalAddressV7)
-      const src = toWei(String(amount), 'ether')
-      const value = await contract.methods.getValue(from, this.state.eth_token, src).call()
-      return value > 0 ? fromWei(String(value)) : 0
     }
   }
 
