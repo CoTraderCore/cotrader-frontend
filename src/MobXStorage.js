@@ -97,7 +97,7 @@ class MOBXStorage {
   // internal helper
   calculateValueAndProfit(SmartFunds){
     if(SmartFunds.length > 0){
-      const reducer = (accumulator, currentValue) => Number(accumulator) + Number(currentValue)
+      const reducer = (accumulator, currentValue) => BigNumber(accumulator).plus(currentValue)
       // get value
       const value = SmartFunds.map(fund => Number(fromWei(fund.valueInUSD)))
       const totalValue = Number(value.reduce(reducer)).toFixed(2)
@@ -121,7 +121,7 @@ class MOBXStorage {
       const historyProfit = SmartFunds.map((fund) => {
         if(fund.historyProfitInUSD > 0){
           try{
-            return fromWei(toBN(new BigNumber(fund.historyProfitInUSD)))
+            return fromWei(String(fund.historyProfitInUSD))
           }catch(e){
             console.log("Error, can't convert fund.historyProfitInUSD error ", e)
             return 0
