@@ -265,7 +265,9 @@ class SmartFundsList extends Component{
              return 0
            }
            })()
-         }
+         },
+
+         trade verification: { Number(item.tradeVerification) === 1 ? "enabled" : "disabled" }
          </small>
          </Card.Header>
          <Card.Body className="cardsAdditional">

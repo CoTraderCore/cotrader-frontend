@@ -33,7 +33,11 @@ class ViewFundWithoutWeb3 extends Component {
    managerRemainingCut: '0',
    shares: [],
    isDataLoad: false,
-   mainAsset:''
+   mainAsset:'',
+   tradeVerification:0,
+   fundSizeType:'light',
+   version:0,
+   managerFee:0
   }
 
  _isMounted = false;
@@ -56,7 +60,11 @@ class ViewFundWithoutWeb3 extends Component {
         managerRemainingCut: fund.data.result.managerRemainingCut,
         shares: fund.data.result.shares,
         mainAsset: fund.data.result.mainAsset,
-        isDataLoad:true
+        isDataLoad:true,
+        tradeVerification: fund.data.result.tradeVerification,
+        fundSizeType: fund.data.result.fundType,
+        managerFee:fund.data.result.managerFee,
+        version: fund.data.result.version
      });
    }
   }
@@ -90,7 +98,16 @@ class ViewFundWithoutWeb3 extends Component {
       <div>
       <Web3Allert/>
       <Card className="text-center">
-        <Card.Header className="cardsAdditional"> <Badge variant="ligth">{this.state.name}</Badge></Card.Header>
+        <Card.Header className="cardsAdditional"> <Badge variant="ligth">{this.state.name}</Badge>
+        <br/>
+        <small>
+        type: {this.state.fundSizeType},
+        core asset : {this.state.mainAsset} ,
+        version: {String(this.state.version)},
+        manager fee: {Number(this.state.managerFee/100).toFixed(2)} %,
+        trade verification: { Number(this.state.tradeVerification) === 1 ? "enabled" : "disabled" }
+        </small>
+        </Card.Header>
         <Card.Body>
         <Alert variant="dark">
         <small>
@@ -148,7 +165,7 @@ class ViewFundWithoutWeb3 extends Component {
 
 
         <Badge variant="ligth">Fund balance</Badge>
-        <br />
+        <br/>
         <div style={{ textAlign: 'center'}}>
         <ListGroup style={{ display: 'inline-block', margin: '10px 0'}}>
         {

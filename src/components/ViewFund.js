@@ -59,7 +59,9 @@ class ViewFund extends Component {
      version:0,
      txCount:0,
      mainAsset:'',
-     fundSizeType:'full'
+     fundSizeType:'full',
+     managerFee:0,
+     tradeVerification:1
     }
 }
 
@@ -132,7 +134,9 @@ class ViewFund extends Component {
       isDataLoad:true,
       version:Number(fund.data.result.version),
       mainAsset: fund.data.result.mainAsset,
-      fundSizeType: fund.data.result.fundType
+      fundSizeType: fund.data.result.fundType,
+      managerFee:fund.data.result.managerFee,
+      tradeVerification:fund.data.result.tradeVerification
      });
     }
  }
@@ -217,6 +221,14 @@ class ViewFund extends Component {
         <Card className="text-center">
         <Card.Header className="cardsAdditional">
         <Badge variant="ligth">Fund name: {this.state.name}</Badge>
+        <br/>
+        <small>
+        type: {this.state.fundSizeType},
+        core asset : {this.state.mainAsset} ,
+        version: {String(this.state.version)},
+        manager fee: {Number(this.state.managerFee/100).toFixed(2)} %,
+        trade verification: { Number(this.state.tradeVerification) === 1 ? "enabled" : "disabled" }
+        </small>
         </Card.Header>
         <Card.Body>
         <Alert variant="dark">
