@@ -1,6 +1,7 @@
 import React from 'react'
 import { Pie } from 'react-chartjs-2'
 import { Badge } from "react-bootstrap"
+import { fromWei } from 'web3-utils'
 
 class InvestorsAlocationChart extends React.Component{
   constructor(props, context) {
@@ -37,19 +38,11 @@ class InvestorsAlocationChart extends React.Component{
 
     if(Data){
     let labels = Data.map(item => {
-     return item["shares"] > 0 && item["user"].slice(0, -31) + '...'
+     return String(item["user"]).replace(String(item["user"]).substring(6,36), "...")
     })
 
     let balance = Data.map(item => {
-      return item["shares"] > 0 && item["shares"]
-    })
-
-    labels = labels.filter(function (el) {
-    return el;
-    })
-
-    balance = balance.filter(function (el) {
-    return el;
+      return Number(fromWei(String(item["shares"]))).toFixed(4)
     })
 
     this.setState({
