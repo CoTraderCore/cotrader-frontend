@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { NeworkID, EtherscanLink }  from '../../config.js'
 import getFundData from '../../utils/getFundData'
-import { Card, Row, Col, ListGroup, Badge, Alert } from "react-bootstrap"
+import { Card, Row, Col, ListGroup, Badge, Alert, Table } from "react-bootstrap"
 import { fromWei } from 'web3-utils'
 import { fromWeiByDecimalsInput } from '../../utils/weiByDecimals'
 import _ from 'lodash'
@@ -168,44 +168,67 @@ class ViewFundWithoutWeb3 extends Component {
         <br/>
         <div style={{ textAlign: 'center'}}>
         <ListGroup style={{ display: 'inline-block', margin: '10px 0'}}>
+        <Table striped bordered hover>
+        <thead>
+         <tr>
+           <th>Token</th>
+           <th>Balance</th>
+           <th>% from fund</th>
+           <th>Value in ETH</th>
+         </tr>
+       </thead>
         {
           this.state.balance.length > 0 ?
           (
-            this.state.balance.map((item, key) =>
-            <ListGroup.Item key={key}>
-            {<img
-              style={{height: "20px", width: "20px"}}
-              src={`https://tokens.1inch.exchange/${String(item["address"]).toLowerCase()}.png`}
-              alt="Logo"
-              onError={(e)=>{e.target.onerror = null; e.target.src="https://etherscan.io/images/main/empty-token.png"}}/>}
-            &nbsp;
-            {<a href={EtherscanLink + "token/" + item["address"]} target="_blank" rel="noopener noreferrer">{item["symbol"]}</a>}
-            &nbsp;
-            :
-            &nbsp;
-            {Number(fromWeiByDecimalsInput(item["decimals"], item["balance"].toString())).toFixed(4)}
-            &nbsp;
-            <small style={{'color':"#808080"}}>{ item["percentInETH"] > 0 ? Number(item["percentInETH"]).toFixed(4) : 0 } % from fund value </small>
-            &nbsp;
-            <small style={{'color':"#808080"}}>{ item["assetValueInETHFromWei"] > 0 ? Number(item["assetValueInETHFromWei"]).toFixed(6) : 0 } value in ETH </small>
-            &nbsp;
+            <tbody>
             {
-              item["tokensAdditionalData"].length > 0
-              ?
-              (
-                <>
-                {this.parsePoolConnectors(item["tokensAdditionalData"])}
-                </>
-              ):null
-            }
-            </ListGroup.Item>
-          )
-          ):
-          (
-            <ListGroup.Item>No assets in this fund</ListGroup.Item>
-          )
+              this.state.balance.map((item, key) =>
+                <tr key={key}>
+                <th>
+                 {
+                   <img
+                   style={{height: "20px", width: "20px"}}
+                   src={`https://tokens.1inch.exchange/${String(item["address"]).toLowerCase()}.png`}
+                   alt="Logo"
+                   onError={(e)=>{e.target.onerror = null; e.target.src="https://etherscan.io/images/main/empty-token.png"}}/>
+                 }
+                 &nbsp;
+                 {<a href={EtherscanLink + "token/" + item["address"]} target="_blank" rel="noopener noreferrer">{item["symbol"]}</a>}
+                 &nbsp;
+                 {
+                   item["tokensAdditionalData"].length > 0
+                   ?
+                   (
+                     <>
+                     {this.parsePoolConnectors(item["tokensAdditionalData"])}
+                     </>
+                   ):null
+                 }
+                 </th>
 
+                 <th>
+                 {Number(fromWeiByDecimalsInput(item["decimals"], item["balance"].toString())).toFixed(4)}
+                 </th>
+
+                 <th>
+                 <small style={{'color':"#808080"}}>{ item["percentInETH"] > 0 ? Number(item["percentInETH"]).toFixed(4) : 0 }</small>
+                 </th>
+
+                 <th>
+                 <small style={{'color':"#808080"}}>{ item["assetValueInETHFromWei"] > 0 ? Number(item["assetValueInETHFromWei"]).toFixed(6) : 0 }</small>
+                 </th>
+                </tr>
+              )
+            }
+            </tbody>
+          )
+          :
+          (
+            <p>No assets in this fund</p>
+          )
         }
+
+        </Table>
        </ListGroup>
        </div>
        <br />
