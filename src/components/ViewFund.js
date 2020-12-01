@@ -281,7 +281,6 @@ class ViewFund extends Component {
         <div className="fund-page-charts">
           <div>
             <InvestorsAlocationChart Data={this.state.shares}/>
-            <br/>
             {
               NeworkID === 1 && !_.isEmpty(this.state.balance)
               ?
