@@ -302,9 +302,9 @@ class ViewFund extends Component {
         <thead>
          <tr>
            <th>Token</th>
-           <th>Balance</th>
            <th>% from fund</th>
            <th>Value in ETH</th>
+           <th>Balance</th>
          </tr>
        </thead>
         {
@@ -312,7 +312,9 @@ class ViewFund extends Component {
           (
             <tbody>
             {
-              this.state.balance.map((item, key) =>
+              this.state.balance.slice().sort(function(a,b) {
+                 return Number(b.percentInETH) - Number(a.percentInETH)
+                }).map((item, key) =>
                 <tr key={key}>
                 <th>
                  {
@@ -337,15 +339,15 @@ class ViewFund extends Component {
                  </th>
 
                  <th>
+                 { item["percentInETH"] > 0 ? Number(item["percentInETH"]).toFixed(4) : 0 } %
+                 </th>
+
+                 <th>
+                 { item["assetValueInETHFromWei"] > 0 ? Number(item["assetValueInETHFromWei"]).toFixed(6) : 0 }
+                 </th>
+
+                 <th>
                  {Number(fromWeiByDecimalsInput(item["decimals"], item["balance"].toString())).toFixed(4)}
-                 </th>
-
-                 <th>
-                 <small style={{'color':"#808080"}}>{ item["percentInETH"] > 0 ? Number(item["percentInETH"]).toFixed(4) : 0 }</small>
-                 </th>
-
-                 <th>
-                 <small style={{'color':"#808080"}}>{ item["assetValueInETHFromWei"] > 0 ? Number(item["assetValueInETHFromWei"]).toFixed(6) : 0 }</small>
                  </th>
                 </tr>
               )
