@@ -17,7 +17,8 @@ class FundFilter extends Component {
       profitInETH:'',
       profitInUSD:'',
       mainAsset:'',
-      address:''
+      address:'',
+      timeCreation:0
     }
 
     this.state = this.props.MobXStorage.filterOptions
@@ -27,6 +28,8 @@ class FundFilter extends Component {
 
 
   // filter smart funds by multi options
+  // compare if strings math
+  // compare if numbers bigger than
   multiFilter(){
     // get options from states
     const filterOptions = { ...this.state }
@@ -44,11 +47,17 @@ class FundFilter extends Component {
       for(let key in filteredOptions){
         // push filter keys
         filterKeys.push(key)
-        // filter by strings
-        if(typeof filteredOptions[key] === 'string'){
+        // filter by time creation
+        if(key === 'timeCreation'){
+          // this.timeCreationFilter(currentFunds, filteredOptions[key])
+          // filtered = currentFunds
+          filtered = this.timeCreationFilter(currentFunds, filteredOptions[key])
+        }
+        // filter by match strings
+        else if(typeof filteredOptions[key] === 'string'){
           filtered = currentFunds.filter((item) => this.stringFilter(item, key, filteredOptions[key]))
         }
-        // filter by numbers
+        // filter by compare numbers (>=)
         else if (typeof filteredOptions[key] === 'number'){
           filtered = currentFunds.filter((item) => this.numberFilter(item, key, filteredOptions[key]))
         }
@@ -78,6 +87,23 @@ class FundFilter extends Component {
       return true
     }else {
       return false
+    }
+  }
+
+  timeCreationFilter = (list, state) => {
+    console.log(list[0].timeCreation)
+    if(state === 'Newest'){
+      return list.slice().sort(function(a,b) {
+         return Number(b.timeCreation) - Number(a.timeCreation)
+      })
+    }
+    else if(state === 'Oldest'){
+      return list.slice().sort(function(a,b) {
+         return Number(a.timeCreation) - Number(b.timeCreation)
+      })
+    }
+    else {
+      return list
     }
   }
 
@@ -180,9 +206,22 @@ class FundFilter extends Component {
        value={this.state.mainAsset}
        onChange={(e) => this.setState({ mainAsset: e.target.value === "ALL" ? '' : e.target.value})}
        >
-        <option>ALL</option>
+        <option>All</option>
         <option>ETH</option>
         <option>USD</option>
+       </Form.Control>
+       </Form.Group>
+
+       <Form.Group>
+       <Form.Text>Time creation</Form.Text>
+       <Form.Control
+       as="select"
+       value={this.state.timeCreation}
+       onChange={(e) => this.setState({ timeCreation: e.target.value === "ALL" ? '' : e.target.value})}
+       >
+        <option>All</option>
+        <option>Newest</option>
+        <option>Oldest</option>
        </Form.Control>
        </Form.Group>
 
