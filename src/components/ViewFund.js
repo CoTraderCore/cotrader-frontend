@@ -311,7 +311,9 @@ class ViewFund extends Component {
           ):null
         }
 
-        <Table striped bordered hover>
+        <Table striped bordered hover style={{
+          textAlign:"left"
+        }}>
 
         <thead>
          <tr>
