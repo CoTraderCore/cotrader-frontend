@@ -12,7 +12,7 @@ class WalletInfo extends Component {
     setTimeout(async () => {
 
       if(this.props.accounts && this.props.web3) {
-        const ETHBalance = Number(fromWei(await this.props.web3.eth.getBalance(this.props.accounts[0]))).toFixed(2)
+        const ETHBalance = parseFloat(fromWei(await this.props.web3.eth.getBalance(this.props.accounts[0]))).toFixed(4)
         this.setState({ ETHBalance })
       }
     }, 1000)
