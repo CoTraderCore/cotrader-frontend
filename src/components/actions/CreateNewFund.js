@@ -26,7 +26,7 @@ class CreateNewFund extends Component {
       Percent: 20,  // NOTE: this number should be mul by 100 !!!
       FundAsset: 'ETH',
       FundName: '',
-      TradeVerification: false,
+      TradeVerification: true,
       FundType:'Full',
       FundVersion:"V7(Onchain only)"
     }
@@ -111,7 +111,7 @@ class CreateNewFund extends Component {
       FundName: '',
       FundType:'Full',
       FundVersion:"V7(Onchain only)",
-      TradeVerification: false
+      TradeVerification: true
     })
   }
 
@@ -196,7 +196,7 @@ class CreateNewFund extends Component {
           </Form.Group>
 
           {
-            /* HIDE v8 untill fix bug 
+            /* HIDE v8 untill fix bug
             <Form.Group controlId="FundVersion">
             <Form.Label>Fund version <UserInfo  info="V7: most robust, fully onchain, no oracles. V8: good for buying tokens whose liquidity is spread significantly across multiple swap DEXs. Uses chainlink with 1inch but requires eg 10 minute timeout when a user deposits or withdraws. Lower gas fees for trades. Can support much more than V7 ~20 tokens per fund."/></Form.Label>
             <Form.Control as="select" name="FundVersion" onChange={e => this.change(e)}>
@@ -210,7 +210,7 @@ class CreateNewFund extends Component {
 
           <hr/>
 
-          <Form.Label>Trade verifiaction <UserInfo  info="Protect investors from buying shit coins, allow manager buy only from top 200 most popular tokens"/></Form.Label>
+          <Form.Label>Limit Tokens <UserInfo  info="This gives investors confidence that even if the trader's key is stolen, the worst a hacker can do is trade to legit tokens, not likely to a token just created by the trader to exit scam the fund, leaving it without value."/></Form.Label>
           <Form.Group>
             <Form.Check
             type="checkbox"

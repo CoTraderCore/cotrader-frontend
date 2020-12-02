@@ -105,7 +105,7 @@ class ViewFundWithoutWeb3 extends Component {
         core asset : {this.state.mainAsset} ,
         version: {String(this.state.version)},
         manager fee: {Number(this.state.managerFee/100).toFixed(2)} %,
-        trade verification: { Number(this.state.tradeVerification) === 1 ? "enabled" : "disabled" }
+        limit tokens: { Number(this.state.tradeVerification) === 1 ? "enabled" : "disabled" }
         </small>
         </Card.Header>
         <Card.Body>
