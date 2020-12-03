@@ -169,7 +169,7 @@ class ViewFundWithoutWeb3 extends Component {
         <ListGroup style={{ display: 'inline-block', margin: '10px 0'}}>
 
         {
-          this.state.version === 1
+          this.state.version < 6
           ?
           (
             <small>

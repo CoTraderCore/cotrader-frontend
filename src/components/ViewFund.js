@@ -33,6 +33,8 @@ import AssetsAlocationChart from './charts/AssetsAlocationChart'
 
 import Identicon from 'react-identicons'
 
+import MultiColorBar from './charts/MultiColorBar/MultiColorBar'
+
 class ViewFund extends Component {
   constructor(props, context) {
     super(props, context)
@@ -299,7 +301,7 @@ class ViewFund extends Component {
         <ListGroup style={{ display: 'inline-block', margin: '10px 0'}}>
 
         {
-          this.state.version === 1
+          this.state.version < 6
           ?
           (
             <small>
@@ -378,6 +380,8 @@ class ViewFund extends Component {
         </Table>
         </ListGroup>
         </div>
+        <br />
+        <MultiColorBar data={this.state.balance}/>
         <br />
         <div align="center">
         <ViewPageCharts address={this.state.smartFundAddress} Data={this.state.balance}/>
