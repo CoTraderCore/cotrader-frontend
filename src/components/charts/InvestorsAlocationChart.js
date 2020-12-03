@@ -37,12 +37,14 @@ class InvestorsAlocationChart extends React.Component{
     const Data = JSON.parse(this.props.Data)
 
     if(Data){
-    let labels = Data.map(item => {
+    const filteredData = Data.filter(item => Number(fromWei(String(item["shares"]))).toFixed(6) > 0)
+
+    let labels = filteredData.map(item => {
      return String(item["user"]).replace(String(item["user"]).substring(6,36), "...")
     })
 
-    let balance = Data.map(item => {
-      return Number(fromWei(String(item["shares"]))).toFixed(4)
+    let balance = filteredData.map(item => {
+      return Number(fromWei(String(item["shares"]))).toFixed(6)
     })
 
     this.setState({

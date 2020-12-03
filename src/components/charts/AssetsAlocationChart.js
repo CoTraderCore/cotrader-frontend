@@ -39,11 +39,13 @@ class AssetsAlocationChart extends React.Component{
     const AssetsData = this.props.AssetsData
 
     if(AssetsData){
-    let labels = AssetsData.map(item => {
+    const filterData = AssetsData.filter(item => parseFloat(item.assetValueInETHFromWei) > 0)
+
+    let labels = filterData.map(item => {
       return item.symbol
     })
 
-    let balance = AssetsData.map((item) => {
+    let balance = filterData.map((item) => {
       return item.assetValueInETHFromWei
     })
 
