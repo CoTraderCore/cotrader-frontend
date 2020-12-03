@@ -22,7 +22,7 @@ class MultiColorBar extends Component {
       const totalPercent = propsData.map(item => item.value).reduce((a, b) => Number(a) + Number(b), 0)
 
       this.setState({
-        propsData,
+        propsData:propsData.slice().sort((a,b) => b.value - a.value ), // sort by higher
         totalPercent
       })
     },1000)
