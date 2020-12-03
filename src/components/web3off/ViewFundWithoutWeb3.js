@@ -168,19 +168,6 @@ class ViewFundWithoutWeb3 extends Component {
         <div style={{ textAlign: 'center'}}>
         <ListGroup style={{ display: 'inline-block', margin: '10px 0'}}>
 
-        {
-          this.state.version < 6
-          ?
-          (
-            <small>
-            <Alert variant="warning">
-            Note: Fund versions v5 and below may have wrong token balance accounting below because it uses 1inch (which these versions didn’t use),
-            but these funds still have the correct ROI onchain
-            </Alert>
-            </small>
-          ):null
-        }
-
         <Table striped bordered hover style={{
           textAlign:"left"
         }}>
