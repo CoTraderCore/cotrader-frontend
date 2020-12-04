@@ -108,6 +108,6 @@ body.fullWidth_container .MuiContainer-maxWidthMd {max-width: 1920px!important;}
 }
 @media only screen and (min-width: 1830px) {
   /*body.fullWidth_container .fund-page-charts > div > div{width:420px!important; height:250px!important}*/
-  .createfund-btn{text-align: left;}
-  .filter-fund{text-align: right;}
+  .createfund-btn{text-align: center;}
+  .filter-fund{text-align: center;}
 }
