@@ -5,13 +5,13 @@ import './MultiColorBarCSS.css'
 function MultiColorContainer(props){
     const parent = props;
 
-  	// const values = parent.readings && parent.readings.length && parent.readings.map((item, i) => {
-    //   return(
-    //     <div className="value" style={{'color': item.color, 'width': item.value + '%'}}  key={i}>
-    //       <span>{item.value}%</span>
-    //     </div>
-    //   )
-    // })
+  	const values = parent.readings && parent.readings.length && parent.readings.map((item, i) => {
+      return(
+        <div className="value" style={{'color': item.color, 'width': item.value + '%'}}  key={i}>
+          <span>{item.value}%</span>
+        </div>
+      )
+    })
 
   	// const calibrations = parent.readings && parent.readings.length && parent.readings.map((item, i) => {
     //   return (
@@ -39,13 +39,11 @@ function MultiColorContainer(props){
 
     return (
       <div className="multicolor-bar">
-      {
-        /*
+
       	<div className="values">
-      		{values === ''?'':values}
+      	<strong>{values === ''?'':values}</strong>
       	</div>
-        */
-      }
+
         {
           /*
           <div className="scale">
