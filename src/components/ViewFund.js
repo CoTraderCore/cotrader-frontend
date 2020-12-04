@@ -303,7 +303,7 @@ class ViewFund extends Component {
           textAlign:"left"
         }}>
 
-        <thead>
+        <thead style={{"color":"grey"}}>
          <tr>
            <th>Token</th>
            <th>% from fund</th>
@@ -314,7 +314,7 @@ class ViewFund extends Component {
         {
           this.state.balance.length > 0 ?
           (
-            <tbody>
+            <tbody style={{"color":"grey"}}>
             {
               this.state.balance.slice().sort(function(a,b) {
                  return Number(b.percentInETH) - Number(a.percentInETH)
