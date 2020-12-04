@@ -465,22 +465,21 @@ class TradeModalV2 extends Component {
   getRate = async (from, to, amount, decimalsFrom, decimalsTo) => {
     if(amount > 0 && from !== to){
       const portal = new this.props.web3.eth.Contract(ExchangePortalABIV6, ExchangePortalAddressV6)
-      const src = toWeiByDecimalsInput(decimalsFrom, amount.toString())
-      const srcBN = new BigNumber(src)
+      const src = toWeiByDecimalsInput(decimalsFrom, amount.toString(10))
 
       let value
       // get value via Paraswap
       if(this.state.dexAggregator === "Paraswap"){
         try{
           // try get at first from Paraswap api, because paraswap contract can return not accuracy
-          const data = await axios.get(`${ParaswapApi}/v1/prices/1/${from}/${to}/${srcBN}`)
+          const data = await axios.get(`${ParaswapApi}/v1/prices/1/${from}/${to}/${src}`)
           value = data.data.priceRoute.amount
         }catch(e){
           // just get from contract
           value = await portal.methods.getValueViaParaswap(
             from,
             to,
-            srcBN.toFixed()
+            src
           ).call()
         }
       }
@@ -489,7 +488,7 @@ class TradeModalV2 extends Component {
         value = await portal.methods.getValueViaOneInch(
           from,
           to,
-          srcBN.toFixed()
+          src
         ).call()
       }
 
