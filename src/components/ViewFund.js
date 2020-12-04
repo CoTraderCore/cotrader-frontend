@@ -33,7 +33,6 @@ import AssetsAlocationChart from './charts/AssetsAlocationChart'
 
 import Identicon from 'react-identicons'
 
-import MultiColorBar from './charts/MultiColorBar/MultiColorBar'
 
 class ViewFund extends Component {
   constructor(props, context) {
@@ -367,8 +366,6 @@ class ViewFund extends Component {
         </Table>
         </ListGroup>
         </div>
-        <br />
-        <MultiColorBar data={this.state.balance}/>
         <br />
         <div align="center">
         <ViewPageCharts address={this.state.smartFundAddress} Data={this.state.balance}/>

@@ -395,17 +395,16 @@ class TradeModalV3 extends Component {
   gitRateByNetworkId = async (from, to, amount, decimalsFrom, decimalsTo) => {
     // get value from 1 inch proto
     if(NeworkID === 1){
-      const src = toWeiByDecimalsInput(decimalsFrom, amount.toString())
-      const srcBN = new BigNumber(src)
+      const src = toWeiByDecimalsInput(decimalsFrom, amount.toString(10))
       let returnAmount
 
       // get data from api
       if(this.state.exchangePortalVersion > 4){
-        returnAmount = await this.getRateFrom1inchApi(from, to, srcBN)
+        returnAmount = await this.getRateFrom1inchApi(from, to, src)
       }
       // get data from blockchain
       else {
-        returnAmount = await this.getRateFrom1inchOnchain (from, to, srcBN)
+        returnAmount = await this.getRateFrom1inchOnchain (from, to, src)
       }
 
       return returnAmount
@@ -413,13 +412,12 @@ class TradeModalV3 extends Component {
     // from test net get value from Bancor via old portal v
     else{
       const portal = new this.props.web3.eth.Contract(ExchangePortalABIV6, ExchangePortalAddressV6)
-      const src = toWeiByDecimalsInput(decimalsFrom, amount.toString())
-      const srcBN = new BigNumber(src)
+      const src = toWeiByDecimalsInput(decimalsFrom, amount.toString(10))
 
       return await portal.methods.getValueViaOneInch(
         from,
         to,
-        String(srcBN.toFixed()),
+        src,
       ).call()
     }
   }
