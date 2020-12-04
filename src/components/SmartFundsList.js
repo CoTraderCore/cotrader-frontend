@@ -29,6 +29,7 @@ import MainPageCharts from './charts/MainPageCharts'
 import PagePagination from './navigation/PagePagination'
 import FilterAndSearch from './navigation/FilterAndSearch/FilterAndSearch'
 import FundsNav from './navigation/FundsNav'
+import MultiColorBar from './charts/MultiColorBar/MultiColorBar'
 
 class SmartFundsList extends Component{
   constructor(props, context) {
@@ -46,7 +47,7 @@ class SmartFundsList extends Component{
 
   _isMounted = false;
 
-  componentDidMount=  async () => {
+  componentDidMount =  async () => {
     this._isMounted = true
     this.initSocket()
     this.checkPending()
@@ -268,8 +269,15 @@ class SmartFundsList extends Component{
          },
 
          trade verification: { Number(item.tradeVerification) === 1 ? "enabled" : "disabled" }
+         {
+           item.balance.length > 0
+           ?
+           (<MultiColorBar data={JSON.parse(item.balance)}/>)
+           : null
+         }
          </small>
          </Card.Header>
+
          <Card.Body className="cardsAdditional">
          <Row className="justify-content-md-center mb-3">
           <Col><FundModal address={item.address}/></Col>

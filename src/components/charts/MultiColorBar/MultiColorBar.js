@@ -9,9 +9,17 @@ class MultiColorBar extends Component {
   }
 
   componentDidMount(){
-    setTimeout(() => {
-      const propsData = []
+    this.initData()
+  }
 
+  componentDidUpdate(prevProps, prevState){
+    if(prevProps.data !== this.props.data)
+       this.initData()
+  }
+
+  initData(){
+    try{
+      const propsData = []
       this.props.data.forEach(obj => {
         if(Number(obj.percentInETH).toFixed() > 0)
         propsData.push(
@@ -25,8 +33,9 @@ class MultiColorBar extends Component {
         propsData:propsData.slice().sort((a,b) => b.value - a.value ), // sort by higher
         totalPercent
       })
-    },1000)
-
+    }catch(e){
+      console.log(e)
+    }
   }
 
   render() {

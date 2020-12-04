@@ -25,6 +25,7 @@ import PagePagination from '../navigation/PagePagination'
 import FilterAndSearch from '../navigation/FilterAndSearch/FilterAndSearch'
 import FundsNav from '../navigation/FundsNav'
 
+import MultiColorBar from '../charts/MultiColorBar/MultiColorBar'
 
 class SmartFundsListWithoutWeb3 extends Component{
   constructor(state, context) {
@@ -176,8 +177,15 @@ class SmartFundsListWithoutWeb3 extends Component{
                }
                })()
              },
-             
+
              trade verification: { Number(item.tradeVerification) === 1 ? "enabled" : "disabled" }
+
+             {
+               item.balance.length > 0
+               ?
+               (<MultiColorBar data={JSON.parse(item.balance)}/>)
+               : null
+             }
              </small>
              </Card.Header>
              <Card.Body className="cardsAdditional">
