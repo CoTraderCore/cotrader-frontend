@@ -21,10 +21,14 @@ class MultiColorBar extends Component {
     try{
       const propsData = []
       this.props.data.forEach(obj => {
-        if(Number(obj.percentInETH).toFixed() > 0)
-        propsData.push(
-          {name:obj.symbol, value:Number(obj.percentInETH).toFixed(), color: "#" + Math.floor(Math.random()*16777215).toString(16)}
-        )
+        if(Number(obj.percentInETH).toFixed() > 0){
+          const color = obj.color !== '#000000' ? obj.color : "#" + Math.floor(Math.random()*16777215).toString(16)
+
+          propsData.push(
+            {name:obj.symbol, value:Number(obj.percentInETH).toFixed(), color}
+          )
+        }
+
       })
 
       const totalPercent = propsData.map(item => item.value).reduce((a, b) => Number(a) + Number(b), 0)
