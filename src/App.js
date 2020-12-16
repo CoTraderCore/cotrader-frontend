@@ -152,9 +152,9 @@ class App extends Component {
     let theme = createMuiTheme({
       palette: {
         primary: {
-          light: '#3f51b5',
-          main: '#3f51b5',
-          dark: '#4e69ff',
+          light: '#039be5',
+          main: '#039be5',
+          dark: '#039be5',
         },
         secondary: {
           light: '#3f51b5',
