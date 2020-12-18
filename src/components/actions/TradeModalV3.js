@@ -435,7 +435,7 @@ class TradeModalV3 extends Component {
     const { returnAmount } = await oneInchContract.methods.getExpectedReturn(
       from,
       to,
-      String(srcBN.toFixed()),
+      srcBN,
       10,
       0
     ).call()
