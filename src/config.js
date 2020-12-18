@@ -187,6 +187,19 @@ export const YTokenABI = [
 	},
 	{
 		"inputs": [],
+		"name": "symbol",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "token",
 		"outputs": [
 			{
