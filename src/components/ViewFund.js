@@ -21,6 +21,7 @@ import Withdraw from './actions/Withdraw'
 import Deposit from './actions/Deposit'
 import UserHoldings from './actions/UserHoldings'
 import CompoundLoan from './actions/CompoundLoan'
+import YearnLoan from './actions/YearnLoan'
 import UpdateUSDAsset from './actions/UpdateUSDAsset'
 
 import Loading from './templates/Spiners/Loading'
@@ -461,7 +462,12 @@ class ViewFund extends Component {
                    )
                    :
                    (
-                     <FakeButton buttonName={"Loan"} info={"Soon we will implement Yearn finance here"}/>
+                     <YearnLoan
+                     web3={this.props.web3}
+                     accounts={this.props.accounts}
+                     smartFundAddress={this.state.smartFundAddress}
+                     pending={this.pending}
+                     version={this.state.version}/>
                    )
                  }
                  </li>
