@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Modal, Form } from "react-bootstrap"
+import { Button, Modal, Form, Alert } from "react-bootstrap"
 import { NeworkID, ERC20ABI, SmartFundABIV7, YTokenABI } from '../../config.js'
 import checkTokensLimit from '../../utils/checkTokensLimit'
 import { Typeahead } from 'react-bootstrap-typeahead'
@@ -69,6 +69,11 @@ class YearnLoan extends Component {
     }
   }
 
+  calculateTokenValueByShare = async (poolShare) => {
+    // pool = calcPoolValueInToken();
+    // // Calc to redeem before updating balances
+    // uint256 r = (pool.mul(_shares)).div(_totalSupply);
+  }
 
   YearnDeposit = async () => {
     if(this.state.amount > 0 && this.state.yTokenAddress){
@@ -117,27 +122,38 @@ class YearnLoan extends Component {
         }
       }
       else{
-        alert('Your fund not have enough balance')
+        alert('Influence balance')
       }
     }else{
       alert('Please fill all fields')
     }
   }
 
-  YearnRedeem = async () => {
-    if(this.state.percent > 0 && this.state.percent <= 100 && this.state.yTokenAddress){
-      const cToken = new this.props.web3.eth.Contract(ERC20ABI, this.state.yTokenAddress)
-      const balance = await cToken.methods.balanceOf(this.props.smartFundAddress).call()
+  YearnWithdraw = async () => {
+    if(this.state.amount > 0 && this.state.yTokenAddress){
+      const yToken = this.props.web3.eth.Contract(YTokenABI, this.state.yTokenAddress)
+      const yDecimals = await yToken.methods.decimals().call()
+      const sharesInFund = await yToken.methods.balanceOf(this.props.smartFundAddress).call()
+      const sharesToWithdrawInWei = toWeiByDecimalsInput(yDecimals, this.state.amount)
 
       // get gas price from local storage
       const gasPrice = localStorage.getItem('gasPrice') ? localStorage.getItem('gasPrice') : 2000000000
 
       // allow reedem only if there are some amount of current cToken
-      if(parseFloat(balance) > 0){
+      if(parseFloat(fromWei(String(sharesInFund))) >= this.state.amount){
         const fund = new this.props.web3.eth.Contract(SmartFundABIV7, this.props.smartFundAddress)
         const block = await this.props.web3.eth.getBlockNumber()
-        // Mint
-        fund.methods.YearnRedeemByPercent(this.state.percent, this.state.yTokenAddress)
+
+        // withdraw
+        fund.methods.callDefiPortal(
+          [this.state.yTokenAddress],
+          [sharesToWithdrawInWei],
+          [numStringToBytes32(String(1))],
+          this.props.web3.eth.abi.encodeParameters(
+            ['uint256'],
+            [1]
+          )
+        )
         .send({ from:this.props.accounts[0], gasPrice })
         .on('transactionHash', (hash) => {
         // pending status for spiner
@@ -148,7 +164,7 @@ class YearnLoan extends Component {
         // close pool modal
         this.modalClose()
       }else{
-        alert("Nothing to reedem")
+        alert("Influence balance")
       }
     }else{
       alert('Please fill all fields correct')
@@ -181,19 +197,18 @@ class YearnLoan extends Component {
     else if (this.state.action === "Redeem") {
       return(
         <React.Fragment>
-        <Form.Label>Reedem percent {this.state.percent} %</Form.Label>
         <Form.Control
-        type="range"
-        min="1"
-        max="100"
-        placeholder="Enter percent for withdraw"
-        onChange={(e) => this.setState({ percent:e.target.value })}
+        type="number"
+        min="0"
+        placeholder="Enter amount to withdraw"
+        name="amount"
+        onChange={(e) => this.setState({ amount:e.target.value })}
         />
         <br/>
         <Button
         variant="outline-primary"
         type="button"
-        onClick={() => this.YearnRedeem()}
+        onClick={() => this.YearnWithdraw()}
         >
         Redeem
         </Button>
@@ -224,8 +239,9 @@ class YearnLoan extends Component {
         </Modal.Header>
         <Modal.Body>
         <Form>
+        <strong><Alert variant="warning">Attention, this functionality is under testing</Alert></strong>
         <Form.Group controlId="exampleForm.ControlSelect1">
-        <Form.Label>Select Compound action</Form.Label>
+        <Form.Label>Select Yearn finance action</Form.Label>
         <Form.Control
          as="select"
          size="sm"
@@ -237,12 +253,19 @@ class YearnLoan extends Component {
         </Form.Group>
 
         <Typeahead
-          labelKey="compoundSymbols"
+          labelKey="ySymbols"
           multiple={false}
-          id="compoundSymbols"
+          id="ySymbols"
           options={this.state.symbols}
           onChange={(s) => this.setState({yTokenAddress: this.findAddressBySymbol(s[0])})}
           placeholder="Choose a symbol"
+          renderMenuItemChildren={(options, props) => (
+            <div>
+              <img style={{height: "35px", width: "35px"}}src={`https://tokens.1inch.exchange/${this.findAddressBySymbol(options)}.png`} alt="Logo" />
+              &nbsp; &nbsp;
+              {options}
+            </div>
+          )}
         />
         <br/>
 
