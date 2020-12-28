@@ -20,8 +20,8 @@ import ChartsButton from './actions/ChartsButton'
 import Withdraw from './actions/Withdraw'
 import Deposit from './actions/Deposit'
 import UserHoldings from './actions/UserHoldings'
-import CompoundLoan from './actions/CompoundLoan'
-import YearnLoan from './actions/YearnLoan'
+// import CompoundLoan from './actions/CompoundLoan'
+// import YearnLoan from './actions/YearnLoan'
 import UpdateUSDAsset from './actions/UpdateUSDAsset'
 
 import Loading from './templates/Spiners/Loading'
@@ -443,42 +443,6 @@ class ViewFund extends Component {
                  </li>
                )
              }
-
-             {
-               this.state.version >= 5 && this.state.fundSizeType === 'full'
-               ?
-               (
-                 <li>
-                 {
-                   this.state.version === 6
-                   ?
-                   (
-                     <CompoundLoan
-                     web3={this.props.web3}
-                     accounts={this.props.accounts}
-                     smartFundAddress={this.state.smartFundAddress}
-                     pending={this.pending}
-                     version={this.state.version}/>
-                   )
-                   :
-                   (
-                     <YearnLoan
-                     web3={this.props.web3}
-                     accounts={this.props.accounts}
-                     smartFundAddress={this.state.smartFundAddress}
-                     pending={this.pending}
-                     version={this.state.version}/>
-                   )
-                 }
-                 </li>
-               )
-               :
-               (
-                 <li>
-                 <FakeButton buttonName={"Loan"} info={"This version or type of smart fund does not support this feature"}/>
-                 </li>
-               )
-             }
              <li>
              <WithdrawManager
                web3={this.props.web3}
@@ -526,16 +490,6 @@ class ViewFund extends Component {
                (
                  <li>
                  <FakeButton buttonName={"Pool"} info={"You can't use this button because You are not owner of this smart fund"}/>
-                 </li>
-               )
-               :null
-             }
-             {
-               this.state.version >= 5
-               ?
-               (
-                 <li>
-                 <FakeButton buttonName={"Loan"} info={"You can't use this button because You are not owner of this smart fund"}/>
                  </li>
                )
                :null

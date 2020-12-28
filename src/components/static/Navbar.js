@@ -280,9 +280,9 @@ export default function PersistentDrawerLeft(props) {
             </List>
           </Collapse>
 
-          <ListItem button component="a" key="DEXs" primary="DEXs" onClick={() => setDEXModal(true)} className={classes.nested}>
+          <ListItem button component="a" key="DEFI" primary="DEFI" onClick={() => setDEXModal(true)} className={classes.nested}>
             <ListItemIcon><Code/></ListItemIcon>
-            <ListItemText primary="DEXs" />
+            <ListItemText primary="DEFI" />
           </ListItem>
 
 

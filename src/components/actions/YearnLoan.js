@@ -293,7 +293,7 @@ class YearnLoan extends Component {
     return (
       <React.Fragment>
       <Button variant="outline-primary" className="buttonsAdditional" onClick={() => this.setState({ Show: true })}>
-        Loan
+        Yearn 
       </Button>
 
       <Modal

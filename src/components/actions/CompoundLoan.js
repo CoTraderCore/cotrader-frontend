@@ -235,7 +235,7 @@ class CompoundLoan extends Component {
     return (
       <React.Fragment>
       <Button variant="outline-primary" className="buttonsAdditional" onClick={() => this.setState({ Show: true })}>
-        Loan
+        Compound
       </Button>
 
       <Modal
