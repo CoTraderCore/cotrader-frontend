@@ -319,42 +319,50 @@ class ViewFund extends Component {
             {
               this.state.balance.slice().sort(function(a,b) {
                  return Number(b.percentInETH) - Number(a.percentInETH)
-                }).map((item, key) =>
-                <tr key={key}>
-                <th>
-                 {
-                   <img
-                   style={{height: "20px", width: "20px"}}
-                   src={`https://tokens.1inch.exchange/${String(item["address"]).toLowerCase()}.png`}
-                   alt="Logo"
-                   onError={(e)=>{e.target.onerror = null; e.target.src="https://etherscan.io/images/main/empty-token.png"}}/>
+               }).map((item, key) => {
+                 if(item["percentInETH"] > 0){
+                   return (
+                     <tr key={key}>
+                     <th>
+                      {
+                        <img
+                        style={{height: "20px", width: "20px"}}
+                        src={`https://tokens.1inch.exchange/${String(item["address"]).toLowerCase()}.png`}
+                        alt="Logo"
+                        onError={(e)=>{e.target.onerror = null; e.target.src="https://etherscan.io/images/main/empty-token.png"}}/>
+                      }
+                      &nbsp;
+                      {<a href={EtherscanLink + "token/" + item["address"]} target="_blank" rel="noopener noreferrer">{item["symbol"]}</a>}
+                      &nbsp;
+                      {
+                        item["tokensAdditionalData"].length > 0
+                        ?
+                        (
+                          <>
+                          {this.parsePoolConnectors(item["tokensAdditionalData"])}
+                          </>
+                        ):null
+                      }
+                      </th>
+
+                      <th>
+                      { item["percentInETH"] > 0 ? Number(item["percentInETH"]).toFixed(4) : 0 } %
+                      </th>
+
+                      <th>
+                      { item["assetValueInETHFromWei"] > 0 ? Number(item["assetValueInETHFromWei"]).toFixed(6) : 0 }
+                      </th>
+
+                      <th>
+                      {Number(fromWeiByDecimalsInput(item["decimals"], item["balance"].toString())).toFixed(4)}
+                      </th>
+                     </tr>
+                   )
                  }
-                 &nbsp;
-                 {<a href={EtherscanLink + "token/" + item["address"]} target="_blank" rel="noopener noreferrer">{item["symbol"]}</a>}
-                 &nbsp;
-                 {
-                   item["tokensAdditionalData"].length > 0
-                   ?
-                   (
-                     <>
-                     {this.parsePoolConnectors(item["tokensAdditionalData"])}
-                     </>
-                   ):null
+                 else{
+                   return null
                  }
-                 </th>
-
-                 <th>
-                 { item["percentInETH"] > 0 ? Number(item["percentInETH"]).toFixed(4) : 0 } %
-                 </th>
-
-                 <th>
-                 { item["assetValueInETHFromWei"] > 0 ? Number(item["assetValueInETHFromWei"]).toFixed(6) : 0 }
-                 </th>
-
-                 <th>
-                 {Number(fromWeiByDecimalsInput(item["decimals"], item["balance"].toString())).toFixed(4)}
-                 </th>
-                </tr>
+               }
               )
             }
             </tbody>
