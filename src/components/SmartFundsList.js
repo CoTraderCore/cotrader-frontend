@@ -253,12 +253,11 @@ class SmartFundsList extends Component{
 
          active assets:
          {
-           // get total assets count
+           // get active assets count
            (() => {
            if(item && item.balance && item.hasOwnProperty('balance')){
              try{
               const addresses = JSON.parse(item.balance).filter(i => i.percentInETH > 0)
-              console.log("addresses", addresses)
               return addresses.length
              }catch(e){
               return 0
