@@ -144,7 +144,8 @@ class SmartFundsListWithoutWeb3 extends Component{
              core asset : {item.mainAsset},
              version: {String(item.version)},
              manager fee: {Number(item.managerFee/100).toFixed(2)} %,
-             assets:
+
+             total assets:
              {
                // get total assets count
                (() => {
@@ -154,6 +155,23 @@ class SmartFundsListWithoutWeb3 extends Component{
                   return addresses.length
                  }catch(e){
                    return 0
+                 }
+               }else{
+                 return 0
+               }
+               })()
+             },
+
+             active assets:
+             {
+               // get active assets count
+               (() => {
+               if(item && item.balance && item.hasOwnProperty('balance')){
+                 try{
+                  const addresses = JSON.parse(item.balance).filter(i => i.percentInETH > 0)
+                  return addresses.length
+                 }catch(e){
+                  return 0
                  }
                }else{
                  return 0

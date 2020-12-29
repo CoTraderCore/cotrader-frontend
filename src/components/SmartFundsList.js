@@ -234,13 +234,31 @@ class SmartFundsList extends Component{
          core asset : {item.mainAsset} ,
          version: {String(item.version)},
          manager fee: {Number(item.managerFee/100).toFixed(2)} %,
-         assets:
+         total assets:
          {
            // get total assets count
            (() => {
            if(item && item.balance && item.hasOwnProperty('balance')){
              try{
               const addresses = JSON.parse(item.balance).map(i => i.address)
+              return addresses.length
+             }catch(e){
+              return 0
+             }
+           }else{
+             return 0
+           }
+           })()
+         },
+
+         active assets:
+         {
+           // get total assets count
+           (() => {
+           if(item && item.balance && item.hasOwnProperty('balance')){
+             try{
+              const addresses = JSON.parse(item.balance).filter(i => i.percentInETH > 0)
+              console.log("addresses", addresses)
               return addresses.length
              }catch(e){
               return 0
