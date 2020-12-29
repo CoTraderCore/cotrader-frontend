@@ -40,18 +40,23 @@ class SetGasPrice extends Component {
   // set gasPrice for trade
   setGasPrice = async (gasPriceState) => {
     const currentGasPrice = await this.props.web3.eth.getGasPrice()
-    let gasPrice = 1000000000
+    let gasPrice = 2000000000
 
     if(gasPriceState === "high")
       gasPrice = currentGasPrice
 
     if(gasPriceState === "average")
-      gasPrice = currentGasPrice / 2 < 1000000000
-      ? currentGasPrice
-      : Math.round(currentGasPrice / 2)
+      // sub 25%
+      gasPrice = currentGasPrice - (currentGasPrice / 4) < 1000000000 // if average less than 1 gwei, set 2 gwei
+      ? 2000000000
+      : Math.round(currentGasPrice - (currentGasPrice / 4))
+
 
     if(gasPriceState === "low")
-      gasPrice = 1000000000
+      // sub 50%
+      gasPrice = currentGasPrice / 2 < 1000000000 // if low less than 1 gwei, set 1 gwei
+      ? 1000000000
+      : Math.round(currentGasPrice / 2)
 
     this.setState({ gasPrice, gasPriceState })
     localStorage.setItem('gasPrice', gasPrice)
@@ -66,7 +71,7 @@ class SetGasPrice extends Component {
         <Button
         variant={this.state.gasPriceState === "high" ? "info" : "outline-primary"}
         onClick={() => this.setGasPrice("high")}
-        >Higth</Button>
+        >High</Button>
 
         <Button
         variant={this.state.gasPriceState === "average" ? "info" : "outline-primary"}
