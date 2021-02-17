@@ -277,6 +277,14 @@ export default function PersistentDrawerLeft(props) {
               <ListItemText primary="Hoo" />
             </ListItem>
 
+            <ListItem>
+            <small>Buy with USD</small>
+            </ListItem>
+
+            <ListItem button component="a" key="1inch" href="https://www.dharma.io/token/0x5c872500c00565505f3624ab435c222e558e9ff8" target="_blank" className={classes.nested}>
+              <ListItemIcon><ArrowRight /></ListItemIcon>
+              <ListItemText primary="Dharma" />
+            </ListItem>
             </List>
           </Collapse>
 
