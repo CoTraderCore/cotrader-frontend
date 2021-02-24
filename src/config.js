@@ -2,7 +2,7 @@
 const isLocal = false
 
 // maximum available for trade tokens in smart fund
-export const MAX_TOKENS = 20
+export const MAX_TOKENS = 3
 
 export const ParaswapApi = 'https://paraswap.io/api'
 export const OneInchApi = 'https://api.1inch.exchange/v1.1/'

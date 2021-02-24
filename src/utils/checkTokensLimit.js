@@ -8,10 +8,10 @@ const checkTokensLimit = async (destanationToken, fundContract) => {
     let allTokens = await fundContract.methods.getAllTokenAddresses().call()
     allTokens = allTokens.map(v => v.toLowerCase());
 
-    // check limit
-    if(allTokens.length >= MAX_TOKENS){
-    // allow tarde only if destanation alredy in fund
-      if(!allTokens.includes(destanationToken.toLowerCase())){
+    if(allTokens.includes(destanationToken.toLowerCase())){
+      return
+    }else{
+      if(allTokens.length > MAX_TOKENS){
         alert("Tokens limit exceeded")
         throw new Error("Tokens limit exceeded")
       }
