@@ -104,6 +104,8 @@ class Deposit extends Component {
 
         let block = await this.props.web3.eth.getBlockNumber()
 
+        const gasPrice = await this.props.web3.eth.getGasPrice()
+
         // Approve ERC to smart fund
         const approveData = ercAssetContract.methods.approve(
           address,
@@ -115,7 +117,7 @@ class Deposit extends Component {
           "to": ercAssetAddress,
           "value": "0x0",
           "data": approveData,
-          "gasPrice": this.props.web3.eth.utils.toHex(5000000000),
+          "gasPrice": gasPrice,
           "gas": this.props.web3.eth.utils.toHex(85000),
         }
 
@@ -128,7 +130,7 @@ class Deposit extends Component {
           "to": address,
           "value": "0x0",
           "data": depositData,
-          "gasPrice": this.props.web3.eth.utils.toHex(5000000000),
+          "gasPrice": gasPrice,
           "gas": this.props.web3.eth.utils.toHex(285000),
         }
 
