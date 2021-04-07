@@ -10,3 +10,10 @@ REACT_APP_INFURA=
 yarn install
 yarn start
 ```
+
+### Update Merkle WhiteListed tokens
+
+```
+1) Create new root hash https://github.com/CoTraderCore/Merkle-Root-Tokens
+2) Update ../src/storage/WhiteListedTokens.js with tokens from Merkle-Root-Tokens/file.json
+```
