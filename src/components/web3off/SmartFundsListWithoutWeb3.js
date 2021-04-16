@@ -225,9 +225,9 @@ class SmartFundsListWithoutWeb3 extends Component{
              }
              <div>
              <ButtonGroup horizontal="true">
-             <NavLink to={"/web3off/fund/"+ item.address}><Button variant="outline-primary" className="buttonsAdditional">Fund Page</Button></NavLink>
              <FakeButton buttonName={"Deposit"} info={"please connect to web3"}/>
              <FakeButton buttonName={"Withdraw"} info={"please connect to web3"}/>
+             <NavLink to={"/web3off/fund/"+ item.address}><Button variant="outline-primary" className="buttonsAdditional">Fund Page</Button></NavLink>
              <FakeButton buttonName={"My Funds"} info={"please connect to web3"}/>
              {
               NeworkID === 1 ?

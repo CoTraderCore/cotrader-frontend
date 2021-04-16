@@ -123,6 +123,8 @@ class ViewFundWithoutWeb3 extends Component {
         <div className="fund-page-btns">
         <div align="center"><strong>Investor actions</strong></div>
           <ul>
+            <li><FakeButton buttonName={"Deposit"} info={"please connect to web3"}/></li>
+            <li><FakeButton buttonName={"Withdraw"} info={"please connect to web3"}/></li>
             <li>{
               NeworkID === 1 ?
               (
@@ -132,8 +134,6 @@ class ViewFundWithoutWeb3 extends Component {
                 <FakeButton buttonName={"ChartsButton"} info={"This button is available only in mainnet"}/>
               )
             }</li>
-            <li><FakeButton buttonName={"Deposit"} info={"please connect to web3"}/></li>
-            <li><FakeButton buttonName={"Withdraw"} info={"please connect to web3"}/></li>
             <li><FakeButton buttonName={"My profile"} info={"please connect to web3"}/></li>
           </ul>
        </div>

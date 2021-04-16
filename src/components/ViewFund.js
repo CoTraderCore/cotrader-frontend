@@ -247,7 +247,6 @@ class ViewFund extends Component {
         <div className="fund-page-btns">
         <div align="center"><strong>Investor actions</strong></div>
           <ul>
-            <li><ChartsButton address={this.state.smartFundAddress}/></li>
             <li>
             <Deposit
               web3={this.props.web3}
@@ -268,6 +267,7 @@ class ViewFund extends Component {
               mainAsset={this.state.mainAsset}
             />
             </li>
+            <li><ChartsButton address={this.state.smartFundAddress}/></li>
             <li><UserHoldings web3={this.props.web3} address={this.state.smartFundAddress} accounts={this.props.accounts} pending={this.pending}/></li>
           </ul>
        </div>
