@@ -18,22 +18,15 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Help from '@material-ui/icons/HelpSharp';
 import About from '@material-ui/icons/Comment';
-import Video from '@material-ui/icons/Videocam';
 import Shop from '@material-ui/icons/ShoppingBasket';
-import ArrowRight from '@material-ui/icons/ArrowRight';
 import Stake from '@material-ui/icons/Share';
 import Twitter from '@material-ui/icons/Twitter';
 import Telegram from '@material-ui/icons/Telegram';
 //import Fullscreen from '@material-ui/icons/CropFree';
 import Desktop from '@material-ui/icons/DesktopMac';
 import Laptop from '@material-ui/icons/LaptopMac';
-import Web from '@material-ui/icons/Web';
-import Code from '@material-ui/icons/Code';
 import Tablet from '@material-ui/icons/Tablet';
 import { Link } from 'react-router-dom';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import Collapse from '@material-ui/core/Collapse';
 import Container from '@material-ui/core/Container';
 import DEXExplanation from './DEXExplanation'
 
@@ -112,7 +105,6 @@ export default function PersistentDrawerLeft(props) {
   const classes = useStyles()
   const theme = useTheme()
   const [open, setOpen] = React.useState(false)
-  const [submenu, setsubmenu] = React.useState(false)
 
   /*Temporary*/
   const [showDEXModal, setDEXModal] = React.useState(false)
@@ -220,14 +212,9 @@ export default function PersistentDrawerLeft(props) {
         <Divider />
         <List>
 
-          <ListItem button key="About" component="a" href="https://docs.google.com/document/d/1-PyD1B2Z5Fb6mxi7RV9IHc_9X0BXzQFb-muXVYBjxQ8/edit" target="_blank" className={classes.nested}>
+          <ListItem button key="About" component="a" href="https://cotrader.com" target="_blank" className={classes.nested}>
             <ListItemIcon><About /></ListItemIcon>
             <ListItemText primary="About" />
-          </ListItem>
-
-          <ListItem button key="Video" component="a" href="https://www.youtube.com/watch?v=COzhJr73fM4" target="_blank" className={classes.nested}>
-            <ListItemIcon><Video /></ListItemIcon>
-            <ListItemText primary="Video" />
           </ListItem>
 
           <Link to="how-to-start" onClick={handleDrawerClose} style={{ textDecoration: 'none' }} className={classes.nested}>
@@ -244,61 +231,10 @@ export default function PersistentDrawerLeft(props) {
           </ListItem>
           </Link>
 
-          <ListItem button onClick={() => setsubmenu(!submenu)}>
-            <ListItemIcon>
-              <Shop />
-            </ListItemIcon>
-            <ListItemText primary="Buy COT" />
-            {submenu ? <ExpandLess /> : <ExpandMore />}
+          <ListItem button key="Buy" component="a" href="https://app.1inch.io/#/1/swap/ETH/COT" target="_blank" className={classes.nested}>
+          <ListItemIcon><Shop /></ListItemIcon>
+          <ListItemText primary="Buy COT" />
           </ListItem>
-          <Collapse in={submenu} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-
-            <ListItem>
-            <small>Recomended</small>
-            </ListItem>
-
-            <ListItem button component="a" key="1inch" href="https://1inch.exchange/#/ETH/COT" target="_blank" className={classes.nested}>
-              <ListItemIcon><ArrowRight /></ListItemIcon>
-              <ListItemText primary="1inch DEXs aggregator" />
-            </ListItem>
-
-            <ListItem>
-            <small>Centralized exchanges</small>
-            </ListItem>
-
-            <ListItem button component="a" key="Hotbit" href="https://www.hotbit.io/exchange?symbol=COT_ETH" target="_blank" className={classes.nested}>
-              <ListItemIcon><ArrowRight /></ListItemIcon>
-              <ListItemText primary="Hotbit" />
-            </ListItem>
-
-            <ListItem button component="a" key="Hoo" href="https://hoo.com/spot/cot-eth" target="_blank" className={classes.nested}>
-              <ListItemIcon><ArrowRight /></ListItemIcon>
-              <ListItemText primary="Hoo" />
-            </ListItem>
-
-            <ListItem>
-            <small>Buy with USD</small>
-            </ListItem>
-
-            <ListItem button component="a" key="1inch" href="https://www.dharma.io/token/0x5c872500c00565505f3624ab435c222e558e9ff8" target="_blank" className={classes.nested}>
-              <ListItemIcon><ArrowRight /></ListItemIcon>
-              <ListItemText primary="Dharma" />
-            </ListItem>
-            </List>
-          </Collapse>
-
-          <ListItem button component="a" key="DEFI" primary="DEFI" onClick={() => setDEXModal(true)} className={classes.nested}>
-            <ListItemIcon><Code/></ListItemIcon>
-            <ListItemText primary="DEFI" />
-          </ListItem>
-
-
-          <ListItem button component="a" key="Bancor-portal" href="https://bancor.cotrader.com/#/" target="_blank" className={classes.nested}>
-            <ListItemIcon><Web/></ListItemIcon>
-            <ListItemText primary="Bancor-portal" />
-          </ListItem>
-
 
           <ListItem button component="a" key="Telegram" href="https://t.me/cotrader" target="_blank" className={classes.nested}>
             <ListItemIcon><Telegram /></ListItemIcon>
