@@ -9,7 +9,7 @@
     "bignumber.js": "9.0.0",
     "bn.js": "5.1.1",
     "bootstrap": "^4.3.1",
-    "chart.js": "^2.8.0",
+    "chart.js": "^2.9.4",
     "keccak256": "1.0.0",
     "merkletreejs": "^0.2.8",
     "mobx": "^5.9.4",
