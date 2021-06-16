@@ -5,7 +5,7 @@ const isLocal = false
 export const MAX_TOKENS = 3
 
 export const ParaswapApi = 'https://paraswap.io/api'
-export const OneInchApi = 'https://api.1inch.exchange/v1.1/'
+export const OneInchApi = 'https://api.1inch.exchange/v3.0/1/'
 export const OneInchApiTWO = 'https://api.1inch.exchange/v2.0/'
 
 // // Mainnet

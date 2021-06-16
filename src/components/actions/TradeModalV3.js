@@ -94,7 +94,7 @@ class TradeModalV3 extends Component {
         const tokens = []
         const symbols = []
 
-        for (const [, value] of Object.entries(data.data)) {
+        for (const [, value] of Object.entries(data.data.tokens)) {
           symbols.push(value.symbol)
           tokens.push({
             symbol:value.symbol,
