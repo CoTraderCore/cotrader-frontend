@@ -135,7 +135,7 @@ class WithdrawManager extends Component {
                }
                </Form.Group>
                {
-                 this.props.version > 7
+                 this.props.version === 8
                  ?
                  (
                    <DWOracleWrapper

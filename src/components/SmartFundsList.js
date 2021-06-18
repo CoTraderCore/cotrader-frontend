@@ -13,7 +13,7 @@ import io from "socket.io-client"
 
 import UpgradableCard from './UpgradableCard'
 import Withdraw from './actions/Withdraw'
-import Deposit from './actions/Deposit'
+import Deposit from './actions/Deposit/Deposit'
 import CreateNewFund from './actions/CreateNewFund'
 import ChartsButton from './actions/ChartsButton'
 import FakeButton from './templates/FakeButton'

@@ -1,3 +1,4 @@
+// USED only for v8 funds Oracle based 
 // this component wrap Deposit and Withdarw buttons with require Oracle update
 // before Deposit or withdarw
 
