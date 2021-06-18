@@ -33,6 +33,7 @@ import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles"
 // import lightblue from "@material-ui/core/colors/lightBlue"
 import Navbar2 from './components/static/Navbar'
 import WalletInfo from './components/static/WalletInfo'
+import GethInfo from './components/static/GethInfo'
 // import { Row, Col } from "react-bootstrap"
 import Container from '@material-ui/core/Container'
 
@@ -177,6 +178,7 @@ class App extends Component {
       <strong>DeFi investment funds - create or join the best smart funds on the blockchain</strong>
       </div>
       <WalletInfo web3={this.state.web3} accounts={this.state.accounts}/>
+      <GethInfo/>
 
       <Button variant="contained" color="primary" className={'d-none'} onClick={()=>{this.changeTheme2()}}><img style={{maxHeight: '24px'}} src="/themeicon.svg" alt="Change Theme" title="Change Theme" /></Button>
 
