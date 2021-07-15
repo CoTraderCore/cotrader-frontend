@@ -34,7 +34,7 @@ import { toWeiByDecimalsInput, fromWeiByDecimalsInput } from '../../utils/weiByD
 import checkTokensLimit from '../../utils/checkTokensLimit'
 import Pending from '../templates/Spiners/Pending'
 import BigNumber from 'bignumber.js'
-import { Typeahead } from 'react-bootstrap-typeahead'
+import SelectToken from './SelectToken'
 
 
 class TradeModalV2 extends Component {
@@ -563,6 +563,33 @@ class TradeModalV2 extends Component {
     dexAggregator: '1inch'
   })
 
+  // props for SelectToken component
+  onChangeTypeHead = (name, param) => {
+    this.setState({
+      [name]:param,
+      AmountSend:0,
+      AmountRecive:0
+    })
+  }
+
+  pushNewTokenInList = (tokenSymbol, tokenData) => {
+    const symbols = this.state.symbols
+    const tokens = this.state.tokens
+
+    if(!symbols.includes(tokenSymbol)){
+      symbols.push(tokenSymbol)
+      tokens.push(tokenData)
+
+      this.setState({
+        symbols,
+        tokens
+      })
+    }
+    else{
+      alert(`${tokenSymbol} alredy in list`)
+    }
+  }
+
   render() {
    return (
       <div>
@@ -591,25 +618,15 @@ class TradeModalV2 extends Component {
           {/* SEND */}
           <Form.Label>Pay with</Form.Label>
           <InputGroup className="mb-3">
-          <InputGroup.Prepend>
-          <InputGroup.Text>
-            <Typeahead
-              labelKey="sendTokens"
-              multiple={false}
-              id="sendTokens"
-              options={this.state.symbols}
-              onChange={(s) => this.changeByClick("Send", s[0])}
-              placeholder={this.state.Send}
-              renderMenuItemChildren={(options, props) => (
-                <div>
-                  <img style={{height: "35px", width: "35px"}}src={`https://tokens.1inch.exchange/${this.getTokenAddressBySymbol(options)}.png`} alt="Logo" />
-                  &nbsp; &nbsp;
-                  {options}
-                </div>
-              )}
-            />
-          </InputGroup.Text>
-          </InputGroup.Prepend>
+          <SelectToken
+           web3={this.props.web3}
+           symbols={this.state.symbols}
+           tokens={this.state.tokens}
+           onChangeTypeHead={this.onChangeTypeHead}
+           direction="Send"
+           currentSymbol={this.state.Send}
+           pushNewTokenInList={this.pushNewTokenInList}
+          />
           <Form.Control
           type="number"
           placeholder={this.state.AmountSend}
@@ -635,25 +652,15 @@ class TradeModalV2 extends Component {
           {/* RECEIVE */}
           <Form.Label>Receive</Form.Label>
           <InputGroup className="mb-3">
-          <InputGroup.Prepend>
-          <InputGroup.Text>
-            <Typeahead
-              labelKey="receiveTokens"
-              multiple={false}
-              id="receiveTokens"
-              options={this.state.symbols}
-              onChange={(s) => this.changeByClick("Recive", s[0])}
-              placeholder={this.state.Recive}
-              renderMenuItemChildren={(options, props) => (
-                <div>
-                  <img style={{height: "35px", width: "35px"}}src={`https://tokens.1inch.exchange/${this.getTokenAddressBySymbol(options)}.png`} alt="Logo" />
-                  &nbsp; &nbsp;
-                  {options}
-                </div>
-              )}
-            />
-          </InputGroup.Text>
-          </InputGroup.Prepend>
+          <SelectToken
+           web3={this.props.web3}
+           symbols={this.state.symbols}
+           tokens={this.state.tokens}
+           onChangeTypeHead={this.onChangeTypeHead}
+           direction="Recive"
+           currentSymbol={this.state.Recive}
+           pushNewTokenInList={this.pushNewTokenInList}
+          />
           <Form.Control
           type="number"
           placeholder={this.state.AmountRecive}
