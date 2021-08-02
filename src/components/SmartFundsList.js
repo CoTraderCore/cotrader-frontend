@@ -29,7 +29,7 @@ import MainPageCharts from './charts/MainPageCharts'
 import PagePagination from './navigation/PagePagination'
 import FilterAndSearch from './navigation/FilterAndSearch/FilterAndSearch'
 import FundsNav from './navigation/FundsNav'
-import SortFunds from './SortFunds'
+import SortFunds from './navigation/SortFunds'
 import MultiColorBar from './charts/MultiColorBar/MultiColorBar'
 
 class SmartFundsList extends Component{
