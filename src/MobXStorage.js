@@ -52,7 +52,7 @@ class MOBXStorage {
   // Filters
   sortSFByValue(smartFunds){
     const sorted = smartFunds.slice().sort(function (a, b) {
-    return a.profitInETH - b.profitInETH;
+    return a.valueInETH - b.valueInETH;
     })
     return sorted.reverse()
   }
