@@ -29,6 +29,7 @@ import MainPageCharts from './charts/MainPageCharts'
 import PagePagination from './navigation/PagePagination'
 import FilterAndSearch from './navigation/FilterAndSearch/FilterAndSearch'
 import FundsNav from './navigation/FundsNav'
+import SortFunds from './SortFunds'
 import MultiColorBar from './charts/MultiColorBar/MultiColorBar'
 
 class SmartFundsList extends Component{
@@ -219,8 +220,11 @@ class SmartFundsList extends Component{
          </div>
          </div>
          </Row>
-
+         <br/>
+         <SortFunds/>
+         <br/>
          <FundsNav/>
+
 
          <ListGroup variant="flush">
          { this.props.MobXStorage.SmartFunds.length > 0 ?(

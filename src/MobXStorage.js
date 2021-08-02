@@ -57,6 +57,36 @@ class MOBXStorage {
     return sorted.reverse()
   }
 
+  sortFundsByHigherROI(){
+    this.SmartFunds = this.SmartFundsOriginal.sort((f, s) =>
+    Number(fromWei(String(s.profitInETH)) / fromWei(String(s.valueInETH))) -
+    Number(fromWei(String(f.profitInETH)) / fromWei(String(f.valueInETH)))
+    )
+  }
+
+  sortFundsByLowerROI(){
+    this.SmartFunds = this.SmartFundsOriginal.sort((f, s) =>
+    Number(fromWei(String(f.profitInETH)) / fromWei(String(f.valueInETH))) -
+    Number(fromWei(String(s.profitInETH)) / fromWei(String(s.valueInETH)))
+    )
+  }
+
+  sortFundsByHigherProfit(){
+    this.SmartFunds = this.SmartFundsOriginal.sort((f, s) => s.profitInETH - f.profitInETH)
+  }
+
+  sortFundsByLowerProfit(){
+    this.SmartFunds = this.SmartFundsOriginal.sort((f, s) => f.profitInETH - s.profitInETH)
+  }
+
+  sortFundsByHigherValue(){
+    this.SmartFunds = this.SmartFundsOriginal.sort((f, s) => s.valueInETH - f.valueInETH)
+  }
+
+  sortFundsByLowerValue(){
+    this.SmartFunds = this.SmartFundsOriginal.sort((f, s) => f.valueInETH - s.valueInETH)
+  }
+
 
   myFunds(owner){
     this.SmartFunds = this.SmartFundsOriginal.filter(fund => fund.owner.toLowerCase().includes(owner.toLowerCase()))

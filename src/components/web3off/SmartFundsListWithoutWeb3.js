@@ -24,6 +24,7 @@ import FundModal from '../actions/FundModal'
 import PagePagination from '../navigation/PagePagination'
 import FilterAndSearch from '../navigation/FilterAndSearch/FilterAndSearch'
 import FundsNav from '../navigation/FundsNav'
+import SortFunds from '../navigation/SortFunds'
 
 import MultiColorBar from '../charts/MultiColorBar/MultiColorBar'
 
@@ -130,8 +131,11 @@ class SmartFundsListWithoutWeb3 extends Component{
             </div>
             </div>
             </Row>
-
-             <FundsNav />
+            <br/>
+            <SortFunds/>
+            <br/>
+            <FundsNav />
+             
              <ListGroup variant="flush">
              {
              this.props.MobXStorage.SmartFunds.map((item, key) =>
