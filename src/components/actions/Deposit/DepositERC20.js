@@ -33,20 +33,34 @@ class DepositERC20 extends Component {
 
   componentDidMount = async () => {
     const fund = new this.props.web3.eth.Contract(SmartFundABIV7, this.props.address)
-    const ercAssetAddress = await fund.methods.coreFundAsset().call()
-    const ercAssetContract = new this.props.web3.eth.Contract(ERC20ABI, ercAssetAddress)
-    const symbol = await ercAssetContract.methods.symbol().call()
-    const decimals = await ercAssetContract.methods.decimals().call()
-    const tokenBalanceInWei = await ercAssetContract.methods.balanceOf(this.props.accounts[0]).call()
-    const tokenBalance = fromWeiByDecimalsInput(decimals, tokenBalanceInWei)
 
-    this.setState({
-      ercAssetAddress,
-      ercAssetContract,
-      symbol,
-      tokenBalanceInWei,
-      tokenBalance
-    })
+    let version = 1
+    try{
+      version = Number(await fund.methods.version().call())
+    }catch(e){
+      console.log("err", e)
+    }
+
+    if(version >= 7){
+      const ercAssetAddress = await fund.methods.coreFundAsset().call()
+
+      const ercAssetContract = new this.props.web3.eth.Contract(ERC20ABI, ercAssetAddress)
+      const symbol = await ercAssetContract.methods.symbol().call()
+      const decimals = await ercAssetContract.methods.decimals().call()
+      const tokenBalanceInWei = await ercAssetContract.methods.balanceOf(this.props.accounts[0]).call()
+      const tokenBalance = fromWeiByDecimalsInput(decimals, tokenBalanceInWei)
+
+      this.setState({
+        ercAssetAddress,
+        ercAssetContract,
+        symbol,
+        tokenBalanceInWei,
+        tokenBalance,
+        version
+      })
+    }else{
+      this.setState({ version })
+    }
   }
 
   componentDidUpdate = async (prevProps, prevState) => {
@@ -177,17 +191,30 @@ class DepositERC20 extends Component {
     return (
       <>
       <Form.Group>
-      <Form.Label>
-      Enter {this.state.symbol}
-      <p
-       style={{color:'blue'}}
-       onClick={() => this.setState({
-        DepositValue:this.state.tokenBalance
-       })}
-      >
-        (balance:{this.state.tokenBalance})
-      </p>
-      </Form.Label>
+      {
+        this.state.version >= 7
+        ?
+        (
+          <Form.Label>
+          Enter {this.state.symbol}
+          <p
+           style={{color:'blue'}}
+           onClick={() => this.setState({
+            DepositValue:this.state.tokenBalance
+           })}
+          >
+            (balance:{this.state.tokenBalance})
+          </p>
+          </Form.Label>
+        )
+        :
+        (
+          <Form.Label>
+          Enter USD
+          </Form.Label>
+        )
+      }
+
       <Form.Control
       type="number"
       min="0"
