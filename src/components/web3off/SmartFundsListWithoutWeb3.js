@@ -11,8 +11,6 @@ import { Card, ListGroup, Row, Col, Badge, Button, ButtonGroup } from "react-boo
 import { NeworkID } from '../../config'
 import { NavLink } from 'react-router-dom'
 
-import MainPageCharts from '../charts/MainPageCharts'
-
 import FakeButton from '../templates/FakeButton'
 import FakeMaterializeButton from '../templates/FakeMaterializeButton'
 import Web3Allert from './Web3Allert'
@@ -135,7 +133,7 @@ class SmartFundsListWithoutWeb3 extends Component{
             <SortFunds/>
             <br/>
             <FundsNav />
-             
+
              <ListGroup variant="flush">
              {
              this.props.MobXStorage.SmartFunds.map((item, key) =>
@@ -211,22 +209,13 @@ class SmartFundsListWithoutWeb3 extends Component{
              </small>
              </Card.Header>
              <Card.Body className="cardsAdditional">
-             <Row className="justify-content-md-center">
-             <Col><FundModal address={item.address}/></Col>
-             <Col><ManagerModal address={item.owner}/></Col>
-             </Row>
-             {
-               NeworkID === 1 ?
-               (
-                 <div align="center">
-                 <MainPageCharts address={item.address} />
-                 </div>
-               )
-               :
-               (
-                 <strong>Charts available only in mainnet</strong>
-               )
-             }
+
+             <ButtonGroup horizontal="true">
+             <FundModal address={item.address}/>
+             <ManagerModal address={item.owner}/>
+             </ButtonGroup>
+
+
              <div>
              <ButtonGroup horizontal="true">
              <FakeButton buttonName={"Deposit"} info={"please connect to web3"}/>

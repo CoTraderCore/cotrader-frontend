@@ -25,7 +25,6 @@ import Loading from './templates/Spiners/Loading'
 import Pending from './templates/Spiners/Pending'
 import PopupMsg from './templates/PopupMsg'
 
-import MainPageCharts from './charts/MainPageCharts'
 import PagePagination from './navigation/PagePagination'
 import FilterAndSearch from './navigation/FilterAndSearch/FilterAndSearch'
 import FundsNav from './navigation/FundsNav'
@@ -300,25 +299,11 @@ class SmartFundsList extends Component{
          </Card.Header>
 
          <Card.Body className="cardsAdditional">
-         <Row className="justify-content-md-center mb-3">
-          <Col><FundModal address={item.address}/></Col>
-          <Col><ManagerModal address={item.owner}/></Col>
-         </Row>
-
-         <div className="justify-content-md-center">
-          {
-            NeworkID === 1 ?
-            (
-              <div align="center">
-              <MainPageCharts address={item.address} />
-              </div>
-            )
-            :
-            (
-              <strong>Charts available only in mainnet</strong>
-            )
-          }
-          </div>
+         <ButtonGroup horizontal="true">
+          <FundModal address={item.address}/>
+          <ManagerModal address={item.owner}/>
+         </ButtonGroup>
+         
           <Row className="justify-content-md-center mb-3">
           <Col className="col-lg-12 col-sm-12">
           <ButtonGroup horizontal="true">

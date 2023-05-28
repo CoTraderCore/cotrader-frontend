@@ -27,7 +27,6 @@ import UpdateUSDAsset from './actions/UpdateUSDAsset'
 import Loading from './templates/Spiners/Loading'
 import Pending from './templates/Spiners/Pending'
 import PopupMsg from './templates/PopupMsg'
-import ViewPageCharts from './charts/ViewPageCharts'
 import InvestorsAlocationChart from './charts/InvestorsAlocationChart'
 import UserInfo from './templates/UserInfo'
 import AssetsAlocationChart from './charts/AssetsAlocationChart'
@@ -375,11 +374,6 @@ class ViewFund extends Component {
         </Table>
         </ListGroup>
         </div>
-        <br />
-        <div align="center">
-        <ViewPageCharts address={this.state.smartFundAddress} Data={this.state.balance}/>
-        </div>
-        <br />
 
 
         <div className="fund-page-btns">

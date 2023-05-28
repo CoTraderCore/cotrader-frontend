@@ -11,7 +11,6 @@ import _ from 'lodash'
 import Web3Allert from './Web3Allert'
 import FakeButton from '../templates/FakeButton'
 import ChartsButton from '../actions/ChartsButton'
-import ViewPageCharts from '../charts/ViewPageCharts'
 import InvestorsAlocationChart from '../charts/InvestorsAlocationChart'
 import UserInfo from '../templates/UserInfo'
 import Identicon from 'react-identicons'
@@ -243,11 +242,6 @@ class ViewFundWithoutWeb3 extends Component {
         </Table>
         </ListGroup>
        </div>
-       <br />
-       <div align="center">
-       <ViewPageCharts address={this.state.smartFundAddress}/>
-       </div>
-       <br />
 
        <div className="fund-page-btns">
        <div align="center"><strong>Manager actions</strong></div>
